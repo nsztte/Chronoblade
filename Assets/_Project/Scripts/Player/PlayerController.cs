@@ -45,7 +45,8 @@ public class PlayerController : MonoBehaviour
     {
         if(controller.isGrounded)
         {
-            velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+            //velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
+            velocity.y = jumpForce;
         }
     }
 
