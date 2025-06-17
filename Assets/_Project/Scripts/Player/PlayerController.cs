@@ -7,6 +7,7 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float jumpForce = 8f;
     [SerializeField] private float gravity = -9.81f;
+    [SerializeField] private float fallMultiplier = 2.5f;
 
     private CharacterController controller;
     private Vector2 moveInput;
@@ -63,7 +64,14 @@ public class PlayerController : MonoBehaviour
         }
         else
         {
-            velocity.y += gravity * Time.deltaTime;
+            if(velocity.y < 0)
+            {
+                velocity.y += fallMultiplier * gravity * Time.deltaTime;
+            }
+            else
+            {
+                velocity.y += gravity * Time.deltaTime;
+            }
         }
     }
 }
