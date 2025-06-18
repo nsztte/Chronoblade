@@ -5,7 +5,7 @@ public class WeaponManager : MonoBehaviour
 {
     [Header("무기 슬롯")]
     [SerializeField] private List<WeaponController> weaponSlots;
-    private int currentWeaponIndex = 0;
+    private int currentWeaponIndex = -1;
     private WeaponController currentWeapon;
 
     #region Singleton

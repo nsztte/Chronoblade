@@ -81,6 +81,8 @@ public class InputManager : MonoBehaviour
         // 마우스 휠로 무기 전환
         float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
 
+        if(currentWeaponIndex < 0) return;
+
         if (scrollWheel > 0f) // 휠 위로
         {
             int nextWeapon = (currentWeaponIndex - 1 + maxWeaponCount) % maxWeaponCount;
@@ -95,9 +97,18 @@ public class InputManager : MonoBehaviour
 
     private void SwitchWeapon(int weaponIndex, int currentIndex, int maxCount)
     {
-        if (weaponIndex != currentIndex && weaponIndex >= 0 && weaponIndex < maxCount)
+        if (weaponIndex >= 0 && weaponIndex < maxCount)
         {
-            OnWeaponSwitch?.Invoke(weaponIndex);
+            if (weaponIndex == currentIndex)
+            {
+                // 이미 장착된 무기일 경우 장착 해제
+                WeaponManager.Instance.UnEquipWeapon();
+            }
+            else
+            {
+                // 다른 무기로 전환
+                OnWeaponSwitch?.Invoke(weaponIndex);
+            }
         }
     }
 }
