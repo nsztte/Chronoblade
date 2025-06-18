@@ -10,6 +10,7 @@ GameObject:
   m_Component:
   - component: {fileID: 4182334992462411445}
   - component: {fileID: 4469891042141530253}
+  - component: {fileID: 1814439384031099855}
   m_Layer: 0
   m_Name: Manager
   m_TagString: Untagged
@@ -44,3 +45,17 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 438f475368817dc4abd1ef90b4379c93, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1814439384031099855
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151459008568226687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 844d2426fb76b3e4987ed675f4e14eea, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  weaponSlots:
+  - {fileID: 0}

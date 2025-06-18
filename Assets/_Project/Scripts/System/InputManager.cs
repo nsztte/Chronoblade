@@ -28,7 +28,6 @@ public class InputManager : MonoBehaviour
     public event Action OnSkillPressed;               // 우클릭
     public event Action<int> OnWeaponSwitch;          // 숫자 키 1~2
     #endregion
-    
     void Update()
     {
         // 이동 입력 (WASD)
@@ -52,13 +51,53 @@ public class InputManager : MonoBehaviour
             OnSkillPressed?.Invoke();
 
         // 무기 전환 입력
+        HandleWeaponSwitching();
+    }
+
+    private void HandleWeaponSwitching()
+    {
+        int currentWeaponIndex = WeaponManager.Instance.GetCurrentWeaponIndex();
+        int maxWeaponCount = WeaponManager.Instance.GetMaxWeaponCount();
+
+        // 숫자 키로 직접 무기 선택
         if (Input.GetKeyDown(KeyCode.Alpha1))
         {
-            OnWeaponSwitch?.Invoke(0);
+            SwitchWeapon(0, currentWeaponIndex, maxWeaponCount);
         }
         else if (Input.GetKeyDown(KeyCode.Alpha2))
         {
-            OnWeaponSwitch?.Invoke(1);
+            SwitchWeapon(1, currentWeaponIndex, maxWeaponCount);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha3))
+        {
+            SwitchWeapon(2, currentWeaponIndex, maxWeaponCount);
+        }
+        else if (Input.GetKeyDown(KeyCode.Alpha4))
+        {
+            SwitchWeapon(3, currentWeaponIndex, maxWeaponCount);
+        }
+
+
+        // 마우스 휠로 무기 전환
+        float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
+
+        if (scrollWheel > 0f) // 휠 위로
+        {
+            int nextWeapon = (currentWeaponIndex - 1 + maxWeaponCount) % maxWeaponCount;
+            SwitchWeapon(nextWeapon, currentWeaponIndex, maxWeaponCount);
+        }
+        else if (scrollWheel < 0f) // 휠 아래로
+        {
+            int nextWeapon = (currentWeaponIndex + 1) % maxWeaponCount;
+            SwitchWeapon(nextWeapon, currentWeaponIndex, maxWeaponCount);
+        }
+    }
+
+    private void SwitchWeapon(int weaponIndex, int currentIndex, int maxCount)
+    {
+        if (weaponIndex != currentIndex && weaponIndex >= 0 && weaponIndex < maxCount)
+        {
+            OnWeaponSwitch?.Invoke(weaponIndex);
         }
     }
 }
