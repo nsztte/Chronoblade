@@ -16,6 +16,9 @@ public class MeleeWeaponController : WeaponController
         StartCoroutine(SwingWeapon());
     }
 
+    /// <summary>
+    /// ToDO: 플레이어 애니메이션 반영, 애니메이션 클립 길이만큼 쿨타임 반영
+    /// </summary>
     private IEnumerator SwingWeapon()
     {
         Debug.Log($"[공격 시작] {weaponData.weaponName}, 지속시간: {attackDuration}");

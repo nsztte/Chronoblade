@@ -4,6 +4,7 @@ using System.Collections;
 public abstract class WeaponController : MonoBehaviour
 {
     public WeaponData weaponData;
+    protected float coolTime = 0.5f;
     protected bool isAttacking = false;
 
     protected virtual void Start()
@@ -26,7 +27,7 @@ public abstract class WeaponController : MonoBehaviour
     private IEnumerator AttackCoroutine()
     {
         Attack();
-        yield return new WaitForSeconds(weaponData.coolTime);
+        yield return new WaitForSeconds(coolTime);
         isAttacking = false;
     }
 

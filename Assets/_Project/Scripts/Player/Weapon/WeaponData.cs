@@ -19,7 +19,7 @@ public class WeaponData : ScriptableObject
     public int damage;
     public float fireRate;  // 초당 발사 횟수
     public float range; // 사정거리
-    public float coolTime; // 쿨타임
+    //public float coolTime; // 쿨타임
 
     [Header("탄약 설정")]
     public int magazineSize;    // 탄창 크기
