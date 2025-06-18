@@ -25,7 +25,7 @@
 - [x] InputManager 구조 설계
 - [x] PlayerController 이동 구현
 - [x] CameraController 회전 구현
-- [ ] WeaponController 틀 생성
+- [x] WeaponController 틀 생성
 - [ ] 테스트 맵 구성 (큐브 기반)
 - [ ] 크로스헤어 UI 구현
 
@@ -37,11 +37,15 @@
 Assets/
 ├── _Project/
 │   ├── Art/
+│   ├── Data/
+│   │   ├── Weapon
 │   ├── Materials/
 │   ├── Prefabs/
 │   ├── Scenes/
 │   └── Scripts/
+│   │   ├── Enemy/
 │   │   ├── Player/
+│   │   │   ├── Weapon/
 │   │   └── Systems/ 
 ```
 
@@ -81,6 +85,31 @@ Assets/
 - 이동 중에도 중력 적용을 누락하지 않도록 Vector3.y 포함 필수
 - `OnMoveInput(Vector2.zero)`를 전달하지 않으면 이동이 멈추지 않음
 - 캐릭터 이동시 1인칭 액션 어드벤처 (정확한 컨트롤, 중력/점프 포함)에는 물리 기반인 Rigidbody보다 CharacterController 이용이 적절
+
+---
+
+## 2025.06.19 (수) 작업 기록
+
+### 주요 작업
+- WeaponController 추상 클래스 설계 및 무기 시스템 기반 구조 완성
+- MeleeWeaponController 구현 (CapsuleCast 기반 궤적 판정 + 중복 타격 방지)
+- GunWeaponController 구현 (Raycast 기반 공격 + 탄약 소비/재장전 처리)
+- WeaponManager 구현 및 무기 장착/해제, 마우스 휠 스위칭 기능 구현
+- InputManager에서 숫자 키 및 마우스 휠 입력 처리 추가
+- WeaponData(ScriptableObject) 설계 및 근접/총기 무기 데이터 분리
+- 무기 스위치 관련 버그 수정
+   - 동일한 무기 키 재입력 시 무기 해제
+   - 무기 미장착 상태에서 마우스 휠 무기 스위치 제한
+   -게임 시작 시 무기 인덱스 초기화 문제 해결
+- Debug 로그 및 Gizmos 디버깅 도구 추가
+
+### 메모
+- 무기 공격 방식은 WeaponController의 파생 클래스(Melee, Gun)에서 처리
+- 공격 판정은 근접 무기는 OverlapCapsule, 원거리는 Raycast 방식 사용
+- WeaponData의 coolTime 필드는 제거하고 각 무기 타입에 맞는 방식으로 대체
+  - 근접: 애니메이션 클립 길이
+  - 원거리: 1 / fireRate 계산으로 쿨타임 대체
+- Gizmos는 구형(WireSphere) 두 개로 궤적 시각화 처리
 
 ---
 
