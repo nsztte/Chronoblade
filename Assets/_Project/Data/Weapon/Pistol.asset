@@ -19,6 +19,13 @@ MonoBehaviour:
   range: 30
   magazineSize: 12
   maxAmmo: 60
+  pelletCount: 1
+  spreadAngle: 0
+  aimFOV: 50
+  recoilX: 1
+  recoilY: 0.5
+  recoilRecoverySpeed: 12
+  aimRecoilMultiplier: 0.4
   iconSprite: {fileID: 0}
   muzzleFlash: {fileID: 0}
   fireSound: {fileID: 0}

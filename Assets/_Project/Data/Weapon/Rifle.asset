@@ -21,6 +21,11 @@ MonoBehaviour:
   maxAmmo: 120
   pelletCount: 1
   spreadAngle: 0
+  aimFOV: 30
+  recoilX: 2
+  recoilY: 1
+  recoilRecoverySpeed: 10
+  aimRecoilMultiplier: 0.5
   iconSprite: {fileID: 0}
   muzzleFlash: {fileID: 0}
   fireSound: {fileID: 0}

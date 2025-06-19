@@ -25,7 +25,8 @@
 - [x] InputManager 구조 설계
 - [x] PlayerController 이동 구현
 - [x] CameraController 회전 구현
-- [x] WeaponController 틀 생성
+- [x] WeaponManager, WeaponController 구현
+- [ ] PlayerManager 구현
 - [ ] 테스트 맵 구성 (큐브 기반)
 - [ ] 크로스헤어 UI 구현
 
@@ -110,6 +111,28 @@ Assets/
   - 근접: 애니메이션 클립 길이
   - 원거리: 1 / fireRate 계산으로 쿨타임 대체
 - Gizmos는 구형(WireSphere) 두 개로 궤적 시각화 처리
+
+---
+
+## 2025.06.20 (목) 작업 기록
+
+### 주요 작업
+- GunWeaponController 기능 확장
+  - Raycast 기반 공격 구현 완료
+  - 샷건 산탄 처리 (pelletCount, spreadAngle) 적용
+  - 조준 상태 구현 (isAiming) 및 조준 시 반동 감소
+  - 무기별 반동 적용 (recoilX, recoilY)
+  - 반동 보정 계수(aimRecoilMultiplier)에 따른 반동 감쇠
+  - 재장전 입력 처리 및 장착된 무기만 재장전 적용
+- CameraController 개선
+  - Singleton 패턴 적용
+  - 조준 상태일 때 카메라 FOV 전환 (aimFOV)
+  - 반동 적용 (ApplyRecoil) 및 Lerp 기반 반동 복구
+  - 무기별 반동 회복 속도(recoilRecoverySpeed) 반영
+  - 줌인 중에는 반동 감소 효과 적용
+- WeaponData(ScriptableObject) 확장
+  - aimFOV, recoilX, recoilY, aimRecoilMultiplier, recoilRecoverySpeed 필드 추가
+  - 무기별 반동 수치 설정 및 FOV 값 지정
 
 ---
 
