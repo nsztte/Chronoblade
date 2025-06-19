@@ -6,13 +6,28 @@ public class GunWeaponController : WeaponController
     [SerializeField] private LayerMask hitLayer;
     [SerializeField] private int currentAmmo;
     private float nextFireTime = 0f;
+    private bool isAiming = false;
+    public bool IsAiming => isAiming;
 
     protected override void Start()
     {
         base.Start();
         currentAmmo = weaponData.magazineSize;
     }
-    
+
+    protected override void RegisterInput()
+    {
+        base.RegisterInput();
+        InputManager.Instance.OnAimStarted += OnAimStarted;
+        InputManager.Instance.OnAimCanceled += OnAimCanceled;
+    }
+
+    protected override void UnregisterInput()
+    {
+        base.UnregisterInput();
+        InputManager.Instance.OnAimStarted -= OnAimStarted;
+        InputManager.Instance.OnAimCanceled -= OnAimCanceled;
+    }
 
     protected override void Attack()
     {
@@ -83,5 +98,22 @@ public class GunWeaponController : WeaponController
     public void Reload()
     {
         currentAmmo = weaponData.magazineSize;
+    }
+
+    public float GetAimFOV()
+    {
+        return weaponData.aimFOV;
+    }
+
+    private void OnAimStarted()
+    {
+        Debug.Log("Aim Started");
+        isAiming = true;
+    }
+
+    private void OnAimCanceled()
+    {
+        Debug.Log("Aim Canceled");
+        isAiming = false;
     }
 }

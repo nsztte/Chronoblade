@@ -27,7 +27,9 @@ public class InputManager : MonoBehaviour
     public event Action OnAttackPressed;              // 좌클릭
     public event Action OnAttackHeld;                 // 좌클릭 유지
     public event Action OnReloadPressed;              // R
-    public event Action OnSkillPressed;               // 우클릭
+    public event Action OnAimStarted;                 // 마우스 오른쪽 클릭
+    public event Action OnAimCanceled;                // 마우스 오른쪽 클릭 종료
+    public event Action OnSkillPressed;               // Q
     public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
     #endregion
     void Update()
@@ -54,8 +56,14 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.R))
             OnReloadPressed?.Invoke();
 
-        // 스킬 입력
         if (Input.GetMouseButtonDown(1))
+           OnAimStarted?.Invoke();
+        
+        if (Input.GetMouseButtonUp(1))
+           OnAimCanceled?.Invoke();
+
+        // 스킬 입력
+        if (Input.GetKeyDown(KeyCode.Q))
             OnSkillPressed?.Invoke();
 
         // 무기 전환 입력

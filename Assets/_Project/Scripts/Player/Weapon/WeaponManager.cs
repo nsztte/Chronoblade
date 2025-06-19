@@ -7,6 +7,7 @@ public class WeaponManager : MonoBehaviour
     [SerializeField] private List<WeaponController> weaponSlots;
     private int currentWeaponIndex = -1;
     private WeaponController currentWeapon;
+    public WeaponController CurrentWeapon => currentWeapon;
 
     #region Singleton
     public static WeaponManager Instance { get; private set; }
@@ -36,6 +37,9 @@ public class WeaponManager : MonoBehaviour
     
     private void OnWeaponSwitch(int index)
     {
+        // 무기 전환 시 조준 취소
+        CameraController.Instance.CancelAim();
+        // 무기 전환
         EquipWeapon(index);
     }
 
@@ -49,6 +53,7 @@ public class WeaponManager : MonoBehaviour
         }
 
         currentWeapon = weaponSlots[index];
+        currentWeaponIndex = index;
         currentWeapon.SetWeaponData(currentWeapon.weaponData);
         currentWeapon.gameObject.SetActive(true);
     }

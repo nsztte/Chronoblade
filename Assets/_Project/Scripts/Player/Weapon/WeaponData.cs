@@ -28,6 +28,9 @@ public class WeaponData : ScriptableObject
     [Header("샷건 설정")]
     public int pelletCount = 1;
     public float spreadAngle = 0f;
+
+    [Header("조준 설정")]
+    public float aimFOV = 60f;
     
     [Header("UI")]
     public Sprite iconSprite; // 아이콘
