@@ -114,10 +114,9 @@ public class CameraController : MonoBehaviour
                 return;
             }
         }
+        
         // 근접 무기 등은 줌인 불가
-        isZoomed = false;
-        targetFOV = normalFOV;
-        UpdateRecoilRecoverySpeed();
+        OnAimCanceled();
     }
 
     private void OnAimCanceled()
