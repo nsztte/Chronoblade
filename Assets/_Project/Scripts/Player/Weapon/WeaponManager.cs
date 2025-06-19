@@ -68,6 +68,11 @@ public class WeaponManager : MonoBehaviour
         }
         currentWeapon = null;
         currentWeaponIndex = -1;
+
+        // 무기 해제 시 조준 취소
+        CameraController.Instance?.CancelAim();
+        // 반동 복구 속도 업데이트
+        CameraController.Instance?.UpdateRecoilRecoverySpeed();
     }
 
     public WeaponController GetCurrentWeapon()
