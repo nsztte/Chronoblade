@@ -20,6 +20,7 @@ public class GunWeaponController : WeaponController
         base.RegisterInput();
         InputManager.Instance.OnAimStarted += OnAimStarted;
         InputManager.Instance.OnAimCanceled += OnAimCanceled;
+        InputManager.Instance.OnReloadPressed += OnReload;
     }
 
     protected override void UnregisterInput()
@@ -27,6 +28,7 @@ public class GunWeaponController : WeaponController
         base.UnregisterInput();
         InputManager.Instance.OnAimStarted -= OnAimStarted;
         InputManager.Instance.OnAimCanceled -= OnAimCanceled;
+        InputManager.Instance.OnReloadPressed -= OnReload;
     }
 
     protected override void Attack()
@@ -109,14 +111,24 @@ public class GunWeaponController : WeaponController
     /// <summary>
     /// TODO: 탄약 소비 로직 추가
     /// </summary>
-    public void Reload()
+    private void Reload()
     {
-        currentAmmo = weaponData.magazineSize;
+        if(currentAmmo < weaponData.magazineSize)
+        {
+            currentAmmo = weaponData.magazineSize;
+            Debug.Log("탄약 재장전");
+            // 탄약 재장전 애니메이션 재생
+            // 탄약 재장전 사운드 재생
+            // 탄약 소비
+        }
     }
 
-    public float GetAimFOV()
+    private void OnReload()
     {
-        return weaponData.aimFOV;
+        if(WeaponManager.Instance.CurrentWeapon == this)
+        {
+            Reload();
+        }
     }
 
     private void OnAimStarted()
