@@ -38,7 +38,9 @@ public class WeaponManager : MonoBehaviour
     private void OnWeaponSwitch(int index)
     {
         // 무기 전환 시 조준 취소
-        CameraController.Instance.CancelAim();
+        CameraController.Instance?.CancelAim();
+        // 반동 복구 속도 업데이트
+        CameraController.Instance?.UpdateRecoilRecoverySpeed();
         // 무기 전환
         EquipWeapon(index);
     }

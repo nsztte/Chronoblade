@@ -14,6 +14,11 @@ public class CameraController : MonoBehaviour
     private float targetFOV;
     private bool isZoomed = false;
 
+    // Recoil
+    private float recoilX = 0f;
+    private float recoilY = 0f;
+    private float recoilRecoverySpeed = 10f;
+
     #region Singleton
     public static CameraController Instance { get; private set; }
 
@@ -47,6 +52,7 @@ public class CameraController : MonoBehaviour
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+        UpdateRecoilRecoverySpeed();
     }
 
     private void OnDisable()
@@ -59,10 +65,19 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         // FOV 부드러운 전환
-        if (playerCamera.fieldOfView != targetFOV)
+        // if (playerCamera.fieldOfView != targetFOV)
+        if (!Mathf.Approximately(playerCamera.fieldOfView, targetFOV))  // 두 값이 근사치인지 확인
         {
             playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
         }
+
+        // 복구 전 Clamp 제한
+        recoilX = Mathf.Clamp(recoilX, -10f, 10f);
+        recoilY = Mathf.Clamp(recoilY, -5f, 5f);
+
+        // Recoil 복구
+        recoilX = Mathf.Lerp(recoilX, 0f, recoilRecoverySpeed * Time.deltaTime);
+        recoilY = Mathf.Lerp(recoilY, 0f, recoilRecoverySpeed * Time.deltaTime);
     }
 
     private void OnLookInput(Vector2 input)
@@ -73,9 +88,16 @@ public class CameraController : MonoBehaviour
         rotX -= mouseY;
         rotX = Mathf.Clamp(rotX, -clampAngle, clampAngle);
 
-        transform.localRotation = Quaternion.Euler(rotX, 0, 0);
+        ApplyLookRotation(mouseX);
+    }
 
-        player.Rotate(Vector3.up * mouseX);
+    private void ApplyLookRotation(float mouseX)
+    {
+        // 반동 적용
+        float recoilRotX = rotX + recoilX;
+        float recoilRotY = recoilY;
+        transform.localRotation = Quaternion.Euler(recoilRotX, 0, 0);
+        player.Rotate(Vector3.up * (mouseX + recoilRotY));
     }
 
     private void OnAimStarted()
@@ -88,22 +110,44 @@ public class CameraController : MonoBehaviour
             {
                 isZoomed = true;
                 targetFOV = weaponData.aimFOV;
-                return; 
+                recoilRecoverySpeed = weaponData.recoilRecoverySpeed;
+                return;
             }
         }
         // 근접 무기 등은 줌인 불가
         isZoomed = false;
         targetFOV = normalFOV;
+        recoilRecoverySpeed = 10f;
     }
 
     private void OnAimCanceled()
     {
         isZoomed = false;
         targetFOV = normalFOV;
+        UpdateRecoilRecoverySpeed();
     }
 
     public void CancelAim()
     {
         OnAimCanceled();
+    }
+
+    public void ApplyRecoil(float addRecoilX, float addRecoilY)
+    {
+        recoilX += addRecoilX;
+        recoilY += addRecoilY;
+    }
+
+    public void UpdateRecoilRecoverySpeed()
+    {
+        var currentWeapon = WeaponManager.Instance.CurrentWeapon;
+        if (currentWeapon != null && currentWeapon.weaponData != null)
+        {
+            recoilRecoverySpeed = currentWeapon.weaponData.recoilRecoverySpeed;
+        }
+        else
+        {
+            recoilRecoverySpeed = 10f;
+        }
     }
 }

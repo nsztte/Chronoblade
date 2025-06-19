@@ -31,7 +31,14 @@ public class WeaponData : ScriptableObject
 
     [Header("조준 설정")]
     public float aimFOV = 60f;
-    
+
+    [Header("반동 설정")]
+    public float recoilX = 2f;  // 위로 튀는 정도
+    public float recoilY = 1f;  // 좌우 흔들림
+    public float recoilRecoverySpeed = 10f; // 반동 복구 속도
+    [Range(0f, 1f)]
+    public float aimRecoilMultiplier = 0.5f; // 조준 상태 반동 감소 배율
+
     [Header("UI")]
     public Sprite iconSprite; // 아이콘
 

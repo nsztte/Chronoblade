@@ -64,6 +64,7 @@ public class GunWeaponController : WeaponController
         }
 
         Debug.DrawRay(firePoint.position, firePoint.forward * weaponData.range, Color.yellow, 0.5f);
+        ApplyWeaponRecoil();
     }
 
     private void FireShotgun()
@@ -90,6 +91,19 @@ public class GunWeaponController : WeaponController
             }
             Debug.DrawRay(firePoint.position, spreadDirection * weaponData.range, Color.red, 0.5f);
         }
+        ApplyWeaponRecoil();
+    }
+
+    private void ApplyWeaponRecoil()
+    {
+        float recoilX = weaponData.recoilX;
+        float recoilY = weaponData.recoilY;
+        if (isAiming)
+        {
+            recoilX *= weaponData.aimRecoilMultiplier;
+            recoilY *= weaponData.aimRecoilMultiplier;
+        }
+        CameraController.Instance?.ApplyRecoil(recoilX, Random.Range(-recoilY, recoilY));
     }
 
     /// <summary>
