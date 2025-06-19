@@ -5,25 +5,39 @@ public class GunWeaponController : WeaponController
     [SerializeField] private Transform firePoint;
     [SerializeField] private LayerMask hitLayer;
     [SerializeField] private int currentAmmo;
+    private float nextFireTime = 0f;
 
     protected override void Start()
     {
         base.Start();
         currentAmmo = weaponData.magazineSize;
-        coolTime = 1f / weaponData.fireRate;
     }
+    
 
     protected override void Attack()
     {
-        if(currentAmmo <= 0)
+        if(nextFireTime > Time.time || currentAmmo <= 0)
         {
-            Debug.Log("탄약 없음");
+            Debug.Log("탄약 없음 또는 총기 쿨타임 중");
             return;
         }
 
+        nextFireTime = Time.time + coolTime;
         currentAmmo--;
         Debug.Log($"탄약 사용: {currentAmmo}");
 
+        if(weaponData.weaponType == WeaponType.Shotgun)
+        {
+            FireShotgun();
+        }
+        else
+        {
+            FireSingle();
+        }
+    }
+
+    private void FireSingle()
+    {
         Ray ray = new Ray(firePoint.position, firePoint.forward);
         if(Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
         {
@@ -35,6 +49,32 @@ public class GunWeaponController : WeaponController
         }
 
         Debug.DrawRay(firePoint.position, firePoint.forward * weaponData.range, Color.yellow, 0.5f);
+    }
+
+    private void FireShotgun()
+    {
+        for (int i = 0; i < weaponData.pelletCount; i++)
+        {
+            // 퍼짐 각도 계산 (예: 5도)
+            float spreadAngle = weaponData.spreadAngle;
+            // 랜덤한 각도 생성
+            float randomYaw = Random.Range(-spreadAngle, spreadAngle);
+            float randomPitch = Random.Range(-spreadAngle, spreadAngle);
+            // 회전 적용
+            Quaternion spreadRotation = Quaternion.Euler(randomPitch, randomYaw, 0);
+            Vector3 spreadDirection = spreadRotation * firePoint.forward;
+
+            Ray ray = new Ray(firePoint.position, spreadDirection);
+            if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
+            {
+                if (hit.collider.TryGetComponent(out IDamageable target))
+                {
+                    target.TakeDamage(weaponData.damage);
+                    Debug.Log($"[샷건 타격] 대상: {hit.collider.name}, 데미지: {weaponData.damage}");
+                }
+            }
+            Debug.DrawRay(firePoint.position, spreadDirection * weaponData.range, Color.red, 0.5f);
+        }
     }
 
     /// <summary>

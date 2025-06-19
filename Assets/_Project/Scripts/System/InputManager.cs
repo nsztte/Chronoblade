@@ -25,8 +25,10 @@ public class InputManager : MonoBehaviour
     public event Action<Vector2> OnLookInput;         // 마우스
     public event Action OnJumpPressed;                // Space
     public event Action OnAttackPressed;              // 좌클릭
+    public event Action OnAttackHeld;                 // 좌클릭 유지
+    public event Action OnReloadPressed;              // R
     public event Action OnSkillPressed;               // 우클릭
-    public event Action<int> OnWeaponSwitch;          // 숫자 키 1~2
+    public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
     #endregion
     void Update()
     {
@@ -45,6 +47,12 @@ public class InputManager : MonoBehaviour
         // 공격 입력
         if (Input.GetMouseButtonDown(0))
             OnAttackPressed?.Invoke();
+
+        if (Input.GetMouseButton(0))
+            OnAttackHeld?.Invoke();
+
+        if (Input.GetKeyDown(KeyCode.R))
+            OnReloadPressed?.Invoke();
 
         // 스킬 입력
         if (Input.GetMouseButtonDown(1))

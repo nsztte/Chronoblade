@@ -45,8 +45,8 @@ public class MeleeWeaponController : WeaponController
 
             t += Time.deltaTime;
             yield return null;
-            Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
         }
+        Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
     }
 
 #if UNITY_EDITOR

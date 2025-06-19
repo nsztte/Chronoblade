@@ -49,7 +49,7 @@ public class WeaponManager : MonoBehaviour
         }
 
         currentWeapon = weaponSlots[index];
-        currentWeaponIndex = index;
+        currentWeapon.SetWeaponData(currentWeapon.weaponData);
         currentWeapon.gameObject.SetActive(true);
     }
 

@@ -25,6 +25,10 @@ public class WeaponData : ScriptableObject
     public int magazineSize;    // 탄창 크기
     public int maxAmmo;         // 최대 탄약 개수
 
+    [Header("샷건 설정")]
+    public int pelletCount = 1;
+    public float spreadAngle = 0f;
+    
     [Header("UI")]
     public Sprite iconSprite; // 아이콘
 
