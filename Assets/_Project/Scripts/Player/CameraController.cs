@@ -110,14 +110,14 @@ public class CameraController : MonoBehaviour
             {
                 isZoomed = true;
                 targetFOV = weaponData.aimFOV;
-                recoilRecoverySpeed = weaponData.recoilRecoverySpeed;
+                UpdateRecoilRecoverySpeed();
                 return;
             }
         }
         // 근접 무기 등은 줌인 불가
         isZoomed = false;
         targetFOV = normalFOV;
-        recoilRecoverySpeed = 10f;
+        UpdateRecoilRecoverySpeed();
     }
 
     private void OnAimCanceled()
