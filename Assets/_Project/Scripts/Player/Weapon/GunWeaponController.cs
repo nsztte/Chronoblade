@@ -13,6 +13,10 @@ public class GunWeaponController : WeaponController
     {
         base.Start();
         currentAmmo = weaponData.magazineSize;
+
+        // 초기 탄약 UI 업데이트
+        int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
+        UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
     }
 
     protected override void RegisterInput()
@@ -33,15 +37,21 @@ public class GunWeaponController : WeaponController
 
     protected override void Attack()
     {
-        if(nextFireTime > Time.time || currentAmmo <= 0)
+        if(Time.time < nextFireTime) return;
+
+        if(currentAmmo <= 0)
         {
-            Debug.Log("탄약 없음 또는 총기 쿨타임 중");
+            Debug.Log("탄약 없음");
+            //TODO: 탄약 없음 사운드 재생
             return;
         }
 
-        nextFireTime = Time.time + coolTime;
-        currentAmmo--;
-        Debug.Log($"탄약 사용: {currentAmmo}");
+        // 총기 쿨타임 설정
+        nextFireTime = Time.time + weaponData.fireRate;
+
+        // 탄약 사용
+        currentAmmo = Mathf.Max(0, currentAmmo - 1);
+        Debug.Log($"탄약 사용: {currentAmmo}");        
 
         if(weaponData.weaponType == WeaponType.Shotgun)
         {
@@ -51,6 +61,10 @@ public class GunWeaponController : WeaponController
         {
             FireSingle();
         }
+
+        // 탄약 UI 업데이트
+        int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
+        UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
     }
 
     private void FireSingle()
@@ -113,14 +127,39 @@ public class GunWeaponController : WeaponController
     /// </summary>
     private void Reload()
     {
-        if(currentAmmo < weaponData.magazineSize)
+        if (currentAmmo >= weaponData.magazineSize)
         {
-            currentAmmo = weaponData.magazineSize;
-            Debug.Log("탄약 재장전");
-            // 탄약 재장전 애니메이션 재생
-            // 탄약 재장전 사운드 재생
-            // 탄약 소비
+            return; // 이미 탄창이 가득 찬 경우
         }
+
+        int ammoNeeded = weaponData.magazineSize - currentAmmo;
+        int ammoAvailable = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
+
+        if (ammoAvailable <= 0)
+        {
+            Debug.Log("재장전할 탄약이 없습니다.");
+            return;
+        }
+
+        int ammoToReload = Mathf.Min(ammoNeeded, ammoAvailable);
+
+        // 인벤토리에서 탄약 소비 시도
+        if (InventoryManager.Instance.UseAmmo(weaponData.ammoType, ammoToReload))
+        {
+            currentAmmo += ammoToReload;
+            Debug.Log($"탄약 재장전: {ammoToReload}발. 현재 탄약: {currentAmmo}");
+
+            // 탄약 UI 업데이트
+            int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
+            UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+        }
+        else
+        {
+            Debug.LogWarning("탄약 소비에 실패했습니다. (InventoryManager.UseAmmo false 반환)");
+        }
+
+        // 탄약 재장전 애니메이션 재생
+        // 탄약 재장전 사운드 재생
     }
 
     private void OnReload()

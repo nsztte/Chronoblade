@@ -24,11 +24,18 @@ public class InventoryManager : MonoBehaviour
         // Placeholder
         return 0;
     }
+
+    public bool UseAmmo(AmmoType type, int amount)
+    {
+        // Placeholder  
+        return true;
+    }
 }
 
 public enum AmmoType
 {
-    Pistol,
-    Rifle,
-    Shotgun
+    None,
+    PistolAmmo,
+    RifleAmmo,
+    ShotgunAmmo
 }

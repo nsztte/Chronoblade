@@ -132,13 +132,15 @@ public class PlayerManager : MonoBehaviour
     private void Die()
     {
         // 게임 오버 처리
-        Debug.Log("Player died");
+        Debug.Log("플레이어 죽음");
 
         GameOver();
     }
 
     private void GameOver()
     {
-        //TODO: 연출, 사운드, 애니메이션, 시간 흐름 정지, 게임 오버 UI 표시
+        Time.timeScale = 0f;
+        Debug.Log("게임 오버");
+        //TODO: 연출, 사운드, 애니메이션, 게임 오버 UI 표시
     }
 }          

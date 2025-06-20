@@ -11,29 +11,17 @@ public class PlayerHUD : MonoBehaviour
 
     public void UpdateHP(int current, int max)
     {
-        if(hpBar != null)
-        {
-            hpBar.maxValue = max;
-            hpBar.value = current;
-        }
+        hpBar.value = (float)current / max;
     }
 
     public void UpdateMP(int current, int max)
     {
-        if(mpBar != null)
-        {
-            mpBar.maxValue = max;
-            mpBar.value = current;
-        }
+        mpBar.value = (float)current / max;
     }
 
     public void UpdateStamina(int current, int max)
     {
-        if(staminaBar != null)
-        {
-            staminaBar.maxValue = max;
-            staminaBar.value = current;
-        }
+        staminaBar.value = (float)current / max;
     }
 
     public void UpdateAmmo(int current, int total)

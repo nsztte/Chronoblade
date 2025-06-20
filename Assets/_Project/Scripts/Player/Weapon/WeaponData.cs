@@ -22,6 +22,7 @@ public class WeaponData : ScriptableObject
     //public float coolTime; // 쿨타임
 
     [Header("탄약 설정")]
+    public AmmoType ammoType;   // 탄약 종류
     public int magazineSize;    // 탄창 크기
     public int maxAmmo;         // 최대 탄약 개수
 
