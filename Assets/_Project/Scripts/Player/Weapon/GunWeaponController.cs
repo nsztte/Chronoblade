@@ -8,15 +8,26 @@ public class GunWeaponController : WeaponController
     private float nextFireTime = 0f;
     private bool isAiming = false;
     public bool IsAiming => isAiming;
+    private Vector3 originPosition;
+    [SerializeField] private Vector3 adsPosition = new Vector3(0f, 0f, 0.2f);
+    [SerializeField] private float aimMoveSpeed = 10f;
+    private Vector3 currentTargetPosition;
 
     protected override void Start()
     {
         base.Start();
         currentAmmo = weaponData.magazineSize;
+        originPosition = transform.localPosition;
+        currentTargetPosition = originPosition;
 
         // 초기 탄약 UI 업데이트
         int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
         UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+    }
+
+    private void Update()
+    {
+        UpdateWeaponPosition();
     }
 
     protected override void RegisterInput()
@@ -178,11 +189,23 @@ public class GunWeaponController : WeaponController
     {
         Debug.Log("Aim Started");
         isAiming = true;
+        currentTargetPosition = originPosition + adsPosition;
     }
 
     private void OnAimCanceled()
     {
         Debug.Log("Aim Canceled");
         isAiming = false;
+        currentTargetPosition = originPosition;
+    }
+
+    private void UpdateWeaponPosition()
+    {
+        // currentTargetPosition = isAiming ? originPosition + adsPosition : originPosition;
+        transform.localPosition = Vector3.Lerp(
+            transform.localPosition,
+            currentTargetPosition,
+            Time.deltaTime * aimMoveSpeed
+        );
     }
 }

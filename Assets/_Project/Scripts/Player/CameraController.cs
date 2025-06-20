@@ -14,10 +14,15 @@ public class CameraController : MonoBehaviour
     private float targetFOV;
     private bool isZoomed = false;
 
-    // Recoil
+    // 반동
     private float recoilX = 0f;
     private float recoilY = 0f;
     private float recoilRecoverySpeed = 10f;
+
+    // 무기 들었을 때 시야각 제한
+    [SerializeField] private float weaponClampAngle = 30f;
+    [SerializeField] private float zoomedClampAngle = 10f;
+
 
     #region Singleton
     public static CameraController Instance { get; private set; }
@@ -94,9 +99,16 @@ public class CameraController : MonoBehaviour
         var currentWeapon = WeaponManager.Instance.CurrentWeapon;
         if (currentWeapon != null)
         {
-            // 무기를 들었을 때는 더 좁은 각도로 제한 (예시: -30 ~ 30)
-            minAngle = -30f;
-            maxAngle = 30f;
+            if(isZoomed)
+            {
+                minAngle = -zoomedClampAngle;
+                maxAngle = zoomedClampAngle;
+            }
+            else
+            {
+                minAngle = -weaponClampAngle;
+                maxAngle = weaponClampAngle;
+            }
         }
 
         rotX = Mathf.Clamp(rotX, minAngle, maxAngle);
