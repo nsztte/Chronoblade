@@ -37,7 +37,11 @@ public class GunWeaponController : WeaponController
 
     protected override void Attack()
     {
-        if(Time.time < nextFireTime) return;
+        if(Time.time < nextFireTime)
+        {
+            Debug.Log("총기 쿨타임 중");
+            return;
+        }
 
         if(currentAmmo <= 0)
         {
@@ -47,7 +51,7 @@ public class GunWeaponController : WeaponController
         }
 
         // 총기 쿨타임 설정
-        nextFireTime = Time.time + weaponData.fireRate;
+        nextFireTime = Time.time + coolTime;
 
         // 탄약 사용
         currentAmmo = Mathf.Max(0, currentAmmo - 1);

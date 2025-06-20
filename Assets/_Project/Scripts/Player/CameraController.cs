@@ -86,7 +86,20 @@ public class CameraController : MonoBehaviour
         float mouseY = input.y * mouseSensitivity * Time.deltaTime;
 
         rotX -= mouseY;
-        rotX = Mathf.Clamp(rotX, -clampAngle, clampAngle);
+
+        // 평소에도 시야각을 제한하되, 무기를 들었을 때는 더 크게(더 좁게) 제한
+        float minAngle = -clampAngle;
+        float maxAngle = clampAngle;
+
+        var currentWeapon = WeaponManager.Instance.CurrentWeapon;
+        if (currentWeapon != null)
+        {
+            // 무기를 들었을 때는 더 좁은 각도로 제한 (예시: -30 ~ 30)
+            minAngle = -30f;
+            maxAngle = 30f;
+        }
+
+        rotX = Mathf.Clamp(rotX, minAngle, maxAngle);
 
         ApplyLookRotation(mouseX);
     }
