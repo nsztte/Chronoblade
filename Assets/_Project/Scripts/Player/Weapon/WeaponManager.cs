@@ -75,11 +75,6 @@ public class WeaponManager : MonoBehaviour
         CameraController.Instance?.UpdateRecoilRecoverySpeed();
     }
 
-    public WeaponController GetCurrentWeapon()
-    {
-        return currentWeapon;
-    }
-
     public int GetCurrentWeaponIndex()
     {
         return currentWeaponIndex;

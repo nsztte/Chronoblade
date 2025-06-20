@@ -11,6 +11,7 @@ public abstract class WeaponController : MonoBehaviour
     protected virtual void OnDisable() => UnregisterInput();
 
     protected virtual void RegisterInput()
+    
     {
         if(weaponData.weaponType == WeaponType.Rifle)
         {
