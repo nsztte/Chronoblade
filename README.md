@@ -26,9 +26,11 @@
 - [x] PlayerController 이동 구현
 - [x] CameraController 회전 구현
 - [x] WeaponManager, WeaponController 구현
-- [ ] PlayerManager 구현
-- [ ] 테스트 맵 구성 (큐브 기반)
-- [ ] 크로스헤어 UI 구현
+- [x] PlayerManager 구현
+- [x] 테스트 맵 구성 (큐브 기반)
+- [x] 플레이어 에셋 연결
+- [x] 무기 에셋 연결
+- [x] 무기 조준시 줌인
 
 ---
 
@@ -38,8 +40,9 @@
 Assets/
 ├── _Project/
 │   ├── Art/
+│   │   ├── Model/
 │   ├── Data/
-│   │   ├── Weapon
+│   │   ├── Weapon/
 │   ├── Materials/
 │   ├── Prefabs/
 │   ├── Scenes/
@@ -47,7 +50,8 @@ Assets/
 │   │   ├── Enemy/
 │   │   ├── Player/
 │   │   │   ├── Weapon/
-│   │   └── Systems/ 
+│   │   ├── Systems/
+│   │   └── UI/ 
 ```
 
 ---
@@ -133,6 +137,37 @@ Assets/
 - WeaponData(ScriptableObject) 확장
   - aimFOV, recoilX, recoilY, aimRecoilMultiplier, recoilRecoverySpeed 필드 추가
   - 무기별 반동 수치 설정 및 FOV 값 지정
+
+---
+
+## 2025.06.21 (금) 작업 기록
+
+### 주요 작업
+- PlayerManager 구현  
+  - 체력, 마나, 스태미나, 골드 상태 값 관리 및 변경 시 UI 연동
+- UIManager, PlayerHUD 구현  
+  - 체력/마나/스태미나/탄약/골드 등 상태 수치 HUD에 반영
+  - 슬라이더는 비율 기반으로 갱신
+  - 탄약은 현재 탄약 / 전체 탄약 형태로 표시
+- GunWeaponController에 조준 기능(ADS: Aim Down Sight) 구현  
+  - 조준 시 무기 위치를 adsPosition으로 이동하며 부드럽게 전환  
+  - originPosition, aimMoveSpeed 등을 활용하여 Lerp 기반 이동 처리
+- 카메라 컨트롤러에서 시야각 제한 구현  
+  - 무기 미장착 상태: ±clampAngle  
+  - 무기 장착 시: ±30도  
+  - 조준 중일 때: ±10도로 추가 제한
+- 총기 공격 및 쿨타임, 탄약 소비 동작 점검 및 디버깅  
+  - fireRate 기반 쿨타임 적용, 사격 후 탄약 감소  
+  - 조준 상태에서도 자연스러운 공격 가능하게 조정
+- 플레이어 에셋(fbx) 및 총기류 에셋 연결  
+  - 적절한 위치 및 회전값 적용을 통한 시각적 자연스러움 확보
+- 검 무기 에셋 추가 및 WeaponManager에 연결 완료
+
+### 메모
+- 시야각 제한은 무기 장착 → 조준 순으로 우선순위가 정해지며, 조준 상태가 더 강하게 제한됨
+- 무기 조준 시 카메라 중심에 무기 모델이 가려지는 현상을 Lerp 이동으로 완화
+- 총기 초기화 시 탄약 UI도 초기화되도록 Start()에서 UIManager 호출 추가
+- 무기 장착 시만 조준이 가능하도록 InputManager에서 제한 적용됨
 
 ---
 
