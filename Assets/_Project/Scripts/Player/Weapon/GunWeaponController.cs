@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[RequireComponent(typeof(Animator))]
 public class GunWeaponController : WeaponController
 {
     [SerializeField] private Transform firePoint;
@@ -12,6 +13,13 @@ public class GunWeaponController : WeaponController
     [SerializeField] private Vector3 adsPosition = new Vector3(0f, 0f, 0.2f);
     [SerializeField] private float aimMoveSpeed = 10f;
     private Vector3 currentTargetPosition;
+
+    private Animator animator;
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     protected override void Start()
     {
@@ -138,7 +146,7 @@ public class GunWeaponController : WeaponController
     }
 
     /// <summary>
-    /// TODO: 탄약 소비 로직 추가
+    /// TODO: 탄약 소비 이펙트 추가
     /// </summary>
     private void Reload()
     {
@@ -167,13 +175,15 @@ public class GunWeaponController : WeaponController
             // 탄약 UI 업데이트
             int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
             UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+
+            // 탄약 재장전 애니메이션 재생
+            animator.SetTrigger("IsReloading");
         }
         else
         {
             Debug.LogWarning("탄약 소비에 실패했습니다. (InventoryManager.UseAmmo false 반환)");
         }
 
-        // 탄약 재장전 애니메이션 재생
         // 탄약 재장전 사운드 재생
     }
 

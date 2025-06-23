@@ -13,8 +13,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float crouchCameraYOffset = -0.5f;
     [SerializeField] private float crouchingMultiplier = 0.6f;
 
-
-    private Animator animator;
     private CharacterController controller;
     private CapsuleCollider capsuleCollider;
     private Vector2 moveInput;
@@ -31,7 +29,6 @@ public class PlayerController : MonoBehaviour
 
     private void Awake()
     {
-        animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
         capsuleCollider = GetComponent<CapsuleCollider>();
 
@@ -77,7 +74,7 @@ public class PlayerController : MonoBehaviour
         {
             //velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             velocity.y = jumpForce;
-            animator.SetTrigger("IsJumping");
+            PlayerManager.Instance.SetAnimatorTrigger("IsJumping");
         }
     }
 
@@ -142,10 +139,10 @@ public class PlayerController : MonoBehaviour
         Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
         float normalizedSpeed = horizontalVelocity.magnitude / (moveSpeed * 1.5f); // 최대 속도 기준 정규화
 
-        animator.SetFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
-        animator.SetFloat("DirectionX", normalizedInput.x, 0.1f, Time.deltaTime);
-        animator.SetFloat("DirectionY", normalizedInput.y, 0.1f, Time.deltaTime);
-        animator.SetBool("IsCrouching", isCrouching);
+        PlayerManager.Instance.SetAnimatorFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
+        PlayerManager.Instance.SetAnimatorFloat("DirectionX", normalizedInput.x, 0.1f, Time.deltaTime);
+        PlayerManager.Instance.SetAnimatorFloat("DirectionY", normalizedInput.y, 0.1f, Time.deltaTime);
+        PlayerManager.Instance.SetAnimatorBool("IsCrouching", isCrouching);
     }
 
     private void ApplyGravity()

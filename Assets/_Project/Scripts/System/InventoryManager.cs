@@ -22,7 +22,7 @@ public class InventoryManager : MonoBehaviour
     public int GetAmmoCount(AmmoType type)
     {
         // Placeholder
-        return 0;
+        return 100;
     }
 
     public bool UseAmmo(AmmoType type, int amount)

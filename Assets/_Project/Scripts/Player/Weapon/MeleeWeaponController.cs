@@ -13,6 +13,8 @@ public class MeleeWeaponController : WeaponController
 
     protected override void Attack()
     {
+        // 플레이어 애니메이터 공격 트리거
+        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
         StartCoroutine(SwingWeapon());
     }
 

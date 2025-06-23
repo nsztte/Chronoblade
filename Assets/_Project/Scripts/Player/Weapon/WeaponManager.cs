@@ -3,10 +3,12 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
+    [SerializeField] private PlayerController playerController;
+
     [Header("무기 슬롯")]
     [SerializeField] private List<WeaponController> weaponSlots;
     private int currentWeaponIndex = -1;
-    [SerializeField] private WeaponController currentWeapon;
+    private WeaponController currentWeapon;
     public WeaponController CurrentWeapon => currentWeapon;
 
     #region Singleton
@@ -58,6 +60,10 @@ public class WeaponManager : MonoBehaviour
         currentWeaponIndex = index;
         currentWeapon.SetWeaponData(currentWeapon.weaponData);
         currentWeapon.gameObject.SetActive(true);
+
+        // 무기 타입이 Sword인지 판별하여 애니메이터 bool 변경
+        bool isSword = currentWeapon.weaponData.weaponType == WeaponType.Sword;
+        PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", isSword);
     }
 
     public void UnEquipWeapon()

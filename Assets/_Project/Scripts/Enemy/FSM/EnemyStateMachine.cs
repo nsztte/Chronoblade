@@ -1,4 +1,3 @@
-using System.Xml;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -11,6 +10,7 @@ public enum EnemyState
     Dead
 }
 
+[RequireComponent(typeof(Animator), typeof(NavMeshAgent), typeof(Enemy))]
 public class EnemyStateMachine : MonoBehaviour
 {
     // 참조 변수

@@ -17,6 +17,8 @@ public class PlayerManager : MonoBehaviour
     [Header("Currency")]
     public int gold = 0;
 
+    private Animator animator;
+
     #region Singleton
     public static PlayerManager Instance { get; private set; }
 
@@ -27,6 +29,9 @@ public class PlayerManager : MonoBehaviour
         {
             Instance = this;
             DontDestroyOnLoad(gameObject);
+
+            // 플레이어 애니메이터 참조
+            animator = GetComponent<Animator>();
         }
         else
         {
@@ -142,5 +147,23 @@ public class PlayerManager : MonoBehaviour
         Time.timeScale = 0f;
         Debug.Log("게임 오버");
         //TODO: 연출, 사운드, 애니메이션, 게임 오버 UI 표시
+    }
+
+    // 애니메이터 제어 메서드
+    public void SetAnimatorBool(string param, bool value)
+    {
+        animator.SetBool(param, value);
+    }
+    public void SetAnimatorTrigger(string param)
+    {
+        animator.SetTrigger(param);
+    }
+    public void SetAnimatorFloat(string param, float value)
+    {
+        animator.SetFloat(param, value);
+    }
+    public void SetAnimatorFloat(string param, float value, float dampTime, float deltaTime)
+    {
+        animator.SetFloat(param, value, dampTime, deltaTime);
     }
 }          

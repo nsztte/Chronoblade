@@ -43,6 +43,8 @@ public class Enemy : MonoBehaviour, IDamageable
 
     public void Die()
     {
+        Debug.Log("Enemy Die");
+        
         Collider collider = GetComponent<Collider>();
         if(collider != null) collider.enabled = false;
         
