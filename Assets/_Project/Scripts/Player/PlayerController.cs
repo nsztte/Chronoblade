@@ -97,8 +97,11 @@ public class PlayerController : MonoBehaviour
 
         // 애니메이션 블렌드 파라미터 업데이트
         Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
-        float normalizedSpeed = horizontalVelocity.magnitude / (moveSpeed * 1.5f); // 최대값 기준 정규화
-        animator.SetFloat("Speed", normalizedSpeed);
+        float normalizedSpeed = horizontalVelocity.magnitude / (moveSpeed * 1.5f); // 최대 속도 기준 정규화
+
+        animator.SetFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
+        animator.SetFloat("DirectionX", normalizedInput.x, 0.1f, Time.deltaTime);
+        animator.SetFloat("DirectionY", normalizedInput.y, 0.1f, Time.deltaTime);;
     }
 
     private void ApplyGravity()
