@@ -34,11 +34,32 @@
 
 ---
 
+## 2주차 목표
+
+- [ ] Enemy FSM 구조 설계 및 상태 분리 (Base + 유형별)
+- [ ] Enemy 에셋 연결 및 애니메이터 구성
+- [ ] Enemy NavMeshAgent 설정 및 장애물 회피 테스트
+- [ ] Enemy AI 동작 테스트 (이동, 공격, 피격 반응 포함)
+- [ ] Player 애니메이션 연동 및 상태 전환 처리
+- [ ] ItemManager 및 회복 아이템 효과 설계
+- [ ] 스태미너 시스템 구현 및 소모 처리
+- [ ] InventoryManager 구조 설계 및 아이템 연동
+- [ ] 시간 슬로우 기능 구현 (시간 정지 전 단계)
+- [ ] 리듬 판정 시스템 기초 설계
+- [ ] 슬로우 + 리듬 공격 연동 테스트
+- [ ] UI 레이아웃 구성 및 퀵슬롯/무기정보 UI 설계
+
+---
+
 ## 폴더 구조
 
 ```
 Assets/
 ├── _Project/
+│   ├── Animations/
+│   │   ├── Enemies/
+│   │   ├── Player/
+│   │   ├── Weapon/
 │   ├── Art/
 │   │   ├── Model/
 │   ├── Data/
@@ -48,10 +69,11 @@ Assets/
 │   ├── Scenes/
 │   └── Scripts/
 │   │   ├── Enemy/
+│   │   │   ├── FSM/
 │   │   ├── Player/
 │   │   │   ├── Weapon/
 │   │   ├── Systems/
-│   │   └── UI/ 
+│   │   └── UI/
 ```
 
 ---
@@ -171,6 +193,36 @@ Assets/
 
 ---
 
+## 2025.06.23 (월) 작업 기록
+
+### 주요 작업
+Enemy FSM(상태머신) 시스템 구현
+ - EnemyStateMachine과 상태 인터페이스(EnemyState) 설계
+ - 상태별 클래스 작성: IdleState, ChaseState, AttackState, DeadState
+ - Enemy 스크립트에서 상태 전환, 체력, 공격력, 탐지 범위 등 관리
+ - 공격 쿨타임(cooldown), 범위에 따른 타격 로직 처리
+ - Enemy.Die() 함수 작성 → EnemyDeadState에서 호출하여 사망 처리
+- 피스톨 재장전 애니메이션 클립 간소화 및 자연스러운 연출로 교체
+- 샷건, 라이플에도 동일한 구조로 재장전 애니메이션 클립 적용
+- GunWeaponController에서 IsReloading 트리거로 애니메이션 작동 처리
+- 검 들고 있을 때의 Idle 및 공격 애니메이션 개선 (보다 자연스럽게)
+- 상체 전용 애니메이션을 위해 하반신 키프레임 제거 → UpperBody 레이어에 Override로 설정
+- IsAttacking 트리거로 검 휘두르기 애니메이션 작동
+- PlayerManager에서 애니메이터 제어 메서드 추가
+  - SetAnimatorTrigger(string)
+  - SetAnimatorBool(string, bool)
+  - SetAnimatorFloat(string, float)
+  - SetAnimatorFloat(string, float, float, float) ← 오버로드 버전
+- 외부 스크립트에서 애니메이션을 직접 접근하지 않고 PlayerManager를 통해 제어 가능하도록 구조화
+
+### 메모
+- 총기 무기는 손 오브젝트에 애니메이터가 따로 붙어 있으며, 트리거로 동작
+- 근접 무기는 전체 플레이어 애니메이터를 사용하며 상반신 레이어를 통해 애니메이션 재생
+- 적 FSM은 추후 보스 AI나 패턴에도 그대로 확장 가능하도록 설계됨
+
+---
+
+ 
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
