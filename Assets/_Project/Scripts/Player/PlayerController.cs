@@ -14,6 +14,9 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector3 velocity;
 
+    private bool isRunning = false;
+    private bool isCrouching = false;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -24,12 +27,18 @@ public class PlayerController : MonoBehaviour
     {
         InputManager.Instance.OnMoveInput += OnMoveInput;
         InputManager.Instance.OnJumpPressed += OnJumpPressed;
+        InputManager.Instance.OnRunStarted += OnRunStarted;
+        InputManager.Instance.OnRunCanceled += OnRunCanceled;
+        InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
     }
 
     private void OnDisable()
     {
         InputManager.Instance.OnMoveInput -= OnMoveInput;
         InputManager.Instance.OnJumpPressed -= OnJumpPressed;
+        InputManager.Instance.OnRunStarted -= OnRunStarted;
+        InputManager.Instance.OnRunCanceled -= OnRunCanceled;
+        InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
     }
 
     private void Update()
@@ -52,16 +61,44 @@ public class PlayerController : MonoBehaviour
         }
     }
 
+    private void OnRunStarted()
+    {
+        isRunning = true;
+    }
+
+    private void OnRunCanceled()
+    {
+        isRunning = false;
+    }
+    
+    private void OnCrouchPressed()
+    {
+        isCrouching = !isCrouching;
+    }
+
     private void Move()
     {
-        Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
-        Vector3 move = moveDirection * moveSpeed + Vector3.up * velocity.y;
-        controller.Move(move * Time.deltaTime);
+        // 입력 벡터를 정규화하여 대각선 이동 시 속도가 증가하지 않도록 함
+        Vector2 normalizedInput = moveInput.normalized;
+        Vector3 moveDirection = transform.right * normalizedInput.x + transform.forward * normalizedInput.y;
 
-        // 애니메이션 처리
+        float currentSpeed = moveSpeed;
+
+        if(isCrouching)
+            currentSpeed *= 0.5f;
+        else if(isRunning && normalizedInput.y > 0)
+            currentSpeed *= 1.5f;
+
+        // 수평 속도 벡터 + 중력 적용
+        Vector3 horizontalMove = moveDirection * currentSpeed;
+        Vector3 finalMove = horizontalMove + Vector3.up * velocity.y;
+
+        controller.Move(finalMove * Time.deltaTime);
+
+        // 애니메이션 블렌드 파라미터 업데이트
         Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
-        float speed = horizontalVelocity.magnitude / moveSpeed;
-        animator.SetFloat("Speed", speed);
+        float normalizedSpeed = horizontalVelocity.magnitude / (moveSpeed * 1.5f); // 최대값 기준 정규화
+        animator.SetFloat("Speed", normalizedSpeed);
     }
 
     private void ApplyGravity()

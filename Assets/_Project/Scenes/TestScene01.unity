@@ -535,6 +535,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7e9b3595bb9b9cc46a1549e411b2f0ee, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  maxHP: 100
+  damage: 10
+  detectionRange: 10
+  attackRange: 2
+  attackCooldown: 1.5
 --- !u!1001 &5942328423330806387
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -585,6 +590,10 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1062656909117928978, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 1230011940972805902, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
+      propertyPath: m_ApplyRootMotion
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1542549592000824296, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}

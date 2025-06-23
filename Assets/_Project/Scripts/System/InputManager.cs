@@ -24,6 +24,9 @@ public class InputManager : MonoBehaviour
     public event Action<Vector2> OnMoveInput;         // WASD
     public event Action<Vector2> OnLookInput;         // 마우스
     public event Action OnJumpPressed;                // Space
+    public event Action OnRunStarted;                 // 왼쪽 Shift 시작
+    public event Action OnRunCanceled;                // 왼쪽 Shift 종료
+    public event Action OnCrouchPressed;              // 왼쪽 Ctrl
     public event Action OnAttackPressed;              // 좌클릭
     public event Action OnAttackHeld;                 // 좌클릭 유지
     public event Action OnReloadPressed;              // R
@@ -46,6 +49,16 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.Space))
             OnJumpPressed?.Invoke();
 
+        // 달리기 입력
+        if (Input.GetKeyDown(KeyCode.LeftShift))
+            OnRunStarted?.Invoke();
+        if (Input.GetKeyUp(KeyCode.LeftShift))
+            OnRunCanceled?.Invoke();
+
+        // 웅크리기 입력
+        if (Input.GetKeyDown(KeyCode.LeftControl))
+            OnCrouchPressed?.Invoke();
+            
         // 공격 입력
         if (Input.GetMouseButtonDown(0))
             OnAttackPressed?.Invoke();
