@@ -9,18 +9,37 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float fallMultiplier = 2.5f;
 
+    [Header("Crouch")]
+    [SerializeField] private float crouchCameraYOffset = -0.5f;
+    [SerializeField] private float crouchingMultiplier = 0.6f;
+
+
     private Animator animator;
     private CharacterController controller;
+    private CapsuleCollider capsuleCollider;
     private Vector2 moveInput;
     private Vector3 velocity;
 
     private bool isRunning = false;
     private bool isCrouching = false;
 
+    // 웅크리기 관련 변수
+    private float originalControllerHeight;
+    private Vector3 originalControllerCenter;
+    private float crouchControllerHeight;
+    private Vector3 crouchControllerCenter;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
+        capsuleCollider = GetComponent<CapsuleCollider>();
+
+        // 원래 컨트롤러 값 저장
+        originalControllerHeight = controller.height;
+        originalControllerCenter = controller.center;
+        crouchControllerHeight = originalControllerHeight * crouchingMultiplier;
+        crouchControllerCenter = new Vector3(originalControllerCenter.x, originalControllerCenter.y * crouchingMultiplier, originalControllerCenter.z);
     }
 
     private void Start()
@@ -58,6 +77,7 @@ public class PlayerController : MonoBehaviour
         {
             //velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             velocity.y = jumpForce;
+            animator.SetTrigger("IsJumping");
         }
     }
 
@@ -74,6 +94,27 @@ public class PlayerController : MonoBehaviour
     private void OnCrouchPressed()
     {
         isCrouching = !isCrouching;
+        if (isCrouching)
+        {
+            controller.height = crouchControllerHeight;
+            controller.center = crouchControllerCenter;
+            capsuleCollider.height = crouchControllerHeight;
+            capsuleCollider.center = crouchControllerCenter;
+            
+            // 카메라 위치 내리기
+            float targetY = CameraController.Instance.GetDefaultCameraLocalY() + crouchCameraYOffset;
+            CameraController.Instance.SetCameraHeight(targetY, 10f);
+        }
+        else
+        {
+            controller.height = originalControllerHeight;
+            controller.center = originalControllerCenter;
+            capsuleCollider.height = originalControllerHeight;
+            capsuleCollider.center = originalControllerCenter;
+            // 카메라 원래 위치로
+            float targetY = CameraController.Instance.GetDefaultCameraLocalY();
+            CameraController.Instance.SetCameraHeight(targetY, 10f);
+        }
     }
 
     private void Move()
@@ -103,7 +144,8 @@ public class PlayerController : MonoBehaviour
 
         animator.SetFloat("Speed", normalizedSpeed, 0.1f, Time.deltaTime);
         animator.SetFloat("DirectionX", normalizedInput.x, 0.1f, Time.deltaTime);
-        animator.SetFloat("DirectionY", normalizedInput.y, 0.1f, Time.deltaTime);;
+        animator.SetFloat("DirectionY", normalizedInput.y, 0.1f, Time.deltaTime);
+        animator.SetBool("IsCrouching", isCrouching);
     }
 
     private void ApplyGravity()

@@ -23,6 +23,9 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float weaponClampAngle = 30f;
     [SerializeField] private float zoomedClampAngle = 10f;
 
+    private float defaultLocalY;
+    private float targetLocalY;
+    private float cameraLerpSpeed = 10f;
 
     #region Singleton
     public static CameraController Instance { get; private set; }
@@ -51,6 +54,9 @@ public class CameraController : MonoBehaviour
         {
             playerCamera = Camera.main;
         }
+        // 카메라 기본 Y 위치 저장
+        defaultLocalY = transform.localPosition.y;
+        targetLocalY = defaultLocalY;
         
         targetFOV = normalFOV;
         playerCamera.fieldOfView = normalFOV;
@@ -70,11 +76,15 @@ public class CameraController : MonoBehaviour
     private void Update()
     {
         // FOV 부드러운 전환
-        // if (playerCamera.fieldOfView != targetFOV)
-        if (!Mathf.Approximately(playerCamera.fieldOfView, targetFOV))  // 두 값이 근사치인지 확인
+        if (!Mathf.Approximately(playerCamera.fieldOfView, targetFOV))
         {
             playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
         }
+
+        // 카메라 Y 위치 부드럽게 이동
+        Vector3 localPos = transform.localPosition;
+        localPos.y = Mathf.Lerp(localPos.y, targetLocalY, cameraLerpSpeed * Time.deltaTime);
+        transform.localPosition = localPos;
 
         // 복구 전 Clamp 제한
         recoilX = Mathf.Clamp(recoilX, -10f, 10f);
@@ -174,4 +184,13 @@ public class CameraController : MonoBehaviour
             recoilRecoverySpeed = 10f;
         }
     }
+
+    // 웅크리기용 카메라 높이 조정 메서드
+    public void SetCameraHeight(float targetY, float lerpSpeed = 10f)
+    {
+        targetLocalY = targetY;
+        cameraLerpSpeed = lerpSpeed;
+    }
+
+    public float GetDefaultCameraLocalY() => defaultLocalY;
 }

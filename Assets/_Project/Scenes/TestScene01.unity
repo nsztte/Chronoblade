@@ -612,6 +612,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 2688797202539588084, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
+      propertyPath: jumpForce
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 2688797202539588084, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
+      propertyPath: crouchingMultiplier
+      value: 0.7
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects:
     - {fileID: 5842026796233578748, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
