@@ -88,6 +88,8 @@ public class PlayerController : MonoBehaviour
             currentSpeed *= 0.5f;
         else if(isRunning && normalizedInput.y > 0)
             currentSpeed *= 1.5f;
+        else if(normalizedInput.y < 0)
+            currentSpeed *= 0.8f;
 
         // 수평 속도 벡터 + 중력 적용
         Vector3 horizontalMove = moveDirection * currentSpeed;
