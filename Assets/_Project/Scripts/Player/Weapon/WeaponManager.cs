@@ -81,6 +81,9 @@ public class WeaponManager : MonoBehaviour
         CameraController.Instance?.CancelAim();
         // 반동 복구 속도 업데이트
         CameraController.Instance?.UpdateRecoilRecoverySpeed();
+        // 애니메이터 상태 해제
+        PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", false);
+        PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", false);
     }
 
     public int GetCurrentWeaponIndex()
