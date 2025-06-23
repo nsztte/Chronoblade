@@ -9,12 +9,14 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float gravity = -9.81f;
     [SerializeField] private float fallMultiplier = 2.5f;
 
+    private Animator animator;
     private CharacterController controller;
     private Vector2 moveInput;
     private Vector3 velocity;
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
         controller = GetComponent<CharacterController>();
     }
 
@@ -55,6 +57,11 @@ public class PlayerController : MonoBehaviour
         Vector3 moveDirection = transform.right * moveInput.x + transform.forward * moveInput.y;
         Vector3 move = moveDirection * moveSpeed + Vector3.up * velocity.y;
         controller.Move(move * Time.deltaTime);
+
+        // 애니메이션 처리
+        Vector3 horizontalVelocity = new Vector3(controller.velocity.x, 0, controller.velocity.z);
+        float speed = horizontalVelocity.magnitude / moveSpeed;
+        animator.SetFloat("Speed", speed);
     }
 
     private void ApplyGravity()
