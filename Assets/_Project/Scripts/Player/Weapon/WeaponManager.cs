@@ -63,7 +63,9 @@ public class WeaponManager : MonoBehaviour
 
         // 무기 타입이 Sword인지 판별하여 애니메이터 bool 변경
         bool isSword = currentWeapon.weaponData.weaponType == WeaponType.Sword;
+        bool isGun = currentWeapon.weaponData.weaponType != WeaponType.Sword;
         PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", isSword);
+        PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", isGun);
     }
 
     public void UnEquipWeapon()
