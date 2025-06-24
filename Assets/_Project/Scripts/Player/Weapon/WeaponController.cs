@@ -5,7 +5,7 @@ public abstract class WeaponController : MonoBehaviour
 {
     public WeaponData weaponData;
     protected float coolTime = 0.5f;
-    protected bool isAttacking = false;
+    [SerializeField] protected bool isAttacking = false;
 
     protected virtual void Start() => RegisterInput();
     protected virtual void OnDisable() => UnregisterInput();
@@ -48,19 +48,7 @@ public abstract class WeaponController : MonoBehaviour
         RegisterInput();
     }
 
-    protected void OnAttackInput()
-    {
-        if(!gameObject.activeInHierarchy || isAttacking) return;
-        isAttacking = true;
-        StartCoroutine(AttackCoroutine());
-    }
-
-    private IEnumerator AttackCoroutine()
-    {
-        Attack();
-        yield return new WaitForSeconds(coolTime);
-        isAttacking = false;
-    }
+    protected abstract void OnAttackInput();
 
     protected abstract void Attack();
 }

@@ -27,6 +27,9 @@ public class CameraController : MonoBehaviour
     private float targetLocalY;
     private float cameraLerpSpeed = 10f;
 
+    private Vector3 defaultLocalPosition;
+    private Vector3 targetLocalPosition;
+
     #region Singleton
     public static CameraController Instance { get; private set; }
 
@@ -64,6 +67,9 @@ public class CameraController : MonoBehaviour
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
         UpdateRecoilRecoverySpeed();
+
+        defaultLocalPosition = transform.localPosition;
+        targetLocalPosition = defaultLocalPosition;
     }
 
     private void OnDisable()
@@ -81,10 +87,8 @@ public class CameraController : MonoBehaviour
             playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
         }
 
-        // 카메라 Y 위치 부드럽게 이동
-        Vector3 localPos = transform.localPosition;
-        localPos.y = Mathf.Lerp(localPos.y, targetLocalY, cameraLerpSpeed * Time.deltaTime);
-        transform.localPosition = localPos;
+        // 카메라 위치 부드럽게 이동 (근접 공격 등 효과 반영)
+        transform.localPosition = Vector3.Lerp(transform.localPosition, targetLocalPosition, cameraLerpSpeed * Time.deltaTime);
 
         // 복구 전 Clamp 제한
         recoilX = Mathf.Clamp(recoilX, -10f, 10f);
@@ -193,4 +197,16 @@ public class CameraController : MonoBehaviour
     }
 
     public float GetDefaultCameraLocalY() => defaultLocalY;
+
+    public void SetCameraMeleeAttackOffset(float forwardOffset, float lerpSpeed = 15f)
+    {
+        cameraLerpSpeed = lerpSpeed;
+        targetLocalPosition = defaultLocalPosition + new Vector3(0, 0, forwardOffset);
+    }
+
+    public void ResetCameraPosition(float lerpSpeed = 10f)
+    {
+        cameraLerpSpeed = lerpSpeed;
+        targetLocalPosition = defaultLocalPosition;
+    }
 }

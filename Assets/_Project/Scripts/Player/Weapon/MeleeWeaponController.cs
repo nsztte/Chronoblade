@@ -7,27 +7,33 @@ public class MeleeWeaponController : WeaponController
     [Header("근접 공격 설정")]
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
-    [SerializeField] private float attackDuration = 0.3f;
+    // [SerializeField] private float attackDuration = 0.3f;
     public LayerMask hitLayer;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
-    protected override void Attack()
+    protected override void OnAttackInput()
     {
-        // 플레이어 애니메이터 공격 트리거
-        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
-        StartCoroutine(SwingWeapon());
+        if (!gameObject.activeInHierarchy || isAttacking) return;
+        isAttacking = true;
+        Attack();
     }
 
-    /// <summary>
-    /// ToDO: 플레이어 애니메이션 반영, 애니메이션 클립 길이만큼 쿨타임 반영
-    /// </summary>
-    private IEnumerator SwingWeapon()
+    protected override void Attack()
     {
-        Debug.Log($"[공격 시작] {weaponData.weaponName}, 지속시간: {attackDuration}");
+        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
+        CameraController.Instance?.SetCameraMeleeAttackOffset(0.3f, 15f);
+        StartCoroutine(MeleeAttackCoroutine());
+    }
+
+    private IEnumerator MeleeAttackCoroutine()
+    {
+        yield return null; // 애니메이터 상태 전이 대기
+        float duration = PlayerManager.Instance.GetCurrentUpperBodyClipLength();
+        Debug.Log($"[공격 시작] {weaponData.weaponName}, 지속시간: {duration}");
         hitTargets.Clear();
         float t = 0f;
 
-        while(t < attackDuration)
+        while (t < duration)
         {
             Vector3 startPos = startPoint.position;
             Vector3 endPos = endPoint.position;
@@ -49,6 +55,8 @@ public class MeleeWeaponController : WeaponController
             yield return null;
         }
         Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
+        CameraController.Instance?.ResetCameraPosition(10f);
+        isAttacking = false;
     }
 
 #if UNITY_EDITOR

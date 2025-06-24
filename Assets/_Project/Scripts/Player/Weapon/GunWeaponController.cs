@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Animator))]
 public class GunWeaponController : WeaponController
@@ -6,9 +7,11 @@ public class GunWeaponController : WeaponController
     [SerializeField] private Transform firePoint;
     [SerializeField] private LayerMask hitLayer;
     [SerializeField] private int currentAmmo;
+    [SerializeField] private float reloadDuration = 1f;
     private float nextFireTime = 0f;
     private bool isAiming = false;
     public bool IsAiming => isAiming;
+    public bool isReloading = false;
     private Vector3 originPosition;
     [SerializeField] private Vector3 adsPosition = new Vector3(0f, 0f, 0.2f);
     [SerializeField] private float aimMoveSpeed = 10f;
@@ -38,6 +41,32 @@ public class GunWeaponController : WeaponController
         UpdateWeaponPosition();
     }
 
+    protected override void OnAttackInput()
+    {
+        if(!gameObject.activeInHierarchy || isAttacking) return;
+        if(isReloading)
+        {
+            Debug.Log("재장전 중");
+            return;
+        }
+
+        if(Time.time < nextFireTime)
+        {
+            Debug.Log("총기 쿨타임 중");
+            return;
+        }
+
+        if(currentAmmo <= 0)
+        {
+            Debug.Log("탄약 없음");
+            //TODO: 탄약 없음 사운드 재생
+            return;
+        }
+
+        isAttacking = true;
+        Attack();
+    }
+
     protected override void RegisterInput()
     {
         base.RegisterInput();
@@ -56,26 +85,11 @@ public class GunWeaponController : WeaponController
 
     protected override void Attack()
     {
-        if(Time.time < nextFireTime)
-        {
-            Debug.Log("총기 쿨타임 중");
-            return;
-        }
-
-        if(currentAmmo <= 0)
-        {
-            Debug.Log("탄약 없음");
-            //TODO: 탄약 없음 사운드 재생
-            return;
-        }
-
         // 총기 쿨타임 설정
         nextFireTime = Time.time + coolTime;
-
         // 탄약 사용
         currentAmmo = Mathf.Max(0, currentAmmo - 1);
         Debug.Log($"탄약 사용: {currentAmmo}");        
-
         if(weaponData.weaponType == WeaponType.Shotgun)
         {
             FireShotgun();
@@ -84,10 +98,17 @@ public class GunWeaponController : WeaponController
         {
             FireSingle();
         }
-
         // 탄약 UI 업데이트
         int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
         UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+        // 쿨타임 후 isAttacking 해제
+        StartCoroutine(ResetIsAttackingAfterDelay(coolTime));
+    }
+
+    private System.Collections.IEnumerator ResetIsAttackingAfterDelay(float delay)
+    {
+        yield return new WaitForSeconds(delay);
+        isAttacking = false;
     }
 
     private void FireSingle()
@@ -148,11 +169,11 @@ public class GunWeaponController : WeaponController
     /// <summary>
     /// TODO: 탄약 소비 이펙트 추가
     /// </summary>
-    private void Reload()
+    private IEnumerator Reload(float duration)
     {
         if (currentAmmo >= weaponData.magazineSize)
         {
-            return; // 이미 탄창이 가득 찬 경우
+            yield break; // 이미 탄창이 가득 찬 경우
         }
 
         int ammoNeeded = weaponData.magazineSize - currentAmmo;
@@ -161,7 +182,7 @@ public class GunWeaponController : WeaponController
         if (ammoAvailable <= 0)
         {
             Debug.Log("재장전할 탄약이 없습니다.");
-            return;
+            yield break;
         }
 
         int ammoToReload = Mathf.Min(ammoNeeded, ammoAvailable);
@@ -169,6 +190,7 @@ public class GunWeaponController : WeaponController
         // 인벤토리에서 탄약 소비 시도
         if (InventoryManager.Instance.UseAmmo(weaponData.ammoType, ammoToReload))
         {
+            isReloading = true;
             currentAmmo += ammoToReload;
             Debug.Log($"탄약 재장전: {ammoToReload}발. 현재 탄약: {currentAmmo}");
 
@@ -178,6 +200,8 @@ public class GunWeaponController : WeaponController
 
             // 탄약 재장전 애니메이션 재생
             animator.SetTrigger("IsReloading");
+            yield return new WaitForSeconds(duration);
+            isReloading = false;
         }
         else
         {
@@ -191,7 +215,7 @@ public class GunWeaponController : WeaponController
     {
         if(WeaponManager.Instance.CurrentWeapon == this)
         {
-            Reload();
+            StartCoroutine(Reload(reloadDuration));
         }
     }
 
@@ -217,5 +241,10 @@ public class GunWeaponController : WeaponController
             currentTargetPosition,
             Time.deltaTime * aimMoveSpeed
         );
+    }
+
+    public void OnReloadAnimationEnd()
+    {
+        isReloading = false;
     }
 }
