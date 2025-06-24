@@ -8,10 +8,18 @@ public class Enemy : MonoBehaviour, IDamageable
 
     // [SerializeField] private float attackRange = 2f;
     // [SerializeField] private float attackCooldown = 1.5f;
-    
+    [Header("디폴트")]
     [SerializeField] private EnemyBehaviorData behaviorData;
     private EnemyStateMachine fsm;
     private int currentHP;
+
+
+    [Header("공격 판정")]
+    [SerializeField] private Transform attackStartPosition;
+    [SerializeField] private Transform attackEndPosition;
+    [SerializeField] private Transform attackCenter;
+    [SerializeField] private float attackRadius = 1f;
+    [SerializeField] private LayerMask playerLayer;
 
 
     #region Getter
@@ -40,6 +48,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         currentHP = behaviorData.maxHP;
         fsm = GetComponent<EnemyStateMachine>();
+        playerLayer = LayerMask.NameToLayer("Player");
     }
 
     public void TakeDamage(int damage)
@@ -69,5 +78,50 @@ public class Enemy : MonoBehaviour, IDamageable
         
         this.enabled = false;
         Destroy(this.gameObject, 3f);
+    }
+
+    public void PerformAttack()
+    {
+        switch(behaviorData.enemyType)
+        {
+            case EnemyType.Watcher:
+            case EnemyType.MirrorDuelist:
+                DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
+                break;
+            case EnemyType.ChronoMonk:
+                DealDamageWithSphere(attackCenter.position, attackRadius);
+                break;
+        }
+    }
+
+    // 근접 공격 판정 (Watcher, MirrorDuelist)
+    private void DealDamagedWithCapsule(Transform startPosition, Transform endPosition, float radius)
+    {
+        Collider[] hits = Physics.OverlapCapsule(startPosition.position, endPosition.position, radius, playerLayer);
+
+        foreach(Collider hit in hits)
+        {
+            if(hit.TryGetComponent(out IDamageable damageable))
+            {
+                damageable.TakeDamage(Damage);
+                Debug.Log($"Enemy {Type} attacked {damageable.GetType().Name} for {Damage} damage");
+            }
+        }
+    }
+
+    // 원형 공격 판정 (ChronoMonk)
+    private void DealDamageWithSphere(Vector3 center, float radius)
+    {
+        Collider[] hits = Physics.OverlapSphere(center, radius, playerLayer);
+
+        foreach(Collider hit in hits)
+        {
+            if(hit.TryGetComponent(out IDamageable damageable))
+            {
+                damageable.TakeDamage(Damage);
+                //TODO: 플레이어 디버프 적용
+                Debug.Log($"Enemy {Type} attacked {damageable.GetType().Name} for {Damage} damage");
+            }
+        }
     }
 }

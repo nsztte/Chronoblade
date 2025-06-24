@@ -76,7 +76,6 @@ public class MirrorAttackState : EnemyAttackState
     private void Attack(EnemyStateMachine enemy)
     {
         enemy.Animator.SetTrigger("IsAttacking");
-        PlayerManager.Instance.TakeDamage(enemy.Enemy.Damage);
         lastAttackTime = Time.time;
     }
 }

@@ -1,3 +1,4 @@
+using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -8,24 +9,28 @@ public class ChronoAttackState : EnemyAttackState
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        TryTeleport(enemy);
-        Attack(enemy);
+        lastAttackTime = Time.time;
     }
 
     public override void Update(EnemyStateMachine enemy)
     {
         float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
-        if(distance > enemy.Enemy.AttackRange)
+        
+        if(distance > enemy.Enemy.DetectionRange)
         {
             enemy.TransitionToState(enemy.ChaseState);
             return;
         }
 
-        if(Time.time - lastAttackTime > enemy.Enemy.AttackCooldown)
+        if(Time.time - lastAttackTime < enemy.Enemy.AttackCooldown) return;
+
+        if(distance > enemy.Enemy.AttackRange)
         {
             TryTeleport(enemy);
-            Attack(enemy);
         }
+
+        enemy.Animator.SetTrigger("IsAttacking");
+        lastAttackTime = Time.time;
     }
 
     public override void Exit(EnemyStateMachine enemy)
@@ -45,11 +50,11 @@ public class ChronoAttackState : EnemyAttackState
         }
     }
 
-    //TODO: 플레이어 디버프 효과 추가
-    private void Attack(EnemyStateMachine enemy)
-    {
-        enemy.Animator.SetTrigger("IsAttacking");
-        PlayerManager.Instance.TakeDamage(enemy.Enemy.Damage);
-        lastAttackTime = Time.time;
-    }
+    // //TODO: 플레이어 디버프 효과 추가
+    // private void Attack(EnemyStateMachine enemy)
+    // {
+    //     enemy.Animator.SetTrigger("IsAttacking");
+    //     PlayerManager.Instance.TakeDamage(enemy.Enemy.Damage);
+    //     lastAttackTime = Time.time;
+    // }
 }
