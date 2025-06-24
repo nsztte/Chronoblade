@@ -33,6 +33,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public GameObject FakeClonePrefab => behaviorData.fakeClonePrefab;
     public int NumberOfClones => behaviorData.numberOfClones;
     public float CloneLifetime => behaviorData.cloneLifeTime;
+    public float CloneSpread => behaviorData.cloneSpread;
     #endregion
 
     private void Awake()

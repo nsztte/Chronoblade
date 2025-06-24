@@ -29,6 +29,7 @@ public class EnemyBehaviorData : ScriptableObject
     public GameObject fakeClonePrefab;
     public int numberOfClones;
     public float cloneLifeTime;
+    public float cloneSpread;
 
     public EnemyAttackState CreateAttackState()
     {
