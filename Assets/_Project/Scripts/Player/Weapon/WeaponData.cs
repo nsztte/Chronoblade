@@ -8,7 +8,7 @@ public enum WeaponType
     Rifle
 }
 
-[CreateAssetMenu(fileName = "WeaponData", menuName = "Scriptable Objects/WeaponData")]
+[CreateAssetMenu(fileName = "WeaponData", menuName = "Weapon/WeaponData")]
 public class WeaponData : ScriptableObject
 {
     [Header("무기 기본 정보")]

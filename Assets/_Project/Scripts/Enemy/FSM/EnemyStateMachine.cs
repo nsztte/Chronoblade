@@ -26,7 +26,7 @@ public class EnemyStateMachine : MonoBehaviour
     // 상태 인스턴스
     private readonly EnemyIdleState idleState = new EnemyIdleState();
     private readonly EnemyChaseState chaseState = new EnemyChaseState();
-    private readonly EnemyAttackState attackState = new EnemyAttackState();
+    private EnemyAttackState attackState;
     private readonly EnemyHitState hitState = new EnemyHitState();
     private readonly EnemyDeadState deadState = new EnemyDeadState();
 
@@ -48,6 +48,9 @@ public class EnemyStateMachine : MonoBehaviour
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<Enemy>();
+
+        // 동적으로 공격 상태 생성
+        attackState = enemy.BehaviorData.CreateAttackState();
     }
 
     private void Start()
