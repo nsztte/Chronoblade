@@ -80,6 +80,7 @@ Assets/
 
 ## 참고/이슈 기록
 - [해결됨] CharacterController와 Rigidbody 중 선택 테스트
+- [보류] Damage 입었을때 event 함수 등록 및 호출 도입할지 고민
 
 ---
 
@@ -256,6 +257,32 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
  
+## 2025.06.25 (수) 작업 기록
+
+### 주요 작업
+- Watcher FSM 및 애니메이션 연동 완료
+ - Idle ↔ Run 블렌드 트리 구성
+ - Attack 애니메이션 클립 적용
+ - PerformAttack 함수 애니메이션 이벤트로 연결
+ - FSM Attack 상태에서 항상 플레이어를 바라보도록 LookAtPlayer() 호출
+- 애니메이션 클립 위치/방향 문제 수정
+ - Apply Root Motion 비활성화
+ - RootTransformPosition/Rotation 설정으로 땅에 박히거나 사선 공격되는 문제 해결
+- 이동 문제 해결
+ - 적이 NavMesh 위에 있음에도 불구하고 움직이지 않던 문제의 원인이 애니메이션 클립임을 확인
+ - 루트 모션 제거 후 정상 이동 확인
+- 충돌 중복 문제 해결
+ - 공격이 두 번 발생하는 문제를 플레이어의 CapsuleCollider 제거로 해결
+- 공격 판정 문제 개선
+ - 플레이어가 정지 시 첫 타 이후 공격이 무시되는 현상을 radius 값 증가로 해결
+
+### 메모
+- 애니메이션 클립의 RootTransform 설정을 통해 시각적, 물리적 위치 불일치 문제를 효과적으로 해결
+- FSM 설계와 애니메이션 타이밍 동기화를 통해 공격 판정의 정확도 향상
+- 사소한 요소(중복 Collider 등)도 FSM과 충돌 판정에 큰 영향을 줄 수 있음을 재확인함
+
+---
+
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
