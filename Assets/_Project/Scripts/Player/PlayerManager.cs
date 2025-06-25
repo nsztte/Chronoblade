@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public class PlayerManager : MonoBehaviour
+public class PlayerManager : MonoBehaviour, IDamageable
 {
     [Header("HP")]
     public int maxHP = 100;
@@ -56,6 +56,7 @@ public class PlayerManager : MonoBehaviour
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
+        Debug.Log($"Player Take Damage: {damage}");
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 
         // UI 업데이트

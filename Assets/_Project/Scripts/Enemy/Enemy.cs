@@ -48,7 +48,6 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         currentHP = behaviorData.maxHP;
         fsm = GetComponent<EnemyStateMachine>();
-        playerLayer = LayerMask.NameToLayer("Player");
     }
 
     public void TakeDamage(int damage)
@@ -77,7 +76,7 @@ public class Enemy : MonoBehaviour, IDamageable
         if(collider != null) collider.enabled = false;
         
         this.enabled = false;
-        Destroy(this.gameObject, 3f);
+        Destroy(this.gameObject, 5f);
     }
 
     public void PerformAttack()
@@ -97,6 +96,7 @@ public class Enemy : MonoBehaviour, IDamageable
     // 근접 공격 판정 (Watcher, MirrorDuelist)
     private void DealDamagedWithCapsule(Transform startPosition, Transform endPosition, float radius)
     {
+        Debug.Log("근접 공격 판정");
         Collider[] hits = Physics.OverlapCapsule(startPosition.position, endPosition.position, radius, playerLayer);
 
         foreach(Collider hit in hits)
@@ -104,7 +104,7 @@ public class Enemy : MonoBehaviour, IDamageable
             if(hit.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(Damage);
-                Debug.Log($"Enemy {Type} attacked {damageable.GetType().Name} for {Damage} damage");
+                Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
         }
     }
@@ -124,4 +124,32 @@ public class Enemy : MonoBehaviour, IDamageable
             }
         }
     }
+
+#if UNITY_EDITOR
+    private void OnDrawGizmosSelected()
+    {
+        // 근접 공격(캡슐) 범위
+        if (attackStartPosition != null && attackEndPosition != null)
+        {
+            Gizmos.color = Color.red;
+            Vector3 start = attackStartPosition.position;
+            Vector3 end = attackEndPosition.position;
+            float length = Vector3.Distance(start, end);
+            int steps = Mathf.Max(2, Mathf.CeilToInt(length / (attackRadius * 0.5f)));
+            for (int i = 0; i <= steps; i++)
+            {
+                float t = (float)i / steps;
+                Vector3 pos = Vector3.Lerp(start, end, t);
+                Gizmos.DrawWireSphere(pos, attackRadius);
+            }
+        }
+
+        // 원형 공격(스피어) 범위
+        if (attackCenter != null)
+        {
+            Gizmos.color = Color.yellow;
+            Gizmos.DrawWireSphere(attackCenter.position, attackRadius);
+        }
+    }
+#endif
 }

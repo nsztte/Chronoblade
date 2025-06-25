@@ -33,7 +33,7 @@ public class ChronoAttackState : EnemyAttackState
         lastAttackTime = Time.time;
         
         // Enemy의 PerformAttack 메서드 호출
-        enemy.Enemy.PerformAttack();
+        // enemy.Enemy.PerformAttack();
     }
 
     public override void Exit(EnemyStateMachine enemy)

@@ -14,7 +14,6 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float crouchingMultiplier = 0.6f;
 
     private CharacterController controller;
-    private CapsuleCollider capsuleCollider;
     private Vector2 moveInput;
     private Vector3 velocity;
 
@@ -30,7 +29,6 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
-        capsuleCollider = GetComponent<CapsuleCollider>();
 
         // 원래 컨트롤러 값 저장
         originalControllerHeight = controller.height;
@@ -95,8 +93,6 @@ public class PlayerController : MonoBehaviour
         {
             controller.height = crouchControllerHeight;
             controller.center = crouchControllerCenter;
-            capsuleCollider.height = crouchControllerHeight;
-            capsuleCollider.center = crouchControllerCenter;
             
             // 카메라 위치 내리기
             float targetY = CameraController.Instance.GetDefaultCameraLocalY() + crouchCameraYOffset;
@@ -106,8 +102,6 @@ public class PlayerController : MonoBehaviour
         {
             controller.height = originalControllerHeight;
             controller.center = originalControllerCenter;
-            capsuleCollider.height = originalControllerHeight;
-            capsuleCollider.center = originalControllerCenter;
             // 카메라 원래 위치로
             float targetY = CameraController.Instance.GetDefaultCameraLocalY();
             CameraController.Instance.SetCameraHeight(targetY, 10f);
