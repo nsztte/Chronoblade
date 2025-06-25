@@ -23,7 +23,8 @@ public class EnemyAttackState : EnemyBaseState
         {
             enemy.Animator.SetTrigger("IsAttacking");
             lastAttackTime = Time.time;
-            PlayerManager.Instance.TakeDamage(enemy.Enemy.Damage);
+            
+            enemy.Enemy.PerformAttack();
         }
     }
 

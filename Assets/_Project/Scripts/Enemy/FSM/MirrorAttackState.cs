@@ -77,5 +77,8 @@ public class MirrorAttackState : EnemyAttackState
     {
         enemy.Animator.SetTrigger("IsAttacking");
         lastAttackTime = Time.time;
+        
+        // Enemy의 PerformAttack 메서드 호출
+        enemy.Enemy.PerformAttack();
     }
 }
