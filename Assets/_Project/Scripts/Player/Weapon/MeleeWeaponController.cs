@@ -21,7 +21,7 @@ public class MeleeWeaponController : WeaponController
     protected override void Attack()
     {
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
-        CameraController.Instance?.SetCameraMeleeAttackOffset(0.3f, 15f);
+        // CameraController.Instance?.SetCameraMeleeAttackOffset(0.3f, 15f);
         StartCoroutine(MeleeAttackCoroutine());
     }
 
@@ -55,7 +55,7 @@ public class MeleeWeaponController : WeaponController
             yield return null;
         }
         Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
-        CameraController.Instance?.ResetCameraPosition(10f);
+        // CameraController.Instance?.ResetCameraPosition(10f);
         isAttacking = false;
     }
 
