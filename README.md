@@ -36,18 +36,17 @@
 
 ## 2주차 목표
 
-- [ ] Enemy FSM 구조 설계 및 상태 분리 (Base + 유형별)
+- [x] Enemy FSM 구조 설계 및 상태 분리 (Base + 유형별)
 - [ ] Enemy 에셋 연결 및 애니메이터 구성
-- [ ] Enemy NavMeshAgent 설정 및 장애물 회피 테스트
-- [ ] Enemy AI 동작 테스트 (이동, 공격, 피격 반응 포함)
-- [ ] Player 애니메이션 연동 및 상태 전환 처리
-- [ ] ItemManager 및 회복 아이템 효과 설계
-- [ ] 스태미너 시스템 구현 및 소모 처리
-- [ ] InventoryManager 구조 설계 및 아이템 연동
+- [x] Enemy NavMeshAgent 설정 및 장애물 회피 테스트
+- [x] Enemy AI 동작 테스트 (이동, 공격, 피격 반응 포함)
+- [x] Player 애니메이션 연동 및 상태 전환 처리
+- [x] ItemManager 및 회복 아이템 효과 설계
+- [x] 스태미너 시스템 구현 및 소모 처리
+- [x] InventoryManager 구조 설계 및 아이템 연동
 - [ ] 시간 슬로우 기능 구현 (시간 정지 전 단계)
 - [ ] 리듬 판정 시스템 기초 설계
 - [ ] 슬로우 + 리듬 공격 연동 테스트
-- [ ] UI 레이아웃 구성 및 퀵슬롯/무기정보 UI 설계
 
 ---
 
@@ -63,6 +62,8 @@ Assets/
 │   ├── Art/
 │   │   ├── Model/
 │   ├── Data/
+│   │   ├── Enemy/
+│   │   ├── Item/
 │   │   ├── Weapon/
 │   ├── Materials/
 │   ├── Prefabs/
@@ -70,6 +71,7 @@ Assets/
 │   └── Scripts/
 │   │   ├── Enemy/
 │   │   │   ├── FSM/
+│   │   ├── Item/
 │   │   ├── Player/
 │   │   │   ├── Weapon/
 │   │   ├── Systems/
@@ -304,6 +306,42 @@ Enemy FSM(상태머신) 시스템 구현
 - Humanoid 전환은 앞으로 무기/스킬마다 상체 레이어를 분기 처리할 때 매우 유용
 - 크로노몽크처럼 부양, 텔레포트 등 위치 중심 연출이 많은 캐릭터는 Generic 리깅이 훨씬 유리함
 - 이후 공격, 순간이동 등도 Generic 기준으로 애니메이션 제작 예정
+
+---
+
+## 2025.06.26 (목) 작업 기록
+
+### 주요 작업
+- 아이템 시스템 전반 구현
+  - ItemData ScriptableObject 설계 (itemName, icon, itemType, value 등)
+  - isAutoPickup 필드 추가로 자동 습득 여부 설정 가능
+  - ItemManager 구현: 아이템 효과 사용 처리 및 탄약 충전 분기 처리
+- 인벤토리 시스템 구축
+  - InventoryManager 구현: 아이템 추가, 스택 처리, 사용 처리 기능 완비
+  - enum(ItemType, ConsumableItemEffectType, AmmoType) 정의 및 연동
+- PlayerManager 기능 확장
+  - HP, MP, Stamina 자연 회복 시스템 추가
+    - MP: 사용 후 2.5초 지연 뒤 (최대 MP 3% + 고정 1.5)/초 회복
+    - Stamina: 0.5초 지연 뒤 초당 25 회복
+  - 자원 변수 타입 int → float 전환, UI 갱신 시 Mathf.RoundToInt 처리
+  - 접근 제한을 위한 Property 기반 변수 노출 방식 도입
+- 스태미너 기반 소비 시스템 도입
+  - MeleeWeaponController: 근접 공격 시 staminaCost 소모 (기본값 25)
+  - PlayerController: 달리기 중 초당 15 스태미너 소모, 0일 경우 자동 중지
+- 상호작용 시스템 도입
+  - InputManager: F키 입력 시 OnInteract 이벤트 발생
+  - IInteractable 인터페이스 도입: Interact() 메서드 기반 상호작용 구조 정립
+  - ItemPickup:
+    - IInteractable 구현
+    - 자동 습득 / F키 상호작용 통합 관리
+  - PlayerManager:
+    - F키 입력 시 주변 IInteractable 중 가장 가까운 대상과 상호작용 수행
+
+### 메모
+- MP 회복은 하이브리드 방식 (비율 + 고정량)
+- 자연 회복 중 RestoreMP/RecoverStamina 호출 시 타이머 꼬임 없이 정상 작동
+- 상호작용 구조가 통일되어 다양한 오브젝트 확장에 유리함
+- 플레이어 자원 변수는 float로 세밀 제어, 외부 노출 최소화
 
 ---
 
