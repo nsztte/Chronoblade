@@ -11,9 +11,20 @@ public class MeleeWeaponController : WeaponController
     public LayerMask hitLayer;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
+    [Header("스태미너 소모")]
+    [SerializeField] private int staminaCost = 25;
+
     protected override void OnAttackInput()
     {
+        // 스태미너가 충분할 때만 공격
         if (!gameObject.activeInHierarchy || isAttacking) return;
+        if (PlayerManager.Instance.CurrentStamina < staminaCost)
+        {
+            Debug.Log("스태미너 부족! 공격 불가");
+            return;
+        }
+        PlayerManager.Instance.UseStamina(staminaCost);
+
         isAttacking = true;
         Attack();
     }

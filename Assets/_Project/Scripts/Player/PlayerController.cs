@@ -13,6 +13,9 @@ public class PlayerController : MonoBehaviour
     [SerializeField] private float crouchCameraYOffset = -0.5f;
     [SerializeField] private float crouchingMultiplier = 0.6f;
 
+    [Header("스태미너 소모")]
+    [SerializeField] private float runStaminaCostPerSecond = 15f;
+
     private CharacterController controller;
     private Vector2 moveInput;
     private Vector3 velocity;
@@ -57,6 +60,17 @@ public class PlayerController : MonoBehaviour
 
     private void Update()
     {
+        // 달리기 중 스태미너 소모
+        if (isRunning && moveInput.y > 0 && PlayerManager.Instance.CurrentStamina > 0)
+        {
+            PlayerManager.Instance.UseStamina(runStaminaCostPerSecond * Time.deltaTime);
+            // 스태미너가 0이 되면 달리기 중지
+            if (PlayerManager.Instance.CurrentStamina <= 0)
+            {
+                isRunning = false;
+            }
+        }
+
         Move();
         ApplyGravity();
     }

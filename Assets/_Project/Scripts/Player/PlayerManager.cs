@@ -5,18 +5,18 @@ public class PlayerManager : MonoBehaviour, IDamageable
 {
     [Header("HP")]
     [SerializeField] private int maxHP = 100;
-    [SerializeField] private int currentHP;
+    [SerializeField] private float currentHP;
 
     [Header("MP")]
     [SerializeField] private int maxMP = 100;
-    [SerializeField] private int currentMP;
+    [SerializeField] private float currentMP;
     [SerializeField] private float mpRecoveryDelay = 2.5f;    // 회복 시작전 초기 딜레이
-    [SerializeField] private float mpRecoveryRate = 0.03f; // 최대 MP의 5%/초
+    [SerializeField] private float mpRecoveryRate = 0.03f; // 최대 MP의 3%/초
     [SerializeField] private float mpRecoveryFlat = 1.5f;    // 초당 고정 1.5 회복
 
     [Header("Stamina")]
     [SerializeField] private int maxStamina = 100;
-    [SerializeField] private int currentStamina;
+    [SerializeField] private float currentStamina;
     [SerializeField] private float staminaRecoveryDelay = 0.5f;    // 회복 시작전 초기 딜레이
     [SerializeField] private float staminaRecoveryRate = 25f;    // 초당 25 회복
 
@@ -31,11 +31,11 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     #region Properties
     public int MaxHP => maxHP;
-    public int CurrentHP => currentHP;
+    public float CurrentHP => currentHP;
     public int MaxMP => maxMP;
-    public int CurrentMP => currentMP;
+    public float CurrentMP => currentMP;
     public int MaxStamina => maxStamina;
-    public int CurrentStamina => currentStamina;
+    public float CurrentStamina => currentStamina;
     public int Gold => gold;
     #endregion
 
@@ -67,9 +67,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
         currentStamina = maxStamina;
 
         // UI 업데이트
-        UIManager.Instance?.UpdateHP(currentHP, maxHP);
-        UIManager.Instance?.UpdateMP(currentMP, maxMP);
-        UIManager.Instance?.UpdateStamina(currentStamina, maxStamina);
+        UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
+        UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
+        UIManager.Instance?.UpdateStamina(Mathf.RoundToInt(currentStamina), maxStamina);
         UIManager.Instance?.UpdateGold(gold);
     }
 
@@ -86,7 +86,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 
         // UI 업데이트
-        UIManager.Instance?.UpdateHP(currentHP, maxHP);
+        UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
 
         if(currentHP <= 0)
         {
@@ -94,52 +94,51 @@ public class PlayerManager : MonoBehaviour, IDamageable
         }
     }
 
-    public void HealHP(int amount)
+    public void HealHP(float amount)
     {
         currentHP += amount;
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 
         // UI 업데이트
-        UIManager.Instance?.UpdateHP(currentHP, maxHP);
+        UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
     }
 
-    public void UseMP(int amount)
+    public void UseMP(float amount)
     {
         currentMP -= amount;
         currentMP = Mathf.Clamp(currentMP, 0, maxMP);
         mpRecoveryTimer = 0f;
 
         // UI 업데이트
-        UIManager.Instance?.UpdateMP(currentMP, maxMP);
+        UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
     }
 
-    public void RestoreMP(int amount)
+    public void RestoreMP(float amount)
     {
         currentMP += amount;
         currentMP = Mathf.Clamp(currentMP, 0, maxMP);
 
-
         // UI 업데이트
-        UIManager.Instance?.UpdateMP(currentMP, maxMP);
+        UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
     }
 
-    public void UseStamina(int amount)
+    public void UseStamina(float amount)
     {
         currentStamina -= amount;
         currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
         staminaRecoveryTimer = 0f;
 
         // UI 업데이트
-        UIManager.Instance?.UpdateStamina(currentStamina, maxStamina);
+        UIManager.Instance?.UpdateStamina(Mathf.RoundToInt(currentStamina), maxStamina);
     }
 
-    public void RecoverStamina(int amount)
+    public void RecoverStamina(float amount)
     {
         currentStamina += amount;
         currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
         // UI 업데이트
-        UIManager.Instance?.UpdateStamina(currentStamina, maxStamina);
+        UIManager.Instance?.UpdateStamina(Mathf.RoundToInt(currentStamina), maxStamina);
     }
 
     public void AddGold(int amount)
@@ -173,10 +172,10 @@ public class PlayerManager : MonoBehaviour, IDamageable
             if(mpRecoveryTimer >= mpRecoveryDelay)
             {
                 float recoveryAmount = (mpRecoveryRate * maxMP + mpRecoveryFlat) * Time.deltaTime;
-                currentMP += Mathf.RoundToInt(recoveryAmount);
+                currentMP += recoveryAmount;
                 currentMP = Mathf.Clamp(currentMP, 0, maxMP);
 
-                UIManager.Instance?.UpdateMP(currentMP, maxMP);
+                UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
             }
         }
         else
@@ -193,10 +192,10 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
             if(staminaRecoveryTimer >= staminaRecoveryDelay)
             {
-                currentStamina += Mathf.RoundToInt(staminaRecoveryRate * Time.deltaTime);
+                currentStamina += staminaRecoveryRate * Time.deltaTime;
                 currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
 
-                UIManager.Instance?.UpdateStamina(currentStamina, maxStamina);
+                UIManager.Instance?.UpdateStamina(Mathf.RoundToInt(currentStamina), maxStamina);
             }
         }
         else
