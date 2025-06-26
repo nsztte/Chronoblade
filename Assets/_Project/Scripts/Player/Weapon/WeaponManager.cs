@@ -19,6 +19,7 @@ public class WeaponManager : MonoBehaviour
         if(Instance == null)
         {
             Instance = this;
+            DontDestroyOnLoad(gameObject);
         }
         else
         {
@@ -94,5 +95,10 @@ public class WeaponManager : MonoBehaviour
     public int GetMaxWeaponCount()
     {
         return weaponSlots.Count;
+    }
+
+    public List<WeaponController> GetWeaponSlots()
+    {
+        return weaponSlots;
     }
 }
