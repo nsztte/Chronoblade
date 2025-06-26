@@ -71,6 +71,15 @@ public class PlayerManager : MonoBehaviour, IDamageable
         UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
         UIManager.Instance?.UpdateStamina(Mathf.RoundToInt(currentStamina), maxStamina);
         UIManager.Instance?.UpdateGold(gold);
+
+        // 상호작용 이벤트 등록
+        InputManager.Instance.OnInteract += OnHandleInteract;
+    }
+
+    private void OnDisable()
+    {
+        if (InputManager.Instance != null)
+            InputManager.Instance.OnInteract -= OnHandleInteract;
     }
 
     private void Update()
@@ -247,5 +256,31 @@ public class PlayerManager : MonoBehaviour, IDamageable
         if (clips.Length > 0)
             return clips[0].clip.length;
         return 0.3f;
+    }
+
+    private void OnHandleInteract()
+    {
+        // 플레이어 주변의 IInteractable을 탐색하여 가장 가까운 것과 상호작용
+        float interactRadius = 2f;
+        Collider[] hits = Physics.OverlapSphere(transform.position, interactRadius);
+        IInteractable closest = null;
+        float minDist = float.MaxValue;
+        foreach (var hit in hits)
+        {
+            var interactable = hit.GetComponent<IInteractable>();
+            if (interactable != null)
+            {
+                float dist = Vector3.Distance(transform.position, hit.transform.position);
+                if (dist < minDist)
+                {
+                    minDist = dist;
+                    closest = interactable;
+                }
+            }
+        }
+        if (closest != null)
+        {
+            closest.Interact();
+        }
     }
 }          

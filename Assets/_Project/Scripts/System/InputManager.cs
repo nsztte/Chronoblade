@@ -34,6 +34,7 @@ public class InputManager : MonoBehaviour
     public event Action OnAimCanceled;                // 마우스 오른쪽 클릭 종료
     public event Action OnSkillPressed;               // Q
     public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
+    public event Action OnInteract;
     #endregion
     void Update()
     {
@@ -81,6 +82,10 @@ public class InputManager : MonoBehaviour
 
         // 무기 전환 입력
         HandleWeaponSwitching();
+
+        // 상호작용(F키)
+        if (Input.GetKeyDown(KeyCode.F))
+            OnInteract?.Invoke();
     }
 
     private void HandleWeaponSwitching()

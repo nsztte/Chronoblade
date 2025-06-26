@@ -10,6 +10,7 @@ public class ItemData : ScriptableObject
     public ItemType itemType;
     public ConsumableItemEffectType consumableItemEffectType;
     public AmmoType ammoType;   // AmmoSupply 타입일 경우 사용
+    public bool isAutoPickup = false;   // 자동 획득 여부
 
     [Header("효과 수치")]
     public int value;
