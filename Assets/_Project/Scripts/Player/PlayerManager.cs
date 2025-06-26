@@ -1,23 +1,43 @@
+using System;
 using UnityEngine;
 
 public class PlayerManager : MonoBehaviour, IDamageable
 {
     [Header("HP")]
-    public int maxHP = 100;
-    public int currentHP;
+    [SerializeField] private int maxHP = 100;
+    [SerializeField] private int currentHP;
 
     [Header("MP")]
-    public int maxMP = 100;
-    public int currentMP;
+    [SerializeField] private int maxMP = 100;
+    [SerializeField] private int currentMP;
+    [SerializeField] private float mpRecoveryDelay = 2.5f;    // 회복 시작전 초기 딜레이
+    [SerializeField] private float mpRecoveryRate = 0.03f; // 최대 MP의 5%/초
+    [SerializeField] private float mpRecoveryFlat = 1.5f;    // 초당 고정 1.5 회복
 
     [Header("Stamina")]
-    public int maxStamina = 100;
-    public int currentStamina;
+    [SerializeField] private int maxStamina = 100;
+    [SerializeField] private int currentStamina;
+    [SerializeField] private float staminaRecoveryDelay = 0.5f;    // 회복 시작전 초기 딜레이
+    [SerializeField] private float staminaRecoveryRate = 25f;    // 초당 25 회복
 
     [Header("Currency")]
-    public int gold = 0;
+    [SerializeField] private int gold = 0;
 
     private Animator animator;
+
+    // 회복 타이머
+    private float mpRecoveryTimer = 0f;
+    private float staminaRecoveryTimer = 0f;
+
+    #region Properties
+    public int MaxHP => maxHP;
+    public int CurrentHP => currentHP;
+    public int MaxMP => maxMP;
+    public int CurrentMP => currentMP;
+    public int MaxStamina => maxStamina;
+    public int CurrentStamina => currentStamina;
+    public int Gold => gold;
+    #endregion
 
     #region Singleton
     public static PlayerManager Instance { get; private set; }
@@ -53,6 +73,12 @@ public class PlayerManager : MonoBehaviour, IDamageable
         UIManager.Instance?.UpdateGold(gold);
     }
 
+    private void Update()
+    {
+        RecoverMpOverTime();
+        RecoverStaminaOverTime();
+    }
+
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
@@ -81,6 +107,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     {
         currentMP -= amount;
         currentMP = Mathf.Clamp(currentMP, 0, maxMP);
+        mpRecoveryTimer = 0f;
 
         // UI 업데이트
         UIManager.Instance?.UpdateMP(currentMP, maxMP);
@@ -91,6 +118,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
         currentMP += amount;
         currentMP = Mathf.Clamp(currentMP, 0, maxMP);
 
+
         // UI 업데이트
         UIManager.Instance?.UpdateMP(currentMP, maxMP);
     }
@@ -99,6 +127,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     {
         currentStamina -= amount;
         currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+        staminaRecoveryTimer = 0f;
 
         // UI 업데이트
         UIManager.Instance?.UpdateStamina(currentStamina, maxStamina);
@@ -133,6 +162,47 @@ public class PlayerManager : MonoBehaviour, IDamageable
             return true;
         }
         return false;
+    }
+
+    private void RecoverMpOverTime()
+    {
+        if(currentMP < maxMP)
+        {
+            mpRecoveryTimer += Time.deltaTime;
+
+            if(mpRecoveryTimer >= mpRecoveryDelay)
+            {
+                float recoveryAmount = (mpRecoveryRate * maxMP + mpRecoveryFlat) * Time.deltaTime;
+                currentMP += Mathf.RoundToInt(recoveryAmount);
+                currentMP = Mathf.Clamp(currentMP, 0, maxMP);
+
+                UIManager.Instance?.UpdateMP(currentMP, maxMP);
+            }
+        }
+        else
+        {
+            mpRecoveryTimer = 0f;
+        }
+    }
+
+    private void RecoverStaminaOverTime()
+    {
+        if(currentStamina < maxStamina)
+        {
+            staminaRecoveryTimer += Time.deltaTime;
+
+            if(staminaRecoveryTimer >= staminaRecoveryDelay)
+            {
+                currentStamina += Mathf.RoundToInt(staminaRecoveryRate * Time.deltaTime);
+                currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
+
+                UIManager.Instance?.UpdateStamina(currentStamina, maxStamina);
+            }
+        }
+        else
+        {
+            staminaRecoveryTimer = 0f;
+        }
     }
 
     private void Die()
