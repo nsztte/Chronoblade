@@ -40,75 +40,51 @@ public class PlayerController : MonoBehaviour
         crouchControllerCenter = new Vector3(originalControllerCenter.x, originalControllerCenter.y * crouchingMultiplier, originalControllerCenter.z);
     }
 
-    private void Start()
-    {
-        InputManager.Instance.OnMoveInput += OnMoveInput;
-        InputManager.Instance.OnJumpPressed += OnJumpPressed;
-        InputManager.Instance.OnRunStarted += OnRunStarted;
-        InputManager.Instance.OnRunCanceled += OnRunCanceled;
-        InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
-    }
+    // private void Start()
+    // {
+    //     InputManager.Instance.OnMoveInput += OnMoveInput;
+    //     InputManager.Instance.OnJumpPressed += OnJumpPressed;
+    //     InputManager.Instance.OnRunStarted += OnRunStarted;
+    //     InputManager.Instance.OnRunCanceled += OnRunCanceled;
+    //     InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
+    // }
 
-    private void OnDisable()
-    {
-        InputManager.Instance.OnMoveInput -= OnMoveInput;
-        InputManager.Instance.OnJumpPressed -= OnJumpPressed;
-        InputManager.Instance.OnRunStarted -= OnRunStarted;
-        InputManager.Instance.OnRunCanceled -= OnRunCanceled;
-        InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
-    }
+    // private void OnDisable()
+    // {
+    //     InputManager.Instance.OnMoveInput -= OnMoveInput;
+    //     InputManager.Instance.OnJumpPressed -= OnJumpPressed;
+    //     InputManager.Instance.OnRunStarted -= OnRunStarted;
+    //     InputManager.Instance.OnRunCanceled -= OnRunCanceled;
+    //     InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
+    // }
 
-    private void Update()
-    {
-        // 달리기 중 스태미너 소모
-        if (isRunning && moveInput.y > 0 && PlayerManager.Instance.CurrentStamina > 0)
-        {
-            PlayerManager.Instance.UseStamina(runStaminaCostPerSecond * Time.deltaTime);
-            // 스태미너가 0이 되면 달리기 중지
-            if (PlayerManager.Instance.CurrentStamina <= 0)
-            {
-                isRunning = false;
-            }
-        }
-
-        Move();
-        ApplyGravity();
-    }
-
-    private void OnMoveInput(Vector2 input)
+    // FSM에서 호출할 메서드들
+    public void SetMoveInput(Vector2 input)
     {
         moveInput = input;
     }
 
-    private void OnJumpPressed()
+    public void TryJump()
     {
         if(controller.isGrounded)
         {
-            //velocity.y = Mathf.Sqrt(jumpForce * -2f * gravity);
             velocity.y = jumpForce;
             PlayerManager.Instance.SetAnimatorTrigger("IsJumping");
         }
     }
 
-    private void OnRunStarted()
+    public void SetRunning(bool running)
     {
-        isRunning = true;
+        isRunning = running;
     }
 
-    private void OnRunCanceled()
-    {
-        isRunning = false;
-    }
-    
-    private void OnCrouchPressed()
+    public void ToggleCrouch()
     {
         isCrouching = !isCrouching;
         if (isCrouching)
         {
             controller.height = crouchControllerHeight;
             controller.center = crouchControllerCenter;
-            
-            // 카메라 위치 내리기
             float targetY = CameraController.Instance.GetDefaultCameraLocalY() + crouchCameraYOffset;
             CameraController.Instance.SetCameraHeight(targetY, 10f);
         }
@@ -116,10 +92,25 @@ public class PlayerController : MonoBehaviour
         {
             controller.height = originalControllerHeight;
             controller.center = originalControllerCenter;
-            // 카메라 원래 위치로
             float targetY = CameraController.Instance.GetDefaultCameraLocalY();
             CameraController.Instance.SetCameraHeight(targetY, 10f);
         }
+    }
+
+    // FSM LocomotionState에서 호출할 이동 관련 Update
+    public void LocomotionUpdate()
+    {
+        // 달리기 중 스태미너 소모
+        if (isRunning && moveInput.y > 0 && PlayerManager.Instance.CurrentStamina > 0)
+        {
+            PlayerManager.Instance.UseStamina(runStaminaCostPerSecond * Time.deltaTime);
+            if (PlayerManager.Instance.CurrentStamina <= 0)
+            {
+                isRunning = false;
+            }
+        }
+        Move();
+        ApplyGravity();
     }
 
     private void Move()
