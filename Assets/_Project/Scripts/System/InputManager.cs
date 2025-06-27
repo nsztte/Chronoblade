@@ -32,10 +32,12 @@ public class InputManager : MonoBehaviour
     public event Action OnReloadPressed;              // R
     public event Action OnAimStarted;                 // 마우스 오른쪽 클릭
     public event Action OnAimCanceled;                // 마우스 오른쪽 클릭 종료
-    public event Action OnSkillPressed;               // Q
+    // public event Action OnSkillPressed;               // Q
     public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
-    public event Action OnInteract;
+    public event Action OnInteract;                   // F
+
     #endregion
+
     void Update()
     {
         // 이동 입력 (WASD)
@@ -75,10 +77,6 @@ public class InputManager : MonoBehaviour
         
         if (Input.GetMouseButtonUp(1))
            OnAimCanceled?.Invoke();
-
-        // 스킬 입력
-        if (Input.GetKeyDown(KeyCode.Q))
-            OnSkillPressed?.Invoke();
 
         // 무기 전환 입력
         HandleWeaponSwitching();

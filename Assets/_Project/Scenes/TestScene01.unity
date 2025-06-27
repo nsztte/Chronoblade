@@ -594,6 +594,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e37cc72e70881a84f838278c76fdcd2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1053720267
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053720258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6b87530fbea3ae64ebe3a35fff8dbc8e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1053720268
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1053720258}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3edbf674973bbae40a3d41283f5d580d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowFactor: 0.2
+  isSlowingTime: 0
 --- !u!1001 &1165107611
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -1342,6 +1368,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: Shadowkin_Rigged
       objectReference: {fileID: 0}
+    - target: {fileID: 919132149155446097, guid: eb425c44226b86c42a62694e60a0d719, type: 3}
+      propertyPath: m_IsActive
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1128676053858039139, guid: eb425c44226b86c42a62694e60a0d719, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
       value: -81.62972
@@ -2032,6 +2062,12 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 9151459008568226687, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       insertIndex: -1
       addedObject: {fileID: 1053720262}
+    - targetCorrespondingSourceObject: {fileID: 9151459008568226687, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1053720267}
+    - targetCorrespondingSourceObject: {fileID: 9151459008568226687, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1053720268}
   m_SourcePrefab: {fileID: 100100000, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
 --- !u!1 &1412821426 stripped
 GameObject:
