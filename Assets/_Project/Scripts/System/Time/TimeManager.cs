@@ -5,7 +5,7 @@ public class TimeManager : MonoBehaviour
 {
     private readonly List<ITimeControllable> controllables = new();
 
-    [Range(0, 1)] public float slowFactor = 0.2f;
+    [Range(0, 1)] public float slowFactor = 0.01f;
     public bool isSlowingTime = false;
 
     #region Singleton
@@ -77,8 +77,10 @@ public class TimeManager : MonoBehaviour
     #region Time Control Event Handlers
     private void OnTimeSlowToggle()
     {
+        Debug.Log($"[TimeManager] OnTimeSlowToggle 호출됨. 현재 상태: {isSlowingTime}");
         ApplySlowMotion(!isSlowingTime);
-        Debug.Log($"시간 슬로우 토글: {(isSlowingTime ? "활성화" : "비활성화")}");
+        Debug.Log($"[TimeManager] 시간 슬로우 토글 완료: {(isSlowingTime ? "활성화" : "비활성화")}");
+        Debug.Log($"[TimeManager] 등록된 객체 수: {controllables.Count}");
     }
 
     private void OnTimeRewind()

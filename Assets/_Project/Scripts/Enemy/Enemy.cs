@@ -1,16 +1,12 @@
 using UnityEngine;
+using System.Collections;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    // [SerializeField] private int maxHP = 100;
-    // [SerializeField] private int damage = 10;
-    // [SerializeField] private float detectionRange = 10f;
-
-    // [SerializeField] private float attackRange = 2f;
-    // [SerializeField] private float attackCooldown = 1.5f;
     [Header("디폴트")]
     [SerializeField] private EnemyBehaviorData behaviorData;
     private EnemyStateMachine fsm;
+    private EnemyTimeController timeController;
     private int currentHP;
 
 
@@ -48,6 +44,7 @@ public class Enemy : MonoBehaviour, IDamageable
     {
         currentHP = behaviorData.maxHP;
         fsm = GetComponent<EnemyStateMachine>();
+        timeController = GetComponent<EnemyTimeController>();
     }
 
     public void TakeDamage(int damage)
@@ -76,7 +73,25 @@ public class Enemy : MonoBehaviour, IDamageable
         if(collider != null) collider.enabled = false;
         
         this.enabled = false;
-        Destroy(this.gameObject, 5f);
+        
+        // 시간 조절을 반영한 파괴 지연
+        StartCoroutine(DestroyWithTimeScale(5f));
+    }
+
+    private System.Collections.IEnumerator DestroyWithTimeScale(float delay)
+    {
+        float elapsed = 0f;
+        while (elapsed < delay)
+        {
+            elapsed += GetAdjustedDeltaTime();
+            yield return null;
+        }
+        Destroy(this.gameObject);
+    }
+
+    public float GetAdjustedDeltaTime()
+    {
+        return timeController != null ? timeController.GetAdjustedDeltaTime() : Time.deltaTime;
     }
 
     public void PerformAttack()

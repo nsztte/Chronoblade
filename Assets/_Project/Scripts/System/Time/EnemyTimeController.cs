@@ -15,7 +15,7 @@ public class EnemyTimeController : MonoBehaviour, ITimeControllable
         baseSpeed = agent.speed;
     }
 
-    private void OnEnable()
+    private void Start()
     {
         TimeManager.Instance?.Register(this);
     }

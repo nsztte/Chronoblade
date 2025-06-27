@@ -13,7 +13,7 @@ public class EnemyHitState : EnemyBaseState
 
     public override void Update(EnemyStateMachine enemy)
     {
-       elapsed += Time.deltaTime;
+       elapsed += enemy.Enemy.GetAdjustedDeltaTime();
        if(elapsed >= hitDuration)
        {
             enemy.TransitionToState(enemy.ChaseState);
