@@ -378,11 +378,26 @@ Enemy FSM(상태머신) 시스템 구현
   - ComboSequence ScriptableObject 생성
     - 콤보 단위 그룹 구성 (아이콘 + 연속 공격 데이터 리스트)
 
+### 추가 개선사항
+- FSM(PlayerStateMachine) 구조 도입으로 상태별 입력 처리 및 동작 분리
+  - `PlayerBaseState`: 공통 상태 인터페이스 (Enter, Update, Exit 정의)
+  - `PlayerStateMachine`: 현재 상태를 관리하며 상태 전이(ChangeState) 수행
+- `PlayerLocomotionState`에서 InputManager 이벤트 구독/해제 처리
+  - 이동, 점프, 웅크리기, 달리기 입력을 상태 내부에서 직접 처리
+- `PlayerController`는 상태에 따라 호출되는 실행 메서드만 담당
+  - 이동, 점프, 중력 적용, 애니메이터 값 변경 등을 내부 메서드로 캡슐화
+- 입력 → FSM → PlayerController → 애니메이션/이동 실행 구조로 역할 분리 확립
+
 ### 메모
 - 시간 슬로우, FSM, 애니메이션, 사망 처리 모두 정상 작동 확인
 - 타이밍 판정은 매 박자마다 이루어지며, 입력은 유효 시간 내에만 판정
 - TimingComboManager는 전투 시스템에 연결될 준비가 완료되었으며, 다음 주 FSM 및 콤보 실행 로직과 통합 예정
 - ComboAttackData와 ComboSequence는 확장성과 관리 편의성을 고려해 ScriptableObject로 구성
+- 기존 PlayerController 내부에서 처리하던 입력 로직을 FSM 상태별로 분산시킴으로써 역할 분리가 명확해짐
+- 추후 `AttackState`, `JumpState`, `RewindState` 등 추가 시에도 상태별 입력과 동작을 독립적으로 구현 가능
+- 플레이어 FSM과 에너미 FSM은 입력 구조가 다르므로, 구조 통일보다는 각자의 책임에 맞춘 방식으로 유지
+  - 플레이어 FSM은 입력 기반 설계, 에너미 FSM은 AI 기반 자율 설계
+- InputManager 이벤트 구독/해제를 FSM에서 담당함으로써 상태 전이에 따른 입력 제한 제어가 용이해짐
 
 ---
 
