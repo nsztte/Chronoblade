@@ -38,7 +38,7 @@ public class TimeInputHandler : MonoBehaviour
     {
         HandleTimeControls();
     }
-
+    
     private void HandleTimeControls()
     {
         // Q 키 입력 처리
@@ -48,6 +48,7 @@ public class TimeInputHandler : MonoBehaviour
             qKeyHoldTime = 0f;
         }
         
+        // Q 키 홀드 처리
         if (Input.GetKey(KeyCode.Q) && isQKeyPressed)
         {
             qKeyHoldTime += Time.deltaTime;
@@ -59,6 +60,7 @@ public class TimeInputHandler : MonoBehaviour
             }
         }
         
+        // Q 키 탭 처리
         if (Input.GetKeyUp(KeyCode.Q) && isQKeyPressed)
         {
             // Q 키 탭 시 시간 슬로우 토글

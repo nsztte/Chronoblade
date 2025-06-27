@@ -23,6 +23,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [Header("Currency")]
     [SerializeField] private int gold = 0;
 
+    [Header("Interact")]
+    [SerializeField] private float interactRadius = 2f;
+
     private Animator animator;
 
     // 회복 타이머
@@ -261,19 +264,18 @@ public class PlayerManager : MonoBehaviour, IDamageable
     private void OnHandleInteract()
     {
         // 플레이어 주변의 IInteractable을 탐색하여 가장 가까운 것과 상호작용
-        float interactRadius = 2f;
         Collider[] hits = Physics.OverlapSphere(transform.position, interactRadius);
         IInteractable closest = null;
-        float minDist = float.MaxValue;
+        float minDistance = float.MaxValue;
         foreach (var hit in hits)
         {
             var interactable = hit.GetComponent<IInteractable>();
             if (interactable != null)
             {
-                float dist = Vector3.Distance(transform.position, hit.transform.position);
-                if (dist < minDist)
+                float distance = Vector3.Distance(transform.position, hit.transform.position);
+                if (distance < minDistance)
                 {
-                    minDist = dist;
+                    minDistance = distance;
                     closest = interactable;
                 }
             }

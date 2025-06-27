@@ -94,6 +94,7 @@ public class Enemy : MonoBehaviour, IDamageable
         return timeController != null ? timeController.GetAdjustedDeltaTime() : Time.deltaTime;
     }
 
+    // 애니메이션 이벤트 등록해서 이용
     public void PerformAttack()
     {
         switch(behaviorData.enemyType)
