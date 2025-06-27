@@ -58,10 +58,13 @@ Assets/
 │   ├── Animations/
 │   │   ├── Enemies/
 │   │   ├── Player/
-│   │   ├── Weapon/
+│   │   ├── Weapons/
 │   ├── Art/
 │   │   ├── Model/
 │   ├── Data/
+│   │   ├── Combat/
+│   │   │   ├── ComboAttack/
+│   │   │   ├── ComboSequence/
 │   │   ├── Enemy/
 │   │   ├── Item/
 │   │   ├── Weapon/
@@ -75,6 +78,9 @@ Assets/
 │   │   ├── Player/
 │   │   │   ├── Weapon/
 │   │   ├── Systems/
+│   │   │   ├── Combat/
+│   │   │   ├── Interaction/
+│   │   │   ├── Time/
 │   │   └── UI/
 ```
 
@@ -342,6 +348,41 @@ Enemy FSM(상태머신) 시스템 구현
 - 자연 회복 중 RestoreMP/RecoverStamina 호출 시 타이머 꼬임 없이 정상 작동
 - 상호작용 구조가 통일되어 다양한 오브젝트 확장에 유리함
 - 플레이어 자원 변수는 float로 세밀 제어, 외부 노출 최소화
+
+---
+
+## 2025.06.27 (금) 작업 기록
+
+### 주요 작업
+- 시간 시스템 구조 구현
+  - TimeInputHandler 구현: Q/E키 입력 방식에 따라 시간 조작 이벤트 분리 (탭/홀드)
+  - TimeManager 구현: ITimeControllable 등록 시스템 도입 및 시간 슬로우 적용 처리
+  - EnemyTimeController 구현: NavMeshAgent 및 Animator에 TimeScale 반영
+  - Enemy에서 GetAdjustedDeltaTime()을 사용하여 FSM, 사망 지연 시 시간 반영
+  - 시간 관련 처리 주기를 OnEnable → Start()로 옮겨 사이클 꼬임 해결
+
+- 리듬 판정 시스템 구조 설계
+  - TimingComboManager 구현
+    - 일정 주기의 박자(beatInterval) 기준으로 입력 판정
+    - Perfect / Good / Miss 구간 설정 및 유효 입력 시간 제한 처리
+    - 입력을 리스트 형태로 관리하여 빠른 연속 입력 대응
+    - 판정 결과를 OnTimingJudged 이벤트로 송출
+    - InputManager.OnAttackPressed와 연동하여 공격 입력 버퍼링
+    - 박자 계산은 startTime + beatInterval * N 형태로 정밀하게 보정
+  - 리듬 판정에 따른 데미지 보정 배율 (Perfect/Good 배율) Inspector에서 조정 가능
+
+- 연계 공격 데이터 구조 설계
+  - ComboAttackData ScriptableObject 생성
+    - 개별 공격 애니메이션, 데미지, 넉백, 사운드, VFX, 입력 윈도우 및 연결 정보 포함
+    - 타이밍 판정 여부(useTimingJudgement) 설정 가능
+  - ComboSequence ScriptableObject 생성
+    - 콤보 단위 그룹 구성 (아이콘 + 연속 공격 데이터 리스트)
+
+### 메모
+- 시간 슬로우, FSM, 애니메이션, 사망 처리 모두 정상 작동 확인
+- 타이밍 판정은 매 박자마다 이루어지며, 입력은 유효 시간 내에만 판정
+- TimingComboManager는 전투 시스템에 연결될 준비가 완료되었으며, 다음 주 FSM 및 콤보 실행 로직과 통합 예정
+- ComboAttackData와 ComboSequence는 확장성과 관리 편의성을 고려해 ScriptableObject로 구성
 
 ---
 
