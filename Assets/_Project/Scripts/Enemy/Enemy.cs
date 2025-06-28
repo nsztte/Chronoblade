@@ -8,6 +8,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected EnemyStateMachine fsm;
     protected EnemyTimeController timeController;
     [SerializeField] protected int currentHP;
+    [SerializeField] protected float destroyTime = 5f;
 
     [Header("공격 판정")]
     [SerializeField] protected Transform attackStartPosition;
@@ -62,7 +63,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         this.enabled = false;
         
         // 시간 조절을 반영한 파괴 지연
-        StartCoroutine(DestroyWithTimeScale(5f));
+        StartCoroutine(DestroyWithTimeScale(destroyTime));
     }
 
     private System.Collections.IEnumerator DestroyWithTimeScale(float delay)

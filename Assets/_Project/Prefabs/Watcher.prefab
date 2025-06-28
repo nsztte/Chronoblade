@@ -138,9 +138,9 @@ GameObject:
   - component: {fileID: 5486961948083235881}
   - component: {fileID: 1383989991066756377}
   - component: {fileID: 7452540236783166172}
-  - component: {fileID: 1056394307964797854}
   - component: {fileID: 1774583154712754650}
   - component: {fileID: 182485429653818029}
+  - component: {fileID: 966017030217762890}
   m_Layer: 7
   m_Name: Watcher
   m_TagString: Untagged
@@ -232,26 +232,6 @@ CapsuleCollider:
   m_Height: 2
   m_Direction: 1
   m_Center: {x: 0, y: 0.88, z: 0}
---- !u!114 &1056394307964797854
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 562160104480518956}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e9b3595bb9b9cc46a1549e411b2f0ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  behaviorData: {fileID: 11400000, guid: 7bf793d9d2853954c8e530d2ceac9c83, type: 2}
-  attackStartPosition: {fileID: 2699806782120361991}
-  attackEndPosition: {fileID: 8352042035406943800}
-  attackRadius: 0.2
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  projectileSpawnPoint: {fileID: 0}
 --- !u!114 &1774583154712754650
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -278,6 +258,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad5fee290477e3a4aa3f257928d8169f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &966017030217762890
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 562160104480518956}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17d226e54d2c9954792cdb42673f559e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behaviorData: {fileID: 11400000, guid: 7bf793d9d2853954c8e530d2ceac9c83, type: 2}
+  currentHP: 0
+  destroyTime: 5
+  attackStartPosition: {fileID: 2699806782120361991}
+  attackEndPosition: {fileID: 8352042035406943800}
+  attackRadius: 0.2
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!1 &835065700949192042
 GameObject:
   m_ObjectHideFlags: 0
