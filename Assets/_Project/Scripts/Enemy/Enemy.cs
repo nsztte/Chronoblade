@@ -1,5 +1,4 @@
 using UnityEngine;
-using System.Collections;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -13,9 +12,11 @@ public class Enemy : MonoBehaviour, IDamageable
     [Header("공격 판정")]
     [SerializeField] private Transform attackStartPosition;
     [SerializeField] private Transform attackEndPosition;
-    [SerializeField] private Transform attackCenter;
     [SerializeField] private float attackRadius = 1f;
     [SerializeField] private LayerMask playerLayer;
+
+    [Header("크로노몽크 발사체")]
+    [SerializeField] private Transform projectileSpawnPoint;
 
 
     #region Getter
@@ -32,6 +33,9 @@ public class Enemy : MonoBehaviour, IDamageable
     // ChronoMonk 전용 프로퍼티
     public float TeleportDistance => behaviorData.teleportDistance;
     public float SlowDuration => behaviorData.slowDuration;
+    public GameObject ChronoProjectilePrefab => behaviorData.chronoProjectilePrefab;
+    public float ProjectileSpeed => behaviorData.projectileSpeed;
+    public float ProjectileLifetime => behaviorData.projectileLifetime;
 
     // Mirror Duelist 전용 프로퍼티
     public GameObject FakeClonePrefab => behaviorData.fakeClonePrefab;
@@ -104,7 +108,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
                 break;
             case EnemyType.ChronoMonk:
-                DealDamageWithSphere(attackCenter.position, attackRadius);
+                FireChronoProjectile();
                 break;
         }
     }
@@ -125,19 +129,52 @@ public class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-    // 원형 공격 판정 (ChronoMonk)
-    private void DealDamageWithSphere(Vector3 center, float radius)
+    // 크로노몽크 구체 발사
+    private void FireChronoProjectile()
     {
-        Collider[] hits = Physics.OverlapSphere(center, radius, playerLayer);
-
-        foreach(Collider hit in hits)
+        if (ChronoProjectilePrefab == null || projectileSpawnPoint == null)
         {
-            if(hit.TryGetComponent(out IDamageable damageable))
-            {
-                damageable.TakeDamage(Damage);
-                //TODO: 플레이어 디버프 적용
-                Debug.Log($"Enemy {Type} attacked {damageable.GetType().Name} for {Damage} damage");
-            }
+            Debug.LogWarning("크로노몽크 발사체 프리팹 또는 스폰 포인트 없음");
+            return;
+        }
+
+        // 플레이어 방향 계산
+        Transform target = fsm?.Target;
+        if (target == null)
+        {
+            Debug.LogWarning("크로노몽크 발사체 대상 없음");
+            return;
+        }
+
+        // 플레이어의 실제 높이를 고려한 타겟 위치 계산
+        Vector3 targetPos = target.position;
+        Vector3 spawnPos = projectileSpawnPoint.position;
+        
+        // 플레이어의 Collider를 확인하여 적절한 높이 계산
+        Collider playerCollider = target.GetComponent<Collider>();
+        float targetHeight = targetPos.y;
+        
+        if (playerCollider != null)
+        {
+            targetHeight = playerCollider.bounds.center.y;  // 플레이어 중앙 높이
+        }
+        
+        // 발사체가 날아갈 타겟 위치 (수평은 플레이어 위치, 높이는 계산된 높이)
+        Vector3 adjustedTargetPos = new Vector3(targetPos.x, targetHeight, targetPos.z);
+        Vector3 direction = (adjustedTargetPos - spawnPos).normalized;
+        
+        // 발사체 생성 및 초기화
+        GameObject projectileObj = Instantiate(ChronoProjectilePrefab, projectileSpawnPoint.position, Quaternion.LookRotation(direction));
+        ChronoProjectile projectile = projectileObj.GetComponent<ChronoProjectile>();
+        
+        if (projectile != null)
+        {
+            projectile.Initialize(direction, Damage, SlowDuration);
+            Debug.Log($"크로노몽크 발사체 발사: {target.name} (높이: {targetHeight:F2})");
+        }
+        else
+        {
+            Debug.LogError("크로노몽크 발사체 컴포넌트 없음");
         }
     }
 
@@ -160,11 +197,11 @@ public class Enemy : MonoBehaviour, IDamageable
             }
         }
 
-        // 원형 공격(스피어) 범위
-        if (attackCenter != null)
+        // 발사체 스폰 포인트 표시
+        if (projectileSpawnPoint != null)
         {
-            Gizmos.color = Color.yellow;
-            Gizmos.DrawWireSphere(attackCenter.position, attackRadius);
+            Gizmos.color = Color.blue;
+            Gizmos.DrawWireSphere(projectileSpawnPoint.position, 0.2f);
         }
     }
 #endif

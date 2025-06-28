@@ -24,6 +24,9 @@ public class EnemyBehaviorData : ScriptableObject
     [Header("ChronoMonk")]
     public float teleportDistance;
     public float slowDuration;
+    public GameObject chronoProjectilePrefab;
+    public float projectileSpeed = 15f;
+    public float projectileLifetime = 5f;
 
     [Header("Mirror Duelist")]
     public GameObject fakeClonePrefab;

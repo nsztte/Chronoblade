@@ -5,7 +5,7 @@ public class EnemyChaseState : EnemyBaseState
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = false;
-        enemy.Animator.SetBool("IsChasing", true);
+        // enemy.Animator.SetBool("IsChasing", true);
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -23,6 +23,6 @@ public class EnemyChaseState : EnemyBaseState
     public override void Exit(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        enemy.Animator.SetBool("IsChasing", false);
+        // enemy.Animator.SetBool("IsChasing", false);
     }
 }

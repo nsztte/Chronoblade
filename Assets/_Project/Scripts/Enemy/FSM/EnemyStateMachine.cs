@@ -20,7 +20,7 @@ public class EnemyStateMachine : MonoBehaviour
     [SerializeField] private Transform target;
 
     // 상태 트래킹
-    public EnemyState currentStateType {get; private set;}
+    public EnemyState currentStateType;
     private EnemyBaseState currentState;
 
     // 상태 인스턴스
