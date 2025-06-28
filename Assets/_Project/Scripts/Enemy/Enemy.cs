@@ -197,6 +197,11 @@ public class Enemy : MonoBehaviour, IDamageable
         {
             // 직접 텔레포트 로직 실행
             TryTeleport();
+            ParticleSystem particle = GetComponentInChildren<ParticleSystem>();
+            if(particle != null)
+            {
+                particle.Stop();
+            }
             Debug.Log("크로노몽크 애니메이션 이벤트로 텔레포트 실행");
         }
     }
