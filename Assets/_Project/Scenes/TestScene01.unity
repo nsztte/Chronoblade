@@ -350,12 +350,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   behaviorData: {fileID: 11400000, guid: 7bf793d9d2853954c8e530d2ceac9c83, type: 2}
+  fsm: {fileID: 0}
+  timeController: {fileID: 0}
   currentHP: 0
   attackStartPosition: {fileID: 0}
   attackEndPosition: {fileID: 0}
   attackRadius: 1
   playerLayer:
-    serializedVersion: 2
     m_Bits: 0
   projectileSpawnPoint: {fileID: 0}
 --- !u!195 &311703140
@@ -564,6 +565,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &868857631 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8352042035406943800, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
+  m_PrefabInstance: {fileID: 2427843311470583202}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &971242496
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,6 +601,11 @@ Transform:
   m_Children: []
   m_Father: {fileID: 543450652577056368}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!4 &1053238081 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 2699806782120361991, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
+  m_PrefabInstance: {fileID: 2427843311470583202}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1053720258 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9151459008568226687, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
@@ -787,27 +798,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   target: {fileID: 1873127979}
   currentStateType: 0
---- !u!114 &1412821430
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 919132148038835402}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7e9b3595bb9b9cc46a1549e411b2f0ee, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  behaviorData: {fileID: 11400000, guid: 2548fd5f0aadc7845a99944193ff92dc, type: 2}
-  currentHP: 0
-  attackStartPosition: {fileID: 0}
-  attackEndPosition: {fileID: 0}
-  attackRadius: 0.5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
-  projectileSpawnPoint: {fileID: 971242497}
 --- !u!136 &1412821431
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -853,6 +843,31 @@ NavMeshAgent:
   m_BaseOffset: 0
   m_WalkableMask: 1
   m_ObstacleAvoidanceType: 4
+--- !u!1 &1463882465 stripped
+GameObject:
+  m_CorrespondingSourceObject: {fileID: 562160104480518956, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
+  m_PrefabInstance: {fileID: 2427843311470583202}
+  m_PrefabAsset: {fileID: 0}
+--- !u!114 &1463882473
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1463882465}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 17d226e54d2c9954792cdb42673f559e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behaviorData: {fileID: 11400000, guid: 7bf793d9d2853954c8e530d2ceac9c83, type: 2}
+  currentHP: 0
+  attackStartPosition: {fileID: 1053238081}
+  attackEndPosition: {fileID: 868857631}
+  attackRadius: 0.2
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!114 &1520969088
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1020,12 +1035,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   behaviorData: {fileID: 11400000, guid: 7bf793d9d2853954c8e530d2ceac9c83, type: 2}
+  fsm: {fileID: 0}
+  timeController: {fileID: 0}
   currentHP: 0
   attackStartPosition: {fileID: 0}
   attackEndPosition: {fileID: 0}
   attackRadius: 1
   playerLayer:
-    serializedVersion: 2
     m_Bits: 0
   projectileSpawnPoint: {fileID: 0}
 --- !u!114 &2146714402
@@ -6571,7 +6587,7 @@ GameObject:
   - component: {fileID: 1412821427}
   - component: {fileID: 1412821432}
   - component: {fileID: 1412821431}
-  - component: {fileID: 1412821430}
+  - component: {fileID: 919132148038835404}
   - component: {fileID: 1412821429}
   - component: {fileID: 919132148038835403}
   m_Layer: 7
@@ -6593,6 +6609,27 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad5fee290477e3a4aa3f257928d8169f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &919132148038835404
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132148038835402}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: f6d9d17469c868747988187ec2237eb7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  behaviorData: {fileID: 11400000, guid: 2548fd5f0aadc7845a99944193ff92dc, type: 2}
+  currentHP: 0
+  attackStartPosition: {fileID: 0}
+  attackEndPosition: {fileID: 0}
+  attackRadius: 1
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
+  projectileSpawnPoint: {fileID: 971242497}
 --- !u!1 &925397955199209134
 GameObject:
   m_ObjectHideFlags: 0
@@ -17759,10 +17796,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 1056394307964797854, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents: []
+    m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 562160104480518956, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
+      insertIndex: 4
+      addedObject: {fileID: 1463882473}
   m_SourcePrefab: {fileID: 100100000, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
 --- !u!4 &2436602779648478337
 Transform:

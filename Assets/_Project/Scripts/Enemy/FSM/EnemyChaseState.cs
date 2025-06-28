@@ -25,14 +25,14 @@ public class EnemyChaseState : EnemyBaseState
                 return;
             }
             
-            // 너무 가까우면 거리 확보를 위해 반대 방향으로 이동
-            if (distance < enemy.Enemy.RetreatRange)
-            {
-                Vector3 retreatDirection = (enemy.transform.position - enemy.Target.position).normalized;
-                Vector3 retreatPosition = enemy.transform.position + retreatDirection * 2f;
-                enemy.Agent.SetDestination(retreatPosition);
-                return;
-            }
+            // // 너무 가까우면 거리 확보를 위해 반대 방향으로 이동
+            // if (distance < enemy.Enemy.RetreatRange)
+            // {
+            //     Vector3 retreatDirection = (enemy.transform.position - enemy.Target.position).normalized;
+            //     Vector3 retreatPosition = enemy.transform.position + retreatDirection * 2f;
+            //     enemy.Agent.SetDestination(retreatPosition);
+            //     return;
+            // }
         }
         else
         {

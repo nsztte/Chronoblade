@@ -2,11 +2,11 @@ using UnityEngine;
 
 public class FakeClone : MonoBehaviour, IDamageable
 {
-    private Enemy enemy;
+    private MirrorDuelist enemy;
     private float spawnTime;
     private bool isHit = false;
     
-    public void Initialize(Enemy enemy)
+    public void Initialize(MirrorDuelist enemy)
     {
         this.enemy = enemy;
         this.spawnTime = Time.time;

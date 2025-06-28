@@ -43,20 +43,23 @@ public class MirrorAttackState : EnemyAttackState
 
     private void SpawnClones(EnemyStateMachine enemy)
     {
-        for(int i = 0; i < enemy.Enemy.NumberOfClones; i++)
+        MirrorDuelist mirrorDuelist = GetMirrorDuelist(enemy);
+        if (mirrorDuelist == null) return;
+
+        for(int i = 0; i < mirrorDuelist.NumberOfClones; i++)
         {
-            Vector3 offset = Random.insideUnitSphere * enemy.Enemy.CloneSpread;
+            Vector3 offset = Random.insideUnitSphere * mirrorDuelist.CloneSpread;
             offset.y = 0;
             Vector3 spawnPosition = enemy.transform.position + offset;
 
-            GameObject clone = GameObject.Instantiate(enemy.Enemy.FakeClonePrefab, spawnPosition, Quaternion.identity);
+            GameObject clone = GameObject.Instantiate(mirrorDuelist.FakeClonePrefab, spawnPosition, Quaternion.identity);
 
             if(!clone.TryGetComponent(out FakeClone fakeClone))
             {
                 fakeClone = clone.AddComponent<FakeClone>();
             }
 
-            fakeClone.Initialize(enemy.Enemy);
+            fakeClone.Initialize(mirrorDuelist);
             spawnedClones.Add(clone);
         }
     }
@@ -80,5 +83,11 @@ public class MirrorAttackState : EnemyAttackState
         
         // Enemy의 PerformAttack 메서드 호출
         // enemy.Enemy.PerformAttack();
+    }
+
+    // MirrorDuelist 컴포넌트 가져오기
+    private MirrorDuelist GetMirrorDuelist(EnemyStateMachine enemy)
+    {
+        return enemy.Enemy as MirrorDuelist;
     }
 }
