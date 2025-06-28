@@ -24,6 +24,9 @@ public class EnemyBehaviorData : ScriptableObject
     [Header("ChronoMonk")]
     public float teleportDistance;
     public float slowDuration;
+    public float retreatRange = 3f;
+
+    [Header("ChronoMonk 프로젝타일")]
     public GameObject chronoProjectilePrefab;
     public float projectileSpeed = 15f;
     public float projectileLifetime = 5f;

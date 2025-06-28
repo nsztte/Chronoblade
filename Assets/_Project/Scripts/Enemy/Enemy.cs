@@ -36,6 +36,7 @@ public class Enemy : MonoBehaviour, IDamageable
     public GameObject ChronoProjectilePrefab => behaviorData.chronoProjectilePrefab;
     public float ProjectileSpeed => behaviorData.projectileSpeed;
     public float ProjectileLifetime => behaviorData.projectileLifetime;
+    public float RetreatRange => behaviorData.retreatRange;
 
     // Mirror Duelist 전용 프로퍼티
     public GameObject FakeClonePrefab => behaviorData.fakeClonePrefab;
@@ -108,7 +109,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
                 break;
             case EnemyType.ChronoMonk:
-                FireChronoProjectile();
+                PerformChronoAttack();
                 break;
         }
     }
@@ -126,6 +127,27 @@ public class Enemy : MonoBehaviour, IDamageable
                 damageable.TakeDamage(Damage);
                 Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
+        }
+    }
+
+    // 크로노몽크 거리 기반 공격 분기
+    private void PerformChronoAttack()
+    {
+        if (fsm?.Target == null) return;
+        
+        float distance = Vector3.Distance(transform.position, fsm.Target.position);
+        
+        if (distance < RetreatRange)
+        {
+            // 너무 가까우면 근접 공격
+            DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
+            Debug.Log($"크로노몽크 근접 공격 (거리: {distance})");
+        }
+        else
+        {
+            // 적당한 거리면 발사체 공격
+            FireChronoProjectile();
+            Debug.Log($"크로노몽크 발사체 공격 (거리: {distance})");
         }
     }
 
