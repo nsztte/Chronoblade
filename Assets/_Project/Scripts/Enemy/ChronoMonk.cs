@@ -5,6 +5,8 @@ public class ChronoMonk : Enemy
 {
     [Header("크로노몽크 발사체")]
     [SerializeField] private Transform projectileSpawnPoint;
+    [SerializeField] private ParticleSystem teleportEffect;
+    [SerializeField] private ParticleSystem deathEffect;
 
     // ChronoMonk 전용 프로퍼티
     public float TeleportDistance => behaviorData.teleportDistance;
@@ -14,16 +16,19 @@ public class ChronoMonk : Enemy
     public float ProjectileLifetime => behaviorData.projectileLifetime;
     public float RetreatRange => behaviorData.retreatRange;
 
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public override void Die()
     {
-        
-    }
+        if(deathEffect != null)
+        {
+            deathEffect.Play();
+        }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        if(teleportEffect != null && teleportEffect.isPlaying)
+        {
+            teleportEffect.Stop();
+        }
+
+        base.Die();
     }
 
     protected override void OnPerformAttack()
@@ -85,10 +90,9 @@ public class ChronoMonk : Enemy
     // 크로노몽크 텔레포트 파티클 재생 (애니메이션 이벤트용)
     public void OnChronoTeleportParticle()
     {
-        ParticleSystem particle = GetComponentInChildren<ParticleSystem>();
-        if(particle != null)
+        if(teleportEffect != null)
         {
-            particle.Play();
+            teleportEffect.Play();
         }
     }
 

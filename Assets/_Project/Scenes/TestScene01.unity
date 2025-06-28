@@ -768,11 +768,6 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
---- !u!198 &1857931061 stripped
-ParticleSystem:
-  m_CorrespondingSourceObject: {fileID: 720325515038598322, guid: 709b0bd6b0b625249a98409dd7a87343, type: 3}
-  m_PrefabInstance: {fileID: 1857931057}
-  m_PrefabAsset: {fileID: 0}
 --- !u!4 &1873127979 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 1062656909117928978, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
@@ -6285,7 +6280,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &919132148038835403
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -6320,8 +6315,6 @@ MonoBehaviour:
     serializedVersion: 2
     m_Bits: 64
   projectileSpawnPoint: {fileID: 971242497}
-  teleportEffect: {fileID: 8705986517310116409}
-  deathEffect: {fileID: 1857931061}
 --- !u!1 &925397955199209134
 GameObject:
   m_ObjectHideFlags: 0
@@ -17377,7 +17370,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 562160104480518956, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 1774583154712754650, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
       propertyPath: target

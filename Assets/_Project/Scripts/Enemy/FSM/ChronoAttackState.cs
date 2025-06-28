@@ -9,7 +9,7 @@ public class ChronoAttackState : EnemyAttackState
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        lastAttackTime = Time.time;
+        lastAttackTime = 0f;
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -24,6 +24,15 @@ public class ChronoAttackState : EnemyAttackState
         }
 
         if(Time.time - lastAttackTime < enemy.Enemy.AttackCooldown) return;
+
+        // 확률적 텔레포트 (10% 확률로 랜덤 텔레포트)
+        if(Random.Range(0f, 1f) < 0.1f && distance > GetChronoMonk(enemy).RetreatRange)
+        {
+            enemy.Animator.SetTrigger("IsTeleporting");
+            Debug.Log($"크로노몽크 확률적 텔레포트 (거리: {distance})");
+            lastAttackTime = Time.time;
+            return;
+        }
 
         // 너무 가까우면 텔레포트 애니메이션 재생
         if(distance < GetChronoMonk(enemy).RetreatRange)
