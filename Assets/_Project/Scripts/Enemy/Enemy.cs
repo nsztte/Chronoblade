@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
@@ -6,7 +7,7 @@ public class Enemy : MonoBehaviour, IDamageable
     [SerializeField] private EnemyBehaviorData behaviorData;
     private EnemyStateMachine fsm;
     private EnemyTimeController timeController;
-    private int currentHP;
+    [SerializeField] private int currentHP;
 
 
     [Header("공격 판정")]
@@ -109,7 +110,7 @@ public class Enemy : MonoBehaviour, IDamageable
                 DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
                 break;
             case EnemyType.ChronoMonk:
-                PerformChronoAttack();
+                FireChronoProjectile();
                 break;
         }
     }
@@ -127,27 +128,6 @@ public class Enemy : MonoBehaviour, IDamageable
                 damageable.TakeDamage(Damage);
                 Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
-        }
-    }
-
-    // 크로노몽크 거리 기반 공격 분기
-    private void PerformChronoAttack()
-    {
-        if (fsm?.Target == null) return;
-        
-        float distance = Vector3.Distance(transform.position, fsm.Target.position);
-        
-        if (distance < RetreatRange)
-        {
-            // 너무 가까우면 근접 공격
-            DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
-            Debug.Log($"크로노몽크 근접 공격 (거리: {distance})");
-        }
-        else
-        {
-            // 적당한 거리면 발사체 공격
-            FireChronoProjectile();
-            Debug.Log($"크로노몽크 발사체 공격 (거리: {distance})");
         }
     }
 
@@ -197,6 +177,65 @@ public class Enemy : MonoBehaviour, IDamageable
         else
         {
             Debug.LogError("크로노몽크 발사체 컴포넌트 없음");
+        }
+    }
+
+    // 크로노몽크 텔레포트 파티클 재생 (애니메이션 이벤트용)
+    public void OnChronoTeleportParticle()
+    {
+        ParticleSystem particle = GetComponentInChildren<ParticleSystem>();
+        if(particle != null)
+        {
+            particle.Play();
+        }
+    }
+
+    // 크로노몽크 텔레포트 (애니메이션 이벤트용)
+    public void OnChronoTeleport()
+    {
+        if (fsm != null)
+        {
+            // 직접 텔레포트 로직 실행
+            TryTeleport();
+            Debug.Log("크로노몽크 애니메이션 이벤트로 텔레포트 실행");
+        }
+    }
+
+    // 텔레포트 로직 (ChronoAttackState에서 사용하던 로직)
+    private void TryTeleport()
+    {
+        if (fsm?.Target == null) return;
+        
+        Debug.Log("크로노몽크 후면 기습 텔레포트 시도");
+        
+        // 플레이어의 뒤쪽 방향 계산
+        Vector3 direction = (fsm.Target.position - transform.position).normalized;
+        
+        // 플레이어 위치에서 뒤쪽으로 teleportDistance만큼 떨어진 위치 계산
+        Vector3 behindPlayerPosition = fsm.Target.position - direction * TeleportDistance;
+        
+        // 플레이어가 바라보는 방향의 반대쪽으로 텔레포트
+        Vector3 playerForward = fsm.Target.forward;
+        Vector3 behindPosition = fsm.Target.position - playerForward * TeleportDistance;
+
+        // NavMesh 위의 유효한 위치인지 확인 (후면 위치 우선)
+        NavMeshHit hit;
+        if(NavMesh.SamplePosition(behindPosition, out hit, 2f, NavMesh.AllAreas))
+        {
+            transform.position = hit.position;
+            Debug.Log($"크로노몽크 후면 기습 성공: {hit.position}");
+        }
+        else if(NavMesh.SamplePosition(behindPlayerPosition, out hit, 2f, NavMesh.AllAreas))
+        {
+            // 후면 위치가 실패하면 기존 로직 사용
+            transform.position = hit.position;
+            Debug.Log($"크로노몽크 대체 위치 텔레포트: {hit.position}");
+        }
+        else
+        {
+            // 모든 위치가 실패하면 플레이어 위치로 텔레포트
+            transform.position = fsm.Target.position;
+            Debug.Log("크로노몽크 텔레포트 실패, 플레이어 위치로 이동");
         }
     }
 
