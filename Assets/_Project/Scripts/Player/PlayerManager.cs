@@ -249,16 +249,27 @@ public class PlayerManager : MonoBehaviour, IDamageable
         animator.SetFloat(param, value, dampTime, deltaTime);
     }
 
-    // UpperBody 레이어에서 현재 재생 중인 애니메이션 클립의 길이 반환
-    public float GetCurrentUpperBodyClipLength()
+    // // UpperBody 레이어에서 현재 재생 중인 애니메이션 클립의 길이 반환
+    // public float GetCurrentUpperBodyClipLength()
+    // {
+    //     if (animator == null) return 0.3f;
+    //     int upperBodyLayer = animator.GetLayerIndex("UpperBody");
+    //     if (upperBodyLayer < 0) return 0.3f;
+    //     var clips = animator.GetCurrentAnimatorClipInfo(upperBodyLayer);
+    //     if (clips.Length > 0)
+    //         return clips[0].clip.length;
+    //     return 0.3f;
+    // }
+
+    // 애니메이션 이벤트 메서드들 (무기 컨트롤러에 전달)
+    public void OnMeleeAttackHit()
     {
-        if (animator == null) return 0.3f;
-        int upperBodyLayer = animator.GetLayerIndex("UpperBody");
-        if (upperBodyLayer < 0) return 0.3f;
-        var clips = animator.GetCurrentAnimatorClipInfo(upperBodyLayer);
-        if (clips.Length > 0)
-            return clips[0].clip.length;
-        return 0.3f;
+        WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackHit();
+    }
+
+    public void OnMeleeAttackEnd()
+    {
+        WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackEnd();
     }
 
     private void OnHandleInteract()

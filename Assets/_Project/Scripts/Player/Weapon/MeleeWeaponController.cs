@@ -33,38 +33,32 @@ public class MeleeWeaponController : WeaponController
     {
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
         // CameraController.Instance?.SetCameraMeleeAttackOffset(0.3f, 15f);
-        StartCoroutine(MeleeAttackCoroutine());
+        hitTargets.Clear();
+        Debug.Log($"[공격 시작] {weaponData.weaponName}");
     }
 
-    private IEnumerator MeleeAttackCoroutine()
+    // 애니메이션 이벤트로 호출될 메서드들
+    public override void OnMeleeAttackHit()
     {
-        yield return null; // 애니메이터 상태 전이 대기
-        float duration = PlayerManager.Instance.GetCurrentUpperBodyClipLength();
-        Debug.Log($"[공격 시작] {weaponData.weaponName}, 지속시간: {duration}");
-        hitTargets.Clear();
-        float t = 0f;
+        Vector3 startPos = startPoint.position;
+        Vector3 endPos = endPoint.position;
+        float radius = weaponData.range;
 
-        while (t < duration)
+        Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
+
+        foreach(var hit in hits)
         {
-            Vector3 startPos = startPoint.position;
-            Vector3 endPos = endPoint.position;
-            float radius = weaponData.range;
-
-            Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
-
-            foreach(var hit in hits)
+            if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
             {
-                if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
-                {
-                    target.TakeDamage(weaponData.damage);
-                    hitTargets.Add(target);
-                    Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {weaponData.damage}");
-                }
+                target.TakeDamage(weaponData.damage);
+                hitTargets.Add(target);
+                Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {weaponData.damage}");
             }
-
-            t += Time.deltaTime;
-            yield return null;
         }
+    }
+
+    public override void OnMeleeAttackEnd()
+    {
         Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
         // CameraController.Instance?.ResetCameraPosition(10f);
         isAttacking = false;

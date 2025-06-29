@@ -51,4 +51,8 @@ public abstract class WeaponController : MonoBehaviour
     protected abstract void OnAttackInput();
 
     protected abstract void Attack();
+
+    // 애니메이션 이벤트 메서드들 (기본 구현은 빈 메서드)
+    public virtual void OnMeleeAttackHit() { }
+    public virtual void OnMeleeAttackEnd() { }
 }
