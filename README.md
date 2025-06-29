@@ -456,10 +456,35 @@ Enemy FSM(상태머신) 시스템 구현
     - 공격 중 ChaseState로 전환 금지
   - 전투 중 안정성 향상 및 의도된 공격 흐름 유지
 
+### 추가 개선 사항
+- 타입 캐스팅 안전성 개선
+  - `ChronoAttackState`에서 `Enemy` → `ChronoMonk` 캐스팅 시 `as` 연산자와 null 체크 적용
+  - 잘못된 캐스팅 시 에러 메시지 출력으로 디버깅 용이성 향상
+  - 중복된 캐스팅 제거로 성능 및 가독성 개선
+- 상태 전환 구조 개선
+  - `EnemyStateMachine` 내 `switch` 문 기반 상태 전환 → `Dictionary<EnemyStateType, EnemyBaseState>`로 대체
+  - 신규 상태 추가 시 `InitStateDictionary()`만 수정하면 자동 연동
+  - 확장성과 유지보수성 향상
+- Strategy 패턴 도입: EnemyHitState
+  - 각 적 타입의 피격 반응을 `IHitBehavior` 인터페이스로 분리
+  - 예: ChronoMonk는 피격 후 일정 시간 뒤 텔레포트하도록 별도 클래스 처리
+  - `EnemyHitState`는 더 이상 적별 분기처리 없이 `IHitBehavior.Execute()`만 호출
+- 성능 최적화
+  - 매 프레임 수행되던 `Vector3.Distance()` 계산 → `0.1초 간격`으로 캐싱
+  - 적용 대상: 
+    - `EnemyAttackState`
+    - `ChronoAttackState`
+    - `MirrorAttackState`
+    - `EnemyChaseState`
+  - 반복 연산 최소화로 FPS 안정성과 CPU 부담 감소
+
 ### 메모
 - MirrorDuelist의 클론 생성 방식은 향후 개수 조절 및 속도 튜닝 필요
 - Enemy 구조 분리는 다른 적 타입 확장(예: 보스) 시 유용하게 작용할 것
 - 애니메이션 이벤트 기반 공격 처리는 FSM과 자연스럽게 결합되어 앞으로도 사용할 수 있음
+- FSM 및 전투 관련 코드가 확장에 유리한 구조로 재편됨
+- Enemy 스크립트의 SOLID 원칙 준수도 향상됨
+- 후속 작업에서 BossEnemy 전용 FSM 확장 시 활용 가능성 높음
 
 ---
 
