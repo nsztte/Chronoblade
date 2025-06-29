@@ -1,4 +1,3 @@
-using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.AI;
 
@@ -13,7 +12,7 @@ public class ChronoAttackState : EnemyAttackState
     public override void Update(EnemyStateMachine enemy)
     {
         LookAtPlayer(enemy);
-        float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
+        float distance = GetCachedDistance(enemy);
         
         if(distance > enemy.Enemy.DetectionRange)
         {
@@ -23,8 +22,11 @@ public class ChronoAttackState : EnemyAttackState
 
         if(Time.time - lastAttackTime < enemy.Enemy.AttackCooldown) return;
 
+        var chronoMonk = GetChronoMonk(enemy);
+        if (chronoMonk == null) return;
+
         // 확률적 텔레포트 (10% 확률로 랜덤 텔레포트)
-        if(Random.Range(0f, 1f) < 0.1f && distance > GetChronoMonk(enemy).RetreatRange)
+        if(Random.Range(0f, 1f) < 0.1f && distance > chronoMonk.RetreatRange)
         {
             enemy.Animator.SetTrigger("IsTeleporting");
             Debug.Log($"크로노몽크 확률적 텔레포트 (거리: {distance})");
@@ -33,7 +35,7 @@ public class ChronoAttackState : EnemyAttackState
         }
 
         // 너무 가까우면 텔레포트 애니메이션 재생
-        if(distance < GetChronoMonk(enemy).RetreatRange)
+        if(distance < chronoMonk.RetreatRange)
         {
             enemy.Animator.SetTrigger("IsTeleporting");
             Debug.Log($"크로노몽크 텔레포트 애니메이션 시작 (거리: {distance})");
@@ -60,17 +62,22 @@ public class ChronoAttackState : EnemyAttackState
 
     private void TryTeleport(EnemyStateMachine enemy)
     {
+        if (enemy?.Target == null) return;
+
+        var chronoMonk = GetChronoMonk(enemy);
+        if (chronoMonk == null) return;
+
         Debug.Log("크로노몽크 후면 기습 텔레포트 시도");
         
         // 플레이어의 뒤쪽 방향 계산
         Vector3 direction = (enemy.Target.position - enemy.transform.position).normalized;
         
         // 플레이어 위치에서 뒤쪽으로 teleportDistance만큼 떨어진 위치 계산
-        Vector3 behindPlayerPosition = enemy.Target.position - direction * GetChronoMonk(enemy).TeleportDistance;
+        Vector3 behindPlayerPosition = enemy.Target.position - direction * chronoMonk.TeleportDistance;
         
         // 플레이어가 바라보는 방향의 반대쪽으로 텔레포트
         Vector3 playerForward = enemy.Target.forward;
-        Vector3 behindPosition = enemy.Target.position - playerForward * GetChronoMonk(enemy).TeleportDistance;
+        Vector3 behindPosition = enemy.Target.position - playerForward * chronoMonk.TeleportDistance;
 
         // NavMesh 위의 유효한 위치인지 확인 (후면 위치 우선)
         NavMeshHit hit;
@@ -96,7 +103,20 @@ public class ChronoAttackState : EnemyAttackState
     // ChronoMonk 컴포넌트 가져오기
     private ChronoMonk GetChronoMonk(EnemyStateMachine enemy)
     {
-        return enemy.Enemy as ChronoMonk;
+        if (enemy?.Enemy == null)
+        {
+            Debug.LogError("에너미스테이트머신 또는 에너미가 null");
+            return null;
+        }
+
+        var chronoMonk = enemy.Enemy as ChronoMonk;
+        if (chronoMonk == null)
+        {
+            Debug.LogError($"에너미가 크로노몽크가 아님, 실제 타입: {enemy.Enemy.GetType().Name}");
+            return null;
+        }
+
+        return chronoMonk;
     }
 
     // 애니메이션 이벤트용 텔레포트 메서드

@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections.Generic;
 
 public enum EnemyState
 {
@@ -30,6 +31,9 @@ public class EnemyStateMachine : MonoBehaviour
     private readonly EnemyHitState hitState = new EnemyHitState();
     private readonly EnemyDeadState deadState = new EnemyDeadState();
 
+    // 상태 타입 매핑 Dictionary
+    private readonly Dictionary<System.Type, EnemyState> stateTypeMap = new Dictionary<System.Type, EnemyState>();
+
     // 상태 인스턴스 접근자
     public EnemyIdleState IdleState => idleState;
     public EnemyChaseState ChaseState => chaseState;
@@ -52,6 +56,22 @@ public class EnemyStateMachine : MonoBehaviour
 
         // 동적으로 공격 상태 생성
         attackState = enemy.BehaviorData.CreateAttackState();
+        
+        // 상태 타입 매핑 초기화
+        InitializeStateTypeMap();
+    }
+
+    private void InitializeStateTypeMap()
+    {
+        stateTypeMap[typeof(EnemyIdleState)] = EnemyState.Idle;
+        stateTypeMap[typeof(EnemyChaseState)] = EnemyState.Chase;
+        stateTypeMap[typeof(EnemyAttackState)] = EnemyState.Attack;
+        stateTypeMap[typeof(EnemyHitState)] = EnemyState.Hit;
+        stateTypeMap[typeof(EnemyDeadState)] = EnemyState.Dead;
+        
+        // 파생된 공격 상태들도 매핑
+        stateTypeMap[typeof(ChronoAttackState)] = EnemyState.Attack;
+        stateTypeMap[typeof(MirrorAttackState)] = EnemyState.Attack;
     }
 
     private void Start()
@@ -71,14 +91,7 @@ public class EnemyStateMachine : MonoBehaviour
         currentState = newState;
         currentState.Enter(this);
 
-        currentStateType = newState switch
-        {
-            EnemyIdleState => EnemyState.Idle,
-            EnemyChaseState => EnemyState.Chase,
-            EnemyAttackState => EnemyState.Attack,
-            EnemyHitState => EnemyState.Hit,
-            EnemyDeadState => EnemyState.Dead,
-            _ => currentStateType
-        };
+        // Dictionary를 사용한 상태 타입 매핑
+        currentStateType = stateTypeMap.GetValueOrDefault(newState.GetType(), currentStateType);
     }
 }

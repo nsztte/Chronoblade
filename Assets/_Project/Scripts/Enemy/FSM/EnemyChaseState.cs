@@ -2,9 +2,15 @@ using UnityEngine;
 
 public class EnemyChaseState : EnemyBaseState
 {
+    // 거리 계산 캐싱
+    private float cachedDistance;
+    private float lastDistanceUpdate;
+    private const float DISTANCE_UPDATE_INTERVAL = 0.1f;
+
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = false;
+        lastDistanceUpdate = 0f; // 캐시 초기화
         // enemy.Animator.SetBool("IsChasing", true);
     }
 
@@ -13,7 +19,7 @@ public class EnemyChaseState : EnemyBaseState
         enemy.Agent.SetDestination(enemy.Target.position);
         // Debug.Log($"Enemy Destination: {enemy.Agent.destination}");
 
-        float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
+        float distance = GetCachedDistance(enemy);
         
         // 크로노몽크의 경우 특별한 거리 로직 적용
         if (enemy.Enemy.Type == EnemyType.ChronoMonk)
@@ -42,6 +48,19 @@ public class EnemyChaseState : EnemyBaseState
                 enemy.TransitionToState(enemy.AttackState);
             }
         }
+    }
+
+    // 캐시된 거리 계산
+    private float GetCachedDistance(EnemyStateMachine enemy)
+    {
+        if (enemy.Target == null) return float.MaxValue;
+        
+        if (Time.time - lastDistanceUpdate > DISTANCE_UPDATE_INTERVAL)
+        {
+            cachedDistance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
+            lastDistanceUpdate = Time.time;
+        }
+        return cachedDistance;
     }
 
     public override void Exit(EnemyStateMachine enemy)

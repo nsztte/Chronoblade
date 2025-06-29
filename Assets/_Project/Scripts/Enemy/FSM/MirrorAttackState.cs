@@ -15,7 +15,7 @@ public class MirrorAttackState : EnemyAttackState
     public override void Update(EnemyStateMachine enemy)
     {
         LookAtPlayer(enemy);
-        float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
+        float distance = GetCachedDistance(enemy);
         
         // 공격 중이거나 스폰 중일 때는 chase 상태로 전환하지 않음
         if(distance > enemy.Enemy.AttackRange && !isAttacking && !isSpawned)
