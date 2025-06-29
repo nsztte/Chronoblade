@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class EnemyAttackState : EnemyBaseState
 {
-    private float lastAttackTime;
+    protected float lastAttackTime;
 
     public override void Enter(EnemyStateMachine enemy)
     {
@@ -26,10 +26,14 @@ public class EnemyAttackState : EnemyBaseState
         // 공격 쿨타임이 지났으면 공격
         if(Time.time - lastAttackTime > enemy.Enemy.AttackCooldown)
         {
-            enemy.Animator.SetTrigger("IsAttacking");
-            Debug.Log("공격 애니메이션 재생");
-            lastAttackTime = Time.time;
+            Attack(enemy);
         }
+    }
+
+    protected virtual void Attack(EnemyStateMachine enemy)
+    {
+        enemy.Animator.SetTrigger("IsAttacking");
+        lastAttackTime = Time.time;
     }
 
     protected void LookAtPlayer(EnemyStateMachine enemy)

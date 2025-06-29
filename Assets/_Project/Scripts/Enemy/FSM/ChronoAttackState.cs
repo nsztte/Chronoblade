@@ -4,12 +4,10 @@ using UnityEngine.AI;
 
 public class ChronoAttackState : EnemyAttackState
 {
-    private float lastAttackTime;
-
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        lastAttackTime = 0f;
+        lastAttackTime = 0;
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -52,10 +50,7 @@ public class ChronoAttackState : EnemyAttackState
         }
 
         // 적당한 거리에서만 발사체 공격 애니메이션
-        enemy.Animator.SetTrigger("IsAttacking");
-        Debug.Log($"크로노몽크 발사체 공격 애니메이션 (거리: {distance})");
-        
-        lastAttackTime = Time.time;
+        Attack(enemy);
     }
 
     public override void Exit(EnemyStateMachine enemy)

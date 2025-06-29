@@ -17,7 +17,7 @@ MonoBehaviour:
   damage: 5
   moveSpeed: 1.5
   detectionRange: 10
-  attackRange: 1.5
+  attackRange: 2
   attackCooldown: 2
   attackSpeed: 1.2
   teleportDistance: 0
@@ -26,7 +26,7 @@ MonoBehaviour:
   chronoProjectilePrefab: {fileID: 0}
   projectileSpeed: 15
   projectileLifetime: 5
-  fakeClonePrefab: {fileID: 0}
+  fakeClonePrefab: {fileID: 6785313998283858962, guid: e9c483dd513726245b9276b703b75119, type: 3}
   numberOfClones: 3
   cloneLifeTime: 10
-  cloneSpread: 3.5
+  cloneSpawnRadius: 5

@@ -22,11 +22,11 @@ MonoBehaviour:
   attackSpeed: 1
   teleportDistance: 6
   slowDuration: 3
+  retreatRange: 2
   chronoProjectilePrefab: {fileID: 2009136268739041346, guid: 8c0955d21c521f646a91592a0663efeb, type: 3}
   projectileSpeed: 15
   projectileLifetime: 5
-  retreatRange: 3
   fakeClonePrefab: {fileID: 0}
   numberOfClones: 0
   cloneLifeTime: 0
-  cloneSpread: 0
+  cloneSpawnRadius: 0

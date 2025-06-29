@@ -3,92 +3,61 @@ using UnityEngine;
 
 public class MirrorAttackState : EnemyAttackState
 {
-    private float lastAttackTime;
-    private bool clonesSpawned = false;
-    private List<GameObject> spawnedClones = new List<GameObject>();
+    public bool isAttacking = false;
+    public bool isSpawned = false;
 
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        if(!clonesSpawned)
-        {
-            SpawnClones(enemy);
-            SwapWithClone(enemy);
-            clonesSpawned = true;
-        }
-        Attack(enemy);
+        SpawnClones(enemy);
     }
 
     public override void Update(EnemyStateMachine enemy)
     {
         LookAtPlayer(enemy);
         float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
-        if(distance > enemy.Enemy.AttackRange)
+        
+        // 공격 중이거나 스폰 중일 때는 chase 상태로 전환하지 않음
+        if(distance > enemy.Enemy.AttackRange && !isAttacking && !isSpawned)
         {
             enemy.TransitionToState(enemy.ChaseState);
             return;
         }
 
-        if(Time.time - lastAttackTime > enemy.Enemy.AttackCooldown)
+        if(Time.time - lastAttackTime > enemy.Enemy.AttackCooldown && !isSpawned)
         {
             Attack(enemy);
         }
     }
 
-    public override void Exit(EnemyStateMachine enemy)
+    protected override void Attack(EnemyStateMachine enemy)
     {
-        enemy.Agent.isStopped = false;
-        clonesSpawned = false;
-        spawnedClones.Clear();
+        base.Attack(enemy);
+        isAttacking = true;
     }
 
     private void SpawnClones(EnemyStateMachine enemy)
     {
-        MirrorDuelist mirrorDuelist = GetMirrorDuelist(enemy);
-        if (mirrorDuelist == null) return;
-
-        for(int i = 0; i < mirrorDuelist.NumberOfClones; i++)
-        {
-            Vector3 offset = Random.insideUnitSphere * mirrorDuelist.CloneSpread;
-            offset.y = 0;
-            Vector3 spawnPosition = enemy.transform.position + offset;
-
-            GameObject clone = GameObject.Instantiate(mirrorDuelist.FakeClonePrefab, spawnPosition, Quaternion.identity);
-
-            if(!clone.TryGetComponent(out FakeClone fakeClone))
-            {
-                fakeClone = clone.AddComponent<FakeClone>();
-            }
-
-            fakeClone.Initialize(mirrorDuelist);
-            spawnedClones.Add(clone);
-        }
+        enemy.Animator.SetTrigger("IsSpawnClones");
+        isSpawned = true;
     }
 
-    private void SwapWithClone(EnemyStateMachine enemy)
+    public override void Exit(EnemyStateMachine enemy)
     {
-        if(spawnedClones.Count == 0) return;
-        
-        int index = Random.Range(0, spawnedClones.Count);
-        GameObject clone = spawnedClones[index];
-
-        Vector3 tempPosition = enemy.transform.position;
-        enemy.transform.position = clone.transform.position;
-        clone.transform.position = tempPosition;
+        enemy.Agent.isStopped = false;
+        isAttacking = false;
+        isSpawned = false;
     }
 
-    private void Attack(EnemyStateMachine enemy)
+    // 애니메이션 이벤트로 호출될 메서드 (공격 완료)
+    public void OnMirrorAttackEnd()
     {
-        enemy.Animator.SetTrigger("IsAttacking");
-        lastAttackTime = Time.time;
-        
-        // Enemy의 PerformAttack 메서드 호출
-        // enemy.Enemy.PerformAttack();
+        isAttacking = false;
     }
 
-    // MirrorDuelist 컴포넌트 가져오기
-    private MirrorDuelist GetMirrorDuelist(EnemyStateMachine enemy)
+    // 애니메이션 이벤트로 호출될 메서드 (클론 스폰 완료)
+    public void OnMirrorSpawnEnd()
     {
-        return enemy.Enemy as MirrorDuelist;
+        isSpawned = false;
     }
 }

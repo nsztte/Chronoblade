@@ -42,6 +42,7 @@ public class EnemyStateMachine : MonoBehaviour
     public NavMeshAgent Agent => agent;
     public Enemy Enemy => enemy;
     public Transform Target => target;
+    public EnemyBaseState CurrentState => currentState;
 
     private void Awake()
     {
