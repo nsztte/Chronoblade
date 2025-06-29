@@ -21,6 +21,7 @@ public class MirrorAttackState : EnemyAttackState
 
     public override void Update(EnemyStateMachine enemy)
     {
+        LookAtPlayer(enemy);
         float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
         if(distance > enemy.Enemy.AttackRange)
         {

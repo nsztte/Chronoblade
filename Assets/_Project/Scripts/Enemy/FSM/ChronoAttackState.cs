@@ -98,20 +98,6 @@ public class ChronoAttackState : EnemyAttackState
         }
     }
 
-    private void LookAtPlayer(EnemyStateMachine enemy)
-    {
-        if (enemy.Target == null) return;
-        
-        Vector3 direction = (enemy.Target.position - enemy.transform.position).normalized;
-        direction.y = 0; // Y축 회전만 적용
-        
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            enemy.transform.rotation = Quaternion.Slerp(enemy.transform.rotation, targetRotation, enemy.Enemy.GetAdjustedDeltaTime() * 5f);
-        }
-    }
-
     // ChronoMonk 컴포넌트 가져오기
     private ChronoMonk GetChronoMonk(EnemyStateMachine enemy)
     {

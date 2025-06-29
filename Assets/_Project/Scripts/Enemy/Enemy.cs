@@ -11,9 +11,6 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [SerializeField] protected float destroyTime = 5f;
 
     [Header("공격 판정")]
-    [SerializeField] protected Transform attackStartPosition;
-    [SerializeField] protected Transform attackEndPosition;
-    [SerializeField] protected float attackRadius = 1f;
     [SerializeField] protected LayerMask playerLayer;
 
     #region Getter
@@ -107,24 +104,19 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         }
     }
 
-#if UNITY_EDITOR
-    protected virtual void OnDrawGizmosSelected()
+    // 근접 구체 공격 판정
+    protected void DealDamagedWithSphere(Transform center, float radius)
     {
-        // 근접 공격(캡슐) 범위
-        if (attackStartPosition != null && attackEndPosition != null)
+        Debug.Log("근접 구체 공격 판정");
+        Collider[] hits = Physics.OverlapSphere(center.position, radius, playerLayer);
+
+        foreach(Collider hit in hits)
         {
-            Gizmos.color = Color.red;
-            Vector3 start = attackStartPosition.position;
-            Vector3 end = attackEndPosition.position;
-            float length = Vector3.Distance(start, end);
-            int steps = Mathf.Max(2, Mathf.CeilToInt(length / (attackRadius * 0.5f)));
-            for (int i = 0; i <= steps; i++)
+            if(hit.TryGetComponent(out IDamageable damageable))
             {
-                float t = (float)i / steps;
-                Vector3 pos = Vector3.Lerp(start, end, t);
-                Gizmos.DrawWireSphere(pos, attackRadius);
+                damageable.TakeDamage(Damage);
+                Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
         }
     }
-#endif
 }

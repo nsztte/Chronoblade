@@ -32,7 +32,7 @@ public class EnemyAttackState : EnemyBaseState
         }
     }
 
-    private void LookAtPlayer(EnemyStateMachine enemy)
+    protected void LookAtPlayer(EnemyStateMachine enemy)
     {
         if (enemy.Target == null) return;
         

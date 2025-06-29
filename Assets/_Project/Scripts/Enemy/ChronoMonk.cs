@@ -151,15 +151,29 @@ public class ChronoMonk : Enemy
     }
 
 #if UNITY_EDITOR
-    protected override void OnDrawGizmosSelected()
+    private void OnDrawGizmosSelected()
     {
-        base.OnDrawGizmosSelected();
-        
         // 발사체 스폰 포인트 표시
         if (projectileSpawnPoint != null)
         {
             Gizmos.color = Color.blue;
             Gizmos.DrawWireSphere(projectileSpawnPoint.position, 0.2f);
+        }
+        
+        // 텔레포트 거리 표시
+        if (fsm?.Target != null)
+        {
+            Gizmos.color = Color.yellow;
+            Vector3 behindPosition = fsm.Target.position - fsm.Target.forward * TeleportDistance;
+            Gizmos.DrawWireSphere(behindPosition, 0.5f);
+            Gizmos.DrawLine(transform.position, behindPosition);
+        }
+        
+        // 공격 범위 표시 (발사체 공격)
+        if (fsm?.Target != null)
+        {
+            Gizmos.color = Color.red;
+            Gizmos.DrawWireSphere(transform.position, AttackRange);
         }
     }
 #endif
