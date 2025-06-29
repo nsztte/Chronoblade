@@ -432,6 +432,37 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.06.29 (일) 작업 기록
+
+### 주요 작업
+- Enemy 스크립트 구조 리팩토링
+  - `Enemy.cs`에서 공격 관련 변수(attackStartPosition, attackEndPosition 등) 제거
+  - Watcher, MirrorDuelist 등 각 적 클래스에서 전용 변수와 공격 로직 개별 정의
+  - 기즈모 관련 `OnDrawGizmosSelected()`도 Enemy에서 제거하고 개별 클래스에서 정의
+  - 적 타입별 역할 분리를 통한 책임 명확화 및 확장성 향상
+- 플레이어 공격 방식 개선
+  - 기존: 애니메이션 클립 길이를 기준으로 공격 지속 시간 계산
+  - 개선: 애니메이션 이벤트를 활용하여 공격 타이밍 정확히 조절
+  - 불필요한 시간 계산 제거로 직관적이고 신뢰도 높은 타격 판정 구현
+- MirrorDuelist 애니메이션 클립 연결
+  - Idle / Walk / Attack / Spawn / Hit / Death 애니메이션 클립 적용 및 연결
+  - 클립 전환과 상태 반영이 매끄럽도록 Animator 설정 조정
+- 클론 프리팹 추가 및 Mirror 공격 로직 개선
+  - MirrorDuelist용 클론 프리팹 제작 및 적용
+  - 클론 생성 로직을 FSM(MirrorAttackState)에서 본체(MirrorDuelist) 스크립트로 이동
+  - 애니메이션 클립에서 이벤트로 클론 생성 실행
+  - 공격 도중에는 피격 및 상태 전환이 되지 않도록 로직 보완
+    - 공격 중 피격 시 HitState로 전환 금지
+    - 공격 중 ChaseState로 전환 금지
+  - 전투 중 안정성 향상 및 의도된 공격 흐름 유지
+
+### 메모
+- MirrorDuelist의 클론 생성 방식은 향후 개수 조절 및 속도 튜닝 필요
+- Enemy 구조 분리는 다른 적 타입 확장(예: 보스) 시 유용하게 작용할 것
+- 애니메이션 이벤트 기반 공격 처리는 FSM과 자연스럽게 결합되어 앞으로도 사용할 수 있음
+
+---
+
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
