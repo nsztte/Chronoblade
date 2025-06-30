@@ -64,6 +64,8 @@ public class PlayerLocomotionState : PlayerBaseState
 
     private void OnAttackPressed()
     {
+        if(WeaponManager.Instance.CurrentWeapon == null) return;
+        
         // LocomotionState: 기본 공격 시작 (AttackState로 전환)
         stateMachine.ChangeState(new PlayerAttackState(stateMachine));
     }
