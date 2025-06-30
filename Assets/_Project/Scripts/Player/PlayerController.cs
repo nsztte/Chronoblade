@@ -29,6 +29,9 @@ public class PlayerController : MonoBehaviour
     private float crouchControllerHeight;
     private Vector3 crouchControllerCenter;
 
+    // 프로퍼티
+    public float JumpForce => jumpForce;
+
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
@@ -46,13 +49,19 @@ public class PlayerController : MonoBehaviour
         moveInput = input;
     }
 
-    public void TryJump()
+    public bool IsGrounded()
     {
-        if(controller.isGrounded)
-        {
-            velocity.y = jumpForce;
-            PlayerManager.Instance.SetAnimatorTrigger("IsJumping");
-        }
+        return controller.isGrounded;
+    }
+
+    public void ApplyJumpForce()
+    {
+        velocity.y = jumpForce;
+    }
+
+    public void SetJumpAnimation()
+    {
+        PlayerManager.Instance.SetAnimatorTrigger("IsJumping");
     }
 
     public void SetRunning(bool running)

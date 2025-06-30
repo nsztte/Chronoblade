@@ -29,7 +29,7 @@ public class PlayerLocomotionState : PlayerBaseState
 
     public override void Update()
     {
-        playerController.LocomotionUpdate(); // 이동 관련 Update (PlayerController에 메서드가 있다고 가정)
+        playerController.LocomotionUpdate();
     }
 
     private void OnMoveInput(Vector2 input)
@@ -39,7 +39,10 @@ public class PlayerLocomotionState : PlayerBaseState
 
     private void OnJumpPressed()
     {
-        playerController.TryJump();
+        if (playerController.IsGrounded())
+        {
+            stateMachine.ChangeState(new PlayerJumpState(stateMachine));
+        }
     }
 
     private void OnRunStarted()
