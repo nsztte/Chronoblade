@@ -70,20 +70,21 @@ public class PlayerController : MonoBehaviour
         SetJumpAnimation();
     }
 
-    private void SetAttackAnimation()
+    public void PerformWeaponAttack()
     {
-        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
+        WeaponManager.Instance.CurrentWeapon?.ExecuteWeaponAttack();
     }
 
-    private void ExecuteAttack()
+    // 약공격
+    public void PerformLightAttack()
     {
-        WeaponManager.Instance.CurrentWeapon?.ExecuteAttack();
+        WeaponManager.Instance.CurrentWeapon?.ExecuteLightAttack();
     }
 
-    public void PerformAttack()
+    // 강공격
+    public void PerformHeavyAttack()
     {
-        SetAttackAnimation();
-        ExecuteAttack();
+        WeaponManager.Instance.CurrentWeapon?.ExecuteHeavyAttack();
     }
 
     public void SetRunning(bool running)

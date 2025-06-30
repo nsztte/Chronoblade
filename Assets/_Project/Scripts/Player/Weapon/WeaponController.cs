@@ -15,11 +15,11 @@ public abstract class WeaponController : MonoBehaviour
     {
         if(weaponData.weaponType == WeaponType.Rifle)
         {
-            InputManager.Instance.OnAttackHeld += OnAttackInput;
+            InputManager.Instance.OnAttackHeld += ExecuteWeaponAttack;
         }
         else
         {
-            InputManager.Instance.OnAttackPressed += OnAttackInput;
+            InputManager.Instance.OnAttackPressed += ExecuteWeaponAttack;
         }
     }
 
@@ -27,11 +27,11 @@ public abstract class WeaponController : MonoBehaviour
     {
         if(weaponData.weaponType == WeaponType.Rifle)
         {
-            InputManager.Instance.OnAttackHeld -= OnAttackInput;
+            InputManager.Instance.OnAttackHeld -= ExecuteWeaponAttack;
         }
         else
         {
-            InputManager.Instance.OnAttackPressed -= OnAttackInput;
+            InputManager.Instance.OnAttackPressed -= ExecuteWeaponAttack;
         }
     }
 
@@ -48,15 +48,12 @@ public abstract class WeaponController : MonoBehaviour
         RegisterInput();
     }
 
-    protected abstract void OnAttackInput();
+    // 총기류에서만 사용
+    public virtual void ExecuteWeaponAttack() { }
 
-    protected abstract void Attack();
-
-    // FSM에서 호출할 public 공격 메서드
-    public void ExecuteAttack()
-    {
-        OnAttackInput();
-    }
+    // 근접무기에서만 사용
+    public virtual void ExecuteLightAttack() { }
+    public virtual void ExecuteHeavyAttack() { }
 
     // 애니메이션 이벤트 메서드들 (기본 구현은 빈 메서드)
     public virtual void OnMeleeAttackHit() { }

@@ -14,10 +14,12 @@ public class ComboAttackData : ScriptableObject
     [Header("연계")]
     public float inputWindow;
     public float comboTransitionDelay;
-    public ComboAttackData nextCombo;
 
     [Header("연출")]
     public AudioClip soundEffect;
     public GameObject vfxPrefab;
 
+    [Header("콤보 연결")]
+    public string comboSequenceId; // 어떤 콤보 시퀀스에 속하는지 식별
+    public int comboIndex; // 콤보 시퀀스 내에서의 순서 (0부터 시작)
 }

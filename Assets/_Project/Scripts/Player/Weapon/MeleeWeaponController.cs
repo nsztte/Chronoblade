@@ -4,6 +4,9 @@ using System.Collections.Generic;
 
 public class MeleeWeaponController : WeaponController
 {
+    private enum AttackType { None, Light, Heavy }
+    private AttackType currentAttackType = AttackType.None;
+
     [Header("근접 공격 설정")]
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
@@ -14,45 +17,58 @@ public class MeleeWeaponController : WeaponController
     [Header("스태미너 소모")]
     [SerializeField] private int staminaCost = 25;
 
-    protected override void OnAttackInput()
+    public override void ExecuteLightAttack()
     {
-        // 스태미너가 충분할 때만 공격
         if (!gameObject.activeInHierarchy || isAttacking) return;
         if (PlayerManager.Instance.CurrentStamina < staminaCost)
         {
-            Debug.Log("스태미너 부족! 공격 불가");
+            Debug.Log("스태미너 부족! 약공격 불가");
             return;
         }
         PlayerManager.Instance.UseStamina(staminaCost);
-
         isAttacking = true;
-        Attack();
-    }
-
-    protected override void Attack()
-    {
-        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
-        // CameraController.Instance?.SetCameraMeleeAttackOffset(0.3f, 15f);
+        currentAttackType = AttackType.Light;
+        // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
+        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
         hitTargets.Clear();
-        Debug.Log($"[공격 시작] {weaponData.weaponName}");
+        Debug.Log($"[약공격 시작] {weaponData.weaponName}");
     }
 
-    // 애니메이션 이벤트로 호출될 메서드들
+    public override void ExecuteHeavyAttack()
+    {
+        if (!gameObject.activeInHierarchy || isAttacking) return;
+        if (PlayerManager.Instance.CurrentStamina < staminaCost * 2)
+        {
+            Debug.Log("스태미너 부족! 강공격 불가");
+            return;
+        }
+        PlayerManager.Instance.UseStamina(staminaCost * 2);
+        isAttacking = true;
+        currentAttackType = AttackType.Heavy;
+        // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
+        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
+        hitTargets.Clear();
+        Debug.Log($"[강공격 시작] {weaponData.weaponName}");
+    }
+
     public override void OnMeleeAttackHit()
     {
         Vector3 startPos = startPoint.position;
         Vector3 endPos = endPoint.position;
         float radius = weaponData.range;
-
+        int damage = weaponData.damage;
+        if (currentAttackType == AttackType.Heavy)
+        {
+            damage = Mathf.RoundToInt(weaponData.damage * 1.8f);
+        }
         Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
-
         foreach(var hit in hits)
         {
             if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
             {
-                target.TakeDamage(weaponData.damage);
+                target.TakeDamage(damage);
                 hitTargets.Add(target);
-                Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {weaponData.damage}");
+                Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {damage} (타입: {currentAttackType})");
             }
         }
     }
@@ -62,6 +78,7 @@ public class MeleeWeaponController : WeaponController
         Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
         // CameraController.Instance?.ResetCameraPosition(10f);
         isAttacking = false;
+        currentAttackType = AttackType.None;
     }
 
 #if UNITY_EDITOR

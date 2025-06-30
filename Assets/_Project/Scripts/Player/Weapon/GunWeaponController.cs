@@ -40,7 +40,7 @@ public class GunWeaponController : WeaponController
         UpdateWeaponPosition();
     }
 
-    protected override void OnAttackInput()
+    public override void ExecuteWeaponAttack()
     {
         if(!gameObject.activeInHierarchy || isAttacking) return;
         if(isReloading)
@@ -48,45 +48,19 @@ public class GunWeaponController : WeaponController
             Debug.Log("재장전 중");
             return;
         }
-
         if(Time.time < nextFireTime)
         {
             Debug.Log("총기 쿨타임 중");
             return;
         }
-
         if(currentAmmo <= 0)
         {
             Debug.Log("탄약 없음");
             //TODO: 탄약 없음 사운드 재생
             return;
         }
-
         isAttacking = true;
-        Attack();
-    }
-
-    protected override void RegisterInput()
-    {
-        base.RegisterInput();
-        InputManager.Instance.OnAimStarted += OnAimStarted;
-        InputManager.Instance.OnAimCanceled += OnAimCanceled;
-        InputManager.Instance.OnReloadPressed += OnReload;
-    }
-
-    protected override void UnregisterInput()
-    {
-        base.UnregisterInput();
-        InputManager.Instance.OnAimStarted -= OnAimStarted;
-        InputManager.Instance.OnAimCanceled -= OnAimCanceled;
-        InputManager.Instance.OnReloadPressed -= OnReload;
-    }
-
-    protected override void Attack()
-    {
-        // 총기 쿨타임 설정
         nextFireTime = Time.time + coolTime;
-        // 탄약 사용
         currentAmmo = Mathf.Max(0, currentAmmo - 1);
         Debug.Log($"탄약 사용: {currentAmmo}");        
         if(weaponData.weaponType == WeaponType.Shotgun)

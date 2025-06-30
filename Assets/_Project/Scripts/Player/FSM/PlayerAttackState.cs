@@ -6,6 +6,11 @@ public class PlayerAttackState : PlayerBaseState
     private float attackStartTime;
     private const float ATTACK_DURATION = 0.5f; // 기본 공격 지속 시간
     private const float MAX_ATTACK_DURATION = 3f; // 최대 공격 지속 시간 (안전장치)
+    private WeaponType? cachedWeaponType = null;
+
+    // 연속 입력 체크용 변수
+    private static float lastAttackInputTime = -999f;
+    private const float COMBO_INPUT_WINDOW = 0.5f; // 0.5초 이내 연속 입력 시 콤보 진입
 
     public PlayerAttackState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -14,40 +19,48 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Enter()
     {
-        // 공격 시작
         attackStartTime = Time.time;
-        
-        // 공격 입력 이벤트 등록
-        InputManager.Instance.OnAttackPressed += OnAttackPressed;
-        
-        // 공격 실행 (애니메이션 + 무기 공격)
-        playerController.PerformAttack();
-        
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon != null)
+        {
+            cachedWeaponType = weapon.weaponData.weaponType;
+            if (cachedWeaponType == WeaponType.Sword)
+            {
+                InputManager.Instance.OnLightAttackPressed += OnLightAttack;
+                InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttack;
+            }
+            else
+            {
+                InputManager.Instance.OnAttackPressed += OnAttackPressed;
+                InputManager.Instance.OnAttackHeld += OnAttackHeld;
+            }
+        }
         Debug.Log("PlayerAttackState 진입");
     }
 
     public override void Exit()
     {
-        // 공격 입력 이벤트 해제
-        InputManager.Instance.OnAttackPressed -= OnAttackPressed;
-        
+        if (cachedWeaponType == WeaponType.Sword)
+        {
+            InputManager.Instance.OnLightAttackPressed -= OnLightAttack;
+            InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttack;
+        }
+        else
+        {
+            InputManager.Instance.OnAttackPressed -= OnAttackPressed;
+            InputManager.Instance.OnAttackHeld -= OnAttackHeld;
+        }
         Debug.Log("PlayerAttackState 종료");
     }
 
     public override void Update()
     {
-        // 공격 중 물리 업데이트 (이동은 제한되지만 중력은 적용)
         playerController.LocomotionUpdate();
-        
-        // 공격 완료 체크 (기본 지속 시간)
         if (Time.time - attackStartTime >= ATTACK_DURATION)
         {
-            // LocomotionState로 전환
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
-        
-        // 최대 공격 시간 체크 (안전장치)
         if (Time.time - attackStartTime > MAX_ATTACK_DURATION)
         {
             Debug.LogWarning("공격 시간 초과, LocomotionState로 강제 전환");
@@ -56,17 +69,46 @@ public class PlayerAttackState : PlayerBaseState
         }
     }
 
-    private void OnAttackPressed()
+    private void OnLightAttack()
     {
-        // 공격 중 추가 공격 입력 처리 (콤보 시스템)
-        Debug.Log("공격 중 콤보 입력 감지");
-        HandleComboAttack();
+        Debug.Log("[공격] 약공격 입력");
+        playerController.PerformLightAttack();
+        if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
+        {
+            Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
+            stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        }
     }
 
-    private void HandleComboAttack()
+    private void OnHeavyAttack()
     {
-        // 콤보 입력 감지 → PlayerComboState로 전환
-        Debug.Log("콤보 입력 감지 - PlayerComboState로 전환");
-        stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        Debug.Log("[공격] 강공격 입력");
+        playerController.PerformHeavyAttack();
+        if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
+        {
+            Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
+            stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        }
+    }
+
+    private void OnAttackPressed()
+    {
+        Debug.Log("[공격] 원거리 무기 공격 입력");
+        playerController.PerformWeaponAttack();
+    }
+
+    private void OnAttackHeld()
+    {
+        Debug.Log("[공격] 원거리 무기 공격(홀드) 입력");
+        playerController.PerformWeaponAttack();
+    }
+
+    // 일정 시간 내 연속 입력 시 콤보 진입
+    private bool ShouldEnterCombo()
+    {
+        float now = Time.time;
+        bool isCombo = (now - lastAttackInputTime) < COMBO_INPUT_WINDOW;
+        lastAttackInputTime = now;
+        return isCombo;
     }
 }

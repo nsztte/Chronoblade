@@ -35,8 +35,13 @@ public class InputManager : MonoBehaviour
     // public event Action OnSkillPressed;               // Q
     public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
     public event Action OnInteract;                   // F
+    public event Action OnLightAttackPressed;
+    public event Action OnHeavyAttackPressed;
 
     #endregion
+
+    private float attackKeyDownTime;
+    private const float LIGHT_ATTACK_THRESHOLD = 0.2f;
 
     void Update()
     {
@@ -61,13 +66,30 @@ public class InputManager : MonoBehaviour
         // 웅크리기 입력
         if (Input.GetKeyDown(KeyCode.LeftControl))
             OnCrouchPressed?.Invoke();
-            
-        // 공격 입력
-        if (Input.GetMouseButtonDown(0))
-            OnAttackPressed?.Invoke();
 
+        // 총기류 공격 입력 (좌클릭)
+        if (Input.GetMouseButtonDown(0))
+        {
+            OnAttackPressed?.Invoke(); // 총기류 공격용
+            attackKeyDownTime = Time.time;  // 근접 공격 입력 시간 기록
+        }
         if (Input.GetMouseButton(0))
-            OnAttackHeld?.Invoke();
+        {
+            OnAttackHeld?.Invoke(); // 총기류 공격용
+        }
+        if (Input.GetMouseButtonUp(0))
+        {
+            float duration = Time.time - attackKeyDownTime;
+            // 근접 공격 입력(누르는 시간에 따라)
+            if (duration < LIGHT_ATTACK_THRESHOLD)
+            {
+                OnLightAttackPressed?.Invoke(); // 근접 공격용
+            }
+            else
+            {
+                OnHeavyAttackPressed?.Invoke(); // 근접 공격용
+            }
+        }
 
         if (Input.GetKeyDown(KeyCode.R))
             OnReloadPressed?.Invoke();
