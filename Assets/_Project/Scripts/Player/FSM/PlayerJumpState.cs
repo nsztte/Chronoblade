@@ -16,11 +16,8 @@ public class PlayerJumpState : PlayerBaseState
         // 점프 시작
         jumpStartTime = Time.time;
         
-        // 점프 힘 적용
-        playerController.ApplyJumpForce();
-        
-        // 점프 애니메이션 설정
-        playerController.SetJumpAnimation();
+        // 점프 실행 (힘 적용 + 애니메이션)
+        playerController.PerformJump();
         
         // 점프 입력 이벤트 등록 (공중에서 추가 점프 가능)
         InputManager.Instance.OnJumpPressed += OnJumpPressed;

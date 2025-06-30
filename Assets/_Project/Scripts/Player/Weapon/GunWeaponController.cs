@@ -24,9 +24,8 @@ public class GunWeaponController : WeaponController
         animator = GetComponent<Animator>();
     }
 
-    protected override void Start()
+    private void Start()
     {
-        base.Start();
         currentAmmo = weaponData.magazineSize;
         originPosition = transform.localPosition;
         currentTargetPosition = originPosition;

@@ -54,14 +54,36 @@ public class PlayerController : MonoBehaviour
         return controller.isGrounded;
     }
 
-    public void ApplyJumpForce()
+    private void ApplyJumpForce()
     {
         velocity.y = jumpForce;
     }
 
-    public void SetJumpAnimation()
+    private void SetJumpAnimation()
     {
         PlayerManager.Instance.SetAnimatorTrigger("IsJumping");
+    }
+
+    public void PerformJump()
+    {
+        ApplyJumpForce();
+        SetJumpAnimation();
+    }
+
+    private void SetAttackAnimation()
+    {
+        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking");
+    }
+
+    private void ExecuteAttack()
+    {
+        WeaponManager.Instance.CurrentWeapon?.ExecuteAttack();
+    }
+
+    public void PerformAttack()
+    {
+        SetAttackAnimation();
+        ExecuteAttack();
     }
 
     public void SetRunning(bool running)
