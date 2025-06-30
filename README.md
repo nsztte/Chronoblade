@@ -37,7 +37,7 @@
 ## 2주차 목표
 
 - [x] Enemy FSM 구조 설계 및 상태 분리 (Base + 유형별)
-- [ ] Enemy 에셋 연결 및 애니메이터 구성
+- [x] Enemy 에셋 연결 및 애니메이터 구성
 - [x] Enemy NavMeshAgent 설정 및 장애물 회피 테스트
 - [x] Enemy AI 동작 테스트 (이동, 공격, 피격 반응 포함)
 - [x] Player 애니메이션 연동 및 상태 전환 처리
@@ -485,6 +485,42 @@ Enemy FSM(상태머신) 시스템 구현
 - FSM 및 전투 관련 코드가 확장에 유리한 구조로 재편됨
 - Enemy 스크립트의 SOLID 원칙 준수도 향상됨
 - 후속 작업에서 BossEnemy 전용 FSM 확장 시 활용 가능성 높음
+
+---
+
+## 2025.06.30 (월) 작업 기록
+
+### 주요 작업
+- PlayerJumpState 구현
+  - 점프 입력 시 FSM 전환 구조 완성
+  - 점프 시작, 공중 상태, 하강 상태를 하나의 JumpState 내에서 관리
+  - 공중 상태 추후 AirborneState로 확장 고려
+- PlayerAttackState 구현 및 무기 타입별 입력 처리
+  - 근접 무기(Sword): 경직된 공격 → 콤보 진입
+  - 원거리 무기(Pistol, Shotgun): 단발 공격
+  - 연사 무기(Rifle): 공격 홀드 시 연속 사격
+- ComboState 기본 구조 구현
+  - PlayerComboState 클래스 생성
+  - TimingComboManager 연동 준비
+- WeaponController 통합 공격 함수 추가
+  - PerformLightAttack, PerformHeavyAttack, PerformWeaponAttack 함수 정리
+- FSM 기반 무기 입력 시스템 완성
+  - InputManager에서 공격 입력 시 무기 타입에 따라 공격 이벤트 분기
+  - 공격 입력 지속 시간에 따라 근접 무기는 경직/강공격 판정
+- 무기 교체 로직 방어 처리 추가
+  - 무기 교체 시 FSM 상태가 AttackState 또는 ComboState일 경우 무기 변경 불가
+  - 공격 중(IsAttacking=true) 무기 전환 금지
+
+### 추가 개선사항
+- 공격 지속 시간 대신 `WeaponController.IsAttacking` 기준으로 상태 유지
+- AttackState에서 `wasAttacking`을 통해 상태 전환 타이밍 제어
+- 연사 무기(Rifle)는 버튼을 누르고 있을 때만 공격 유지되도록 수정
+- 무기 타입별 이벤트 등록 및 해제 로직 분기 처리 개선
+
+### 메모
+- 현재 구조는 무기 FSM 통합 구조 기반으로 잘 정리됨
+- 콤보 시스템과 애니메이션 이벤트 연동은 다음 단계에서 확장 가능
+- TimingComboManager 연동 및 애니메이션 타이밍 기반 콤보 설계 필요
 
 ---
 
