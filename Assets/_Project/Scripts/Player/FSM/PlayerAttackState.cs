@@ -91,11 +91,11 @@ public class PlayerAttackState : PlayerBaseState
     private void OnLightAttack()
     {
         playerController.PerformLightAttack();
-        // if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
-        // {
-        //     Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
-        //     stateMachine.ChangeState(new PlayerComboState(stateMachine));
-        // }
+        if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
+        {
+            Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
+            stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        }
         // else
         // {
         //     // 콤보가 아니면 공격 입력 후 LocomotionState로 전환
@@ -106,11 +106,11 @@ public class PlayerAttackState : PlayerBaseState
     private void OnHeavyAttack()
     {
         playerController.PerformHeavyAttack();
-        // if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
-        // {
-        //     Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
-        //     stateMachine.ChangeState(new PlayerComboState(stateMachine));
-        // }
+        if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
+        {
+            Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
+            stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        }
         // else
         // {
         //     // 콤보가 아니면 공격 입력 후 LocomotionState로 전환
