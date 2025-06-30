@@ -103,7 +103,7 @@ public class MirrorDuelist : Enemy
         // 공격 범위 표시
         if (fsm?.Target != null)
         {
-            Gizmos.color = new Color(1f, 0.5f, 0f); // 주황색
+            Gizmos.color = Color.green;
             Gizmos.DrawWireSphere(transform.position, AttackRange);
         }
         

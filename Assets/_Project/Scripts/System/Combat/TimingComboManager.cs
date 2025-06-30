@@ -5,6 +5,23 @@ using System.Collections;
 
 public class TimingComboManager : MonoBehaviour
 {
+    #region Singleton
+    public static TimingComboManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    #endregion
+
     [Header("리듬 설정")]
     [SerializeField] private float beatInterval = 0.5f;   // 리듬 템포 (예: 120 BPM = 0.5초 간격)
     [SerializeField] private float perfectWindow = 0.1f;
