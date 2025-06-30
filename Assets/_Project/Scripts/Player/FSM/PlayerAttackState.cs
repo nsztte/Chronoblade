@@ -12,6 +12,8 @@ public class PlayerAttackState : PlayerBaseState
     private static float lastAttackInputTime = -999f;
     private const float COMBO_INPUT_WINDOW = 0.5f; // 0.5초 이내 연속 입력 시 콤보 진입
 
+    private bool wasAttacking = false;
+
     public PlayerAttackState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         playerController = stateMachine.GetComponent<PlayerController>();
@@ -39,6 +41,7 @@ public class PlayerAttackState : PlayerBaseState
             }
         }
         Debug.Log("PlayerAttackState 진입");
+        wasAttacking = false;
     }
 
     public override void Exit()
@@ -63,44 +66,56 @@ public class PlayerAttackState : PlayerBaseState
     public override void Update()
     {
         playerController.LocomotionUpdate();
-        // 연사 총기(라이플)는 버튼을 떼면 상태 전환
-        if (cachedWeaponType != WeaponType.Sword)
+
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon != null)
         {
-            if (Input.GetMouseButtonUp(0))
+            if (wasAttacking && !weapon.IsAttacking)
             {
                 stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+                return;
             }
+            wasAttacking = weapon.IsAttacking;
         }
+
+        // (기존: 연사 총기(라이플)는 버튼을 떼면 상태 전환)
+        // if (cachedWeaponType != WeaponType.Sword)
+        // {
+        //     if (Input.GetMouseButtonUp(0))
+        //     {
+        //         stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        //     }
+        // }
     }
 
     private void OnLightAttack()
     {
         playerController.PerformLightAttack();
-        if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
-        {
-            Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
-            stateMachine.ChangeState(new PlayerComboState(stateMachine));
-        }
-        else
-        {
-            // 콤보가 아니면 공격 입력 후 LocomotionState로 전환
-            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
-        }
+        // if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
+        // {
+        //     Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
+        //     stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        // }
+        // else
+        // {
+        //     // 콤보가 아니면 공격 입력 후 LocomotionState로 전환
+        //     stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        // }
     }
 
     private void OnHeavyAttack()
     {
         playerController.PerformHeavyAttack();
-        if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
-        {
-            Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
-            stateMachine.ChangeState(new PlayerComboState(stateMachine));
-        }
-        else
-        {
-            // 콤보가 아니면 공격 입력 후 LocomotionState로 전환
-            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
-        }
+        // if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
+        // {
+        //     Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
+        //     stateMachine.ChangeState(new PlayerComboState(stateMachine));
+        // }
+        // else
+        // {
+        //     // 콤보가 아니면 공격 입력 후 LocomotionState로 전환
+        //     stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        // }
     }
 
     private void OnAttackPressed()
