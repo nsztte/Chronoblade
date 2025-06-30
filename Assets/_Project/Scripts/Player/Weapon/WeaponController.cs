@@ -17,6 +17,11 @@ public abstract class WeaponController : MonoBehaviour
         {
             InputManager.Instance.OnAttackHeld += ExecuteWeaponAttack;
         }
+        else if(weaponData.weaponType == WeaponType.Sword)
+        {
+            InputManager.Instance.OnLightAttackPressed += ExecuteLightAttack;
+            InputManager.Instance.OnHeavyAttackPressed += ExecuteHeavyAttack;
+        }
         else
         {
             InputManager.Instance.OnAttackPressed += ExecuteWeaponAttack;
@@ -28,6 +33,11 @@ public abstract class WeaponController : MonoBehaviour
         if(weaponData.weaponType == WeaponType.Rifle)
         {
             InputManager.Instance.OnAttackHeld -= ExecuteWeaponAttack;
+        }
+        else if(weaponData.weaponType == WeaponType.Sword)
+        {
+            InputManager.Instance.OnLightAttackPressed -= ExecuteLightAttack;
+            InputManager.Instance.OnHeavyAttackPressed -= ExecuteHeavyAttack;
         }
         else
         {

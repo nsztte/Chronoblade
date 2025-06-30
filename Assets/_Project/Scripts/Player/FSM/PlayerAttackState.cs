@@ -29,10 +29,13 @@ public class PlayerAttackState : PlayerBaseState
                 InputManager.Instance.OnLightAttackPressed += OnLightAttack;
                 InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttack;
             }
+            else if(cachedWeaponType == WeaponType.Rifle)
+            {
+                InputManager.Instance.OnAttackHeld += OnAttackHeld;
+            }
             else
             {
                 InputManager.Instance.OnAttackPressed += OnAttackPressed;
-                InputManager.Instance.OnAttackHeld += OnAttackHeld;
             }
         }
         Debug.Log("PlayerAttackState 진입");
@@ -45,17 +48,29 @@ public class PlayerAttackState : PlayerBaseState
             InputManager.Instance.OnLightAttackPressed -= OnLightAttack;
             InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttack;
         }
+        else if(cachedWeaponType == WeaponType.Rifle)
+        {
+            InputManager.Instance.OnAttackHeld -= OnAttackHeld;
+        }
         else
         {
             InputManager.Instance.OnAttackPressed -= OnAttackPressed;
-            InputManager.Instance.OnAttackHeld -= OnAttackHeld;
         }
+
         Debug.Log("PlayerAttackState 종료");
     }
 
     public override void Update()
     {
         playerController.LocomotionUpdate();
+        // 연사 총기(라이플)는 버튼을 떼면 상태 전환
+        if (cachedWeaponType != WeaponType.Sword)
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            }
+        }
     }
 
     private void OnLightAttack()
