@@ -6,6 +6,7 @@ public abstract class WeaponController : MonoBehaviour
     public WeaponData weaponData;
     protected float coolTime = 0.5f;
     [SerializeField] protected bool isAttacking = false;
+    public bool IsAttacking => isAttacking;
 
     // FSM에서 공격을 관리하므로 자동 입력 등록 비활성화
     // protected virtual void Start() => RegisterInput();

@@ -27,6 +27,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private float interactRadius = 2f;
 
     private Animator animator;
+    private PlayerStateMachine playerStateMachine;
 
     // 회복 타이머
     private float mpRecoveryTimer = 0f;
@@ -40,6 +41,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public int MaxStamina => maxStamina;
     public float CurrentStamina => currentStamina;
     public int Gold => gold;
+    public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     #endregion
 
     #region Singleton
@@ -65,6 +67,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        playerStateMachine = GetComponent<PlayerStateMachine>();
+        
         currentHP = maxHP;
         currentMP = maxMP;
         currentStamina = maxStamina;

@@ -52,6 +52,18 @@ public class WeaponManager : MonoBehaviour
     {
         if(index < 0 || index >= weaponSlots.Count) return;
 
+        // 공격/콤보 상태일 때 무기 교체 금지
+        var playerManager = PlayerManager.Instance;
+        if (playerManager != null && playerManager.PlayerStateMachine != null)
+        {
+            var state = playerManager.PlayerStateMachine.currentState;
+            if (state != null && (state is PlayerAttackState || state is PlayerComboState))
+                return;
+        }
+        // 공격 중일 때 무기 교체 금지
+        if(currentWeapon != null && currentWeapon.IsAttacking)
+            return;
+
         if(currentWeapon != null)
         {
             currentWeapon.gameObject.SetActive(false);

@@ -131,7 +131,6 @@ public class InputManager : MonoBehaviour
             SwitchWeapon(3, currentWeaponIndex, maxWeaponCount);
         }
 
-
         // 마우스 휠로 무기 전환
         float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
 
