@@ -30,12 +30,27 @@ public class TimingComboManager : MonoBehaviour
     [Header("보너스 배율")]
     [SerializeField] private float perfectBonusMultiplier = 1.2f;
     [SerializeField] private float goodBonusMultiplier = 1.0f;
+    [SerializeField] private float missPenaltyMultiplier = 0.5f;
 
     [Header("입력 유효 시간")]
     [SerializeField] private float inputValidTime = 1.0f; // 입력 유효 시간(초)
 
     public enum TimingResult { Perfect, Good, Miss, None }
-    public event Action<TimingResult> OnTimingJudged;
+    
+    [System.Serializable]
+    public struct TimingJudgement
+    {
+        public TimingResult result;
+        public float damageMultiplier;
+        
+        public TimingJudgement(TimingResult result, float multiplier)
+        {
+            this.result = result;
+            this.damageMultiplier = multiplier;
+        }
+    }
+    
+    public event Action<TimingJudgement> OnTimingJudged;
 
     private float startTime;
     private List<float> inputTimes = new(); // 입력 시각들 저장 (연타 대응)
@@ -105,7 +120,25 @@ public class TimingComboManager : MonoBehaviour
 
             Debug.Log($"[TimingComboManager] inputTime: {inputTime:F3}, beatTime: {nearestBeatTime:F3}, offset: {offset:F3}, result: {result}");
 
-            OnTimingJudged?.Invoke(result);
+            float damageMultiplier;
+            switch (result)
+            {
+                case TimingResult.Perfect:
+                    damageMultiplier = perfectBonusMultiplier;
+                    break;
+                case TimingResult.Good:
+                    damageMultiplier = goodBonusMultiplier;
+                    break;
+                case TimingResult.Miss:
+                    damageMultiplier = missPenaltyMultiplier;
+                    break;
+                default:
+                    damageMultiplier = 1.0f;
+                    break;
+            }
+
+            TimingJudgement judgement = new TimingJudgement(result, damageMultiplier);
+            OnTimingJudged?.Invoke(judgement);
             toRemove.Add(inputTime);
         }
 
