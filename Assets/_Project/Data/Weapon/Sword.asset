@@ -17,6 +17,7 @@ MonoBehaviour:
   damage: 25
   fireRate: 0
   range: 0.2
+  ammoType: 0
   magazineSize: 0
   maxAmmo: 0
   pelletCount: 1
@@ -29,3 +30,5 @@ MonoBehaviour:
   iconSprite: {fileID: 0}
   muzzleFlash: {fileID: 0}
   fireSound: {fileID: 0}
+  swordCombos:
+  - {fileID: 11400000, guid: 1d8fabdaa5892af48bb357789c0f257c, type: 2}

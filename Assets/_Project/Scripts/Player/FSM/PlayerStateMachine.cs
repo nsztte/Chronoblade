@@ -13,12 +13,16 @@ public enum PlayerState
 }
 public class PlayerStateMachine : MonoBehaviour
 {
+    public Animator animator;
+    public PlayerController playerController;
     public PlayerBaseState currentState;
     public PlayerState currentStateType;
     private readonly Dictionary<System.Type, PlayerState> stateTypeMap = new Dictionary<System.Type, PlayerState>();
 
     private void Awake()
     {
+        animator = GetComponent<Animator>();
+        playerController = GetComponent<PlayerController>();
         InitializeStateTypeMap();
     }
 

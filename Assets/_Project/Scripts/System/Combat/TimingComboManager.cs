@@ -26,6 +26,7 @@ public class TimingComboManager : MonoBehaviour
     [SerializeField] private float beatInterval = 0.5f;   // 리듬 템포 (예: 120 BPM = 0.5초 간격)
     [SerializeField] private float perfectWindow = 0.1f;
     [SerializeField] private float goodWindow = 0.25f;
+    public float BeatInterval => beatInterval;
 
     [Header("보너스 배율")]
     [SerializeField] private float perfectBonusMultiplier = 1.2f;

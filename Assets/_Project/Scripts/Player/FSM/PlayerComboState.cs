@@ -2,12 +2,18 @@ using UnityEngine;
 
 public class PlayerComboState : PlayerBaseState
 {
+    private PlayerController playerController;
     private ComboSequence combo;
     private int currentAttackIndex = 0;
-    
+    private float comboStartTime;
+    private float beatInterval;
+    private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
+
     public PlayerComboState(PlayerStateMachine stateMachine, ComboSequence combo) : base(stateMachine)
     {
         this.combo = combo;
+        playerController = stateMachine.playerController;
+        beatInterval = TimingComboManager.Instance.BeatInterval;
     }
 
     public override void Enter()
@@ -19,8 +25,8 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Update()
     {
-        // 콤보 애니메이션/공격이 끝났는지 체크
-        if (IsCurrentAttackFinished())
+        // 비트 기준으로 다음 타로 넘어감
+        if (Time.time - comboStartTime >= beatInterval)
         {
             currentAttackIndex++;
             if (currentAttackIndex < combo.attackSequence.Count)
@@ -33,28 +39,37 @@ public class PlayerComboState : PlayerBaseState
                 stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             }
         }
+
+        playerController.LocomotionUpdate(); // 이동 자연스럽게 유지
     }
 
     public override void Exit()
     {
         Debug.Log($"[콤보] {combo.comboName} 종료");
-        // 필요 시 상태 정리
+        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f); // 속도 초기화
     }
 
+    // TODO: 공격 이펙트, 데미지, 넉백 등 처리
     private void PlayCurrentComboAttack()
     {
         var attackData = combo.attackSequence[currentAttackIndex];
-        // 애니메이션, 이펙트, 데미지 등 처리
-        Debug.Log($"[콤보] {combo.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}");
-        // playerController.PlayComboAnimation(attackData.animationClip);
-        // playerController.ApplyComboDamage(attackData.damage);
-    }
 
-    private bool IsCurrentAttackFinished()
-    {
-        // 실제로는 애니메이션/타이밍/이펙트 등과 연동
-        // 여기서는 예시로 간단히 시간 체크 등으로 대체 가능
-        // return playerController.IsComboAttackFinished();
-        return true; // 임시: 바로 다음 타로 넘어감
+        // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
+        float animLength = attackData.animationClip.length;
+        float speed = animLength / beatInterval;
+        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
+
+        // 공격 애니메이션 실행 (상체 전용 레이어에서)
+        stateMachine.animator.CrossFadeInFixedTime(
+            attackData.animationClip.name,
+            0.05f,
+            upperBodyLayerIndex
+        );
+
+        // 공격 시작 시간 기록
+        comboStartTime = Time.time;
+
+        // 디버그 출력
+        Debug.Log($"[콤보] {combo.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}");
     }
 }
