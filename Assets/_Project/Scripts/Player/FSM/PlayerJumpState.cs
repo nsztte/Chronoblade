@@ -21,6 +21,8 @@ public class PlayerJumpState : PlayerBaseState
         
         // 점프 입력 이벤트 등록 (공중에서 추가 점프 가능)
         InputManager.Instance.OnJumpPressed += OnJumpPressed;
+
+        TimingComboManager.Instance.StopBeatRoutine();
         
         Debug.Log("PlayerJumpState 진입");
     }

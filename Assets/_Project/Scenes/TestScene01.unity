@@ -359,7 +359,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146515025ea4d4842ab87bebd9b37432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beatInterval: 0.5
+  beatInterval: 1
   perfectWindow: 0.1
   goodWindow: 0.25
   perfectBonusMultiplier: 1.2
@@ -554,6 +554,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 26697f4c86dd68c4f954bb8711e68d6c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  animator: {fileID: 0}
+  playerController: {fileID: 0}
   currentStateType: 0
 --- !u!33 &33325207968967379
 MeshFilter:

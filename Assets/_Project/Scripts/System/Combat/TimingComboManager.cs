@@ -59,13 +59,35 @@ public class TimingComboManager : MonoBehaviour
 
     private float lastBeatTime;
 
+    private Coroutine beatRoutineCoroutine;
+    private bool beatStarted = false;
+
+    public void StartBeatRoutine()
+    {
+        if (!beatStarted)
+        {
+            beatStarted = true;
+            beatRoutineCoroutine = StartCoroutine(BeatRoutine());
+            Debug.Log("비트 루프 시작!");
+        }
+    }
+
+    public void StopBeatRoutine()
+    {
+        if (beatRoutineCoroutine != null)
+        {
+            StopCoroutine(beatRoutineCoroutine);
+            beatRoutineCoroutine = null;
+        }
+        beatStarted = false;
+        Debug.Log("비트 루프 중단 및 플래그 초기화");
+    }
+
     private void Start()
     {
-        startTime = Time.time; // 비트 기준 시점 설정
-        lastBeatTime = Time.time;
-        StartCoroutine(BeatRoutine());
-        // InputManager 이벤트 구독 제거 - ComboEvaluator가 입력을 담당
-        // InputManager.Instance.OnAttackPressed += OnAttackInput;
+        // startTime = Time.time;
+        // lastBeatTime = Time.time;
+        // StartCoroutine(BeatRoutine());
     }
 
     private void OnDisable()

@@ -18,7 +18,7 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log($"[콤보] {combo.comboName} 시작");
+        Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
         currentAttackIndex = 0;
         PlayCurrentComboAttack();
     }
@@ -45,8 +45,9 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log($"[콤보] {combo.comboName} 종료");
-        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f); // 속도 초기화
+        Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
+        TimingComboManager.Instance.StopBeatRoutine();
+        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
     }
 
     // TODO: 공격 이펙트, 데미지, 넉백 등 처리

@@ -18,6 +18,8 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
         InputManager.Instance.OnAttackPressed += OnAttackPressed;
         ComboEvaluator.Instance.OnComboMatched += OnComboMatched;
+
+        TimingComboManager.Instance.StopBeatRoutine();
     }
 
     public override void Exit()

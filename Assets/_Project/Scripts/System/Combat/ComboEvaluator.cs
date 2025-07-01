@@ -53,6 +53,7 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     private void OnBeat()
     {
+        Debug.Log("지금!!!!");
         // 1. 먼저 현재 상태로 콤보 매칭 시도 (입력 타이밍 오차 없는 정밀한 평가)
         TryMatchCombo();
 
@@ -113,12 +114,14 @@ public class ComboEvaluator : MonoBehaviour
         {
             if (IsComboMatch(combo))
             {
+                Debug.Log($"[ComboEvaluator] 콤보 매칭 성공: {combo.comboName}");
                 OnComboMatched?.Invoke(combo);
                 beatInputBuffer.Clear();
                 currentBeatIndex = 0;
                 return;
             }
         }
+        Debug.Log("[ComboEvaluator] 매칭되는 콤보 없음");
     }
 
     /// <summary>
