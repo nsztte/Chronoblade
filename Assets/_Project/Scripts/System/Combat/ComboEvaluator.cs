@@ -53,7 +53,6 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     private void OnBeat()
     {
-        Debug.Log("지금!!!!");
         // 1. 먼저 현재 상태로 콤보 매칭 시도 (입력 타이밍 오차 없는 정밀한 평가)
         TryMatchCombo();
 
@@ -95,6 +94,25 @@ public class ComboEvaluator : MonoBehaviour
         beatInputBuffer.Enqueue(input);
         inputRegisteredThisBeat = true;
         lastComboTime = Time.time;
+    }
+
+    /// <summary>
+    /// 특정 콤보의 해당 스텝까지 입력이 유효한지 검사
+    /// </summary>
+    public bool IsValidStep(ComboSequence combo, int step)
+    {
+        if (beatInputBuffer.Count < step + 1)
+            return false;
+
+        var bufferArray = beatInputBuffer.ToArray();
+        for (int i = 0; i <= step; i++)
+        {
+            if (combo.attackSequence[i].attackType != bufferArray[i])
+            {
+                return false;
+            }
+        }
+        return true;
     }
 
     /// <summary>

@@ -25,22 +25,29 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Update()
     {
-        // 비트 기준으로 다음 타로 넘어감
         if (Time.time - comboStartTime >= beatInterval)
+    {
+        currentAttackIndex++;
+
+        if (currentAttackIndex < combo.attackSequence.Count)
         {
-            currentAttackIndex++;
-            if (currentAttackIndex < combo.attackSequence.Count)
+            // 먼저 애니메이션 실행 (공격 동기화)
+            PlayCurrentComboAttack();
+
+            // 다음 공격을 실행했지만, 입력이 안 맞았으면 즉시 종료
+            if (!ComboEvaluator.Instance.IsValidStep(combo, currentAttackIndex))
             {
-                PlayCurrentComboAttack();
-            }
-            else
-            {
-                // 콤보 종료 → 이동 상태로 복귀
+                Debug.Log("[PlayerComboState] 콤보 입력 불일치 → 상태 종료");
                 stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             }
         }
+        else
+        {
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        }
+    }
 
-        playerController.LocomotionUpdate(); // 이동 자연스럽게 유지
+    playerController.LocomotionUpdate();
     }
 
     public override void Exit()
@@ -55,17 +62,17 @@ public class PlayerComboState : PlayerBaseState
     {
         var attackData = combo.attackSequence[currentAttackIndex];
 
-        // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
-        float animLength = attackData.animationClip.length;
-        float speed = animLength / beatInterval;
-        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
+        // // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
+        // float animLength = attackData.animationClip.length;
+        // float speed = animLength / beatInterval;
+        // PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
 
-        // 공격 애니메이션 실행 (상체 전용 레이어에서)
-        stateMachine.animator.CrossFadeInFixedTime(
-            attackData.animationClip.name,
-            0.05f,
-            upperBodyLayerIndex
-        );
+        // // 공격 애니메이션 실행 (상체 전용 레이어에서)
+        // stateMachine.animator.CrossFadeInFixedTime(
+        //     attackData.animationClip.name,
+        //     0.05f,
+        //     upperBodyLayerIndex
+        // );
 
         // 공격 시작 시간 기록
         comboStartTime = Time.time;
