@@ -524,6 +524,34 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.01 (화) 작업 기록
+
+### 주요 작업
+- 리듬 기반 콤보 시스템 구현
+  - `TimingComboManager`에 `StartBeatRoutine()` / `StopBeatRoutine()` 도입
+    - 공격 시작 시 비트 루프 시작
+    - 콤보 종료 및 이동/점프 등 상태 전환 시 루프 중단
+  - `ComboEvaluator` 개선
+    - 입력 버퍼에 `Rest` 포함하여 "쉬기" 개념 반영
+    - `IsValidStep()` 함수로 콤보 진행 중간 검증 기능 추가
+    - `TryMatchCombo()` 내부에서 매칭 성공 여부 판단 및 콤보 발동
+- `PlayerComboState` 개선
+  - `beatInterval` 기준으로 콤보 공격 단계별 실행
+  - 애니메이션 클립 길이를 비트 타이밍에 맞게 속도 조절 (`AttackSpeed` 파라미터 사용)
+  - `CrossFadeInFixedTime()` 활용해 상체 애니메이션만 자연스럽게 재생
+  - 콤보 입력이 틀릴 경우 즉시 상태 종료
+- 애니메이터 구조 간소화
+  - 오버라이드 애니메이터 사용 제거
+  - 애니메이터 내부에서 상태 전이 없이 직접 애니메이션 클립 재생
+
+### 메모
+- 현재 입력 타이밍이 맞아도 **콤보 2타 이상이 정상적으로 이어지지 않는 문제** 존재
+  - `IsValidStep()` 판정 또는 비트 시점과 입력 간격 간 오차 가능성 있음
+  - 콤보 3타를 입력해도 1타까지만 출력되는 현상 디버깅 필요
+- 테스트를 위해 다양한 콤보 시퀀스 데이터 등록 필요 (`Light + Rest + Light` 등)
+
+---
+
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서

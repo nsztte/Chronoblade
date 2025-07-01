@@ -359,13 +359,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146515025ea4d4842ab87bebd9b37432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beatInterval: 1
+  beatInterval: 0.5
   perfectWindow: 0.1
   goodWindow: 0.25
   perfectBonusMultiplier: 1.2
   goodBonusMultiplier: 1
   missPenaltyMultiplier: 0.5
-  inputValidTime: 1
+  inputValidTime: 3
 --- !u!4 &729022982
 Transform:
   m_ObjectHideFlags: 0
