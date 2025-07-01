@@ -51,6 +51,7 @@ public class TimingComboManager : MonoBehaviour
     }
     
     public event Action<TimingJudgement> OnTimingJudged;
+    public event Action OnBeat; // 비트마다 콤보 시스템에 알림
 
     private float startTime;
     private List<float> inputTimes = new(); // 입력 시각들 저장 (연타 대응)
@@ -62,21 +63,17 @@ public class TimingComboManager : MonoBehaviour
         startTime = Time.time; // 비트 기준 시점 설정
         lastBeatTime = Time.time;
         StartCoroutine(BeatRoutine());
-        // InputManager 이벤트 구독
-        InputManager.Instance.OnAttackPressed += OnAttackInput;
+        // InputManager 이벤트 구독 제거 - ComboEvaluator가 입력을 담당
+        // InputManager.Instance.OnAttackPressed += OnAttackInput;
     }
 
     private void OnDisable()
     {
-        if (InputManager.Instance != null)
-        {
-            InputManager.Instance.OnAttackPressed -= OnAttackInput;
-        }
-    }
-
-    private void OnAttackInput()
-    {
-        inputTimes.Add(Time.time);
+        // InputManager 이벤트 구독 해제 제거
+        // if (InputManager.Instance != null)
+        // {
+        //     InputManager.Instance.OnAttackPressed -= OnAttackInput;
+        // }
     }
 
     private IEnumerator BeatRoutine()
@@ -84,6 +81,7 @@ public class TimingComboManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(beatInterval);
+            OnBeat?.Invoke(); // 비트마다 알림
             EvaluateInputs();
         }
     }
@@ -155,5 +153,10 @@ public class TimingComboManager : MonoBehaviour
         float beatsPassed = Mathf.Round((currentTime - startTime) / beatInterval);
         float nearestBeatTime = startTime + beatsPassed * beatInterval;
         return currentTime - nearestBeatTime;
+    }
+
+    public float GetComboWindow()
+    {
+        return inputValidTime; // 콤보 입력 유효 시간 반환
     }
 }

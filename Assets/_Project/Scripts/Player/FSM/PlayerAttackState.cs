@@ -94,7 +94,7 @@ public class PlayerAttackState : PlayerBaseState
         if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
         {
             Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
-            stateMachine.ChangeState(new PlayerComboState(stateMachine));
+            // stateMachine.ChangeState(new PlayerComboState(stateMachine));
         }
         // else
         // {
@@ -109,7 +109,7 @@ public class PlayerAttackState : PlayerBaseState
         if (cachedWeaponType == WeaponType.Sword && ShouldEnterCombo())
         {
             Debug.Log("[콤보] 콤보 조건 충족, PlayerComboState로 전환");
-            stateMachine.ChangeState(new PlayerComboState(stateMachine));
+            // stateMachine.ChangeState(new PlayerComboState(stateMachine));
         }
         // else
         // {

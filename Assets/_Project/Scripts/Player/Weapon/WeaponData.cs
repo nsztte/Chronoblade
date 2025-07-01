@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public enum WeaponType
 {
@@ -46,4 +47,7 @@ public class WeaponData : ScriptableObject
     [Header("이펙트 및 사운드")]
     public GameObject muzzleFlash;
     public AudioClip fireSound;
+
+    [Header("검 콤보 (Sword 전용)")]
+    public List<ComboSequence> swordCombos = new();
 }
