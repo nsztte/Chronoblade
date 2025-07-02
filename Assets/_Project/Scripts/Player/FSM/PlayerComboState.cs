@@ -21,9 +21,6 @@ public class PlayerComboState : PlayerBaseState
         // Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
         currentAttackIndex = 0;
         
-        // 콤보 실행 시작 - 입력 버퍼 업데이트 중단
-        ComboEvaluator.Instance.StartComboExecution();
-        
         PlayCurrentComboAttack();
     }
 
@@ -56,9 +53,6 @@ public class PlayerComboState : PlayerBaseState
 
         stateMachine.animator.CrossFadeInFixedTime("Empty", 0.1f, upperBodyLayerIndex);
         stateMachine.animator.ResetTrigger("IsAttacking");
-        
-        // 콤보 실행 종료 - 입력 버퍼 클리어 및 업데이트 재개
-        ComboEvaluator.Instance.EndComboExecution();
     }
 
     // TODO: 공격 이펙트, 데미지, 넉백 등 처리

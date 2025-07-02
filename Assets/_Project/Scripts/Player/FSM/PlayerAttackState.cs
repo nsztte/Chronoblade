@@ -41,8 +41,7 @@ public class PlayerAttackState : PlayerBaseState
         Debug.Log("PlayerAttackState 진입");
         wasAttacking = false;
         isComboTriggered = false; // 콤보 트리거 초기화
-        // 콤보 매칭 이벤트 구독
-        ComboEvaluator.Instance.OnComboMatched += OnComboMatched;
+        
         // 공격 상태 진입 시 비트 루프 시작
         TimingComboManager.Instance.StartBeatRoutine();
     }
@@ -64,12 +63,6 @@ public class PlayerAttackState : PlayerBaseState
         }
 
         Debug.Log("PlayerAttackState 종료");
-        // 콤보 매칭 이벤트 구독 해제
-        ComboEvaluator.Instance.OnComboMatched -= OnComboMatched;
-        // 비트 루프 종료
-        // TimingComboManager.Instance.StopBeatRoutine();
-        // // 입력 버퍼 클리어
-        // ComboEvaluator.Instance.ClearInputBuffer();
     }
 
     public override void Update()
