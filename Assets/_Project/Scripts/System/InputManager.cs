@@ -152,6 +152,26 @@ public class InputManager : MonoBehaviour
     {
         if (weaponIndex >= 0 && weaponIndex < maxCount)
         {
+            // 공격/콤보 상태일 때 무기 교체 금지
+            var playerManager = PlayerManager.Instance;
+            if (playerManager != null && playerManager.PlayerStateMachine != null)
+            {
+                var state = playerManager.PlayerStateMachine.currentState;
+                if (state != null && (state is PlayerAttackState || state is PlayerComboState))
+                {
+                    Debug.Log("[InputManager] 공격/콤보 상태에서 무기 교체 시도 차단");
+                    return;
+                }
+            }
+            
+            // 현재 무기가 공격 중일 때 무기 교체 금지
+            var currentWeapon = WeaponManager.Instance.CurrentWeapon;
+            if (currentWeapon != null && currentWeapon.IsAttacking)
+            {
+                Debug.Log("[InputManager] 공격 중 무기 교체 시도 차단");
+                return;
+            }
+
             if (weaponIndex == currentIndex)
             {
                 // 이미 장착된 무기일 경우 장착 해제

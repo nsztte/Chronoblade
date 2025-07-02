@@ -70,7 +70,32 @@ public class PlayerLocomotionState : PlayerBaseState
     {
         if(WeaponManager.Instance.CurrentWeapon == null) return;
         
-        // LocomotionState: 기본 공격 시작 (AttackState로 전환)
+        // 첫 번째 공격 입력 시점에 타이밍과 콤보 판단
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        
+        if (result != TimingComboManager.TimingResult.Miss)
+        {
+            // 타이밍이 맞으면 콤보 시도
+            var weapon = WeaponManager.Instance.CurrentWeapon;
+            if (weapon.weaponData.weaponType == WeaponType.Sword)
+            {
+                // Light 공격으로 콤보 가능한지 확인
+                if (ComboEvaluator.Instance.CanStartCombo(AttackType.Light))
+                {
+                    var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Light);
+                    if (combo != null)
+                    {
+                        Debug.Log($"[PlayerLocomotionState] 콤보 시작: {combo.comboName} (타이밍: {result})");
+                        // 바로 ComboState로 전환
+                        stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
+                        return;
+                    }
+                }
+            }
+        }
+        
+        // 콤보가 아니거나 타이밍이 틀리면 AttackState로 전환
+        Debug.Log($"[PlayerLocomotionState] 일반 공격으로 전환 (타이밍: {result})");
         stateMachine.ChangeState(new PlayerAttackState(stateMachine));
     }
 }

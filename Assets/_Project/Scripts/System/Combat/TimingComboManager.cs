@@ -24,8 +24,8 @@ public class TimingComboManager : MonoBehaviour
 
     [Header("리듬 설정")]
     [SerializeField] private float beatInterval = 0.5f;   // 리듬 템포 (예: 120 BPM = 0.5초 간격)
-    [SerializeField] private float perfectWindow = 0.22f;
-    [SerializeField] private float goodWindow = 0.37f;
+    [SerializeField] private float perfectWindow = 0.06f; // Perfect 판정 윈도우 (40ms)
+    [SerializeField] private float goodWindow = 0.12f;    // Good 판정 윈도우 (80ms)
     public float BeatInterval => beatInterval;
     public float PerfectWindow => perfectWindow;
     public float GoodWindow => goodWindow;
@@ -82,11 +82,6 @@ public class TimingComboManager : MonoBehaviour
             beatStarted = true;
             startTime = Time.time; // 비트 루프 시작 시점 초기화
             beatRoutineCoroutine = StartCoroutine(BeatRoutine());
-            // Debug.Log("[TimingComboManager] 비트 루프 시작!");
-        }
-        else
-        {
-            // Debug.LogWarning("[TimingComboManager] 비트 루프 이미 실행 중!");
         }
     }
 
@@ -96,7 +91,6 @@ public class TimingComboManager : MonoBehaviour
         {
             StopCoroutine(beatRoutineCoroutine);
             beatRoutineCoroutine = null;
-            // Debug.Log("[TimingComboManager] 비트 루프 중단!");
         }
         beatStarted = false;
     }
@@ -106,7 +100,6 @@ public class TimingComboManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(beatInterval);
-            // Debug.Log($"[TimingComboManager] OnBeat 이벤트 발생 - Instance: {GetInstanceID()}, Time: {Time.time:F3}");
             OnBeat?.Invoke(); // 비트마다 알림
         }
     }

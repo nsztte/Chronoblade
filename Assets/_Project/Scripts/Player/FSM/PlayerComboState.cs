@@ -8,6 +8,7 @@ public class PlayerComboState : PlayerBaseState
     private float comboStartTime;
     private float beatInterval;
     private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
+    private bool isWaitingForInput = true; // 첫 번째 입력 대기 상태
 
     public PlayerComboState(PlayerStateMachine stateMachine, ComboSequence combo) : base(stateMachine)
     {
@@ -18,41 +19,115 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Enter()
     {
-        // Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
+        Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
         currentAttackIndex = 0;
+        isWaitingForInput = true;
+        comboStartTime = Time.time;
         
-        PlayCurrentComboAttack();
+        // 첫 번째 공격은 자동 실행하지 않고 입력 대기
+        // PlayCurrentComboAttack(); // 이 줄 제거
+        
+        // 입력 이벤트 구독
+        if (WeaponManager.Instance.CurrentWeapon?.weaponData.weaponType == WeaponType.Sword)
+        {
+            InputManager.Instance.OnLightAttackPressed += OnLightAttack;
+            InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttack;
+        }
+    }
+
+    public override void Exit()
+    {
+        Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
+        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
+
+        // 입력 이벤트 구독 해제
+        if (WeaponManager.Instance.CurrentWeapon?.weaponData.weaponType == WeaponType.Sword)
+        {
+            InputManager.Instance.OnLightAttackPressed -= OnLightAttack;
+            InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttack;
+        }
+
+        stateMachine.animator.CrossFadeInFixedTime("Empty", 0.1f, upperBodyLayerIndex);
     }
 
     public override void Update()
     {
-        if (Time.time - comboStartTime >= beatInterval)
+        // 타이밍 체크 - 일정 시간 내에 입력이 없으면 콤보 실패
+        if (Time.time - comboStartTime > TimingComboManager.Instance.GetComboWindow())
         {
-            currentAttackIndex++;
-
-            if (currentAttackIndex < combo.attackSequence.Count)
-            {
-                // 다음 공격 실행
-                PlayCurrentComboAttack();
-            }
-            else
-            {
-                // 콤보 완료
-                stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
-            }
+            Debug.Log("[PlayerComboState] 콤보 실패 - 입력 시간 초과");
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
         }
 
         playerController.LocomotionUpdate();
     }
 
-    public override void Exit()
+    private void OnLightAttack()
     {
-        // Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
-        // TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
-        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
+        TryContinueCombo(AttackType.Light);
+    }
 
-        stateMachine.animator.CrossFadeInFixedTime("Empty", 0.1f, upperBodyLayerIndex);
-        stateMachine.animator.ResetTrigger("IsAttacking");
+    private void OnHeavyAttack()
+    {
+        TryContinueCombo(AttackType.Heavy);
+    }
+
+    private void TryContinueCombo(AttackType input)
+    {
+        // 타이밍 판정
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        
+        if (result == TimingComboManager.TimingResult.Miss)
+        {
+            Debug.Log($"[PlayerComboState] 콤보 실패 - 타이밍 Miss");
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
+        }
+
+        if (isWaitingForInput)
+        {
+            // 첫 번째 입력 처리
+            isWaitingForInput = false;
+            var expectedAttack = combo.attackSequence[currentAttackIndex].attackType;
+            if (input == expectedAttack)
+            {
+                // 첫 번째 공격 실행
+                PlayCurrentComboAttack();
+            }
+            else
+            {
+                Debug.Log($"[PlayerComboState] 콤보 실패 - 잘못된 첫 번째 입력 (예상: {expectedAttack}, 입력: {input})");
+                stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            }
+        }
+        else
+        {
+            // 다음 콤보 입력 처리
+            currentAttackIndex++;
+            
+            if (currentAttackIndex < combo.attackSequence.Count)
+            {
+                // 다음 공격이 올바른지 확인
+                var expectedAttack = combo.attackSequence[currentAttackIndex].attackType;
+                if (input == expectedAttack)
+                {
+                    // 다음 공격 실행
+                    PlayCurrentComboAttack();
+                }
+                else
+                {
+                    Debug.Log($"[PlayerComboState] 콤보 실패 - 잘못된 입력 (예상: {expectedAttack}, 입력: {input})");
+                    stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+                }
+            }
+            else
+            {
+                // 콤보 완료
+                Debug.Log($"[PlayerComboState] 콤보 완료: {combo.comboName}");
+                stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            }
+        }
     }
 
     // TODO: 공격 이펙트, 데미지, 넉백 등 처리
@@ -63,6 +138,7 @@ public class PlayerComboState : PlayerBaseState
         // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
         float animLength = attackData.animationClip.length;
         float speed = animLength / beatInterval;
+        Debug.Log($"애니메이션 speed: {speed}");
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
         // 공격 애니메이션 실행 (상체 전용 레이어에서)
         stateMachine.animator.CrossFadeInFixedTime(

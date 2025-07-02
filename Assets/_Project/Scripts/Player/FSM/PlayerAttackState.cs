@@ -19,7 +19,6 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Enter()
     {
-        // attackStartTime = Time.time;
         var weapon = WeaponManager.Instance.CurrentWeapon;
         if (weapon != null)
         {
@@ -42,7 +41,12 @@ public class PlayerAttackState : PlayerBaseState
         wasAttacking = false;
         isComboTriggered = false; // 콤보 트리거 초기화
         
-        // 공격 상태 진입 시 비트 루프 시작
+        // 새로운 ComboEvaluator 이벤트 구독
+        ComboEvaluator.Instance.OnComboAttackExecuted += OnComboAttackExecuted;
+        ComboEvaluator.Instance.OnComboCompleted += OnComboCompleted;
+        ComboEvaluator.Instance.OnComboFailed += OnComboFailed;
+        ComboEvaluator.Instance.OnNormalAttackExecuted += OnNormalAttackExecuted;
+        
         TimingComboManager.Instance.StartBeatRoutine();
     }
 
@@ -61,14 +65,23 @@ public class PlayerAttackState : PlayerBaseState
         {
             InputManager.Instance.OnAttackPressed -= OnAttackPressed;
         }
-
         Debug.Log("PlayerAttackState 종료");
+        
+        // 새로운 ComboEvaluator 이벤트 구독 해제
+        ComboEvaluator.Instance.OnComboAttackExecuted -= OnComboAttackExecuted;
+        ComboEvaluator.Instance.OnComboCompleted -= OnComboCompleted;
+        ComboEvaluator.Instance.OnComboFailed -= OnComboFailed;
+        ComboEvaluator.Instance.OnNormalAttackExecuted -= OnNormalAttackExecuted;
+        
+        // TimingComboManager.Instance.StopBeatRoutine();
+        // ComboEvaluator.Instance.ClearInputBuffer();
     }
 
     public override void Update()
     {
         if (isComboTriggered) return; // 콤보 상태 전이 중이면 아무것도 하지 않음
         playerController.LocomotionUpdate();
+        
         var weapon = WeaponManager.Instance.CurrentWeapon;
         if (weapon != null)
         {
@@ -104,10 +117,33 @@ public class PlayerAttackState : PlayerBaseState
         playerController.PerformWeaponAttack();
     }
 
-    private void OnComboMatched(ComboSequence combo)
+    private void OnComboAttackExecuted(ComboSequence combo, int step, ComboAttackData attackData)
+    {
+        if (isComboTriggered) return;
+        // 콤보 공격 실행 (애니메이션, 데미지 등)
+        Debug.Log($"[PlayerAttackState] 콤보 공격 실행: {combo.comboName} - {step + 1}타");
+        // 여기에 실제 공격 실행 로직 추가
+    }
+
+    private void OnComboCompleted(ComboSequence combo)
     {
         if (isComboTriggered) return;
         isComboTriggered = true;
         stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
+    }
+
+    private void OnComboFailed(ComboSequence combo)
+    {
+        if (isComboTriggered) return;
+        // 콤보 실패 시 LocomotionState로 전환
+        stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+    }
+
+    private void OnNormalAttackExecuted(AttackType attackType)
+    {
+        if (isComboTriggered) return;
+        // 일반 공격 실행
+        Debug.Log($"[PlayerAttackState] 일반 공격 실행: {attackType}");
+        // 여기에 일반 공격 실행 로직 추가
     }
 }

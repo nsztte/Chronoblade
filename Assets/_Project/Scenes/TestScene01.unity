@@ -326,7 +326,7 @@ GameObject:
   m_Component:
   - component: {fileID: 729022982}
   - component: {fileID: 729022981}
-  - component: {fileID: 729022980}
+  - component: {fileID: 729022983}
   m_Layer: 0
   m_Name: Timing
   m_TagString: Untagged
@@ -334,19 +334,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &729022980
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 729022979}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3856266182773dd479fc16c27d11770c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  maxComboBeats: 8
 --- !u!114 &729022981
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -360,12 +347,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatInterval: 0.5
-  perfectWindow: 0.1
-  goodWindow: 0.25
+  perfectWindow: 0.06
+  goodWindow: 0.12
   perfectBonusMultiplier: 1.2
   goodBonusMultiplier: 1
   missPenaltyMultiplier: 0.5
   inputValidTime: 3
+  isOnBeat: 0
 --- !u!4 &729022982
 Transform:
   m_ObjectHideFlags: 0
@@ -381,6 +369,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &729022983
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 729022979}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 33b299c9ee186314394458ba211ebc86, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  comboWindow: 1
 --- !u!1 &1053720258 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 9151459008568226687, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
