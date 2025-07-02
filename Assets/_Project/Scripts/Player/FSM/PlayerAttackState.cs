@@ -42,7 +42,7 @@ public class PlayerAttackState : PlayerBaseState
         // 콤보 매칭 이벤트 구독
         ComboEvaluator.Instance.OnComboMatched += OnComboMatched;
         // 공격 상태 진입 시 비트 루프 시작
-        TimingComboManager.Instance.StartBeatRoutine();
+        // TimingComboManager.Instance.StartBeatRoutine();
     }
 
     public override void Exit()
