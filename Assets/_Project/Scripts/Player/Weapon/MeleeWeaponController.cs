@@ -19,24 +19,26 @@ public class MeleeWeaponController : WeaponController
 
     public override void ExecuteLightAttack()
     {
-        if (!gameObject.activeInHierarchy || isAttacking) return;
+        if (!gameObject.activeInHierarchy) return;
         if (PlayerManager.Instance.CurrentStamina < staminaCost)
         {
             Debug.Log("스태미너 부족! 약공격 불가");
             return;
         }
         PlayerManager.Instance.UseStamina(staminaCost);
+        Debug.Log("스테미너 25 소비");
         currentAttackType = AttackType.Light;
         // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
-        isAttacking = true;
         hitTargets.Clear();
+        // 공격 실행 후에 isAttacking 설정
+        isAttacking = true;
         // Debug.Log($"[약공격 시작] {weaponData.weaponName}");
     }
 
     public override void ExecuteHeavyAttack()
     {
-        if (!gameObject.activeInHierarchy || isAttacking) return;
+        if (!gameObject.activeInHierarchy) return;
         if (PlayerManager.Instance.CurrentStamina < staminaCost * 2)
         {
             Debug.Log("스태미너 부족! 강공격 불가");
@@ -46,8 +48,9 @@ public class MeleeWeaponController : WeaponController
         currentAttackType = AttackType.Heavy;
         // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
-        isAttacking = true;
         hitTargets.Clear();
+        // 공격 실행 후에 isAttacking 설정
+        isAttacking = true;
         // Debug.Log($"[강공격 시작] {weaponData.weaponName}");
     }
 

@@ -40,9 +40,14 @@ public class GunWeaponController : WeaponController
         UpdateWeaponPosition();
     }
 
+    public int GetCurrentAmmoCount()
+    {
+        return currentAmmo;
+    }
+
     public override void ExecuteWeaponAttack()
     {
-        if(!gameObject.activeInHierarchy || isAttacking) return;
+        if(!gameObject.activeInHierarchy) return;
         if(isReloading)
         {
             Debug.Log("재장전 중");
@@ -59,7 +64,8 @@ public class GunWeaponController : WeaponController
             //TODO: 탄약 없음 사운드 재생
             return;
         }
-        isAttacking = true;
+        
+        // 공격 실행 후에 isAttacking 설정
         nextFireTime = Time.time + coolTime;
         currentAmmo = Mathf.Max(0, currentAmmo - 1);
         Debug.Log($"탄약 사용: {currentAmmo}");        
@@ -74,6 +80,9 @@ public class GunWeaponController : WeaponController
         // 탄약 UI 업데이트
         int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
         UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+        
+        // 공격 실행 후에 isAttacking 설정
+        isAttacking = true;
         // 쿨타임 후 isAttacking 해제
         StartCoroutine(ResetIsAttackingAfterDelay(coolTime));
     }

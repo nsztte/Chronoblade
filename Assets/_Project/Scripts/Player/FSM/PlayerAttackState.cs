@@ -20,8 +20,9 @@ public class PlayerAttackState : PlayerBaseState
     public override void Enter()
     {
         var weapon = WeaponManager.Instance.CurrentWeapon;
+
         if (weapon != null)
-        {
+        {            
             cachedWeaponType = weapon.weaponData.weaponType;
             if (cachedWeaponType == WeaponType.Sword)
             {
@@ -52,6 +53,11 @@ public class PlayerAttackState : PlayerBaseState
 
     public override void Exit()
     {
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon != null)
+        {
+            weapon.SetAttackingFalse(); // 상태 전이 시 무조건 공격 상태 해제
+        }
         if (cachedWeaponType == WeaponType.Sword)
         {
             InputManager.Instance.OnLightAttackPressed -= OnLightAttack;
@@ -85,6 +91,16 @@ public class PlayerAttackState : PlayerBaseState
         var weapon = WeaponManager.Instance.CurrentWeapon;
         if (weapon != null)
         {
+            if(weapon.weaponData.weaponType != WeaponType.Sword)
+            {
+                var gun = weapon as GunWeaponController;
+                if(gun.GetCurrentAmmoCount() <= 0)
+                {
+                    stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+                    return;
+                }
+            }
+
             // 콤보가 트리거된 경우에는 LocomotionState로 전이하지 않음
             if (!isComboTriggered && wasAttacking && !weapon.IsAttacking)
             {

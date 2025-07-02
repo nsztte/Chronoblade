@@ -37,6 +37,12 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Exit()
     {
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon != null)
+        {
+            weapon.SetAttackingFalse(); // 상태 전이 시 무조건 공격 상태 해제
+        }
+        
         Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
 
@@ -139,7 +145,6 @@ public class PlayerComboState : PlayerBaseState
         // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
         float animLength = attackData.animationClip.length;
         float speed = animLength / beatInterval;
-        Debug.Log($"애니메이션 speed: {speed}");
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
         // 공격 애니메이션 실행 (상체 전용 레이어에서)
         stateMachine.animator.CrossFadeInFixedTime(

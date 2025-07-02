@@ -70,16 +70,21 @@ public class PlayerLocomotionState : PlayerBaseState
     {
         if(WeaponManager.Instance.CurrentWeapon == null) return;
         
-        // 첫 번째 공격 입력 시점에 타이밍과 콤보 판단
-        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
-        
-        if (result != TimingComboManager.TimingResult.Miss)
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon.weaponData.weaponType == WeaponType.Sword)
         {
-            // 타이밍이 맞으면 콤보 시도
-            var weapon = WeaponManager.Instance.CurrentWeapon;
-            if (weapon.weaponData.weaponType == WeaponType.Sword)
+            // 소드일 때 스태미너 체크
+            if (PlayerManager.Instance.CurrentStamina < 25) // MeleeWeaponController의 staminaCost와 동일
             {
-                // Light 공격으로 콤보 가능한지 확인
+                Debug.Log("스태미너 부족! 공격 불가");
+                return;
+            }
+            
+            // 소드일 때만 콤보 시도
+            var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+            
+            if (result != TimingComboManager.TimingResult.Miss)
+            {
                 if (ComboEvaluator.Instance.CanStartCombo(AttackType.Light))
                 {
                     var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Light);
@@ -93,9 +98,8 @@ public class PlayerLocomotionState : PlayerBaseState
                 }
             }
         }
-        
-        // 콤보가 아니거나 타이밍이 틀리면 AttackState로 전환
-        Debug.Log($"[PlayerLocomotionState] 일반 공격으로 전환 (타이밍: {result})");
+        // Sword가 아니거나 콤보가 아니면 AttackState로
+        Debug.Log($"[PlayerLocomotionState] 일반 공격으로 전환");
         stateMachine.ChangeState(new PlayerAttackState(stateMachine));
     }
 }
