@@ -31,7 +31,7 @@ public class MeleeWeaponController : WeaponController
         // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
         hitTargets.Clear();
-        Debug.Log($"[약공격 시작] {weaponData.weaponName}");
+        // Debug.Log($"[약공격 시작] {weaponData.weaponName}");
     }
 
     public override void ExecuteHeavyAttack()
@@ -48,7 +48,7 @@ public class MeleeWeaponController : WeaponController
         // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
         hitTargets.Clear();
-        Debug.Log($"[강공격 시작] {weaponData.weaponName}");
+        // Debug.Log($"[강공격 시작] {weaponData.weaponName}");
     }
 
     public override void OnMeleeAttackHit()
@@ -75,7 +75,7 @@ public class MeleeWeaponController : WeaponController
 
     public override void OnMeleeAttackEnd()
     {
-        Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
+        // Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
         // CameraController.Instance?.ResetCameraPosition(10f);
         isAttacking = false;
         currentAttackType = AttackType.None;

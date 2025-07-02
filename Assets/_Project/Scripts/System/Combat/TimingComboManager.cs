@@ -24,14 +24,18 @@ public class TimingComboManager : MonoBehaviour
 
     [Header("리듬 설정")]
     [SerializeField] private float beatInterval = 0.5f;   // 리듬 템포 (예: 120 BPM = 0.5초 간격)
-    [SerializeField] private float perfectWindow = 0.1f;
-    [SerializeField] private float goodWindow = 0.25f;
+    [SerializeField] private float perfectWindow = 0.22f;
+    [SerializeField] private float goodWindow = 0.37f;
     public float BeatInterval => beatInterval;
+    public float PerfectWindow => perfectWindow;
+    public float GoodWindow => goodWindow;
 
     [Header("보너스 배율")]
-    [SerializeField] private float perfectBonusMultiplier = 1.2f;
-    [SerializeField] private float goodBonusMultiplier = 1.0f;
-    [SerializeField] private float missPenaltyMultiplier = 0.5f;
+    [SerializeField] private float perfectBonusMultiplier = 1.5f;
+    [SerializeField] private float goodBonusMultiplier = 1.2f;
+    [SerializeField] public float missPenaltyMultiplier = 1.0f;   // Miss 배율 (콤보 끊김 시)
+    public float PerfectBonusMultiplier => perfectBonusMultiplier;
+    public float GoodBonusMultiplier => goodBonusMultiplier;
 
     [Header("입력 유효 시간")]
     [SerializeField] private float inputValidTime = 1.0f; // 입력 유효 시간(초)
@@ -51,19 +55,25 @@ public class TimingComboManager : MonoBehaviour
         }
     }
     
-    public event Action<TimingJudgement> OnTimingJudged;
     public event Action OnBeat; // 비트마다 콤보 시스템에 알림
 
     private float startTime;
-    private List<float> inputTimes = new(); // 입력 시각들 저장 (연타 대응)
 
-    private float lastBeatTime;
+    // private float lastBeatTime;
 
     private Coroutine beatRoutineCoroutine;
     private bool beatStarted = false;
 
-    // 디버그용!!!!!!! (프로퍼티화 해서 UI에서도 사용 가능)
-    [SerializeField] private bool isPerfectTiming = false; // 퍼펙트 타이밍 여부
+    public float StartTime => startTime; // 외부에서 접근 가능한 프로퍼티
+
+    // UI 등 피드백용 프로퍼티, 이벤트
+    public bool IsMissed { get; private set; }
+    public bool IsPerfect { get; private set; }
+    public bool IsGood { get; private set; }
+
+    public event Action OnMissed;
+    public event Action OnPerfect;
+    public event Action OnGood;
 
     public void StartBeatRoutine()
     {
@@ -72,7 +82,7 @@ public class TimingComboManager : MonoBehaviour
             beatStarted = true;
             startTime = Time.time; // 비트 루프 시작 시점 초기화
             beatRoutineCoroutine = StartCoroutine(BeatRoutine());
-            Debug.Log("비트 루프 시작!");
+            // Debug.Log("비트 루프 시작!");
         }
     }
 
@@ -84,26 +94,7 @@ public class TimingComboManager : MonoBehaviour
             beatRoutineCoroutine = null;
         }
         beatStarted = false;
-        Debug.Log("비트 루프 중단 및 플래그 초기화");
-    }
-
-    private void Update()
-    {
-        if (beatStarted)
-        {
-            UpdatePerfectTiming();
-        }
-    }
-
-    // 퍼펙트 타이밍 디버그용!!!!!!!!!!!
-    private void UpdatePerfectTiming()
-    {
-        float currentTime = Time.time;
-        float beatsPassed = Mathf.Round((currentTime - startTime) / beatInterval);
-        float nearestBeatTime = startTime + beatsPassed * beatInterval;
-        float offset = Mathf.Abs(currentTime - nearestBeatTime);
-        
-        isPerfectTiming = offset <= perfectWindow;
+        // Debug.Log("비트 루프 중단 및 플래그 초기화");
     }
 
     private IEnumerator BeatRoutine()
@@ -112,72 +103,6 @@ public class TimingComboManager : MonoBehaviour
         {
             yield return new WaitForSeconds(beatInterval);
             OnBeat?.Invoke(); // 비트마다 알림
-            EvaluateInputs();
-            
-            // 비트마다 타이밍 상태 초기화
-            isPerfectTiming = false;
-        }
-    }
-
-    private void EvaluateInputs()
-    {
-        if (inputTimes.Count == 0) return;
-
-        float currentTime = Time.time;
-        float beatsPassed = Mathf.Round((currentTime - startTime) / beatInterval);
-        float nearestBeatTime = startTime + beatsPassed * beatInterval;
-
-        List<float> toRemove = new();
-
-        foreach (float inputTime in inputTimes)
-        {
-            // 유효 시간 초과 입력은 바로 제거
-            if (currentTime - inputTime > inputValidTime)
-            {
-                toRemove.Add(inputTime);
-                continue;
-            }
-
-            float offset = inputTime - nearestBeatTime;
-            float absOffset = Mathf.Abs(offset);
-
-            TimingResult result;
-            if (absOffset <= perfectWindow)
-                result = TimingResult.Perfect;
-            else if (absOffset <= goodWindow)
-                result = TimingResult.Good;
-            else
-                result = TimingResult.Miss;
-
-            Debug.Log($"[TimingComboManager] inputTime: {inputTime:F3}, beatTime: {nearestBeatTime:F3}, offset: {offset:F3}, result: {result}");
-
-            float damageMultiplier;
-            switch (result)
-            {
-                case TimingResult.Perfect:
-                    damageMultiplier = perfectBonusMultiplier;
-                    isPerfectTiming = true;
-                    break;
-                case TimingResult.Good:
-                    damageMultiplier = goodBonusMultiplier;
-                    break;
-                case TimingResult.Miss:
-                    damageMultiplier = missPenaltyMultiplier;
-                    break;
-                default:
-                    damageMultiplier = 1.0f;
-                    break;
-            }
-
-            TimingJudgement judgement = new TimingJudgement(result, damageMultiplier);
-            OnTimingJudged?.Invoke(judgement);
-            toRemove.Add(inputTime);
-        }
-
-        // 사용한 입력 제거
-        foreach (float inputTime in toRemove)
-        {
-            inputTimes.Remove(inputTime);
         }
     }
 
@@ -192,5 +117,38 @@ public class TimingComboManager : MonoBehaviour
     public float GetComboWindow()
     {
         return inputValidTime; // 콤보 입력 유효 시간 반환
+    }
+
+    public (TimingResult result, float damageMultiplier, float absOffset) JudgeTiming(float inputTime)
+    {
+        float beatsPassed = Mathf.Round((inputTime - StartTime) / BeatInterval);
+        float nearestBeatTime = StartTime + beatsPassed * BeatInterval;
+        float offset = inputTime - nearestBeatTime;
+        float absOffset = Mathf.Abs(offset);
+
+        TimingResult result;
+        float damageMultiplier;
+        if (absOffset <= PerfectWindow)
+        {
+            result = TimingResult.Perfect;
+            damageMultiplier = PerfectBonusMultiplier;
+            IsPerfect = true; IsGood = false; IsMissed = false;
+            OnPerfect?.Invoke();
+        }
+        else if (absOffset <= GoodWindow)
+        {
+            result = TimingResult.Good;
+            damageMultiplier = GoodBonusMultiplier;
+            IsPerfect = false; IsGood = true; IsMissed = false;
+            OnGood?.Invoke();
+        }
+        else
+        {
+            result = TimingResult.Miss;
+            damageMultiplier = missPenaltyMultiplier;
+            IsPerfect = false; IsGood = false; IsMissed = true;
+            OnMissed?.Invoke();
+        }
+        return (result, damageMultiplier, absOffset);
     }
 }

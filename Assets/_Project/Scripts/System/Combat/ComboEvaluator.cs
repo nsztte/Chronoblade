@@ -73,6 +73,8 @@ public class ComboEvaluator : MonoBehaviour
         // 3. 콤보 윈도우 초과 시 초기화
         if (Time.time - lastComboTime > TimingComboManager.Instance.GetComboWindow())
         {
+            Debug.Log("[ComboEvaluator] 콤보 윈도우 초과 - Miss 판정");
+            // 콤보 매칭 성공 시 버퍼 클리어 (콤보 실행 중에는 새로운 입력이 들어오지 않음)
             beatInputBuffer.Clear();
             currentBeatIndex = 0;
             NotifyComboProgress();
@@ -101,6 +103,7 @@ public class ComboEvaluator : MonoBehaviour
         beatInputBuffer.Enqueue(input);
         inputRegisteredThisBeat = true;
         lastComboTime = Time.time;
+        // Debug.Log($"[입력] {GetAttackTypeString(input)}"); // 간단한 입력 표시
     }
 
     /// <summary>
@@ -141,13 +144,16 @@ public class ComboEvaluator : MonoBehaviour
             {
                 Debug.Log($"[ComboEvaluator] 콤보 매칭 성공: {combo.comboName}");
                 OnComboMatched?.Invoke(combo);
-                // 콤보 매칭 성공 시 버퍼 클리어 (콤보 실행 중에는 새로운 입력이 들어오지 않음)
                 beatInputBuffer.Clear();
                 currentBeatIndex = 0;
                 return;
             }
         }
         Debug.Log("[ComboEvaluator] 매칭되는 콤보 없음");
+        beatInputBuffer.Clear();
+        currentBeatIndex = 0;
+        NotifyComboProgress();
+        return;
     }
 
     /// <summary>
@@ -168,6 +174,35 @@ public class ComboEvaluator : MonoBehaviour
         }
         return true;
     }
+
+    /// <summary>
+    /// 콤보 성공 시 타이밍 판정
+    /// </summary>
+    // private void EvaluateComboTiming()
+    // {
+    //     // 마지막 입력의 타이밍을 기준으로 판정
+    //     if (beatInputBuffer.Count == 0) return;
+        
+    //     float currentTime = Time.time;
+    //     float lastInputTime = currentTime - 0.1f; // 마지막 입력 시간 추정
+        
+    //     // TimingComboManager의 판정 로직 사용
+    //     float beatsPassed = Mathf.Round((lastInputTime - TimingComboManager.Instance.StartTime) / TimingComboManager.Instance.BeatInterval);
+    //     float nearestBeatTime = TimingComboManager.Instance.StartTime + beatsPassed * TimingComboManager.Instance.BeatInterval;
+    //     float offset = Mathf.Abs(lastInputTime - nearestBeatTime);
+        
+    //     TimingComboManager.TimingResult result;
+    //     if (offset <= 0.1f) // Perfect 윈도우
+    //         result = TimingComboManager.TimingResult.Perfect;
+    //     else if (offset <= 0.25f) // Good 윈도우
+    //         result = TimingComboManager.TimingResult.Good;
+    //     else
+    //         result = TimingComboManager.TimingResult.Miss;
+            
+    //     float damageMultiplier = result == TimingComboManager.TimingResult.Perfect ? 1.5f : 1.2f;
+        
+    //     Debug.Log($"[ComboEvaluator] 콤보 타이밍 판정: {result}, 배율: {damageMultiplier}");
+    // }
 
     /// <summary>
     /// 콤보 진행 상황 알림

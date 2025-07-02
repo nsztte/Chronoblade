@@ -18,7 +18,7 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Enter()
     {
-        Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
+        // Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
         currentAttackIndex = 0;
         
         // 콤보 실행 시작 - 입력 버퍼 업데이트 중단
@@ -50,7 +50,7 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
+        // Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
         TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
         
@@ -67,18 +67,41 @@ public class PlayerComboState : PlayerBaseState
         // float animLength = attackData.animationClip.length;
         // float speed = animLength / beatInterval;
         // PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
-
         // // 공격 애니메이션 실행 (상체 전용 레이어에서)
         // stateMachine.animator.CrossFadeInFixedTime(
         //     attackData.animationClip.name,
         //     0.05f,
         //     upperBodyLayerIndex
         // );
+        
+
+        // 타이밍 판정 (TimingComboManager로 위임)
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+
+        if (result == TimingComboManager.TimingResult.Miss)
+        {
+            Debug.Log($"[{currentAttackIndex+1}타] 판정: Miss, 콤보 종료");
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
+        }
+
+        float finalDamage = attackData.damage * damageMultiplier;
+        ApplyDamage(finalDamage, attackData);
 
         // 공격 시작 시간 기록
         comboStartTime = Time.time;
 
         // 디버그 출력
-        Debug.Log($"[콤보] {combo.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}");
+        Debug.Log($"[콤보] {combo.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}, 판정: {result}, 데미지: {finalDamage:F1} (배율: {damageMultiplier:F1}, absOffset: {absOffset:F3})");
+    }
+
+    private void ApplyDamage(float damage, ComboAttackData attackData)
+    {
+        // TODO: 실제 데미지 적용 로직
+        // 예: 플레이어 주변의 적들을 찾아서 데미지 전달
+        // 예: Physics.OverlapSphere나 Raycast를 사용하여 적 감지
+        
+        // 임시로 콘솔에 출력
+        // Debug.Log($"[데미지] {damage:F1} 데미지 적용 (넉백: {attackData.knockbackPower})");
     }
 }
