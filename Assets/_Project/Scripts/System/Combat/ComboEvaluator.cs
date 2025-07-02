@@ -31,6 +31,7 @@ public class ComboEvaluator : MonoBehaviour
     private int currentBeatIndex = 0;
     private float lastComboTime = 0f;
     private bool inputRegisteredThisBeat = false;
+    private bool isComboExecuting = false; // 콤보 실행 중 플래그
 
     private void Start()
     {
@@ -53,6 +54,12 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     private void OnBeat()
     {
+        // 콤보 실행 중에는 입력 버퍼 업데이트하지 않음
+        if (isComboExecuting)
+        {
+            return;
+        }
+
         // 1. 먼저 현재 상태로 콤보 매칭 시도 (입력 타이밍 오차 없는 정밀한 평가)
         TryMatchCombo();
 
@@ -89,8 +96,8 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     public void RegisterInput(AttackType input)
     {
-        // 이미 입력이 기록된 비트라면 무시
-        if (inputRegisteredThisBeat) return;
+        // 콤보 실행 중이거나 이미 입력이 기록된 비트라면 무시
+        if (isComboExecuting || inputRegisteredThisBeat) return;
         beatInputBuffer.Enqueue(input);
         inputRegisteredThisBeat = true;
         lastComboTime = Time.time;
@@ -134,6 +141,7 @@ public class ComboEvaluator : MonoBehaviour
             {
                 Debug.Log($"[ComboEvaluator] 콤보 매칭 성공: {combo.comboName}");
                 OnComboMatched?.Invoke(combo);
+                // 콤보 매칭 성공 시 버퍼 클리어 (콤보 실행 중에는 새로운 입력이 들어오지 않음)
                 beatInputBuffer.Clear();
                 currentBeatIndex = 0;
                 return;
@@ -190,5 +198,24 @@ public class ComboEvaluator : MonoBehaviour
         beatInputBuffer.Clear();
         currentBeatIndex = 0;
         inputRegisteredThisBeat = false;
+    }
+
+    /// <summary>
+    /// 콤보 실행 시작 - 입력 버퍼 업데이트 중단
+    /// </summary>
+    public void StartComboExecution()
+    {
+        isComboExecuting = true;
+        Debug.Log("[ComboEvaluator] 콤보 실행 시작 - 입력 버퍼 업데이트 중단");
+    }
+
+    /// <summary>
+    /// 콤보 실행 종료 - 입력 버퍼 업데이트 재개
+    /// </summary>
+    public void EndComboExecution()
+    {
+        isComboExecuting = false;
+        ClearInputBuffer();
+        Debug.Log("[ComboEvaluator] 콤보 실행 종료 - 입력 버퍼 클리어 및 업데이트 재개");
     }
 } 

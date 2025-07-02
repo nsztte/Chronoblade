@@ -67,6 +67,7 @@ public class TimingComboManager : MonoBehaviour
         if (!beatStarted)
         {
             beatStarted = true;
+            startTime = Time.time; // 비트 루프 시작 시점 초기화
             beatRoutineCoroutine = StartCoroutine(BeatRoutine());
             Debug.Log("비트 루프 시작!");
         }

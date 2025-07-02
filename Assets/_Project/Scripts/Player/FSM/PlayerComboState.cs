@@ -20,41 +20,42 @@ public class PlayerComboState : PlayerBaseState
     {
         Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
         currentAttackIndex = 0;
+        
+        // 콤보 실행 시작 - 입력 버퍼 업데이트 중단
+        ComboEvaluator.Instance.StartComboExecution();
+        
         PlayCurrentComboAttack();
     }
 
     public override void Update()
     {
         if (Time.time - comboStartTime >= beatInterval)
-    {
-        currentAttackIndex++;
-
-        if (currentAttackIndex < combo.attackSequence.Count)
         {
-            // 먼저 애니메이션 실행 (공격 동기화)
-            PlayCurrentComboAttack();
+            currentAttackIndex++;
 
-            // 다음 공격을 실행했지만, 입력이 안 맞았으면 즉시 종료
-            if (!ComboEvaluator.Instance.IsValidStep(combo, currentAttackIndex))
+            if (currentAttackIndex < combo.attackSequence.Count)
             {
-                Debug.Log("[PlayerComboState] 콤보 입력 불일치 → 상태 종료");
+                // 다음 공격 실행
+                PlayCurrentComboAttack();
+            }
+            else
+            {
+                // 콤보 완료
                 stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             }
         }
-        else
-        {
-            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
-        }
-    }
 
-    playerController.LocomotionUpdate();
+        playerController.LocomotionUpdate();
     }
 
     public override void Exit()
     {
         Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
-        TimingComboManager.Instance.StopBeatRoutine();
+        // TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
+        
+        // 콤보 실행 종료 - 입력 버퍼 클리어 및 업데이트 재개
+        ComboEvaluator.Instance.EndComboExecution();
     }
 
     // TODO: 공격 이펙트, 데미지, 넉백 등 처리

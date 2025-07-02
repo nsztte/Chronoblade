@@ -19,7 +19,7 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnAttackPressed += OnAttackPressed;
         ComboEvaluator.Instance.OnComboMatched += OnComboMatched;
 
-        TimingComboManager.Instance.StopBeatRoutine();
+        TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
     }
 
     public override void Exit()
