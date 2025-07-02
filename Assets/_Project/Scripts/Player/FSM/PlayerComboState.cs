@@ -51,7 +51,7 @@ public class PlayerComboState : PlayerBaseState
     public override void Exit()
     {
         Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
-        // TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
+        TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
         
         // 콤보 실행 종료 - 입력 버퍼 클리어 및 업데이트 재개

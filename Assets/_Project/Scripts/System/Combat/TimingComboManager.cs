@@ -62,6 +62,9 @@ public class TimingComboManager : MonoBehaviour
     private Coroutine beatRoutineCoroutine;
     private bool beatStarted = false;
 
+    // 디버그용!!!!!!! (프로퍼티화 해서 UI에서도 사용 가능)
+    [SerializeField] private bool isPerfectTiming = false; // 퍼펙트 타이밍 여부
+
     public void StartBeatRoutine()
     {
         if (!beatStarted)
@@ -84,20 +87,23 @@ public class TimingComboManager : MonoBehaviour
         Debug.Log("비트 루프 중단 및 플래그 초기화");
     }
 
-    private void Start()
+    private void Update()
     {
-        // startTime = Time.time;
-        // lastBeatTime = Time.time;
-        // StartCoroutine(BeatRoutine());
+        if (beatStarted)
+        {
+            UpdatePerfectTiming();
+        }
     }
 
-    private void OnDisable()
+    // 퍼펙트 타이밍 디버그용!!!!!!!!!!!
+    private void UpdatePerfectTiming()
     {
-        // InputManager 이벤트 구독 해제 제거
-        // if (InputManager.Instance != null)
-        // {
-        //     InputManager.Instance.OnAttackPressed -= OnAttackInput;
-        // }
+        float currentTime = Time.time;
+        float beatsPassed = Mathf.Round((currentTime - startTime) / beatInterval);
+        float nearestBeatTime = startTime + beatsPassed * beatInterval;
+        float offset = Mathf.Abs(currentTime - nearestBeatTime);
+        
+        isPerfectTiming = offset <= perfectWindow;
     }
 
     private IEnumerator BeatRoutine()
@@ -107,6 +113,9 @@ public class TimingComboManager : MonoBehaviour
             yield return new WaitForSeconds(beatInterval);
             OnBeat?.Invoke(); // 비트마다 알림
             EvaluateInputs();
+            
+            // 비트마다 타이밍 상태 초기화
+            isPerfectTiming = false;
         }
     }
 
@@ -147,6 +156,7 @@ public class TimingComboManager : MonoBehaviour
             {
                 case TimingResult.Perfect:
                     damageMultiplier = perfectBonusMultiplier;
+                    isPerfectTiming = true;
                     break;
                 case TimingResult.Good:
                     damageMultiplier = goodBonusMultiplier;
