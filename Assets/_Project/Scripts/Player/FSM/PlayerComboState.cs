@@ -48,6 +48,7 @@ public class PlayerComboState : PlayerBaseState
         }
 
         stateMachine.animator.CrossFadeInFixedTime("Empty", 0.1f, upperBodyLayerIndex);
+        stateMachine.animator.ResetTrigger("IsAttacking");
     }
 
     public override void Update()

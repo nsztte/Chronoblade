@@ -26,10 +26,10 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         PlayerManager.Instance.UseStamina(staminaCost);
-        isAttacking = true;
         currentAttackType = AttackType.Light;
         // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
+        isAttacking = true;
         hitTargets.Clear();
         // Debug.Log($"[약공격 시작] {weaponData.weaponName}");
     }
@@ -43,10 +43,10 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         PlayerManager.Instance.UseStamina(staminaCost * 2);
-        isAttacking = true;
         currentAttackType = AttackType.Heavy;
         // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
+        isAttacking = true;
         hitTargets.Clear();
         // Debug.Log($"[강공격 시작] {weaponData.weaponName}");
     }
