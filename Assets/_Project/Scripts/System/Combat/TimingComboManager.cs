@@ -75,11 +75,6 @@ public class TimingComboManager : MonoBehaviour
     public event Action OnPerfect;
     public event Action OnGood;
 
-    private void Start()
-    {
-        StartBeatRoutine();
-    }
-    
     public void StartBeatRoutine()
     {
         if (!beatStarted)

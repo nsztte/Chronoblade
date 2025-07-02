@@ -54,8 +54,6 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     private void OnBeat()
     {
-        Debug.Log("OnBeat!!!");
-
         // 콤보 실행 중에는 입력 버퍼 업데이트하지 않음
         if (isComboExecuting)
         {
@@ -152,9 +150,9 @@ public class ComboEvaluator : MonoBehaviour
             }
         }
         Debug.Log("[ComboEvaluator] 매칭되는 콤보 없음");
-        // beatInputBuffer.Clear();
-        // currentBeatIndex = 0;
-        // NotifyComboProgress();
+        beatInputBuffer.Clear();
+        currentBeatIndex = 0;
+        NotifyComboProgress();
         return;
     }
 
