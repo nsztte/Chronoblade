@@ -12,6 +12,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad7e1b8e6ee6aaa4ebf135ae8b47f65d, type: 3}
   m_Name: "\uAC15\uAC15\uAC15"
   m_EditorClassIdentifier: 
-  comboName: 
+  comboName: "\uAC15\uAC15\uAC15"
   icon: {fileID: 0}
-  attackSequence: []
+  attackSequence:
+  - {fileID: 11400000, guid: 5f093907002519f4094b3e4f95a9ae98, type: 2}
+  - {fileID: 11400000, guid: 0e5a2050a10104d4b86bc7ce3f72810d, type: 2}
+  - {fileID: 11400000, guid: 0f99afd4940617841b1d1ca6b6b1841e, type: 2}
