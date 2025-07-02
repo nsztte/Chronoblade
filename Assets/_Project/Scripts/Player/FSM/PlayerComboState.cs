@@ -51,8 +51,11 @@ public class PlayerComboState : PlayerBaseState
     public override void Exit()
     {
         // Debug.Log($"[PlayerComboState] 종료: {combo.comboName}");
-        TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
+        // TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
+
+        stateMachine.animator.CrossFadeInFixedTime("Empty", 0.1f, upperBodyLayerIndex);
+        stateMachine.animator.ResetTrigger("IsAttacking");
         
         // 콤보 실행 종료 - 입력 버퍼 클리어 및 업데이트 재개
         ComboEvaluator.Instance.EndComboExecution();
@@ -63,17 +66,16 @@ public class PlayerComboState : PlayerBaseState
     {
         var attackData = combo.attackSequence[currentAttackIndex];
 
-        // // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
-        // float animLength = attackData.animationClip.length;
-        // float speed = animLength / beatInterval;
-        // PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
-        // // 공격 애니메이션 실행 (상체 전용 레이어에서)
-        // stateMachine.animator.CrossFadeInFixedTime(
-        //     attackData.animationClip.name,
-        //     0.05f,
-        //     upperBodyLayerIndex
-        // );
-        
+        // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
+        float animLength = attackData.animationClip.length;
+        float speed = animLength / beatInterval;
+        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
+        // 공격 애니메이션 실행 (상체 전용 레이어에서)
+        stateMachine.animator.CrossFadeInFixedTime(
+            attackData.animationClip.name,
+            0.05f,
+            upperBodyLayerIndex
+        );
 
         // 타이밍 판정 (TimingComboManager로 위임)
         var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);

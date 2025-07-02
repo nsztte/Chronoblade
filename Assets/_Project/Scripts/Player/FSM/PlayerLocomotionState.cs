@@ -17,9 +17,9 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnRunCanceled += OnRunCanceled;
         InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
         InputManager.Instance.OnAttackPressed += OnAttackPressed;
-        ComboEvaluator.Instance.OnComboMatched += OnComboMatched;
+        // ComboEvaluator.Instance.OnComboMatched += OnComboMatched; // PlayerAttackState에서만 관리
 
-        TimingComboManager.Instance.StopBeatRoutine(); // 비트 루프는 계속 실행
+        // TimingComboManager.Instance.StopBeatRoutine(); // PlayerAttackState에서만 관리
     }
 
     public override void Exit()
@@ -30,7 +30,7 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnRunCanceled -= OnRunCanceled;
         InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
         InputManager.Instance.OnAttackPressed -= OnAttackPressed;
-        ComboEvaluator.Instance.OnComboMatched -= OnComboMatched;
+        // ComboEvaluator.Instance.OnComboMatched -= OnComboMatched; // PlayerAttackState에서만 관리
     }
 
     public override void Update()
@@ -72,10 +72,5 @@ public class PlayerLocomotionState : PlayerBaseState
         
         // LocomotionState: 기본 공격 시작 (AttackState로 전환)
         stateMachine.ChangeState(new PlayerAttackState(stateMachine));
-    }
-
-    private void OnComboMatched(ComboSequence combo)
-    {
-        stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
     }
 }

@@ -38,8 +38,8 @@ public class ComboEvaluator : MonoBehaviour
         // InputManager에서 입력 발생 시 현재 비트에 기록
         if (InputManager.Instance != null)
         {
-            InputManager.Instance.OnLightAttackPressed += () => RegisterInput(AttackType.Light);
-            InputManager.Instance.OnHeavyAttackPressed += () => RegisterInput(AttackType.Heavy);
+            InputManager.Instance.OnLightAttackPressed += OnLightAttackPressed;
+            InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttackPressed;
         }
 
         // TimingComboManager의 비트 루프에 맞춰 평가
@@ -49,44 +49,60 @@ public class ComboEvaluator : MonoBehaviour
         }
     }
 
+    private void OnDestroy()
+    {
+        // 이벤트 구독 해제
+        if (InputManager.Instance != null)
+        {
+            InputManager.Instance.OnLightAttackPressed -= OnLightAttackPressed;
+            InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttackPressed;
+        }
+
+        if (TimingComboManager.Instance != null)
+        {
+            TimingComboManager.Instance.OnBeat -= OnBeat;
+        }
+    }
+
+    private void OnLightAttackPressed()
+    {
+        RegisterInput(AttackType.Light);
+    }
+
+    private void OnHeavyAttackPressed()
+    {
+        RegisterInput(AttackType.Heavy);
+    }
+
     /// <summary>
     /// 비트마다 호출: 입력이 없으면 Rest로 기록, 입력이 있으면 해당 입력 기록
     /// </summary>
     private void OnBeat()
     {
-        // 콤보 실행 중에는 입력 버퍼 업데이트하지 않음
+        Debug.Log("OnBeat!!!");
+        
         if (isComboExecuting)
         {
+            // Debug.Log("[ComboEvaluator] 콤보 실행 중 - OnBeat 무시");
             return;
         }
-
-        // 1. 먼저 현재 상태로 콤보 매칭 시도 (입력 타이밍 오차 없는 정밀한 평가)
         TryMatchCombo();
-
-        // 2. 입력이 기록되지 않았다면 Rest로 기록
         if (!inputRegisteredThisBeat)
         {
             beatInputBuffer.Enqueue(AttackType.Rest);
         }
         inputRegisteredThisBeat = false;
-
-        // 3. 콤보 윈도우 초과 시 초기화
         if (Time.time - lastComboTime > TimingComboManager.Instance.GetComboWindow())
         {
-            Debug.Log("[ComboEvaluator] 콤보 윈도우 초과 - Miss 판정");
-            // 콤보 매칭 성공 시 버퍼 클리어 (콤보 실행 중에는 새로운 입력이 들어오지 않음)
+            // Debug.Log("[ComboEvaluator] 콤보 윈도우 초과 - Miss 판정");
             beatInputBuffer.Clear();
             currentBeatIndex = 0;
             NotifyComboProgress();
             return;
         }
-
-        // 4. 비트 인덱스 증가 및 진행 상황 갱신
         currentBeatIndex++;
         lastComboTime = Time.time;
         NotifyComboProgress();
-
-        // 5. 최대 비트 수 초과 시 자동 슬라이딩
         if (beatInputBuffer.Count > maxComboBeats)
         {
             beatInputBuffer.Dequeue();
@@ -98,11 +114,28 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     public void RegisterInput(AttackType input)
     {
-        // 콤보 실행 중이거나 이미 입력이 기록된 비트라면 무시
         if (isComboExecuting || inputRegisteredThisBeat) return;
         beatInputBuffer.Enqueue(input);
         inputRegisteredThisBeat = true;
         lastComboTime = Time.time;
+
+        // 콤보 시퀀스 길이와 입력 버퍼 길이가 일치하면 즉시 매칭 시도
+        var weapon = WeaponManager.Instance?.CurrentWeapon;
+        if (weapon != null && weapon.weaponData.weaponType == WeaponType.Sword)
+        {
+            var availableCombos = weapon.weaponData.swordCombos;
+            if (availableCombos != null)
+            {
+                foreach (var combo in availableCombos)
+                {
+                    if (beatInputBuffer.Count == combo.attackSequence.Count)
+                    {
+                        TryMatchCombo();
+                        break;
+                    }
+                }
+            }
+        }
         // Debug.Log($"[입력] {GetAttackTypeString(input)}"); // 간단한 입력 표시
     }
 
@@ -130,30 +163,25 @@ public class ComboEvaluator : MonoBehaviour
     /// </summary>
     private void TryMatchCombo()
     {
+        // Debug.Log($"TryMatchCombo 실행 - Instance: {GetInstanceID()}, Time: {Time.time:F3}");
         var weapon = WeaponManager.Instance?.CurrentWeapon;
         if (weapon == null || weapon.weaponData.weaponType != WeaponType.Sword)
             return;
-
         var availableCombos = weapon.weaponData.swordCombos;
         if (availableCombos == null || availableCombos.Count == 0)
             return;
-
         foreach (var combo in availableCombos)
         {
             if (IsComboMatch(combo))
             {
-                Debug.Log($"[ComboEvaluator] 콤보 매칭 성공: {combo.comboName}");
+                // Debug.Log($"[ComboEvaluator] 콤보 매칭 성공: {combo.comboName}");
                 OnComboMatched?.Invoke(combo);
                 beatInputBuffer.Clear();
                 currentBeatIndex = 0;
                 return;
             }
         }
-        Debug.Log("[ComboEvaluator] 매칭되는 콤보 없음");
-        beatInputBuffer.Clear();
-        currentBeatIndex = 0;
-        NotifyComboProgress();
-        return;
+        // Debug.Log("[ComboEvaluator] 매칭되는 콤보 없음");
     }
 
     /// <summary>

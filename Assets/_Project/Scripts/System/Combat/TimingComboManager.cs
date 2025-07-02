@@ -82,7 +82,11 @@ public class TimingComboManager : MonoBehaviour
             beatStarted = true;
             startTime = Time.time; // 비트 루프 시작 시점 초기화
             beatRoutineCoroutine = StartCoroutine(BeatRoutine());
-            // Debug.Log("비트 루프 시작!");
+            // Debug.Log("[TimingComboManager] 비트 루프 시작!");
+        }
+        else
+        {
+            // Debug.LogWarning("[TimingComboManager] 비트 루프 이미 실행 중!");
         }
     }
 
@@ -92,9 +96,9 @@ public class TimingComboManager : MonoBehaviour
         {
             StopCoroutine(beatRoutineCoroutine);
             beatRoutineCoroutine = null;
+            // Debug.Log("[TimingComboManager] 비트 루프 중단!");
         }
         beatStarted = false;
-        // Debug.Log("비트 루프 중단 및 플래그 초기화");
     }
 
     private IEnumerator BeatRoutine()
@@ -102,6 +106,7 @@ public class TimingComboManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(beatInterval);
+            // Debug.Log($"[TimingComboManager] OnBeat 이벤트 발생 - Instance: {GetInstanceID()}, Time: {Time.time:F3}");
             OnBeat?.Invoke(); // 비트마다 알림
         }
     }

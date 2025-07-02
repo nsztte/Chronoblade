@@ -10,6 +10,7 @@ public class PlayerAttackState : PlayerBaseState
     private const float COMBO_INPUT_WINDOW = 0.5f; // 0.5초 이내 연속 입력 시 콤보 진입
 
     private bool wasAttacking = false;
+    private bool isComboTriggered = false; // 콤보 상태 전이 방지 플래그
 
     public PlayerAttackState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
@@ -39,6 +40,7 @@ public class PlayerAttackState : PlayerBaseState
         }
         Debug.Log("PlayerAttackState 진입");
         wasAttacking = false;
+        isComboTriggered = false; // 콤보 트리거 초기화
         // 콤보 매칭 이벤트 구독
         ComboEvaluator.Instance.OnComboMatched += OnComboMatched;
         // 공격 상태 진입 시 비트 루프 시작
@@ -64,16 +66,21 @@ public class PlayerAttackState : PlayerBaseState
         Debug.Log("PlayerAttackState 종료");
         // 콤보 매칭 이벤트 구독 해제
         ComboEvaluator.Instance.OnComboMatched -= OnComboMatched;
+        // 비트 루프 종료
+        // TimingComboManager.Instance.StopBeatRoutine();
+        // // 입력 버퍼 클리어
+        // ComboEvaluator.Instance.ClearInputBuffer();
     }
 
     public override void Update()
     {
+        if (isComboTriggered) return; // 콤보 상태 전이 중이면 아무것도 하지 않음
         playerController.LocomotionUpdate();
-
         var weapon = WeaponManager.Instance.CurrentWeapon;
         if (weapon != null)
         {
-            if (wasAttacking && !weapon.IsAttacking)
+            // 콤보가 트리거된 경우에는 LocomotionState로 전이하지 않음
+            if (!isComboTriggered && wasAttacking && !weapon.IsAttacking)
             {
                 stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
                 return;
@@ -106,6 +113,8 @@ public class PlayerAttackState : PlayerBaseState
 
     private void OnComboMatched(ComboSequence combo)
     {
+        if (isComboTriggered) return;
+        isComboTriggered = true;
         stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
     }
 }
