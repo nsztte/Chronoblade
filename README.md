@@ -552,6 +552,44 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.02 (수) 작업 기록
+
+### 주요 작업
+- ComboEvaluator 구조 전면 리팩토링
+  - 입력 버퍼 기반 로직 제거, 단일 입력 기반 실시간 평가 방식 도입
+  - `RegisterInput()`에서 타이밍 판정 후 콤보 시작/진행/실패 처리
+  - `OnComboAttackExecuted`, `OnComboCompleted`, `OnComboFailed`, `OnNormalAttackExecuted` 이벤트로 상태 분리
+  - Miss 판정 시 자동 콤보 실패 처리
+
+- TimingComboManager 구조 정리
+  - `EvaluateInputs()` 제거
+  - `JudgeTiming(float inputTime)` 함수로 타이밍 판정 및 데미지 배율 반환 구조 정리
+
+- PlayerAttackState 리팩토링
+  - 무기 타입에 따라 입력 구독 분기 처리 (Sword, Rifle, 일반)
+  - ComboEvaluator 이벤트 처리 방식으로 상태 전이
+    - 콤보 성공 시 `PlayerComboState`로 전환
+    - 콤보 실패 또는 일반 입력 시 Locomotion 상태로 복귀
+  - `isComboTriggered` 플래그로 중복 전이 방지
+
+- PlayerComboState 구조 개편
+  - ComboEvaluator에서 콤보가 확정되면 상태 진입
+  - 단계별 입력 시 타이밍 판정 후 애니메이션 실행 및 데미지 계산
+  - Miss 판정, 잘못된 입력, 시간 초과 시 즉시 `PlayerLocomotionState`로 전환
+  - 상체 레이어에서 공격 애니메이션 재생 및 애니메이션 속도 조절 반영
+
+- PlayerLocomotionState 개선
+  - 공격 입력 시 `JudgeTiming()` 기반으로 콤보 시도
+  - 시작 가능한 콤보가 존재하고 타이밍이 맞으면 바로 `PlayerComboState` 진입
+  - 실패 시 `PlayerAttackState`로 분기
+
+### 메모
+- 기존 버퍼 기반 입력 시스템이 타이밍 오차에 민감하고 관리가 어려워 실시간 입력 기반 구조로 재설계
+- 모든 입력 및 판정 흐름이 ComboEvaluator에서 일관되게 처리되도록 통합
+- 애니메이션, 데미지, 판정, 상태 전이가 명확히 구분되어 디버깅 및 유지보수 용이
+
+---
+
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
