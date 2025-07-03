@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class PlayerLocomotionState : PlayerBaseState
 {
@@ -117,16 +118,13 @@ public class PlayerLocomotionState : PlayerBaseState
         
         if (result != TimingComboManager.TimingResult.Miss)
         {
-            // 타이밍이 맞으면 콤보 시도
-            if (ComboEvaluator.Instance.CanStartCombo(AttackType.Light))
+            // 첫 입력에 맞는 모든 콤보 후보군을 가져옴
+            var candidates = ComboEvaluator.Instance.GetMatchingCombos(new List<AttackType> { AttackType.Light });
+            if (candidates.Count > 0)
             {
-                var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Light);
-                if (combo != null)
-                {
-                    Debug.Log($"[PlayerLocomotionState] 콤보 시작: {combo.comboName} (타이밍: {result})");
-                    stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
-                    return;
-                }
+                Debug.Log($"[PlayerLocomotionState] 콤보 시작: 후보군 {candidates.Count}개 (타이밍: {result})");
+                stateMachine.ChangeState(new PlayerComboState(stateMachine, candidates[0]));
+                return;
             }
         }
         
@@ -159,16 +157,13 @@ public class PlayerLocomotionState : PlayerBaseState
         
         if (result != TimingComboManager.TimingResult.Miss)
         {
-            // 타이밍이 맞으면 콤보 시도
-            if (ComboEvaluator.Instance.CanStartCombo(AttackType.Heavy))
+            // 첫 입력에 맞는 모든 콤보 후보군을 가져옴
+            var candidates = ComboEvaluator.Instance.GetMatchingCombos(new List<AttackType> { AttackType.Heavy });
+            if (candidates.Count > 0)
             {
-                var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Heavy);
-                if (combo != null)
-                {
-                    Debug.Log($"[PlayerLocomotionState] 콤보 시작: {combo.comboName} (타이밍: {result})");
-                    stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
-                    return;
-                }
+                Debug.Log($"[PlayerLocomotionState] 콤보 시작: 후보군 {candidates.Count}개 (타이밍: {result})");
+                stateMachine.ChangeState(new PlayerComboState(stateMachine, candidates[0]));
+                return;
             }
         }
         
