@@ -49,6 +49,21 @@
 
 ---
 
+## 3주차 목표
+
+- [x] 리듬 판정 시스템 완전 구현 (Perfect/Good/Miss 처리 및 타이밍 윈도우 조정)
+- [ ] 플레이어 FSM 이주 완료 (기본 이동, 점프, 공격 등 상태 분리 및 전환 처리)
+- [ ] 플레이어 점프 상태 세분화 구현 (JumpStart, OnAir, JumpEnd 상태 분리 및 FSM 등록)
+- [x] 리듬 판정 결과에 따른 콤보 어택 흐름 연동 (Miss 시 중단, Good/Perfect 시 연계)
+- [ ] 콤보 어택 전용 데이터(ComboAttackData, ComboSequence) 구조 설계 및 구축
+- [ ] 콤보 어택 애니메이션 연결 (애니메이션 클립 + 상체 레이어 재생)
+- [x] 콤보 어택 데미지 처리 로직 구현 (퍼펙트/굿에 따른 배율 적용)
+- [x] 콤보 공격 시 넉백 효과 적용 (IDamageable 확장 + Enemy 이동 처리)
+- [x] 콤보 어택 시 플레이어 스태미너 차감 로직 반영
+- [ ] 콤보 스킬 마지막 타에 발동되는 파이널 스킬 기획 및 구조 구현
+
+---
+
 ## 폴더 구조
 
 ```
@@ -587,6 +602,74 @@ Enemy FSM(상태머신) 시스템 구현
 - 기존 버퍼 기반 입력 시스템이 타이밍 오차에 민감하고 관리가 어려워 실시간 입력 기반 구조로 재설계
 - 모든 입력 및 판정 흐름이 ComboEvaluator에서 일관되게 처리되도록 통합
 - 애니메이션, 데미지, 판정, 상태 전이가 명확히 구분되어 디버깅 및 유지보수 용이
+
+---
+
+## 2025.07.03 (목) 작업 기록
+
+### 주요 작업
+
+- ComboEvaluator 완전 리팩토링
+  - 입력 시점마다 후보군 필터링 방식으로 개선
+  - PlayerComboState와 직접 연동되도록 구조 변경
+  - 첫 입력 실패 및 타이밍 Miss 시 콤보 실패 처리
+
+- PlayerComboState 완전 리팩토링
+  - 입력마다 후보군을 줄여가며 단계별로 애니메이션/데미지 적용
+  - 막타 입력 시 `GetComboWindow()`만큼 유지 후 상태 전환
+  - 입력 실패 시 즉시 콤보 종료
+  - 타이밍 판정 결과(Perfect/Good/Miss)에 따라 데미지 배율 및 연출 반영
+
+- ComboEvaluator 후보군 필터링 방식으로 전환
+  - 기존 `TryStartCombo`, `GetStartableCombo` 제거
+  - `GetMatchingCombos(List<AttackType>)` 기반 필터링 로직으로 일원화
+
+- PlayerAttackState에서 불필요한 이벤트 제거
+  - `OnComboAttackExecuted`, `OnComboCompleted`, `OnComboFailed` 삭제
+  - 콤보 흐름은 전적으로 `PlayerComboState`에서 관리
+
+- 타이밍 판정 통합 및 연동
+  - JudgeTiming 호출 위치를 통일
+  - 퍼펙트/굿/미스 결과에 따라 데미지 및 효과 차등 적용
+
+- 마지막 콤보 타 후 상태 전환 개선
+  - 즉시 전환이 아닌 `ComboWindow` 시간만큼 유지 후 전환
+  - `EndComboAfterDelay(float waitTime)` 코루틴으로 처리
+
+- IDamageable 인터페이스 확장
+  - `ApplyKnockback(Vector3 direction, float power)` 메서드 추가
+
+- Enemy 클래스 넉백 처리 구현
+  - NavMesh 기반 위치 보정 포함
+
+- PlayerManager에 스태미너 체크 함수 추가
+  - `UseStaminaIfAvailable(float amount)` 함수로 조건부 소모 처리
+
+- PlayerController → MeleeWeaponController로 데미지 위임
+  - `ApplyComboDamage(damage, knockbackPower)` 함수 추가
+
+- 애니메이션 이벤트 OnComboAttackHit 연동
+  - PlayerManager에서 임시 데미지 캐싱 후 처리
+
+- ComboSequence ScriptableObject 확장 준비
+  - 방어무시, 상태이상 등 추가 스킬 효과 설계 반영 논의 완료
+
+
+### 추가 개선
+
+- 총기류 공격 실행시 지연되는 버그 해결
+  - PlayerLocomotionState에서 무기 타입에 따라 Input 이벤트 분리
+  - 원거리 무기일 경우 OnAttackPressed/OnAttackHeld 시 즉시 발동
+
+- 콤보 첫타 입력 시 타이밍이 맞으면 바로 실행되도록 개선
+  - `PlayerComboState.Enter()`에서 첫 공격 실행 + `isWaitingForInput = true` 설정
+
+### 메모
+
+- 리듬 기반 타이밍 콤보 시스템 안정화
+- FSM 책임 분리가 명확해짐 (PlayerComboState가 콤보 전담)
+- 타격감, 연출, 입력 타이밍 피드백 향상
+- 이후 파이널 스킬 효과, 추가 특수 효과 적용 예정
 
 ---
 
