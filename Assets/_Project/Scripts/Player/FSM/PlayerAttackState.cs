@@ -4,11 +4,6 @@ public class PlayerAttackState : PlayerBaseState
 {
     private PlayerController playerController;
     private WeaponType? cachedWeaponType = null;
-
-    // 연속 입력 체크용 변수
-    private static float lastAttackInputTime = -999f;
-    private const float COMBO_INPUT_WINDOW = 0.5f; // 0.5초 이내 연속 입력 시 콤보 진입
-
     private bool wasAttacking = false;
     private bool isComboTriggered = false; // 콤보 상태 전이 방지 플래그
 

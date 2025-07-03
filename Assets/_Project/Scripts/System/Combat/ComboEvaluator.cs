@@ -20,9 +20,6 @@ public class ComboEvaluator : MonoBehaviour
     }
     #endregion
 
-    [Header("콤보 설정")]
-    [SerializeField] private float comboWindow = 1.0f; // 콤보 입력 유효 시간
-
     // 입력 시퀀스와 일치하는 콤보 후보군 반환
     public List<ComboSequence> GetMatchingCombos(List<AttackType> inputSequence)
     {
