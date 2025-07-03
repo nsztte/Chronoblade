@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
 
 public class PlayerComboState : PlayerBaseState
 {
@@ -93,23 +94,27 @@ public class PlayerComboState : PlayerBaseState
         }
         candidateCombos = newCandidates;
         currentAttackIndex++;
-        // 후보군이 1개로 확정되면 그 콤보를 따라감
         if (candidateCombos.Count == 1)
         {
             currentCombo = candidateCombos[0];
         }
-        // 입력 시퀀스 길이만큼의 공격을 가진 콤보가 있으면 해당 공격 실행
         ExecuteCurrentAttack();
-        // 콤보가 끝났는지 체크
+        // 막타면 콤보 완료를 애니메이션(실제 재생시간) 대신 콤보 윈도우만큼 대기 후 상태 전환
         if (currentCombo != null && currentAttackIndex >= currentCombo.attackSequence.Count - 1)
         {
             Debug.Log($"[PlayerComboState] 콤보 완료: {currentCombo.comboName}");
-            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            stateMachine.StartCoroutine(EndComboAfterDelay(TimingComboManager.Instance.GetComboWindow()));
         }
         else
         {
             isWaitingForInput = true;
         }
+    }
+
+    private IEnumerator EndComboAfterDelay(float waitTime)
+    {
+        yield return new WaitForSeconds(waitTime);
+        stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
     }
 
     private void ExecuteCurrentAttack()
