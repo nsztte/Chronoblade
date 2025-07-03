@@ -34,4 +34,8 @@ public class FakeClone : MonoBehaviour, IDamageable
         //TODO: 클론 파괴 효과 추가
         Destroy(gameObject);
     }
+
+    public void ApplyKnockback(Vector3 direction, float force)
+    {
+    }
 }

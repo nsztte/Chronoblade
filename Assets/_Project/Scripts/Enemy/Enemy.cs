@@ -32,6 +32,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         timeController = GetComponent<EnemyTimeController>();
     }
 
+    // 데미지 처리
     public virtual void TakeDamage(int damage)
     {
         currentHP -= damage;
@@ -50,6 +51,18 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         }
     }
 
+    // 넉백 처리
+    public virtual void ApplyKnockback(Vector3 direction, float force)
+    {
+        Vector3 knockbackPosition = transform.position + direction * force;
+
+        if(NavMesh.SamplePosition(knockbackPosition, out NavMeshHit hit, 1f, NavMesh.AllAreas))
+        {
+            transform.position = hit.position;
+        }
+    }
+
+    // 사망 처리
     public virtual void Die()
     {
         Debug.Log("Enemy Die");
@@ -63,6 +76,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         StartCoroutine(DestroyWithTimeScale(destroyTime));
     }
 
+    // 파괴 지연 처리
     private System.Collections.IEnumerator DestroyWithTimeScale(float delay)
     {
         float elapsed = 0f;
@@ -74,11 +88,13 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         Destroy(this.gameObject);
     }
 
+    // 시간 조절 처리
     public float GetAdjustedDeltaTime()
     {
         return timeController != null ? timeController.GetAdjustedDeltaTime() : Time.deltaTime;
     }
 
+    // 공격 처리
     // 애니메이션 이벤트 등록해서 이용
     public void PerformAttack()
     {

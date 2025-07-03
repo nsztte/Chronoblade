@@ -14,6 +14,7 @@ public class PlayerComboState : PlayerBaseState
     private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
     private bool isWaitingForInput = false;
 
+
     public PlayerComboState(PlayerStateMachine stateMachine, ComboSequence initialCombo) : base(stateMachine)
     {
         playerController = stateMachine.playerController;
@@ -121,6 +122,28 @@ public class PlayerComboState : PlayerBaseState
     {
         ComboSequence comboToUse = currentCombo ?? candidateCombos[0];
         var attackData = comboToUse.attackSequence[currentAttackIndex];
+        
+        // 스태미너 체크
+        if (!PlayerManager.Instance.UseStaminaIfAvailable(attackData.staminaCost))
+        {
+            Debug.Log("[콤보] 스태미너 부족으로 공격 실패");
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
+        }
+        
+        // 타이밍 판정 및 데미지 계산
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        if (result == TimingComboManager.TimingResult.Miss)
+        {
+            Debug.Log($"[{currentAttackIndex+1}타] 판정: Miss, 콤보 종료");
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
+        }
+        
+        // 타이밍 배율을 적용한 데미지 계산
+        float finalDamage = attackData.damage * damageMultiplier;
+        PlayerManager.Instance.SetComboDamage(finalDamage, attackData.knockbackPower);
+        
         // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
         float animLength = attackData.animationClip.length;
         float speed = animLength / beatInterval;
@@ -130,23 +153,9 @@ public class PlayerComboState : PlayerBaseState
             0.05f,
             upperBodyLayerIndex
         );
-        // 타이밍 판정
-        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
-        if (result == TimingComboManager.TimingResult.Miss)
-        {
-            Debug.Log($"[{currentAttackIndex+1}타] 판정: Miss, 콤보 종료");
-            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
-            return;
-        }
-        float finalDamage = attackData.damage * damageMultiplier;
-        ApplyDamage(finalDamage, attackData);
+        
         comboStartTime = Time.time;
         Debug.Log($"[콤보] {comboToUse.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}, 판정: {result}, 데미지: {finalDamage:F1} (배율: {damageMultiplier:F1}, absOffset: {absOffset:F3})");
         isWaitingForInput = false;
-    }
-
-    private void ApplyDamage(float damage, ComboAttackData attackData)
-    {
-        // TODO: 실제 데미지 적용 로직
     }
 }

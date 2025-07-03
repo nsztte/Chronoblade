@@ -20,12 +20,11 @@ public class MeleeWeaponController : WeaponController
     public override void ExecuteLightAttack()
     {
         if (!gameObject.activeInHierarchy) return;
-        if (PlayerManager.Instance.CurrentStamina < staminaCost)
+        if (!PlayerManager.Instance.UseStaminaIfAvailable(staminaCost))
         {
             Debug.Log("스태미너 부족! 약공격 불가");
             return;
         }
-        PlayerManager.Instance.UseStamina(staminaCost);
         currentAttackType = AttackType.Light;
         // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
@@ -38,12 +37,11 @@ public class MeleeWeaponController : WeaponController
     public override void ExecuteHeavyAttack()
     {
         if (!gameObject.activeInHierarchy) return;
-        if (PlayerManager.Instance.CurrentStamina < staminaCost * 2)
+        if (!PlayerManager.Instance.UseStaminaIfAvailable(staminaCost * 2))
         {
             Debug.Log("스태미너 부족! 강공격 불가");
             return;
         }
-        PlayerManager.Instance.UseStamina(staminaCost * 2);
         currentAttackType = AttackType.Heavy;
         // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
@@ -82,6 +80,61 @@ public class MeleeWeaponController : WeaponController
         isAttacking = false;
         currentAttackType = AttackType.None;
     }
+
+    public override void OnComboAttackHit(float damage, float knockbackPower)
+    {
+        Vector3 startPos = startPoint.position;
+        Vector3 endPos = endPoint.position;
+        float radius = weaponData.range;
+        
+        Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
+        foreach(var hit in hits)
+        {
+            if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
+            {
+                target.TakeDamage(Mathf.RoundToInt(damage));
+                hitTargets.Add(target);
+                
+                // 넉백 적용
+                if (knockbackPower > 0)
+                {
+                    Vector3 knockbackDirection = (hit.transform.position - transform.position).normalized;
+                    knockbackDirection.y = 0.5f; // 약간 위로 올리는 효과
+                    target.ApplyKnockback(knockbackDirection, knockbackPower);
+                }
+                
+                Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {damage:F1}, 넉백: {knockbackPower}");
+            }
+        }
+    }
+
+    // // 콤보 데미지 처리 함수
+    // public void ApplyComboDamage(float damage, float knockbackPower)
+    // {
+    //     Vector3 startPos = startPoint.position;
+    //     Vector3 endPos = endPoint.position;
+    //     float radius = weaponData.range;
+        
+    //     Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
+    //     foreach(var hit in hits)
+    //     {
+    //         if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
+    //         {
+    //             target.TakeDamage(Mathf.RoundToInt(damage));
+    //             hitTargets.Add(target);
+                
+    //             // 넉백 적용
+    //             if (knockbackPower > 0)
+    //             {
+    //                 Vector3 knockbackDirection = (hit.transform.position - transform.position).normalized;
+    //                 knockbackDirection.y = 0.5f; // 약간 위로 올리는 효과
+    //                 target.ApplyKnockback(knockbackDirection, knockbackPower);
+    //             }
+                
+    //             Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {damage:F1}, 넉백: {knockbackPower}");
+    //         }
+    //     }
+    // }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

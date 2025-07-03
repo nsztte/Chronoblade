@@ -86,7 +86,7 @@ public class PlayerController : MonoBehaviour
     {
         WeaponManager.Instance.CurrentWeapon?.ExecuteHeavyAttack();
     }
-
+    
     public void SetRunning(bool running)
     {
         isRunning = running;
@@ -115,10 +115,9 @@ public class PlayerController : MonoBehaviour
     public void LocomotionUpdate()
     {
         // 달리기 중 스태미너 소모
-        if (isRunning && moveInput.y > 0 && PlayerManager.Instance.CurrentStamina > 0)
+        if (isRunning && moveInput.y > 0)
         {
-            PlayerManager.Instance.UseStamina(runStaminaCostPerSecond * Time.deltaTime);
-            if (PlayerManager.Instance.CurrentStamina <= 0)
+            if (!PlayerManager.Instance.UseStaminaIfAvailable(runStaminaCostPerSecond * Time.deltaTime))
             {
                 isRunning = false;
             }

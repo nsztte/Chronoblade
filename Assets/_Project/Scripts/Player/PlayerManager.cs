@@ -26,6 +26,10 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [Header("Interact")]
     [SerializeField] private float interactRadius = 2f;
 
+    // 콤보 데미지 저장 필드
+    private float currentComboDamage;
+    private float currentComboKnockback;
+
     private Animator animator;
     private PlayerStateMachine playerStateMachine;
 
@@ -138,7 +142,17 @@ public class PlayerManager : MonoBehaviour, IDamageable
         UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
     }
 
-    public void UseStamina(float amount)
+    public bool UseStaminaIfAvailable(float amount)
+    {
+        if(currentStamina >= amount)
+        {
+            UseStamina(amount);
+            return true;
+        }
+        return false;
+    }
+
+    private void UseStamina(float amount)
     {
         currentStamina -= amount;
         currentStamina = Mathf.Clamp(currentStamina, 0, maxStamina);
@@ -276,6 +290,19 @@ public class PlayerManager : MonoBehaviour, IDamageable
         WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackEnd();
     }
 
+    // 애니메이션 이벤트에서 호출할 메서드
+    public void OnComboAttackHit()
+    {
+        WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit(currentComboDamage, currentComboKnockback);
+    }
+
+    // 콤보 데미지 설정 메서드
+    public void SetComboDamage(float damage, float knockbackPower)
+    {
+        currentComboDamage = damage;
+        currentComboKnockback = knockbackPower;
+    }
+
     private void OnHandleInteract()
     {
         // 플레이어 주변의 IInteractable을 탐색하여 가장 가까운 것과 상호작용
@@ -300,4 +327,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
             closest.Interact();
         }
     }
+
+    public void ApplyKnockback(Vector3 direction, float force) {}
 }          
