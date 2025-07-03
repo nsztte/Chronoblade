@@ -21,12 +21,14 @@ public class PlayerComboState : PlayerBaseState
     {
         Debug.Log($"[PlayerComboState] 진입: {combo.comboName}");
         currentAttackIndex = 0;
-        isWaitingForInput = true;
+        isWaitingForInput = false; // 첫타는 자동 실행
         comboStartTime = Time.time;
-        
-        // 첫 번째 공격은 자동 실행하지 않고 입력 대기
-        // PlayCurrentComboAttack(); // 이 줄 제거
-        
+
+        PlayCurrentComboAttack(); // 첫타 자동 실행
+
+        // 첫타 이후부터 입력 대기
+        isWaitingForInput = true;
+
         // 입력 이벤트 구독
         if (WeaponManager.Instance.CurrentWeapon?.weaponData.weaponType == WeaponType.Sword)
         {
@@ -59,14 +61,13 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Update()
     {
-        // 타이밍 체크 - 일정 시간 내에 입력이 없으면 콤보 실패
-        if (Time.time - comboStartTime > TimingComboManager.Instance.GetComboWindow())
+        // 입력 대기 상태일 때만 타임아웃 체크
+        if (isWaitingForInput && Time.time - comboStartTime > TimingComboManager.Instance.GetComboWindow())
         {
             Debug.Log("[PlayerComboState] 콤보 실패 - 입력 시간 초과");
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
-
         playerController.LocomotionUpdate();
     }
 
@@ -85,7 +86,7 @@ public class PlayerComboState : PlayerBaseState
         // 타이밍 판정, 첫 타의 판정은 모두 어택스테이트에서 맡기는게 좋을듯..
         var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
 
-        if (currentAttackIndex != 0 && result == TimingComboManager.TimingResult.Miss)
+        if (result == TimingComboManager.TimingResult.Miss)
         {
             Debug.Log($"[PlayerComboState] 콤보 실패 - 타이밍 Miss");
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
@@ -166,7 +167,7 @@ public class PlayerComboState : PlayerBaseState
         float finalDamage = attackData.damage * damageMultiplier;
         ApplyDamage(finalDamage, attackData);
 
-        // 공격 시작 시간 기록
+        // 공격 시작 시간 기록 (항상 갱신)
         comboStartTime = Time.time;
 
         // 디버그 출력
