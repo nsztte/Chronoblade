@@ -17,9 +17,9 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnRunCanceled += OnRunCanceled;
         InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
         InputManager.Instance.OnAttackPressed += OnAttackPressed;
-        // ComboEvaluator.Instance.OnComboMatched += OnComboMatched; // PlayerAttackState에서만 관리
-
-        // TimingComboManager.Instance.StopBeatRoutine(); // PlayerAttackState에서만 관리
+        InputManager.Instance.OnAttackHeld += OnAttackHeld;
+        InputManager.Instance.OnLightAttackPressed += OnLightAttackPressed;
+        InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttackPressed;
     }
 
     public override void Exit()
@@ -30,7 +30,9 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnRunCanceled -= OnRunCanceled;
         InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
         InputManager.Instance.OnAttackPressed -= OnAttackPressed;
-        // ComboEvaluator.Instance.OnComboMatched -= OnComboMatched; // PlayerAttackState에서만 관리
+        InputManager.Instance.OnAttackHeld -= OnAttackHeld;
+        InputManager.Instance.OnLightAttackPressed -= OnLightAttackPressed;
+        InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttackPressed;
     }
 
     public override void Update()
@@ -66,40 +68,112 @@ public class PlayerLocomotionState : PlayerBaseState
         playerController.ToggleCrouch();
     }
 
+    // 총기류 공격 - 타이밍 판정 없이 즉시 공격
     private void OnAttackPressed()
     {
         if(WeaponManager.Instance.CurrentWeapon == null) return;
         
         var weapon = WeaponManager.Instance.CurrentWeapon;
-        if (weapon.weaponData.weaponType == WeaponType.Sword)
+        if (weapon.weaponData.weaponType != WeaponType.Sword && weapon.weaponData.weaponType != WeaponType.Rifle)
         {
-            // 소드일 때 스태미너 체크
-            if (PlayerManager.Instance.CurrentStamina < 25) // MeleeWeaponController의 staminaCost와 동일
+            // 총기류는 즉시 공격 실행
+            Debug.Log($"[PlayerLocomotionState] 총기류 공격 실행");
+            playerController.PerformWeaponAttack();
+        }
+    }
+
+    private void OnAttackHeld()
+    {
+        if(WeaponManager.Instance.CurrentWeapon == null) return;
+        
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if(weapon.weaponData.weaponType == WeaponType.Rifle)
+        {
+            playerController.PerformWeaponAttack();
+        }
+    }
+
+    // 소드 Light 공격 - 타이밍 판정 후 콤보 또는 일반 공격
+    private void OnLightAttackPressed()
+    {
+        if(WeaponManager.Instance.CurrentWeapon == null) return;
+        
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon.weaponData.weaponType != WeaponType.Sword)
+        {
+            // 소드가 아니면 무시
+            return;
+        }
+        
+        // 소드일 때 스태미너 체크
+        if (PlayerManager.Instance.CurrentStamina < 25)
+        {
+            Debug.Log("스태미너 부족! 공격 불가");
+            return;
+        }
+        
+        // 타이밍 판정
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        
+        if (result != TimingComboManager.TimingResult.Miss)
+        {
+            // 타이밍이 맞으면 콤보 시도
+            if (ComboEvaluator.Instance.CanStartCombo(AttackType.Light))
             {
-                Debug.Log("스태미너 부족! 공격 불가");
-                return;
-            }
-            
-            // 소드일 때만 콤보 시도
-            var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
-            
-            if (result != TimingComboManager.TimingResult.Miss)
-            {
-                if (ComboEvaluator.Instance.CanStartCombo(AttackType.Light))
+                var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Light);
+                if (combo != null)
                 {
-                    var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Light);
-                    if (combo != null)
-                    {
-                        Debug.Log($"[PlayerLocomotionState] 콤보 시작: {combo.comboName} (타이밍: {result})");
-                        // 바로 ComboState로 전환
-                        stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
-                        return;
-                    }
+                    Debug.Log($"[PlayerLocomotionState] 콤보 시작: {combo.comboName} (타이밍: {result})");
+                    stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
+                    return;
                 }
             }
         }
-        // Sword가 아니거나 콤보가 아니면 AttackState로
-        Debug.Log($"[PlayerLocomotionState] 일반 공격으로 전환");
-        stateMachine.ChangeState(new PlayerAttackState(stateMachine));
+        
+        // 타이밍이 맞지 않거나 콤보가 없으면 일반 Light 공격
+        Debug.Log($"[PlayerLocomotionState] 일반 Light 공격 실행 (타이밍: {result})");
+        playerController.PerformLightAttack();
+    }
+
+    // 소드 Heavy 공격 - 타이밍 판정 후 콤보 또는 일반 공격
+    private void OnHeavyAttackPressed()
+    {
+        if(WeaponManager.Instance.CurrentWeapon == null) return;
+        
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if (weapon.weaponData.weaponType != WeaponType.Sword)
+        {
+            // 소드가 아니면 무시
+            return;
+        }
+        
+        // 소드일 때 스태미너 체크 (Heavy는 2배 소모)
+        if (PlayerManager.Instance.CurrentStamina < 50)
+        {
+            Debug.Log("스태미너 부족! 공격 불가");
+            return;
+        }
+        
+        // 타이밍 판정
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        
+        if (result != TimingComboManager.TimingResult.Miss)
+        {
+            // 타이밍이 맞으면 콤보 시도
+            if (ComboEvaluator.Instance.CanStartCombo(AttackType.Heavy))
+            {
+                var combo = ComboEvaluator.Instance.GetStartableCombo(AttackType.Heavy);
+                if (combo != null)
+                {
+                    Debug.Log($"[PlayerLocomotionState] 콤보 시작: {combo.comboName} (타이밍: {result})");
+                    stateMachine.ChangeState(new PlayerComboState(stateMachine, combo));
+                    return;
+                }
+            }
+        }
+        
+        // 타이밍이 맞지 않거나 콤보가 없으면 일반 Heavy 공격
+        Debug.Log($"[PlayerLocomotionState] 일반 Heavy 공격 실행 (타이밍: {result})");
+        playerController.PerformHeavyAttack();
     }
 }

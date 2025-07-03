@@ -13,6 +13,7 @@ public class ComboAttackData : ScriptableObject
     [Header("기본 정보")]
     public string comboName;
     public float damage;
+    public int staminaCost;
     
     [Header("콤보 패턴")]
     public AttackType attackType; // Light, Heavy

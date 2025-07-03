@@ -26,7 +26,6 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         PlayerManager.Instance.UseStamina(staminaCost);
-        Debug.Log("스테미너 25 소비");
         currentAttackType = AttackType.Light;
         // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용

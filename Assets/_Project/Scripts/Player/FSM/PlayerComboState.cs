@@ -82,10 +82,10 @@ public class PlayerComboState : PlayerBaseState
 
     private void TryContinueCombo(AttackType input)
     {
-        // 타이밍 판정
+        // 타이밍 판정, 첫 타의 판정은 모두 어택스테이트에서 맡기는게 좋을듯..
         var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
-        
-        if (result == TimingComboManager.TimingResult.Miss)
+
+        if (currentAttackIndex != 0 && result == TimingComboManager.TimingResult.Miss)
         {
             Debug.Log($"[PlayerComboState] 콤보 실패 - 타이밍 Miss");
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
