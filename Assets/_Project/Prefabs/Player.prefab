@@ -1791,6 +1791,7 @@ MonoBehaviour:
   hitLayer:
     serializedVersion: 2
     m_Bits: 128
+  staminaCost: 25
 --- !u!1 &1566850880246358056
 GameObject:
   m_ObjectHideFlags: 0
@@ -3624,6 +3625,7 @@ MonoBehaviour:
   fallMultiplier: 2.5
   crouchCameraYOffset: -0.5
   crouchingMultiplier: 0.7
+  runStaminaCostPerSecond: 15
 --- !u!114 &5337691331844272920
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3640,9 +3642,15 @@ MonoBehaviour:
   currentHP: 0
   maxMP: 100
   currentMP: 0
+  mpRecoveryDelay: 2.5
+  mpRecoveryRate: 0.03
+  mpRecoveryFlat: 1.5
   maxStamina: 100
   currentStamina: 0
+  staminaRecoveryDelay: 0.5
+  staminaRecoveryRate: 25
   gold: 0
+  interactRadius: 2
 --- !u!1 &2649427794833669653
 GameObject:
   m_ObjectHideFlags: 0

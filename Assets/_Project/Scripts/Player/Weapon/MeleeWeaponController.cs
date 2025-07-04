@@ -28,7 +28,7 @@ public class MeleeWeaponController : WeaponController
         currentAttackType = AttackType.Light;
         // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
-        hitTargets.Clear();
+        ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
         // Debug.Log($"[약공격 시작] {weaponData.weaponName}");
@@ -45,7 +45,7 @@ public class MeleeWeaponController : WeaponController
         currentAttackType = AttackType.Heavy;
         // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
         PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
-        hitTargets.Clear();
+        ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
         // Debug.Log($"[강공격 시작] {weaponData.weaponName}");
@@ -98,9 +98,8 @@ public class MeleeWeaponController : WeaponController
                 // 넉백 적용
                 if (knockbackPower > 0)
                 {
-                    Vector3 knockbackDirection = (hit.transform.position - transform.position).normalized;
-                    knockbackDirection.y = 0.5f; // 약간 위로 올리는 효과
-                    target.ApplyKnockback(knockbackDirection, knockbackPower);
+                    // 에너미에서 자체적으로 로컬 기준 뒤쪽 방향을 계산하므로 방향 전달 불필요
+                    target.ApplyKnockback(knockbackPower);
                 }
                 
                 Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {damage:F1}, 넉백: {knockbackPower}");
@@ -108,33 +107,11 @@ public class MeleeWeaponController : WeaponController
         }
     }
 
-    // // 콤보 데미지 처리 함수
-    // public void ApplyComboDamage(float damage, float knockbackPower)
-    // {
-    //     Vector3 startPos = startPoint.position;
-    //     Vector3 endPos = endPoint.position;
-    //     float radius = weaponData.range;
-        
-    //     Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
-    //     foreach(var hit in hits)
-    //     {
-    //         if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
-    //         {
-    //             target.TakeDamage(Mathf.RoundToInt(damage));
-    //             hitTargets.Add(target);
-                
-    //             // 넉백 적용
-    //             if (knockbackPower > 0)
-    //             {
-    //                 Vector3 knockbackDirection = (hit.transform.position - transform.position).normalized;
-    //                 knockbackDirection.y = 0.5f; // 약간 위로 올리는 효과
-    //                 target.ApplyKnockback(knockbackDirection, knockbackPower);
-    //             }
-                
-    //             Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {damage:F1}, 넉백: {knockbackPower}");
-    //         }
-    //     }
-    // }
+    // hitTargets 클리어 메서드 (콤보 타격 시작 시 호출)
+    public void ClearHitTargets()
+    {
+        hitTargets.Clear();
+    }
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()

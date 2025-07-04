@@ -62302,14 +62302,7 @@ AnimationClip:
   m_HasMotionFloatCurves: 0
   m_Events:
   - time: 0.6666667
-    functionName: OnMeleeAttackHit
-    data: 
-    objectReferenceParameter: {fileID: 0}
-    floatParameter: 0
-    intParameter: 0
-    messageOptions: 0
-  - time: 1.1666666
-    functionName: OnMeleeAttackEnd
+    functionName: OnComboAttackHit
     data: 
     objectReferenceParameter: {fileID: 0}
     floatParameter: 0
