@@ -673,6 +673,35 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.04 (금) 작업 기록
+
+### 주요 작업
+- 에너미 넉백 로직 개선
+  - 넉백 방향을 에너미의 로컬 기준 뒤쪽으로 설정
+  - `SmoothKnockback()` 코루틴 도입 → 자연스러운 넉백 이동 연출
+
+- MeleeWeaponController 개선
+  - `ClearHitTargets()` 함수 추가
+  - 콤보 타격 시 중복 타격 방지 처리
+
+- PlayerComboState 개선
+  - 마지막 콤보 애니메이션은 클립 전체 길이로 재생되도록 조정
+    - `ComboSequence`에 `lastAttackAnimSpeed` 필드 추가
+    - 마지막 공격 시 해당 속도로 애니메이션 속도 적용
+  - 마지막 타 직후 콤보 종료 딜레이 적용
+    - `EndComboAfterDelay(float waitTime)` 코루틴 도입
+    - 콤보 종료 연출과 타격감을 향상
+
+- 애니메이션 클립 연결
+  - `약약약` 콤보 애니메이션 정상 연동
+
+### 메모
+- 콤보 마지막 타의 연출이 강화되어 타격감 개선
+- 콤보 효과는 추후 연출 스크립트 분리 또는 이펙트 연동 예정
+- 다음 작업은 파이널 스킬 이펙트 및 UI 피드백 강화 방향 고려
+
+---
+
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
