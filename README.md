@@ -702,6 +702,28 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.05 (토) 작업 기록
+
+### 주요 작업
+- Repeat(약약약), Break(약약강), Crash(약강강) 콤보 공격 데이터 구성
+  - 각 콤보에 대응하는 `ComboAttackData` 및 `ComboSequence` ScriptableObject 생성 및 입력
+  - 콤보별 후반부로 갈수록 데미지 증가하는 고정 수치 반영
+- 애니메이션 클립 연결 및 이벤트 설정
+  - 각 `ComboAttackData`에 맞는 애니메이션 클립 지정
+  - 애니메이션 타격 타이밍에 `OnComboAttackHit` 이벤트 등록 처리 완료
+- 스태미너 소모 로직 구조 정리
+  - `ComboAttackData`에서 `staminaCost` 필드 제거 (공통 수치 사용 방식으로 전환)
+  - 스태미너 소모 수치(`Light: 12`, `Heavy: 24`)를 `PlayerManager`에 통합 관리
+  - `MeleeAttackController`에서는 더 이상 개별 스태미너 수치를 갖지 않도록 구조 개선
+
+### 메모
+- 넉백 수치는 테스트를 통해 추후 직접 조정 예정
+- 향후 `ComboAttackData`에 특수효과 필드나 연출 전용 플래그 등을 확장할 여지 있음
+- 다음 작업 시 `ComboSequence` 기반으로 입력 리듬 흐름 제어 여부 확인 필요
+- Rewind(강약강), Finale(약강약강) 데이터 작성 및 애니메이션 연결 진행 예정
+
+---
+
 ## 관련 문서
 
 - [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
