@@ -14,13 +14,12 @@ public class MeleeWeaponController : WeaponController
     public LayerMask hitLayer;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
-    [Header("스태미너 소모")]
-    [SerializeField] private int staminaCost = 25;
+
 
     public override void ExecuteLightAttack()
     {
         if (!gameObject.activeInHierarchy) return;
-        if (!PlayerManager.Instance.UseStaminaIfAvailable(staminaCost))
+        if (!PlayerManager.Instance.UseStaminaIfAvailable(PlayerManager.Instance.StaminaCost))
         {
             Debug.Log("스태미너 부족! 약공격 불가");
             return;
@@ -37,7 +36,7 @@ public class MeleeWeaponController : WeaponController
     public override void ExecuteHeavyAttack()
     {
         if (!gameObject.activeInHierarchy) return;
-        if (!PlayerManager.Instance.UseStaminaIfAvailable(staminaCost * 2))
+        if (!PlayerManager.Instance.UseStaminaIfAvailable(PlayerManager.Instance.StaminaCost * 2))
         {
             Debug.Log("스태미너 부족! 강공격 불가");
             return;

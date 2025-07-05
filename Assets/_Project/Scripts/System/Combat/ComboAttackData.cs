@@ -3,8 +3,7 @@ using UnityEngine;
 public enum AttackType
 {
     Light,  // 약공격
-    Heavy,  // 강공격
-    Rest    // 휴식
+    Heavy   // 강공격
 }
 
 [CreateAssetMenu(fileName = "ComboAttackData", menuName = "Combat/ComboAttack")]
@@ -13,7 +12,7 @@ public class ComboAttackData : ScriptableObject
     [Header("기본 정보")]
     public string comboName;
     public float damage;
-    public int staminaCost;
+    // public int staminaCost;
     
     [Header("콤보 패턴")]
     public AttackType attackType; // Light, Heavy

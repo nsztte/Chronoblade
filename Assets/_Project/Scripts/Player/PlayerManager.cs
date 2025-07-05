@@ -14,17 +14,20 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private float mpRecoveryRate = 0.03f; // 최대 MP의 3%/초
     [SerializeField] private float mpRecoveryFlat = 1.5f;    // 초당 고정 1.5 회복
 
-    [Header("Stamina")]
+    [Header("스태미너")]
     [SerializeField] private int maxStamina = 100;
     [SerializeField] private float currentStamina;
     [SerializeField] private float staminaRecoveryDelay = 0.5f;    // 회복 시작전 초기 딜레이
     [SerializeField] private float staminaRecoveryRate = 25f;    // 초당 25 회복
 
-    [Header("Currency")]
+    [Header("골드")]
     [SerializeField] private int gold = 0;
 
-    [Header("Interact")]
+    [Header("상호작용")]
     [SerializeField] private float interactRadius = 2f;
+
+    [Header("스태미너 소모")]
+    [SerializeField] private int staminaCost = 12;  // 약공격 기준 (강공격 2배 소모)
 
     // 콤보 데미지 저장 필드
     private float currentComboDamage;
@@ -46,6 +49,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public float CurrentStamina => currentStamina;
     public int Gold => gold;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
+    public int StaminaCost => staminaCost;
     #endregion
 
     #region Singleton

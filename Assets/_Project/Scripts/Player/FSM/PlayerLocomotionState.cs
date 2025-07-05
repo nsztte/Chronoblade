@@ -107,7 +107,7 @@ public class PlayerLocomotionState : PlayerBaseState
         }
         
         // 소드일 때 스태미너 체크
-        if (PlayerManager.Instance.CurrentStamina < 25)
+        if (PlayerManager.Instance.CurrentStamina < PlayerManager.Instance.StaminaCost)
         {
             Debug.Log("스태미너 부족! 공격 불가");
             return;
@@ -146,7 +146,7 @@ public class PlayerLocomotionState : PlayerBaseState
         }
         
         // 소드일 때 스태미너 체크 (Heavy는 2배 소모)
-        if (PlayerManager.Instance.CurrentStamina < 50)
+        if (PlayerManager.Instance.CurrentStamina < PlayerManager.Instance.StaminaCost * 2)
         {
             Debug.Log("스태미너 부족! 공격 불가");
             return;

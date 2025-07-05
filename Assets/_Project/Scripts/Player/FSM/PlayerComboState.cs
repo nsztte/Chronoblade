@@ -133,9 +133,10 @@ public class PlayerComboState : PlayerBaseState
     {
         ComboSequence comboToUse = currentCombo ?? candidateCombos[0];
         var attackData = comboToUse.attackSequence[currentAttackIndex];
+        float staminaCost = attackData.attackType == AttackType.Light ? PlayerManager.Instance.StaminaCost : PlayerManager.Instance.StaminaCost * 2;
         
         // 스태미너 체크
-        if (!PlayerManager.Instance.UseStaminaIfAvailable(attackData.staminaCost))
+        if (!PlayerManager.Instance.UseStaminaIfAvailable(staminaCost))
         {
             Debug.Log("[콤보] 스태미너 부족으로 공격 실패");
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
