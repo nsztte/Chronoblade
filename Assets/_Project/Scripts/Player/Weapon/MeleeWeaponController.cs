@@ -91,6 +91,7 @@ public class MeleeWeaponController : WeaponController
         {
             if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
             {
+                Debug.Log($"OnComboAttackHit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
                 target.TakeDamage(Mathf.RoundToInt(damage));
                 hitTargets.Add(target);
                 

@@ -106,7 +106,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
-        Debug.Log($"Player Take Damage: {damage}");
+        // Debug.Log($"Player Take Damage: {damage}");
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 
         // UI 업데이트

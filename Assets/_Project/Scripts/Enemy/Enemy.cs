@@ -109,7 +109,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             transform.position = finalHit.position;
         }
         
-        Debug.Log($"[넉백] 부드러운 이동 완료 - 최종 위치: {transform.position}");
+        // Debug.Log($"[넉백] 부드러운 이동 완료 - 최종 위치: {transform.position}");
     }
 
     // 사망 처리
@@ -157,7 +157,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     // 근접 공격 판정 (공통 기능)
     protected void DealDamagedWithCapsule(Transform startPosition, Transform endPosition, float radius)
     {
-        Debug.Log("근접 공격 판정");
+        // Debug.Log("근접 공격 판정");
         Collider[] hits = Physics.OverlapCapsule(startPosition.position, endPosition.position, radius, playerLayer);
 
         foreach(Collider hit in hits)
@@ -165,7 +165,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             if(hit.TryGetComponent(out IDamageable damageable))
             {
                 damageable.TakeDamage(Damage);
-                Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
+                // Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
         }
     }

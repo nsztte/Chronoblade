@@ -11,7 +11,7 @@ public class Watcher : Enemy
     {
         // Watcher는 근접 공격만 수행
         DealDamagedWithCapsule(attackStartPosition, attackEndPosition, attackRadius);
-        Debug.Log("Watcher 근접 공격 실행");
+        // Debug.Log("Watcher 근접 공격 실행");
     }
 
 #if UNITY_EDITOR

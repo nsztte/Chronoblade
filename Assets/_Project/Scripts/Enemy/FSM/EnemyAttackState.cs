@@ -12,7 +12,7 @@ public class EnemyAttackState : EnemyBaseState
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Animator.SetTrigger("IsAttacking");
-        Debug.Log("공격 상태 진입");
+        // Debug.Log("공격 상태 진입");
         lastAttackTime = Time.time;
         lastDistanceUpdate = 0f; // 캐시 초기화
     }
