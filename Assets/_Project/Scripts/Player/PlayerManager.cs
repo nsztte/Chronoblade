@@ -29,6 +29,10 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [Header("스태미너 소모")]
     [SerializeField] private int staminaCost = 12;  // 약공격 기준 (강공격 2배 소모)
 
+    [Header("무적 상태")]
+    [SerializeField] private bool isInvincible = false;
+    [SerializeField] private float invincibilityTimer = 0f;
+
     // 콤보 데미지 저장 필드
     private float currentComboDamage;
     private float currentComboKnockback;
@@ -50,6 +54,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public int Gold => gold;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public int StaminaCost => staminaCost;
+    public bool IsInvincibleProperty => isInvincible;
     #endregion
 
     #region Singleton
@@ -101,10 +106,18 @@ public class PlayerManager : MonoBehaviour, IDamageable
     {
         RecoverMpOverTime();
         RecoverStaminaOverTime();
+        UpdateInvincibility();
     }
 
+    #region 플레이어 상태 관리
     public void TakeDamage(int damage)
     {
+        // 무적 상태 체크
+        if (IsInvincible())
+        {
+            return; // 무적 상태면 피격 무시
+        }
+        
         currentHP -= damage;
         // Debug.Log($"Player Take Damage: {damage}");
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
@@ -116,8 +129,29 @@ public class PlayerManager : MonoBehaviour, IDamageable
         {
             Die();
         }
+        else
+        {
+            // 일반 피격 시 0.3초 무적
+            SetInvincible(true, 0.3f);
+            
+            // 피격 상태로 전환
+            playerStateMachine?.ChangeState(new PlayerHitState(playerStateMachine));
+        }
     }
 
+    private void Die()
+    {
+        // 게임 오버 처리
+        Debug.Log("플레이어 죽음");
+
+        // 사망 상태로 전환 (연출용)
+        playerStateMachine?.ChangeState(new PlayerDeathState(playerStateMachine));
+    }
+
+
+    #endregion
+
+    #region 플레이어 자원 관리
     public void HealHP(float amount)
     {
         currentHP += amount;
@@ -237,22 +271,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
             staminaRecoveryTimer = 0f;
         }
     }
+    #endregion
 
-    private void Die()
-    {
-        // 게임 오버 처리
-        Debug.Log("플레이어 죽음");
-
-        GameOver();
-    }
-
-    private void GameOver()
-    {
-        Time.timeScale = 0f;
-        Debug.Log("게임 오버");
-        //TODO: 연출, 사운드, 애니메이션, 게임 오버 UI 표시
-    }
-
+    #region 애니메이터 제어
     // 애니메이터 제어 메서드
     public void SetAnimatorBool(string param, bool value)
     {
@@ -270,19 +291,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
     {
         animator.SetFloat(param, value, dampTime, deltaTime);
     }
+    #endregion
 
-    // // UpperBody 레이어에서 현재 재생 중인 애니메이션 클립의 길이 반환
-    // public float GetCurrentUpperBodyClipLength()
-    // {
-    //     if (animator == null) return 0.3f;
-    //     int upperBodyLayer = animator.GetLayerIndex("UpperBody");
-    //     if (upperBodyLayer < 0) return 0.3f;
-    //     var clips = animator.GetCurrentAnimatorClipInfo(upperBodyLayer);
-    //     if (clips.Length > 0)
-    //         return clips[0].clip.length;
-    //     return 0.3f;
-    // }
-
+    #region 애니메이션 이벤트 메서드
     // 애니메이션 이벤트 메서드들 (무기 컨트롤러에 전달)
     public void OnMeleeAttackHit()
     {
@@ -299,6 +310,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     {
         WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit(currentComboDamage, currentComboKnockback);
     }
+    #endregion
 
     // 콤보 데미지 설정 메서드
     public void SetComboDamage(float damage, float knockbackPower)
@@ -333,4 +345,54 @@ public class PlayerManager : MonoBehaviour, IDamageable
     }
 
     public void ApplyKnockback(float force) {}
+
+    #region 무적 상태 관리
+    public bool IsInvincible()
+    {
+        return isInvincible;
+    }
+
+    public void SetInvincible(bool invincible, float duration = 0f)
+    {
+        isInvincible = invincible;
+        if (invincible && duration > 0)
+        {
+            invincibilityTimer = duration;
+        }
+    }
+
+    private void UpdateInvincibility()
+    {
+        if (isInvincible && invincibilityTimer > 0)
+        {
+            invincibilityTimer -= Time.deltaTime;
+            if (invincibilityTimer <= 0)
+            {
+                isInvincible = false;
+            }
+        }
+    }
+
+    // 콤보 타이밍에 따른 무적 시간 설정
+    public void OnComboAttackSuccess(TimingComboManager.TimingResult timing)
+    {
+        float invincibilityDuration = GetInvincibilityTimeByTiming(timing);
+        SetInvincible(true, invincibilityDuration);
+    }
+
+    private float GetInvincibilityTimeByTiming(TimingComboManager.TimingResult timing)
+    {
+        switch (timing)
+        {
+            case TimingComboManager.TimingResult.Perfect:
+                return 0.7f;
+            case TimingComboManager.TimingResult.Good:
+                return 0.5f;
+            case TimingComboManager.TimingResult.Miss:
+                return 0f;
+            default:
+                return 0f;
+        }
+    }
+    #endregion
 }          

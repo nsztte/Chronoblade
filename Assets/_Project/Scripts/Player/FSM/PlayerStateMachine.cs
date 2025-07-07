@@ -42,7 +42,9 @@ public class PlayerStateMachine : MonoBehaviour
         stateTypeMap[typeof(PlayerJumpState)] = PlayerState.Jump;
         stateTypeMap[typeof(PlayerAttackState)] = PlayerState.Attack;
         stateTypeMap[typeof(PlayerComboState)] = PlayerState.Combo;
-        // 필요시 추가: stateTypeMap[typeof(PlayerHitState)] = PlayerState.Hit; 등
+        stateTypeMap[typeof(PlayerHitState)] = PlayerState.Hit;
+        stateTypeMap[typeof(PlayerDeathState)] = PlayerState.Death;
+        stateTypeMap[typeof(PlayerRewindState)] = PlayerState.Rewind;
     }
 
     public void ChangeState(PlayerBaseState newState)

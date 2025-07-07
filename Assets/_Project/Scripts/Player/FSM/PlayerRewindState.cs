@@ -1,16 +1,23 @@
 using UnityEngine;
 
-public class PlayerRewindState : MonoBehaviour
+public class PlayerRewindState : PlayerBaseState
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    public PlayerRewindState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
-        
     }
 
-    // Update is called once per frame
-    void Update()
+    public override void Enter()
     {
-        
+        throw new System.NotImplementedException();
+    }
+
+    public override void Exit()
+    {
+        throw new System.NotImplementedException();
+    }
+
+    public override void Update()
+    {
+        throw new System.NotImplementedException();
     }
 }

@@ -159,6 +159,9 @@ public class PlayerComboState : PlayerBaseState
             return;
         }
 
+        // 콤보 성공 시 무적 시간 부여
+        PlayerManager.Instance.OnComboAttackSuccess(result);
+
         // 마지막 타인지 확인
         bool isLastAttack = currentCombo != null && currentAttackIndex >= currentCombo.attackSequence.Count - 1;
         

@@ -45,37 +45,4 @@ public class ComboEvaluator : MonoBehaviour
         }
         return result;
     }
-
-    private void Start()
-    {
-        // TimingComboManager의 비트 이벤트 구독
-        if (TimingComboManager.Instance != null)
-        {
-            TimingComboManager.Instance.OnBeat += OnBeat;
-        }
-    }
-
-    private void OnDestroy()
-    {
-        if (TimingComboManager.Instance != null)
-        {
-            TimingComboManager.Instance.OnBeat -= OnBeat;
-        }
-    }
-
-    /// <summary>
-    /// 콤보 타이밍 체크 (외부에서 호출)
-    /// </summary>
-    public void CheckComboTiming()
-    {
-        // (이전 콤보 시스템에서만 사용, 현재는 필요 없음)
-    }
-
-    /// <summary>
-    /// 비트마다 호출되는 타이밍 체크
-    /// </summary>
-    private void OnBeat()
-    {
-        CheckComboTiming();
-    }
 }
