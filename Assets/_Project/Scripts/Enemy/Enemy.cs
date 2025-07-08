@@ -1,7 +1,8 @@
 using UnityEngine;
 using UnityEngine.AI;
+using System.Collections;
 
-public abstract class Enemy : MonoBehaviour, IDamageable
+public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
 {
     [Header("디폴트")]
     [SerializeField] protected EnemyBehaviorData behaviorData;
@@ -9,6 +10,10 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected EnemyTimeController timeController;
     [SerializeField] protected int currentHP;
     [SerializeField] protected float destroyTime = 5f;
+
+    [Header("상태 이상")]
+    private Coroutine statusCoroutine;
+    private StatusEffectType currentStatus;
 
     [Header("공격 판정")]
     [SerializeField] protected LayerMask playerLayer;
@@ -185,4 +190,50 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             }
         }
     }
+
+    public virtual void ApplyStatus(StatusEffectType type, float duration)
+    {
+        if(currentStatus != StatusEffectType.None) return;
+
+        currentStatus = type;
+        switch(type)
+        {
+            case StatusEffectType.Stun:
+                statusCoroutine = StartCoroutine(HandleStun(type, duration));
+                break;
+            case StatusEffectType.Freeze:
+                statusCoroutine = StartCoroutine(HandleFreeze(type, duration));
+                break;
+            case StatusEffectType.Pull:
+                statusCoroutine = StartCoroutine(HandlePull(type, duration));
+                break;
+            case StatusEffectType.AOE:
+                statusCoroutine = StartCoroutine(HandleAOE(type, duration));
+                break;
+        }
+    }
+
+    private IEnumerator HandleStun(StatusEffectType type, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        currentStatus = StatusEffectType.None;
+    }
+
+    private IEnumerator HandleFreeze(StatusEffectType type, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        currentStatus = StatusEffectType.None;
+    }
+
+    private IEnumerator HandlePull(StatusEffectType type, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        currentStatus = StatusEffectType.None;
+    }
+
+    private IEnumerator HandleAOE(StatusEffectType type, float duration)
+    {
+        yield return new WaitForSeconds(duration);
+        currentStatus = StatusEffectType.None;
+    }   
 }

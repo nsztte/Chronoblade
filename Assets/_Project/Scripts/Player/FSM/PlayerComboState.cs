@@ -100,27 +100,6 @@ public class PlayerComboState : PlayerBaseState
             currentCombo = candidateCombos[0];
         }
         ExecuteCurrentAttack();
-        // 막타면 콤보 완료를 애니메이션 길이만큼 대기 후 상태 전환
-        if (currentCombo != null && currentAttackIndex >= currentCombo.attackSequence.Count - 1)
-        {
-            Debug.Log($"[PlayerComboState] 콤보 완료: {currentCombo.comboName}");
-            var attackData = currentCombo.attackSequence[currentAttackIndex];
-            float animLength = attackData.animationClip.length;
-            float lastSpeed = currentCombo.lastAttackAnimSpeed > 0 ? currentCombo.lastAttackAnimSpeed : 1f;
-            PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", lastSpeed);
-            stateMachine.animator.CrossFadeInFixedTime(
-                attackData.animationClip.name,
-                0.05f,
-                upperBodyLayerIndex
-            );
-            float actualPlayTime = animLength / lastSpeed;
-            Debug.Log($"[PlayerComboState] 막타 애니메이션 실제 재생 시간: {actualPlayTime} (클립 길이: {animLength}, lastAttackAnimSpeed: {lastSpeed})");
-            stateMachine.StartCoroutine(EndComboAfterDelay(actualPlayTime));
-        }
-        else
-        {
-            isWaitingForInput = true;
-        }
     }
 
     private IEnumerator EndComboAfterDelay(float waitTime)
@@ -145,10 +124,7 @@ public class PlayerComboState : PlayerBaseState
         
         // 콤보 타격 시작 시 hitTargets 클리어 (각 타격마다 새로운 타격 기회 제공)
         var meleeWeapon = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
-        if (meleeWeapon != null)
-        {
-            meleeWeapon.ClearHitTargets();
-        }
+        meleeWeapon?.ClearHitTargets();
         
         // 타이밍 판정 및 데미지 계산
         var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
@@ -163,7 +139,7 @@ public class PlayerComboState : PlayerBaseState
         PlayerManager.Instance.OnComboAttackSuccess(result);
 
         // 마지막 타인지 확인
-        bool isLastAttack = currentCombo != null && currentAttackIndex >= currentCombo.attackSequence.Count - 1;
+        bool isLastAttack = attackData.isFinalHit;
         
         // 타이밍 배율을 적용한 데미지 계산
         float finalDamage = attackData.damage * damageMultiplier;
@@ -171,7 +147,15 @@ public class PlayerComboState : PlayerBaseState
         
         // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
         float animLength = attackData.animationClip.length;
-        float speed = isLastAttack ? 1f : animLength / beatInterval; // 마지막 타는 기본 속도
+        float speed;
+        if (isLastAttack && currentCombo != null)
+        {
+            speed = currentCombo.lastAttackAnimSpeed > 0 ? currentCombo.lastAttackAnimSpeed : 1f;
+        }
+        else
+        {
+            speed = animLength / beatInterval;
+        }
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
         stateMachine.animator.CrossFadeInFixedTime(
             attackData.animationClip.name,
@@ -181,6 +165,16 @@ public class PlayerComboState : PlayerBaseState
         
         comboStartTime = Time.time;
         Debug.Log($"[콤보] {comboToUse.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}, 판정: {result}, 데미지: {finalDamage:F1} (배율: {damageMultiplier:F1}, absOffset: {absOffset:F3})");
-        isWaitingForInput = false;
+
+        if(isLastAttack)
+        {
+            float actualPlayTime = animLength / speed;
+            Debug.Log($"[PlayerComboState] 막타 애니메이션 실제 재생 시간: {actualPlayTime} (클립 길이: {animLength}, 속도: {speed})");
+            stateMachine.StartCoroutine(EndComboAfterDelay(actualPlayTime));
+        }
+        else
+        {
+            isWaitingForInput = true;
+        }
     }
 }
