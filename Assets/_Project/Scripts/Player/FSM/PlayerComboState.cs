@@ -143,8 +143,19 @@ public class PlayerComboState : PlayerBaseState
         
         // 타이밍 배율을 적용한 데미지 계산
         float finalDamage = attackData.damage * damageMultiplier;
-        PlayerManager.Instance.SetComboDamage(finalDamage, attackData.knockbackPower);
-        
+
+        // 콤보 공격 정보 설정
+        var comboInfo = new ComboAttackInfo()
+        {
+            damage = finalDamage,
+            knockbackPower = attackData.knockbackPower,
+            isFinalHit = isLastAttack,
+            statusEffect = attackData.statusEffect,
+            statusDuration = attackData.statusDuration
+        };
+
+        PlayerManager.Instance.SetComboAttackInfo(comboInfo);
+
         // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
         float animLength = attackData.animationClip.length;
         float speed;

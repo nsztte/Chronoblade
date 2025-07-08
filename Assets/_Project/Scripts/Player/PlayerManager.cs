@@ -33,9 +33,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private bool isInvincible = false;
     [SerializeField] private float invincibilityTimer = 0f;
 
-    // 콤보 데미지 저장 필드
-    private float currentComboDamage;
-    private float currentComboKnockback;
+    private ComboAttackInfo currentComboAttackInfo;
 
     private Animator animator;
     private PlayerStateMachine playerStateMachine;
@@ -55,6 +53,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public int StaminaCost => staminaCost;
     public bool IsInvincibleProperty => isInvincible;
+    public ComboAttackInfo CurrentComboAttackInfo => currentComboAttackInfo;
     #endregion
 
     #region Singleton
@@ -308,15 +307,15 @@ public class PlayerManager : MonoBehaviour, IDamageable
     // 애니메이션 이벤트에서 호출할 메서드
     public void OnComboAttackHit()
     {
-        WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit(currentComboDamage, currentComboKnockback);
+        WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit
+        (currentComboAttackInfo);
     }
     #endregion
 
-    // 콤보 데미지 설정 메서드
-    public void SetComboDamage(float damage, float knockbackPower)
+    // 콤보 공격 정보 설정
+    public void SetComboAttackInfo(ComboAttackInfo comboAttackInfo)
     {
-        currentComboDamage = damage;
-        currentComboKnockback = knockbackPower;
+        currentComboAttackInfo = comboAttackInfo;
     }
 
     private void OnHandleInteract()

@@ -79,11 +79,13 @@ public class MeleeWeaponController : WeaponController
         currentAttackType = AttackType.None;
     }
 
-    public override void OnComboAttackHit(float damage, float knockbackPower)
+    public override void OnComboAttackHit(ComboAttackInfo comboAttackInfo)
     {
         Vector3 startPos = startPoint.position;
         Vector3 endPos = endPoint.position;
         float radius = weaponData.range;
+
+        var comboInfo = comboAttackInfo;
         
         Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
         foreach(var hit in hits)
@@ -91,17 +93,22 @@ public class MeleeWeaponController : WeaponController
             if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
             {
                 Debug.Log($"OnComboAttackHit!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!");
-                target.TakeDamage(Mathf.RoundToInt(damage));
+                target.TakeDamage(Mathf.RoundToInt(comboInfo.damage));
                 hitTargets.Add(target);
                 
                 // 넉백 적용
-                if (knockbackPower > 0)
+                if (comboInfo.knockbackPower > 0)
                 {
                     // 에너미에서 자체적으로 로컬 기준 뒤쪽 방향을 계산하므로 방향 전달 불필요
-                    target.ApplyKnockback(knockbackPower);
+                    target.ApplyKnockback(comboInfo.knockbackPower);
+                }
+
+                if(comboInfo.isFinalHit && hit.TryGetComponent(out IStatusEffectable effectable))
+                {
+                    effectable.ApplyStatus(comboInfo.statusEffect, comboInfo.statusDuration);
                 }
                 
-                Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {damage:F1}, 넉백: {knockbackPower}");
+                Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {comboInfo.damage:F1}, 넉백: {comboInfo.knockbackPower}");
             }
         }
     }
