@@ -1,7 +1,7 @@
 using UnityEngine;
 
 public enum AttackType { Light, Heavy }
-public enum StatusEffectType { None, Stun, Freeze, Pull, AOE }
+public enum StatusEffectType { None, Freeze, Slow }
 
 [CreateAssetMenu(fileName = "ComboAttackData", menuName = "Combat/ComboAttack")]
 public class ComboAttackData : ScriptableObject
@@ -24,6 +24,16 @@ public class ComboAttackData : ScriptableObject
     public AudioClip soundEffect;
 
     [Header("상태 이상 효과")]
-    public StatusEffectType statusEffect;
+    public StatusEffectType statusEffectType;
     public float statusDuration;
+
+    [Header("공격 특성")]
+    public bool isAOE;
+    public float aoeRadius;
+    public int aoeHitCount;
+
+    [Header("다단 히트")]
+    public bool isMultiHit;
+    public int multiHitCount;
+    public float multiHitInterval;
 }

@@ -70,7 +70,7 @@ public abstract class WeaponController : MonoBehaviour
     // 애니메이션 이벤트 메서드들 (기본 구현은 빈 메서드)
     public virtual void OnMeleeAttackHit() { }
     public virtual void OnMeleeAttackEnd() { }
-    public virtual void OnComboAttackHit(ComboAttackInfo comboAttackInfo) { }
+    public virtual void OnComboAttackHit(float damage, ComboAttackData comboAttackData) { }
 
     public void SetAttackingTrue()
     {

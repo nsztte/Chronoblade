@@ -2,18 +2,16 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
-public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
+[RequireComponent(typeof(EnemyStateMachine), typeof(EnemyTimeController), typeof(FinalComboController))]
+public abstract class Enemy : MonoBehaviour, IDamageable
 {
     [Header("디폴트")]
     [SerializeField] protected EnemyBehaviorData behaviorData;
     protected EnemyStateMachine fsm;
     protected EnemyTimeController timeController;
+    protected FinalComboController finalComboController;
     [SerializeField] protected int currentHP;
     [SerializeField] protected float destroyTime = 5f;
-
-    [Header("상태 이상")]
-    private Coroutine statusCoroutine;
-    private StatusEffectType currentStatus;
 
     [Header("공격 판정")]
     [SerializeField] protected LayerMask playerLayer;
@@ -21,6 +19,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
     #region Getter
     public EnemyBehaviorData BehaviorData => behaviorData;
     public EnemyType Type => behaviorData.enemyType;
+    public FinalComboController FinalComboController => finalComboController;
     public int MaxHP => behaviorData.maxHP;
     public int Damage => behaviorData.damage;
     public float MoveSpeed => behaviorData.moveSpeed;
@@ -35,6 +34,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
         currentHP = behaviorData.maxHP;
         fsm = GetComponent<EnemyStateMachine>();
         timeController = GetComponent<EnemyTimeController>();
+        finalComboController = GetComponent<FinalComboController>();
     }
 
     // 데미지 처리
@@ -86,7 +86,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
     }
 
     // 부드러운 넉백 이동 코루틴
-    private System.Collections.IEnumerator SmoothKnockback(Vector3 targetPosition, float duration)
+    private IEnumerator SmoothKnockback(Vector3 targetPosition, float duration)
     {
         Vector3 startPosition = transform.position;
         float elapsed = 0f;
@@ -96,7 +96,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
             elapsed += GetAdjustedDeltaTime();
             float t = elapsed / duration;
             
-            // 선형 이동 (이징 없이)
+            // 선형 이동
             Vector3 newPosition = Vector3.Lerp(startPosition, targetPosition, t);
             
             // NavMesh 위에 있는지 확인하고 이동
@@ -132,7 +132,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
     }
 
     // 파괴 지연 처리
-    private System.Collections.IEnumerator DestroyWithTimeScale(float delay)
+    private IEnumerator DestroyWithTimeScale(float delay)
     {
         float elapsed = 0f;
         while (elapsed < delay)
@@ -190,50 +190,4 @@ public abstract class Enemy : MonoBehaviour, IDamageable, IStatusEffectable
             }
         }
     }
-
-    public virtual void ApplyStatus(StatusEffectType type, float duration)
-    {
-        if(currentStatus != StatusEffectType.None) return;
-
-        currentStatus = type;
-        switch(type)
-        {
-            case StatusEffectType.Stun:
-                statusCoroutine = StartCoroutine(HandleStun(type, duration));
-                break;
-            case StatusEffectType.Freeze:
-                statusCoroutine = StartCoroutine(HandleFreeze(type, duration));
-                break;
-            case StatusEffectType.Pull:
-                statusCoroutine = StartCoroutine(HandlePull(type, duration));
-                break;
-            case StatusEffectType.AOE:
-                statusCoroutine = StartCoroutine(HandleAOE(type, duration));
-                break;
-        }
-    }
-
-    private IEnumerator HandleStun(StatusEffectType type, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        currentStatus = StatusEffectType.None;
-    }
-
-    private IEnumerator HandleFreeze(StatusEffectType type, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        currentStatus = StatusEffectType.None;
-    }
-
-    private IEnumerator HandlePull(StatusEffectType type, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        currentStatus = StatusEffectType.None;
-    }
-
-    private IEnumerator HandleAOE(StatusEffectType type, float duration)
-    {
-        yield return new WaitForSeconds(duration);
-        currentStatus = StatusEffectType.None;
-    }   
 }

@@ -3,6 +3,9 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour, IDamageable
 {
+    [Header("플레이어 참조")]
+    [SerializeField] private Transform playerTransform;
+
     [Header("HP")]
     [SerializeField] private int maxHP = 100;
     [SerializeField] private float currentHP;
@@ -33,7 +36,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private bool isInvincible = false;
     [SerializeField] private float invincibilityTimer = 0f;
 
-    private ComboAttackInfo currentComboAttackInfo;
+    private float currentComboDamage;
+    private ComboAttackData currentCombo;
 
     private Animator animator;
     private PlayerStateMachine playerStateMachine;
@@ -43,6 +47,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     private float staminaRecoveryTimer = 0f;
 
     #region Properties
+    public Transform PlayerTransform => playerTransform;
     public int MaxHP => maxHP;
     public float CurrentHP => currentHP;
     public int MaxMP => maxMP;
@@ -53,7 +58,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public int StaminaCost => staminaCost;
     public bool IsInvincibleProperty => isInvincible;
-    public ComboAttackInfo CurrentComboAttackInfo => currentComboAttackInfo;
+    public ComboAttackData CurrentCombo => currentCombo;
     #endregion
 
     #region Singleton
@@ -307,15 +312,15 @@ public class PlayerManager : MonoBehaviour, IDamageable
     // 애니메이션 이벤트에서 호출할 메서드
     public void OnComboAttackHit()
     {
-        WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit
-        (currentComboAttackInfo);
+        WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit(currentComboDamage, currentCombo);
     }
     #endregion
 
     // 콤보 공격 정보 설정
-    public void SetComboAttackInfo(ComboAttackInfo comboAttackInfo)
+    public void SetCurrentCombo(float damage, ComboAttackData comboAttackData)
     {
-        currentComboAttackInfo = comboAttackInfo;
+        currentComboDamage = damage;
+        currentCombo = comboAttackData;
     }
 
     private void OnHandleInteract()

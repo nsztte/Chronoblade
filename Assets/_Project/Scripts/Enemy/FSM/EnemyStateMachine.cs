@@ -18,7 +18,7 @@ public class EnemyStateMachine : MonoBehaviour
     private Animator animator;
     private NavMeshAgent agent;
     private Enemy enemy;
-    [SerializeField] private Transform target;
+    private Transform target;
 
     // 상태 트래킹
     public EnemyState currentStateType;
@@ -61,6 +61,19 @@ public class EnemyStateMachine : MonoBehaviour
         InitializeStateTypeMap();
     }
 
+    private void Start()
+    {
+        target = PlayerManager.Instance.PlayerTransform;
+        
+        TransitionToState(idleState);
+    }
+
+    private void Update()
+    {
+        animator.SetFloat("Speed", agent.velocity.magnitude);
+        currentState?.Update(this);
+    }
+
     private void InitializeStateTypeMap()
     {
         stateTypeMap[typeof(EnemyIdleState)] = EnemyState.Idle;
@@ -72,17 +85,6 @@ public class EnemyStateMachine : MonoBehaviour
         // 파생된 공격 상태들도 매핑
         stateTypeMap[typeof(ChronoAttackState)] = EnemyState.Attack;
         stateTypeMap[typeof(MirrorAttackState)] = EnemyState.Attack;
-    }
-
-    private void Start()
-    {
-        TransitionToState(idleState);
-    }
-
-    private void Update()
-    {
-        animator.SetFloat("Speed", agent.velocity.magnitude);
-        currentState?.Update(this);
     }
 
     public void TransitionToState(EnemyBaseState newState)
