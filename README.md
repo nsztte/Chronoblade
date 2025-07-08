@@ -60,6 +60,8 @@
 - [x] 콤보 어택 데미지 처리 로직 구현 (퍼펙트/굿에 따른 배율 적용)
 - [x] 콤보 공격 시 넉백 효과 적용 (IDamageable 확장 + Enemy 이동 처리)
 - [x] 콤보 어택 시 플레이어 스태미너 차감 로직 반영
+
+## 4주차 목표
 - [ ] 콤보 스킬 마지막 타에 발동되는 파이널 스킬 기획 및 구조 구현
 
 ---
@@ -724,7 +726,7 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
-## 2025.07.06 (토) 작업 기록
+## 2025.07.07 (월) 작업 기록
 
 ### 주요 작업
 - 콤보 공격 데이터 및 애니메이션 클립 추가
@@ -752,6 +754,46 @@ Enemy FSM(상태머신) 시스템 구현
   - 타이밍 보정 기반 스킬 연계 설계 기초 완료
 - 피격/사망 상태는 기본 틀만 구성되어 있고, 연출 관련 로직은 추후 시네머신, UI 시스템과 연계 예정
 - `PlayerManager`의 무적 처리와 FSM 전환 흐름이 명확해져 유지보수성이 향상됨
+
+---
+
+## 2025.07.08 (금) 작업 기록
+
+### 주요 작업
+- 콤보 막타 상태이상 적용 시스템 구축
+  - `ComboAttackData`에 `isFinalHit`, `statusEffectType`, `statusDuration` 필드 추가
+  - 막타일 경우 상태이상 효과 발동 가능하도록 설정
+
+- 상태이상 처리 인터페이스 및 구조 설계
+  - `IStatusEffectable` 인터페이스 정의  
+    - `ApplyStatus(StatusEffectType type, float duration)` 메서드 제공
+  - `FinalComboController`에서 인터페이스 구현  
+    - 적의 FSM, NavMeshAgent, Animator를 제어하여 `Freeze`, `Slow` 상태 처리
+
+- 콤보 공격 정보 구조화
+  - `ComboAttackInfo` 구조체 정의 → `PlayerManager`에 저장
+  - 기존 개별 필드(`currentComboDamage`, `currentComboKnockback`, `isFinalHit`) 제거
+  - `PlayerComboState.ExecuteCurrentAttack()`에서 구조체 생성 후 전달
+
+- OnComboAttackHit 리팩토링
+  - 전달받은 `ComboAttackInfo`를 활용해 데미지, 넉백, 상태이상 효과 적용
+  - 상태이상 효과는 `FinalComboController.ApplyStatus(ComboAttackData)` 호출 방식 유지
+
+- 스킬 특성 필드 추가 및 구조 정리
+  - `ComboAttackData`에 다음 필드 추가:  
+    - `isAOE`: 범위 공격 여부  
+    - `aoeRadius`: 범위 반경  
+    - `aoeHitCount`: 다단히트 수
+  - `StatusEffectType`은 `None`, `Freeze`, `Slow`로 단순화
+
+### 메모
+- 파이널 콤보 스킬 구조 분리 및 통합 방향 정립
+  - 상태이상은 적 개별 객체(`FinalComboController`)에서 관리
+  - AOE/다단히트는 추후 `MeleeWeaponController`에서 별도 처리 예정
+- `Repeat`(3연속 히트)는 상태이상이 아닌 별도 특수효과로 `MeleeWeaponController`에서 구현 예정
+
+---
+
 
 ## 관련 문서
 

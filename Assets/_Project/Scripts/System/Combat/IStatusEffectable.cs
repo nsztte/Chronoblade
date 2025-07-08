@@ -2,5 +2,5 @@ using UnityEngine;
 
 public interface IStatusEffectable
 {
-    void ApplyStatus(StatusEffectType type, float duration, ComboAttackData attackData);
+    void ApplyStatus(ComboAttackData attackData);
 }
