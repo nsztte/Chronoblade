@@ -27,9 +27,7 @@ public class ItemManager : MonoBehaviour
         if(itemData.itemType == ItemType.Consumable)
         {
             ApplyConsumableItemEffect(itemData);
-            // 탄약 아이템이 아니라면 인벤토리에서 차감
-            if(itemData.consumableItemEffectType != ConsumableItemEffectType.AmmoSupply)
-                RemoveItem(itemData, 1);
+            InventoryManager.Instance.RemoveItem(itemData, 1);
         }
     }
 
@@ -44,9 +42,9 @@ public class ItemManager : MonoBehaviour
             case ConsumableItemEffectType.ManaRestore:
                 PlayerManager.Instance.RestoreMP(itemData.value);
                 break;
-            case ConsumableItemEffectType.AmmoSupply:
-                InventoryManager.Instance.AddAmmo(itemData.ammoType, itemData.value);
-                break;
+            // case ConsumableItemEffectType.AmmoSupply:
+            //     InventoryManager.Instance.AddAmmo(itemData.ammoType, itemData.value);
+            //     break;
             default:
                 Debug.LogError($"아이템 효과 미지정: {itemData.itemName}");
                 break;
@@ -55,18 +53,27 @@ public class ItemManager : MonoBehaviour
     }
 
     // 인벤토리 연동 메서드
-    public int AddItem(ItemData item, int amount)
-    {
-        return InventoryManager.Instance.AddItem(item, amount);
-    }
+    // public bool AddItem(ItemData item, int amount)
+    // {
+    //     string failReason;
+    //     if(InventoryManager.Instance.TryAddItem(item, amount, out failReason))
+    //     {
+    //         return true;
+    //     }
+    //     else
+    //     {
+    //         Debug.LogError($"[ItemManager] 아이템 추가 실패: {failReason}");
+    //         return false;
+    //     }
+    // }
 
-    public bool RemoveItem(ItemData item, int amount)
-    {
-        return InventoryManager.Instance.RemoveItem(item, amount);
-    }
+    // public bool RemoveItem(ItemData item, int amount)
+    // {
+    //     return InventoryManager.Instance.RemoveItem(item, amount);
+    // }
 
-    public int GetItemCount(ItemData item)
-    {
-        return InventoryManager.Instance.GetItemCount(item);
-    }
+    // public int GetItemCount(ItemData item)
+    // {
+    //     return InventoryManager.Instance.GetItemCount(item);
+    // }
 }

@@ -42,14 +42,31 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     private void TryPickup()
     {
-        int remaining = InventoryManager.Instance.AddItem(itemData, amount);
-        if(remaining <= 0)
+        int leftOver = InventoryManager.Instance.TryAddItem(itemData, amount, out string failReason);
+
+        if(leftOver <= 0)
         {
             Destroy(gameObject);
         }
         else
         {
-            amount = remaining;
+            // 총알 아이템이라면: 남은 총알 수 → 박스 개수로 환산
+            if (itemData.itemType == ItemType.Consumable &&
+                itemData.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
+            {
+                int originalValue = itemData.value;
+                int remaining = leftOver;
+
+                itemData = Instantiate(itemData);
+                itemData.value = remaining;
+                amount = Mathf.CeilToInt((float)remaining / originalValue);
+            }
+            else
+            {
+                amount = leftOver; // 일반 아이템은 남은 개수 그대로 사용
+            }
+
+            Debug.Log($"[ItemPickup] 일부만 획득됨. 남은 수량: {leftOver} | 사유: {failReason}");
         }
     }
 }

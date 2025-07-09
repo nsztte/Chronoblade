@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System.Runtime.CompilerServices;
 
 [RequireComponent(typeof(Animator))]
 public class GunWeaponController : WeaponController
@@ -33,6 +34,20 @@ public class GunWeaponController : WeaponController
         // 초기 탄약 UI 업데이트
         int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
         UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+    }
+
+    private void OnEnable()
+    {
+        InputManager.Instance.OnAimStarted += OnAimStarted;
+        InputManager.Instance.OnAimCanceled += OnAimCanceled;
+        InputManager.Instance.OnReloadPressed += OnReload;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.Instance.OnAimStarted -= OnAimStarted;
+        InputManager.Instance.OnAimCanceled -= OnAimCanceled;
+        InputManager.Instance.OnReloadPressed -= OnReload;
     }
 
     private void Update()
@@ -155,6 +170,7 @@ public class GunWeaponController : WeaponController
     {
         if (currentAmmo >= weaponData.magazineSize)
         {
+            Debug.Log("이미 탄창이 가득 찬 경우");
             yield break; // 이미 탄창이 가득 찬 경우
         }
 
@@ -197,6 +213,7 @@ public class GunWeaponController : WeaponController
     {
         if(WeaponManager.Instance.CurrentWeapon == this)
         {
+            Debug.Log("Reload");
             StartCoroutine(Reload(reloadDuration));
         }
     }

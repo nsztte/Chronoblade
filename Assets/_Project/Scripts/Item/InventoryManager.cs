@@ -27,8 +27,57 @@ public class InventoryManager : MonoBehaviour
     // 슬롯 기반 인벤토리 구조(확장용, 실제 슬롯 로직은 추후 구현)
     // public List<InventorySlot> slots = new List<InventorySlot>();
 
+    public int TryAddItem(ItemData item, int amount, out string faliReason)
+    {
+        faliReason = string.Empty;
+
+        if(item.itemType == ItemType.Consumable && item.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
+        {
+            int totalAmmo = item.value * amount;
+            int leftOverAmmo = AddAmmo(item.ammoType, totalAmmo);
+            if(leftOverAmmo > 0)
+            {
+                faliReason = $"최대 탄약 보유량을 초과했습니다. 최대 탄약 보유량: {GetMaxAmmoForType(item.ammoType)}";
+            }
+
+            return leftOverAmmo;
+        }
+        else
+        {
+            int leftOver = AddItem(item, amount);
+            if(leftOver > 0)
+            {
+                faliReason = $"최대 아이템 보유량을 초과했습니다. 최대 아이템 보유량: {item.maxStack}";
+            }
+            return leftOver;
+        }
+    }
+
+    public bool TryRemoveItem(ItemData item, int amount, out string failReason)
+    {
+        failReason = string.Empty;
+        if(item.itemType == ItemType.Consumable && item.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
+        {
+            bool success = DropAmmo(item.ammoType, item.value * amount);
+            if(!success)
+            {
+                failReason = $"탄약 보유량이 부족합니다. 탄약 보유량: {ammoCounts[item.ammoType]}";
+            }
+            return success;
+        }
+        else
+        {
+            bool success = RemoveItem(item, amount);
+            if(!success)
+            {
+                failReason = $"아이템 보유량이 부족합니다. 아이템 보유량: {itemCounts[item.itemName]}";
+            }
+            return success;
+        }
+    }
+
     #region 일반아이템 관리
-    public int AddItem(ItemData item, int amount)
+    private int AddItem(ItemData item, int amount)
     {
         // 유효성 검사
         if (item == null || item.maxStack <= 0) return amount;
@@ -70,7 +119,7 @@ public class InventoryManager : MonoBehaviour
     #endregion
 
     #region 탄약아이템 관리
-    public int AddAmmo(AmmoType type, int amount)
+    private int AddAmmo(AmmoType type, int amount)
     {
         // 현재 탄약 수량 확인
         if (!ammoCounts.TryGetValue(type, out int currentCount))
@@ -86,7 +135,21 @@ public class InventoryManager : MonoBehaviour
         if (toAdd > 0)
             ammoCounts[type] = currentCount + toAdd;
 
+        Debug.Log($"[InventoryManager] 탄약 추가 결과: {toAdd} | 남은 수량: {ammoCounts[type]}");
+
         return amount - toAdd; // 추가되지 못한 탄약 수량 반환
+    }
+
+    private bool DropAmmo(AmmoType type, int amount)
+    {
+        if(!ammoCounts.ContainsKey(type)) return false;
+        if(ammoCounts[type] < amount) return false;
+
+        ammoCounts[type] -= amount;
+
+        if(ammoCounts[type] <= 0) ammoCounts.Remove(type);
+
+        return true;
     }
 
     private int GetMaxAmmoForType(AmmoType type)

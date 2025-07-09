@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
     public PlayerHUD playerHUD;
     public CrosshairUI crosshairUI;
     public QuickSlotUI quickSlotUI;
+    public ShopUI shopUI;
 
 
     #region Singleton
@@ -25,6 +26,15 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
+    #region 마우스 커서 업데이트
+    public void SetCursorLockState(CursorLockMode mode)
+    {
+        Cursor.lockState = mode;
+        Cursor.visible = mode == CursorLockMode.None;
+    }
+    #endregion
+
+    #region 플레이어 상태 업데이트
     // === 체력, MP, 스태미나 ===
     public void UpdateHP(int current, int max)
     {
@@ -63,4 +73,5 @@ public class UIManager : MonoBehaviour
     {
         quickSlotUI?.SetSelectedIndex(index);
     }
+    #endregion
 }
