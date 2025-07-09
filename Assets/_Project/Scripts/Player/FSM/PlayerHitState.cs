@@ -20,7 +20,7 @@ public class PlayerHitState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log("PlayerHitState Exit");
+        // Debug.Log("PlayerHitState Exit");
     }
 
     public override void Update()

@@ -35,6 +35,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [Header("무적 상태")]
     [SerializeField] private bool isInvincible = false;
     [SerializeField] private float invincibilityTimer = 0f;
+    [SerializeField] private float hitInvincibilityDuration = 0.5f;
 
     private float currentComboDamage;
     private ComboAttackData currentCombo;
@@ -123,7 +124,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
         }
         
         currentHP -= damage;
-        // Debug.Log($"Player Take Damage: {damage}");
         currentHP = Mathf.Clamp(currentHP, 0, maxHP);
 
         // UI 업데이트
@@ -135,8 +135,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
         }
         else
         {
-            // 일반 피격 시 0.3초 무적
-            SetInvincible(true, 0.3f);
+            // 일반 피격 시 일정 시간 무적
+            SetInvincible(true, hitInvincibilityDuration);
             
             // 피격 상태로 전환
             playerStateMachine?.ChangeState(new PlayerHitState(playerStateMachine));

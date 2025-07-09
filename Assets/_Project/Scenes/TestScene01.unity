@@ -347,8 +347,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   beatInterval: 0.5
-  perfectWindow: 0.08
-  goodWindow: 0.16
+  perfectWindow: 1
+  goodWindow: 1
   perfectBonusMultiplier: 1.2
   goodBonusMultiplier: 1
   missPenaltyMultiplier: 0.5
@@ -1372,7 +1372,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 562160104480518956, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
       propertyPath: m_IsActive
-      value: 0
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 6637047101635948288, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
       propertyPath: m_LocalPosition.x

@@ -138,6 +138,7 @@ public class MeleeWeaponController : WeaponController
 
         for(int i = 0; i < count; i++)
         {
+            Debug.Log($"ApplyMultiHit {i}: {damage}");
             target.TakeDamage(Mathf.RoundToInt(damage));
             yield return new WaitForSeconds(interval);
             damage = Mathf.Max(damage * 0.8f, 10f);

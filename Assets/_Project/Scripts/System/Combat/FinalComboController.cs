@@ -61,12 +61,15 @@ public class FinalComboController : MonoBehaviour, IStatusEffectable
         Debug.Log($"Enemy {transform.name} 슬로우 상태 적용");
 
         float originalSpeed = agent.speed;
-        float slowedSpeed = originalSpeed * slowSpeed;
-        agent.speed = slowedSpeed;
+        float originalAnimSpeed = animator.speed;
+
+        agent.speed = originalSpeed * slowSpeed;
+        animator.speed = originalAnimSpeed * slowSpeed;
 
         yield return new WaitForSeconds(duration);
 
         agent.speed = originalSpeed;
+        animator.speed = originalAnimSpeed;
         currentStatus = StatusEffectType.None;
     }
 }
