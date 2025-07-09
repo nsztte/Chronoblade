@@ -1,5 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Collections;
+using System.Data.Common;
 
 public class MeleeWeaponController : WeaponController
 {
@@ -84,29 +86,72 @@ public class MeleeWeaponController : WeaponController
         Vector3 startPos = startPoint.position;
         Vector3 endPos = endPoint.position;
         float radius = weaponData.range;
-        
+        int aoeCount = 0;
+
         Collider[] hits = Physics.OverlapCapsule(startPos, endPos, radius, hitLayer);
         foreach(var hit in hits)
         {
-            if(hit.TryGetComponent(out IDamageable target) && !hitTargets.Contains(target))
+            if(hit.TryGetComponent(out IDamageable target))
             {
-                target.TakeDamage(Mathf.RoundToInt(damage));
-                hitTargets.Add(target);
-                
-                // 넉백 적용
-                if (comboAttackData.knockbackPower > 0)
-                {
-                    // 에너미에서 자체적으로 로컬 기준 뒤쪽 방향을 계산하므로 방향 전달 불필요
-                    target.ApplyKnockback(comboAttackData.knockbackPower);
-                }
-
-                if(comboAttackData.isFinalHit && hit.TryGetComponent(out IStatusEffectable effectable))
-                {
-                    effectable.ApplyStatus(comboAttackData);
-                }
-                
-                Debug.Log($"[콤보 타격] 대상: {hit.name}, 데미지: {damage:F1}, 넉백: {comboAttackData.knockbackPower}");
+               if(comboAttackData.isAOE)
+               {
+                    ApplyAOE(hit.transform.position, comboAttackData, damage, ref aoeCount);
+               }
+               else
+               {
+                    ProcessComboAttack(hit.gameObject, comboAttackData, damage);
+               }
             }
+        }
+    }
+
+    private void ProcessComboAttack(GameObject hitObject, ComboAttackData data, float damage)
+    {
+        if(!hitObject.TryGetComponent(out IDamageable target)) return;
+        if(hitTargets.Contains(target)) return;
+        hitTargets.Add(target);
+
+        if(data.isMultiHit)
+        {
+            StartCoroutine(ApplyMultiHit(target, data, damage));
+        }
+        else
+        {
+            target.TakeDamage(Mathf.RoundToInt(damage));
+        }
+
+        if(data.knockbackPower > 0)
+        {
+            target.ApplyKnockback(data.knockbackPower);
+        }
+
+        if(data.isFinalHit && data.statusEffectType != StatusEffectType.None && hitObject.TryGetComponent(out IStatusEffectable effectable))
+        {
+            effectable.ApplyStatus(data);
+        }
+    }
+
+    private IEnumerator ApplyMultiHit(IDamageable target, ComboAttackData data, float damage)
+    {
+        int count = data.multiHitCount;
+        float interval = data.multiHitInterval;
+
+        for(int i = 0; i < count; i++)
+        {
+            target.TakeDamage(Mathf.RoundToInt(damage));
+            yield return new WaitForSeconds(interval);
+            damage = Mathf.Max(damage * 0.8f, 10f);
+        }
+    }
+
+    private void ApplyAOE(Vector3 center, ComboAttackData data, float damage, ref int hitCount)
+    {
+        Collider[] aoeHits = Physics.OverlapSphere(center, data.aoeRadius, hitLayer);
+        foreach(var aoeHit in aoeHits)
+        {
+            if(hitCount >= data.aoeHitCount) break;
+            ProcessComboAttack(aoeHit.gameObject, data, damage);
+            hitCount++;
         }
     }
 
