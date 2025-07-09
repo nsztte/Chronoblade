@@ -41,28 +41,24 @@ public class TimingComboManager : MonoBehaviour
 
     public enum TimingResult { Perfect, Good, Miss, None }
     
-    [System.Serializable]
-    public struct TimingJudgement
-    {
-        public TimingResult result;
-        public float damageMultiplier;
+    // [System.Serializable]
+    // public struct TimingJudgement
+    // {
+    //     public TimingResult result;
+    //     public float damageMultiplier;
         
-        public TimingJudgement(TimingResult result, float multiplier)
-        {
-            this.result = result;
-            this.damageMultiplier = multiplier;
-        }
-    }
+    //     public TimingJudgement(TimingResult result, float multiplier)
+    //     {
+    //         this.result = result;
+    //         this.damageMultiplier = multiplier;
+    //     }
+    // }
     
+    // 심장박동 UI, 사운드에 사용
     public event Action OnBeat; // 비트마다 콤보 시스템에 알림
-
-    private float startTime;
-
-    // private float lastBeatTime;
-
+    private float startTime;    // 비트 루프 시작 시점 (코루틴 시작 시점)
     private Coroutine beatRoutineCoroutine;
     private bool beatStarted = false;
-
     public float StartTime => startTime; // 외부에서 접근 가능한 프로퍼티
 
     // UI 등 피드백용 프로퍼티, 이벤트
@@ -99,17 +95,17 @@ public class TimingComboManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(beatInterval);
-            OnBeat?.Invoke(); // 비트마다 알림
+            OnBeat?.Invoke(); // 비트마다 알림 (UI, 사운드 호출 용도)
         }
     }
 
-    public float GetCurrentOffset()
-    {
-        float currentTime = Time.time;
-        float beatsPassed = Mathf.Round((currentTime - startTime) / beatInterval);
-        float nearestBeatTime = startTime + beatsPassed * beatInterval;
-        return currentTime - nearestBeatTime;
-    }
+    // public float GetCurrentOffset()
+    // {
+    //     float currentTime = Time.time;
+    //     float beatsPassed = Mathf.Round((currentTime - startTime) / beatInterval);
+    //     float nearestBeatTime = startTime + beatsPassed * beatInterval;
+    //     return currentTime - nearestBeatTime;
+    // }
 
     public float GetComboWindow()
     {

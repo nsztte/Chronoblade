@@ -170,7 +170,7 @@ public class PlayerComboState : PlayerBaseState
         if(isLastAttack)
         {
             float actualPlayTime = animLength / speed;
-            Debug.Log($"[PlayerComboState] 막타 애니메이션 실제 재생 시간: {actualPlayTime} (클립 길이: {animLength}, 속도: {speed})");
+            Debug.Log($"[PlayerComboState] 막타 애니메이션 실제 재생 시간: {actualPlayTime}");
             stateMachine.StartCoroutine(EndComboAfterDelay(actualPlayTime));
         }
         else
