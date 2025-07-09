@@ -53,7 +53,6 @@
 
 - [x] 리듬 판정 시스템 완전 구현 (Perfect/Good/Miss 처리 및 타이밍 윈도우 조정)
 - [x] 플레이어 FSM 이주 완료 (기본 이동, 점프, 공격 등 상태 분리 및 전환 처리)
-- [ ] 플레이어 점프 상태 세분화 구현 (JumpStart, OnAir, JumpEnd 상태 분리 및 FSM 등록)
 - [x] 리듬 판정 결과에 따른 콤보 어택 흐름 연동 (Miss 시 중단, Good/Perfect 시 연계)
 - [x] 콤보 어택 전용 데이터(ComboAttackData, ComboSequence) 구조 설계 및 구축
 - [x] 콤보 어택 애니메이션 연결 (애니메이션 클립 + 상체 레이어 재생)
@@ -62,7 +61,12 @@
 - [x] 콤보 어택 시 플레이어 스태미너 차감 로직 반영
 
 ## 4주차 목표
-- [ ] 콤보 스킬 마지막 타에 발동되는 파이널 스킬 기획 및 구조 구현
+- [x] 콤보 스킬 마지막 타에 발동되는 파이널 스킬 기획 및 구조 구현
+- [ ] 플레이어 점프 상태 세분화 구현 (JumpStart, OnAir, JumpEnd 상태 분리 및 FSM 등록)
+- [x] 아이템 상점 시스템 구현, 상점 UI 기본틀 구축
+- [ ] 스킬 상점 시스템 구현
+- [ ] 시간되감기/빨리감기/정지 기능 구현
+- [ ] 시간 기능을 이용하는 퍼즐 기획/구현
 
 ---
 
@@ -791,6 +795,65 @@ Enemy FSM(상태머신) 시스템 구현
   - 상태이상은 적 개별 객체(`FinalComboController`)에서 관리
   - AOE/다단히트는 추후 `MeleeWeaponController`에서 별도 처리 예정
 - `Repeat`(3연속 히트)는 상태이상이 아닌 별도 특수효과로 `MeleeWeaponController`에서 구현 예정
+
+---
+
+## 2025.07.09 (수) 작업 기록
+
+### 주요 작업
+
+- 상점 시스템 및 인벤토리 연동 구현
+  - ShopData / Shop / ShopManager 설계 및 구현
+    - ScriptableObject 기반 판매 아이템 관리
+    - IInteractable 인터페이스 연동으로 상점 자판기 상호작용 처리
+    - ShopManager에서 구매/판매 로직 분리, 감가율 반영
+  - ShopUI 상호작용 기능 구현
+    - 아이템 버튼 동적 생성 및 선택/해제 로직 구현
+    - 선택된 아이템 강조 색상 적용 (노란색)
+    - 선택된 아이템 정보 TextMeshPro로 표시
+    - Buy/Sell 버튼의 클릭 이벤트를 Start()에서 동적 연결
+    - 선택 상태에 따라 버튼 활성/비활성 처리
+  - 커서 표시 개선
+    - UI 열릴 때 Cursor.lockState 및 Cursor.visible 처리 통합
+    - UIManager에서 SetCursorLockState 함수로 일괄 관리
+  - Grid Layout Group 설정 변경
+    - Fixed Column Count = 3, UpperLeft 정렬
+    - Padding, Spacing 조정으로 좌측 상단부터 고정 배치
+
+- InventoryManager 핵심 로직 개선
+  - TryAddItem() → 잔여 수량 반환하도록 수정
+    - 탄약일 경우 item.value 단위로 계산하여 CeilToInt 반환
+    - 과잉 반환으로 인한 무한 획득 버그 수정
+  - AddAmmo() → 최대 탄약 수량 초과 시 남는 수량 정확히 계산
+  - TryPickup()에서 실패 시 남은 수량 정확히 유지되도록 연동
+  - RemoveItem() 및 DropAmmo() 통합 고려 기반 분리 유지
+
+- 콤보 스킬 AOE 및 다단 히트 로직 구현
+  - ComboAttackData에 다음 필드 추가
+    - isAOE, aoeRadius, aoeHitCount
+    - isMultiHit, multiHitCount, multiHitInterval
+  - MeleeWeaponController.OnComboAttackHit 확장
+    - AOE 여부에 따라 범위 내 적 타격 처리
+    - 단일 대상은 ProcessComboAttack() 통해 처리
+    - 다단 히트 시 ApplyMultiHit() 코루틴으로 처리
+  - 상태이상 효과는 파이널 콤보일 경우에만 FinalComboController를 통해 적용
+  - AOE 중복 타격 방지를 위해 hitTargets 리스트 사용
+  - 데미지는 TimingComboManager에서 판정된 값으로 전달
+  - OnComboAttackHit 내부 로직 분리: ProcessComboAttack(), ApplyAOE(), ApplyMultiHit()
+
+- 슬로우 상태 애니메이션 속도 동기화 및 파이널 콤보 테스트
+  - FinalComboController.HandleSlow() 수정
+    - agent.speed뿐만 아니라 animator.speed도 함께 감소 적용
+    - duration 종료 시 원래 속도로 복구
+  - 파이널 콤보 전체 테스트 완료
+    - 단일 타격, AOE, 다단 히트, Freeze/Slow 정상 작동 확인
+    - TimingComboManager와의 연동도 확인
+
+### 메모
+- 콤보 공격에서 다양한 타격 조건을 구조적으로 처리할 수 있도록 통합 리팩토링 진행
+- 상점 UI/UX 흐름을 데이터 기반으로 구성하고 커서 처리까지 통합 완료
+- 탄약 수량 처리와 아이템 수량 제한 문제 해결됨
+- 구매/판매 및 상태이상 공격 테스트 정상 완료
 
 ---
 
