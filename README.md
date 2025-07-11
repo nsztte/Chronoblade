@@ -65,7 +65,7 @@
 - [ ] 플레이어 점프 상태 세분화 구현 (JumpStart, OnAir, JumpEnd 상태 분리 및 FSM 등록)
 - [x] 아이템 상점 시스템 구현, 상점 UI 기본틀 구축
 - [ ] 스킬 상점 시스템 구현
-- [ ] 시간되감기/빨리감기/정지 기능 구현
+- [x] 시간되감기/빨리감기/정지 기능 구현
 - [ ] 시간 기능을 이용하는 퍼즐 기획/구현
 
 ---
@@ -854,6 +854,51 @@ Enemy FSM(상태머신) 시스템 구현
 - 상점 UI/UX 흐름을 데이터 기반으로 구성하고 커서 처리까지 통합 완료
 - 탄약 수량 처리와 아이템 수량 제한 문제 해결됨
 - 구매/판매 및 상태이상 공격 테스트 정상 완료
+
+---
+
+## 2025.07.11 (금) 작업 기록
+
+### 주요 작업
+
+- 시간 시스템 전체 구현 완료 (정지, 빨리감기, 되감기)
+  - TimeManager 설계 및 TimeState 열거형 정의
+    - Normal, Stop, FastForward, Rewind 상태에 따른 시간 제어
+    - ITimeControllable 등록 대상에 SetTimeScale() 적용
+
+- TimeInputHandler 구현
+  - E 키 탭: 시간 정지 → OnTimeStop 이벤트
+  - E 키 홀드: 빨리감기 → OnTimeFastForwardStart 이벤트
+  - Q 키 홀드: 되감기 → OnTimeRewindStart 이벤트
+
+- ITimeControllable 인터페이스 정의
+  - SetTimeScale(float timeScale), GetTimeScale() 구현 강제화
+
+- 되감기 시스템 구현 (RewindRecorder.cs 기반)
+  - RewindSnapshot 구조체로 위치/회전 저장 (속도는 제거됨)
+  - Rigidbody 포함 오브젝트에 RewindRecorder 부착하여 상태 저장
+  - Q 키 홀드 중 역순으로 snapshot 재생 → 되감기 처리
+  - snapshot 소진 시 → isKinematic = true로 정지
+  - Q 키 해제 시 → StopRewind() 호출 및 isKinematic = false
+
+- 점진적 되감기 개선 및 보간 연출 추가
+  - snapshot 간 위치 보간 시 lerpSpeed가 점점 증가하도록 구성
+  - 되감기 속도(rewindInterval)도 점점 짧아지도록 적용
+  - 목표 위치에 충분히 근접하면 → 정확히 고정 (snap threshold = 0.01f)
+  - hasTarget 플래그로 snapshot 적용 중복 방지
+  - 결과적으로 점점 빨라지며 자연스럽게 과거로 되감기되는 연출 완성
+
+### 테스트
+- 테스트용 박스(prefab)에 Rigidbody, RewindRecorder 적용하여 낙하 → 되감기 테스트 진행
+- Q 키 홀드 시 되감기 시각화 정상 작동 확인
+- 시각적으로 자연스럽고, 플레이어 조작 타이밍 파악 가능한 퍼즐용 연출 확보
+
+### 메모
+- snapshot 시작 위치와 현재 위치가 크게 차이날 경우 "튀는 현상" 발생할 수 있음
+  → 퍼즐 구현 단계에서 별도 보완 예정
+- 퍼즐 오브젝트는 보간 기반 연출이 자연스럽고, 플레이어 리와인드는 지양할 예정
+- rewindInterval과 lerpSpeed를 동시에 증가시키는 방식이 현재 가장 자연스러움
+- 되감기의 전반적인 로직은 퍼즐 구현 후 테스트하면서 보완할 예정
 
 ---
 
