@@ -22,14 +22,18 @@ public class TimeInputHandler : MonoBehaviour
 
     #region Events
     public event Action OnTimeSlowToggle;      // Q 탭
-    public event Action OnTimeRewind;          // Q 홀드
     public event Action OnTimeStop;            // E 탭
-    public event Action OnTimeFastForward;     // E 홀드
+    public event Action OnTimeRewindStart;     // Q 키 누르기
+    public event Action OnTimeRewindEnd;       // Q 키 떼기
+    public event Action OnTimeFastForwardStart;     // E 키 누르기
+    public event Action OnTimeFastForwardEnd;     // E 키 떼기
     #endregion
 
     // 시간 조절 입력 상태
     private bool isQKeyPressed = false;
     private bool isEKeyPressed = false;
+    private bool isRewindInvoked = false;
+    private bool isFastForwardInvoked = false;
     private float qKeyHoldTime = 0f;
     private float eKeyHoldTime = 0f;
     private const float holdThreshold = 0.3f; // 홀드 판정 시간 (초)
@@ -46,6 +50,7 @@ public class TimeInputHandler : MonoBehaviour
         {
             isQKeyPressed = true;
             qKeyHoldTime = 0f;
+            isRewindInvoked = false;
         }
         
         // Q 키 홀드 처리
@@ -54,9 +59,10 @@ public class TimeInputHandler : MonoBehaviour
             qKeyHoldTime += Time.deltaTime;
             
             // Q 키 홀드 시 시간 되감기
-            if (qKeyHoldTime >= holdThreshold)
+            if (qKeyHoldTime >= holdThreshold && !isRewindInvoked)
             {
-                OnTimeRewind?.Invoke();
+                OnTimeRewindStart?.Invoke();
+                isRewindInvoked = true;
             }
         }
         
@@ -68,9 +74,14 @@ public class TimeInputHandler : MonoBehaviour
             {
                 OnTimeSlowToggle?.Invoke();
             }
+            else if(isRewindInvoked)
+            {
+                OnTimeRewindEnd?.Invoke();
+            }
             
             isQKeyPressed = false;
             qKeyHoldTime = 0f;
+            isRewindInvoked = false;
         }
 
         // E 키 입력 처리
@@ -78,6 +89,7 @@ public class TimeInputHandler : MonoBehaviour
         {
             isEKeyPressed = true;
             eKeyHoldTime = 0f;
+            isFastForwardInvoked = false;
         }
         
         if (Input.GetKey(KeyCode.E) && isEKeyPressed)
@@ -85,9 +97,10 @@ public class TimeInputHandler : MonoBehaviour
             eKeyHoldTime += Time.deltaTime;
             
             // E 키 홀드 시 시간 빨리감기
-            if (eKeyHoldTime >= holdThreshold)
+            if (eKeyHoldTime >= holdThreshold && !isFastForwardInvoked)
             {
-                OnTimeFastForward?.Invoke();
+                OnTimeFastForwardStart?.Invoke();
+                isFastForwardInvoked = true;
             }
         }
         
@@ -98,9 +111,14 @@ public class TimeInputHandler : MonoBehaviour
             {
                 OnTimeStop?.Invoke();
             }
+            else if(isFastForwardInvoked)
+            {
+                OnTimeFastForwardEnd?.Invoke();
+            }
             
             isEKeyPressed = false;
             eKeyHoldTime = 0f;
+            isFastForwardInvoked = false;
         }
     }
 } 

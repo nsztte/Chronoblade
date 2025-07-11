@@ -17,12 +17,12 @@ public class EnemyTimeController : MonoBehaviour, ITimeControllable
 
     private void Start()
     {
-        TimeManager.Instance?.Register(this);
+        TimeManager.Instance?.RegisterControllable(this);
     }
 
     private void OnDisable()
     {
-        TimeManager.Instance?.Unregister(this);
+        TimeManager.Instance?.UnregisterControllable(this);
     }
 
     public void SetTimeScale(float timeScale)
