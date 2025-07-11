@@ -63,11 +63,6 @@ public class RewindRecorder : MonoBehaviour, IRewindable
     {
         transform.position = snapshot.position;
         transform.rotation = snapshot.rotation;
-
-        if(rb != null)
-        {
-            rb.linearVelocity = snapshot.velocity;
-        }
     }
 
     public void RecordSnapshot()
@@ -77,8 +72,7 @@ public class RewindRecorder : MonoBehaviour, IRewindable
             snapshots.RemoveAt(0);  // FIFO
         }
 
-        Vector3 velocity = rb != null ? rb.linearVelocity : Vector3.zero;
-        snapshots.Add(new RewindSnapshot(transform.position, transform.rotation, velocity));
+        snapshots.Add(new RewindSnapshot(transform.position, transform.rotation));
     }
 
     private void PlayRewind()
