@@ -61,12 +61,22 @@
 - [x] 콤보 어택 시 플레이어 스태미너 차감 로직 반영
 
 ## 4주차 목표
-- [x] 콤보 스킬 마지막 타에 발동되는 파이널 스킬 기획 및 구조 구현
-- [ ] 플레이어 점프 상태 세분화 구현 (JumpStart, OnAir, JumpEnd 상태 분리 및 FSM 등록)
-- [x] 아이템 상점 시스템 구현, 상점 UI 기본틀 구축
-- [ ] 스킬 상점 시스템 구현
-- [x] 시간되감기/빨리감기/정지 기능 구현
-- [ ] 시간 기능을 이용하는 퍼즐 기획/구현
+- [x] 콤보 파이널 스킬 구조화 및 상태이상 시스템 완성
+- [x] AOE / 다단히트 / 리듬 기반 데미지 적용 통합
+- [x] Player 피격/사망 FSM 상태 처리
+- [x] 상점 시스템 + 인벤토리 연동 및 구매/판매 UI
+- [x] 시간 시스템 완성 (정지/되감기/빨리감기)
+- [x] 리와인드 보간 연출 기반 퍼즐 연계 테스트 준비
+
+## 5주차 목표
+- [ ] 보스 FSM 및 전투 패턴 구현
+- [ ] 리듬 연동 보스 기믹 설계
+- [ ] 시간 퍼즐 기초 2종 구현
+- [ ] 컷씬 트리거 및 시네머신 연출
+- [x] 게임 상태머신 시스템 구축
+- [x] GameManager 및 상태 흐름 통합
+- [x] TimeManager와 상태 동기화
+- [ ] 핵심 UI 및 전투 HUD 구성
 
 ---
 
@@ -91,15 +101,21 @@ Assets/
 │   ├── Materials/
 │   ├── Prefabs/
 │   │   ├── Enemy/
+│   │   ├── GameStates/
+│   │   ├── UI/
 │   ├── Scenes/
 │   └── Scripts/
 │   │   ├── Enemy/
 │   │   │   ├── FSM/
 │   │   ├── Item/
 │   │   ├── Player/
+│   │   │   ├── FSM/
 │   │   │   ├── Weapon/
 │   │   ├── Systems/
 │   │   │   ├── Combat/
+│   │   │   ├── Core/
+│   │   │   ├── GameStates/
+│   │   │   ├── Input/
 │   │   │   ├── Interaction/
 │   │   │   ├── Time/
 │   │   └── UI/
@@ -761,7 +777,7 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
-## 2025.07.08 (금) 작업 기록
+## 2025.07.08 (화) 작업 기록
 
 ### 주요 작업
 - 콤보 막타 상태이상 적용 시스템 구축
@@ -899,6 +915,48 @@ Enemy FSM(상태머신) 시스템 구현
 - 퍼즐 오브젝트는 보간 기반 연출이 자연스럽고, 플레이어 리와인드는 지양할 예정
 - rewindInterval과 lerpSpeed를 동시에 증가시키는 방식이 현재 가장 자연스러움
 - 되감기의 전반적인 로직은 퍼즐 구현 후 테스트하면서 보완할 예정
+
+---
+
+## 2025.07.14 (월) 작업 기록
+
+### 주요 작업
+- **게임 상태머신 시스템 전체 구현**
+  - GameStateMachine, GameManager, GameBaseState 설계 및 스크립트 구현
+  - 상태 전환 주체는 GameManager, 실제 전환은 GameStateMachine이 수행
+  - Current/Previous 상태를 관리하여 상태 흐름 안정화
+
+- **각 GameState 스크립트 구현 및 시간 흐름 처리**
+  - Exploration, Combat, Puzzle, Pause, GameOver, Cutscene, Loading 등 구현 완료
+  - Cutscene, Pause 상태에서 Time.timeScale 제어 및 복원 처리
+  - PuzzleState는 PreviousState에 따라 시간 초기화 여부 분기 처리
+
+- **시간 시스템 연동**
+  - TimeManager에 SetTimeState, InitializeTimeState 함수 보완
+  - 타임스케일과 시간 스킬 상태(TimeState.Normal, Stop, Slow 등)의 일관성 유지
+
+- **GameManager를 통한 상태 복귀 및 Exploration 일원화 처리**
+  - Cutscene → PreviousState 자동 복귀 구조 도입
+  - Combat, Puzzle 상태 종료 시 자동으로 Exploration으로 복귀
+
+- **InputManager에 Pause 키(Esc) 입력 처리 구현**
+  - Esc 키 입력 시 GameManager에서 Pause 상태로 진입하거나 복귀
+  - MainMenu, Loading, GameOver 상태에서는 일시정지 불가능하도록 예외 처리
+
+- **전투 진입/종료 흐름 구현**
+  - Enemy에서 OnCombatStarted 이벤트 호출 → GameManager에서 구독 후 EnterCombat()
+  - EnemyManager에서 활성 적 등록/해제 및 전투 종료 판단
+  - 적이 모두 사망하면 Exploration 상태로 자동 전환
+
+- **EnemyManager 구조 설계 및 연동**
+  - Enemy의 Start에서 자동 등록, 사망 시 Unregister 처리
+  - CombatState와 연동되어 상태 종료 흐름에 연결됨
+
+### 메모
+- Exploration 상태에서만 저장이 가능하다는 전제를 기반으로 상태 전환 구조를 설계함
+- EnemyManager는 Systems/Combat 폴더에 위치, 전투 흐름 제어 전담
+- GameState마다 Exit 시 상태 전환 여부를 명시함으로써 흐름을 명확히 함
+- Enemy 플레이어 거리 기반 활성화 구조는 향후 최적화 단계에서 도입 예정
 
 ---
 
