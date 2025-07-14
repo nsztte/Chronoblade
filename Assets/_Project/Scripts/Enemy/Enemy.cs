@@ -48,6 +48,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         finalComboController = GetComponent<FinalComboController>();
     }
 
+    private void Start()
+    {
+        EnemyManager.Instance.RegisterEnemy(this);
+    }
+
     // 데미지 처리
     public virtual void TakeDamage(int damage)
     {
@@ -138,6 +143,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public virtual void Die()
     {
         Debug.Log("Enemy Die");
+        EnemyManager.Instance.UnregisterEnemy(this);
         
         Collider collider = GetComponent<Collider>();
         if(collider != null) collider.enabled = false;
