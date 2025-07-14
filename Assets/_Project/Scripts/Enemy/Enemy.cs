@@ -47,11 +47,22 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         timeController = GetComponent<EnemyTimeController>();
         finalComboController = GetComponent<FinalComboController>();
     }
-
+    
+    // 향후 플레이어 거리기반 활성화 도입시 OnEnable으로 변경, OnDisable 추가
     private void Start()
     {
-        EnemyManager.Instance.RegisterEnemy(this);
+        EnemyManager.Instance?.RegisterEnemy(this);
     }
+
+    // private void OnEnable()
+    // {
+    //     EnemyManager.Instance?.RegisterEnemy(this);
+    // }
+
+    // private void OnDisable()
+    // {
+    //     EnemyManager.Instance?.UnregisterEnemy(this);
+    // }
 
     // 데미지 처리
     public virtual void TakeDamage(int damage)
