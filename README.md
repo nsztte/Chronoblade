@@ -937,7 +937,7 @@ Enemy FSM(상태머신) 시스템 구현
 
 - **GameManager를 통한 상태 복귀 및 Exploration 일원화 처리**
   - Cutscene → PreviousState 자동 복귀 구조 도입
-  - Combat, Puzzle 상태 종료 시 자동으로 Exploration으로 복귀
+  - Combat 상태 종료 시 EnemyManager에서 적 전멸 여부를 판단하여 Exploration으로 전환
 
 - **InputManager에 Pause 키(Esc) 입력 처리 구현**
   - Esc 키 입력 시 GameManager에서 Pause 상태로 진입하거나 복귀
