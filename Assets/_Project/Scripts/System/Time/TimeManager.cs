@@ -36,6 +36,32 @@ public class TimeManager : MonoBehaviour
     }
     #endregion
 
+    private void Start()
+    {
+        // TimeInputHandler 이벤트 구독
+        TimeInputHandler.Instance.OnTimeSlowToggle += OnTimeSlowToggle;
+        TimeInputHandler.Instance.OnTimeRewindStart += OnTimeRewindStart;
+        TimeInputHandler.Instance.OnTimeRewindEnd += OnTimeRewindEnd;
+        TimeInputHandler.Instance.OnTimeStop += OnTimeStop;
+        TimeInputHandler.Instance.OnTimeFastForwardStart += OnTimeFastForwardStart;
+        TimeInputHandler.Instance.OnTimeFastForwardEnd += OnTimeFastForwardEnd;
+    }
+
+    private void OnDisable()
+    {
+        // 이벤트 구독 해제
+        if (TimeInputHandler.Instance != null)
+        {
+            TimeInputHandler.Instance.OnTimeSlowToggle -= OnTimeSlowToggle;
+            TimeInputHandler.Instance.OnTimeRewindStart -= OnTimeRewindStart;
+            TimeInputHandler.Instance.OnTimeRewindEnd -= OnTimeRewindEnd;
+            TimeInputHandler.Instance.OnTimeStop -= OnTimeStop;
+            TimeInputHandler.Instance.OnTimeFastForwardStart -= OnTimeFastForwardStart;
+            TimeInputHandler.Instance.OnTimeFastForwardEnd -= OnTimeFastForwardEnd;
+        }
+    }
+
+    #region 타임 컨트롤 등록 및 해제
     public void RegisterControllable(ITimeControllable controllable)
     {
         if (!controllables.Contains(controllable))
@@ -67,34 +93,72 @@ public class TimeManager : MonoBehaviour
             rewindables.Remove(rewindable);
         }
     }
-    private void Start()
+    #endregion
+
+    #region 타임 스케일 설정 및 초기화, 게임스테이트 연동
+    public void SetTimeScale(float timeScale)
     {
-        // TimeInputHandler 이벤트 구독
-        TimeInputHandler.Instance.OnTimeSlowToggle += OnTimeSlowToggle;
-        TimeInputHandler.Instance.OnTimeRewindStart += OnTimeRewindStart;
-        TimeInputHandler.Instance.OnTimeRewindEnd += OnTimeRewindEnd;
-        TimeInputHandler.Instance.OnTimeStop += OnTimeStop;
-        TimeInputHandler.Instance.OnTimeFastForwardStart += OnTimeFastForwardStart;
-        TimeInputHandler.Instance.OnTimeFastForwardEnd += OnTimeFastForwardEnd;
+        Time.timeScale = timeScale;
     }
 
-    private void OnDisable()
+    public void InitializeTimeState()
     {
-        // 이벤트 구독 해제
-        if (TimeInputHandler.Instance != null)
+        if(currentTimeState == TimeState.Normal) return;
+        currentTimeState = TimeState.Normal;
+        ApplyTimeScale(1f);
+    }
+
+    public bool IsTimeSkillAllowed(TimeState timeState)
+    {
+        var state = GameManager.Instance.CurrentGameState;
+
+        if(state is PuzzleState) return true;
+        if(state is CombatState)
         {
-            TimeInputHandler.Instance.OnTimeSlowToggle -= OnTimeSlowToggle;
-            TimeInputHandler.Instance.OnTimeRewindStart -= OnTimeRewindStart;
-            TimeInputHandler.Instance.OnTimeRewindEnd -= OnTimeRewindEnd;
-            TimeInputHandler.Instance.OnTimeStop -= OnTimeStop;
-            TimeInputHandler.Instance.OnTimeFastForwardStart -= OnTimeFastForwardStart;
-            TimeInputHandler.Instance.OnTimeFastForwardEnd -= OnTimeFastForwardEnd;
+            return timeState != TimeState.Rewind && timeState != TimeState.FastForward;
+        }
+        if(state is ExplorationState) return false;
+
+        return false;
+    }
+
+    public void SetTimeState(TimeState timeState)
+    {
+        currentTimeState = timeState;
+        
+        switch(timeState)
+        {
+            case TimeState.Normal:
+                ApplyTimeScale(1f);
+                break;
+            case TimeState.Slow:
+                ApplyTimeScale(slowFactor);
+                break;
+            case TimeState.Stop:
+                ApplyTimeScale(0f);
+                break;
+            case TimeState.Rewind:
+                foreach(var rewindable in rewindables)
+                {
+                    rewindable.StartRewind();
+                }
+                break;
+            case TimeState.FastForward:
+                ApplyTimeScale(fastForwardFactor);
+                break;
+            default:
+                break;
         }
     }
 
-    #region Time Control Event Handlers
+    public TimeState CurrentTimeState => currentTimeState;
+    #endregion
+
+    #region 타임 컨트롤 이벤트 핸들러
     private void OnTimeSlowToggle()
     {
+        if(!IsTimeSkillAllowed(TimeState.Slow)) return;
+
         if(currentTimeState == TimeState.Slow)
         {
             currentTimeState = TimeState.Normal;
@@ -111,6 +175,8 @@ public class TimeManager : MonoBehaviour
 
     private void OnTimeStop()
     {
+        if(!IsTimeSkillAllowed(TimeState.Stop)) return;
+
         if(currentTimeState == TimeState.Stop)
         {
             currentTimeState = TimeState.Normal;
@@ -127,6 +193,7 @@ public class TimeManager : MonoBehaviour
 
     private void OnTimeRewindStart()
     {
+        if(!IsTimeSkillAllowed(TimeState.Rewind)) return;
         if(currentTimeState == TimeState.Rewind) return;
 
         currentTimeState = TimeState.Rewind;
@@ -153,6 +220,7 @@ public class TimeManager : MonoBehaviour
 
     private void OnTimeFastForwardStart()
     {
+        if(!IsTimeSkillAllowed(TimeState.FastForward)) return;
         if(currentTimeState == TimeState.FastForward) return;
         
         currentTimeState = TimeState.FastForward;

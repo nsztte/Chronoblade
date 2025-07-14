@@ -156,7 +156,7 @@ public class InputManager : MonoBehaviour
             var playerManager = PlayerManager.Instance;
             if (playerManager != null && playerManager.PlayerStateMachine != null)
             {
-                var state = playerManager.PlayerStateMachine.currentState;
+                var state = playerManager.PlayerStateMachine.CurrentState;
                 if (state != null && (state is PlayerAttackState || state is PlayerComboState))
                 {
                     Debug.Log("[InputManager] 공격/콤보 상태에서 무기 교체 시도 차단");

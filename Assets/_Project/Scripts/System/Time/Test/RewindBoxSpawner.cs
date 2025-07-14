@@ -3,10 +3,10 @@ using UnityEngine;
 public class RewindBoxSpawner : MonoBehaviour
 {
     [SerializeField] private GameObject boxPrefab;
-    [SerializeField] private float spawnInterval = 2f;
+    // [SerializeField] private float spawnInterval = 2f;
     [SerializeField] private Transform spawnPoint;
 
-    private float timer = 0f;
+    // private float timer = 0f;
 
     private void Start()
     {

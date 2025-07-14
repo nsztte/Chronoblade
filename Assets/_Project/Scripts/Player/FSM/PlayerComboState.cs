@@ -17,7 +17,7 @@ public class PlayerComboState : PlayerBaseState
 
     public PlayerComboState(PlayerStateMachine stateMachine, ComboSequence initialCombo) : base(stateMachine)
     {
-        playerController = stateMachine.playerController;
+        playerController = stateMachine.PlayerController;
         beatInterval = TimingComboManager.Instance.BeatInterval;
         // 첫 입력에 맞는 후보군을 모두 저장
         inputSequence.Clear();
@@ -57,8 +57,8 @@ public class PlayerComboState : PlayerBaseState
             InputManager.Instance.OnLightAttackPressed -= OnLightAttack;
             InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttack;
         }
-        stateMachine.animator.CrossFadeInFixedTime("SwordIdle", 0.25f, upperBodyLayerIndex);
-        stateMachine.animator.ResetTrigger("IsAttacking");
+        stateMachine.Animator.CrossFadeInFixedTime("SwordIdle", 0.25f, upperBodyLayerIndex);
+        stateMachine.Animator.ResetTrigger("IsAttacking");
     }
 
     public override void Update()
@@ -158,7 +158,7 @@ public class PlayerComboState : PlayerBaseState
             speed = animLength / beatInterval;
         }
         PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
-        stateMachine.animator.CrossFadeInFixedTime(
+        stateMachine.Animator.CrossFadeInFixedTime(
             attackData.animationClip.name,
             0.05f,
             upperBodyLayerIndex
