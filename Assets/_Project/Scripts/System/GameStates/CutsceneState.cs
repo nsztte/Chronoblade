@@ -7,6 +7,9 @@ public class CutsceneState : GameBaseState
         Debug.Log("[GameState] CutsceneState Enter");
         UIManager.Instance.ShowCutsceneOverlay();
         TimeManager.Instance.SetTimeScale(0f);
+
+        // TODO: 실제 컷씬 재생
+        // TODO: 컷씬 매니저 연동
     }
 
     public override void Exit()

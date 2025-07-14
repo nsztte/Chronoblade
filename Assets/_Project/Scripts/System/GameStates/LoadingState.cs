@@ -8,7 +8,9 @@ public class LoadingState : GameBaseState
         UIManager.Instance.ShowLoadingScreen();
         TimeManager.Instance.SetTimeScale(0f);
 
-        // TODO: 게임데이터 로딩
+        // TODO: 실제 로딩 처리
+        // TODO: 씬 매니저 연동
+        // TODO: 세이브/로드 시스템 연동
     }
 
     public override void Exit()
