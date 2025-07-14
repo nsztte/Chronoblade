@@ -15,10 +15,6 @@ public class CombatState : GameBaseState
         UIManager.Instance.HideCombatHUD();
         TimingComboManager.Instance.StopBeatRoutine();
 
-        var previousState = gameManager.PreviousGameState;
-        if(previousState is ExplorationState || previousState is PuzzleState)
-        {
-            GameManager.Instance.EnterExploration();
-        }
+        // Exploration 전환은 EnemyManager 쪽에서 일어나므로 여기선 명시하지 않음
     }
 }
