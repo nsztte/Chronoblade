@@ -39,6 +39,12 @@ public class GameManager : MonoBehaviour
     private void Start()
     {
         ChangeState(mainMenuState);
+        Enemy.OnCombatStarted += OnCombatDetected;
+    }
+
+    private void OnDestroy()
+    {
+        Enemy.OnCombatStarted -= OnCombatDetected;
     }
 
     public void ChangeState(GameBaseState newState)
@@ -49,5 +55,53 @@ public class GameManager : MonoBehaviour
         newState.Init(this);
         gameStateMachine.ChangeState(newState);
         CurrentGameState = newState;
+    }
+
+    public void EnterMainMenu()
+    {
+        ChangeState(mainMenuState);
+    }
+
+    public void EnterLoading()
+    {
+        ChangeState(loadingState);
+    }
+
+    public void EnterExploration()
+    {
+        ChangeState(explorationState);
+    }
+
+    public void EnterCombat()
+    {
+        ChangeState(combatState);
+    }
+
+    public void EnterPuzzle()
+    {
+        ChangeState(puzzleState);
+    }
+
+    public void EnterCutscene()
+    {
+        ChangeState(cutsceneState);
+    }
+
+    public void EnterPaused()
+    {
+        ChangeState(pausedState);
+    }
+
+    public void EnterGameOver()
+    {
+        ChangeState(gameOverState);
+    }
+
+    private void OnCombatDetected()
+    {
+        if(CurrentGameState is ExplorationState || CurrentGameState is PuzzleState)
+        {
+            EnterCombat();
+        }
     }
 }

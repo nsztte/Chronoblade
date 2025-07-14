@@ -22,5 +22,11 @@ public class PuzzleState : GameBaseState
     public override void Exit()
     {
         UIManager.Instance.HidePuzzleUI();
+
+        var previousState = gameManager.PreviousGameState;
+        if(previousState is ExplorationState || previousState is CombatState)
+        {
+            GameManager.Instance.EnterExploration();
+        }
     }
 }

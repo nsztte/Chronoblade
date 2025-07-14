@@ -16,6 +16,17 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [Header("공격 판정")]
     [SerializeField] protected LayerMask playerLayer;
 
+    #region 전투 감지 이벤트
+    // 전투 감지 이벤트
+    public static event System.Action OnCombatStarted;
+
+    // 전투 감지 이벤트를 호출하는 정적 메서드
+    public static void TriggerCombatStarted()
+    {
+        OnCombatStarted?.Invoke();
+    }
+    #endregion
+
     #region Getter
     public EnemyBehaviorData BehaviorData => behaviorData;
     public EnemyType Type => behaviorData.enemyType;
@@ -42,6 +53,12 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         currentHP -= damage;
         Debug.Log($"Enemy HP: {currentHP}");
+
+        // 플레이어가 적을 공격하면 전투 시작
+        if (GameManager.Instance.CurrentGameState is ExplorationState || GameManager.Instance.CurrentGameState is PuzzleState)
+        {
+            TriggerCombatStarted();
+        }
 
         if(fsm != null)
         {

@@ -148,7 +148,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
         // 게임 오버 처리
         Debug.Log("플레이어 죽음");
 
-        // 사망 상태로 전환 (연출용)
+        // 사망 상태로 전환
         playerStateMachine?.ChangeState(new PlayerDeathState(playerStateMachine));
     }
 

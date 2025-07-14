@@ -17,5 +17,6 @@ public class PausedState : GameBaseState
     {
         UIManager.Instance.HidePauseMenu();
         TimeManager.Instance.SetTimeState(previousTimeState);
+        GameManager.Instance.ChangeState(GameManager.Instance.PreviousGameState);
     }
 }

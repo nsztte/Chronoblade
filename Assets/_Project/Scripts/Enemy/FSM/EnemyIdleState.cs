@@ -12,6 +12,11 @@ public class EnemyIdleState : EnemyBaseState
         float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
         if(distance < enemy.Enemy.DetectionRange)
         {
+            if(GameManager.Instance.CurrentGameState is ExplorationState || GameManager.Instance.CurrentGameState is PuzzleState)
+            {
+                Enemy.TriggerCombatStarted();
+            }
+
             enemy.TransitionToState(enemy.ChaseState);
         }
     }

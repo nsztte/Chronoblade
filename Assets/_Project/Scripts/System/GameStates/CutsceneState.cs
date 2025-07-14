@@ -13,5 +13,6 @@ public class CutsceneState : GameBaseState
     {
         UIManager.Instance.HideCutsceneOverlay();
         TimeManager.Instance.InitializeTimeState();
+        GameManager.Instance.ChangeState(GameManager.Instance.PreviousGameState);
     }
 }
