@@ -15,13 +15,13 @@ public class RewindBoxSpawner : MonoBehaviour
         GameObject box = Instantiate(boxPrefab, spawnPoint.position, Quaternion.identity);
     }
 
-    // private void Update()
-    // {
-    //     timer += Time.deltaTime;
+    private void Update()
+    {
+        float distance = Vector3.Distance(transform.position, PlayerManager.Instance.transform.position);
 
-    //     if(timer >= spawnInterval)
-    //     {
-    //         timer = 0f;
-    //     }
-    // }
+        if(distance <= 100f)
+        {
+            GameManager.Instance.ChangeState(GameManager.Instance.puzzleState);
+        }
+    }
 }

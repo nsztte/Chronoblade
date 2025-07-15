@@ -38,7 +38,8 @@ public class GameManager : MonoBehaviour
     #endregion
     private void Start()
     {
-        ChangeState(mainMenuState);
+        // ChangeState(mainMenuState);
+        ChangeState(explorationState);  // 메인메뉴 구현 이후에는 수정할것
 
         Enemy.OnCombatStarted += OnCombatDetected;
         InputManager.Instance.OnPause += OnPausePressed;

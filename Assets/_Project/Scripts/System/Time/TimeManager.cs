@@ -17,7 +17,7 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private TimeState currentTimeState = TimeState.Normal;
 
     [Range(0, 1)] [SerializeField] private float slowFactor = 0.01f;
-    [Range(0, 1)] [SerializeField] private float fastForwardFactor = 1.8f;
+    [Range(0, 5)] [SerializeField] private float fastForwardFactor = 1.8f;
 
     #region Singleton
     public static TimeManager Instance { get; private set; }
