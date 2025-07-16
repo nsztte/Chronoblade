@@ -42,6 +42,11 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public float BlockHitCost => blockHitCost;
     public float BlockDamageReduction => blockDamageReduction;
 
+    [Header("패링")]
+    [SerializeField] private float parryWindow = 0.25f;
+    public float ParryWindow => parryWindow;
+    
+
     [Header("무적 상태")]
     [SerializeField] private bool isInvincible = false;
     [SerializeField] private float invincibilityTimer = 0f;
@@ -381,6 +386,21 @@ public class PlayerManager : MonoBehaviour, IDamageable
     }
 
     public void ApplyKnockback(float force) {}
+
+    public bool TryParry(float attackTime)
+    {
+        float deltaTime = Mathf.Abs(Time.time - LastBlockEndTime);
+        if(deltaTime <= ParryWindow)
+        {
+            Debug.Log("패링 성공!");
+
+            SetInvincible(true, 0.5f);
+
+            // TODO: 이펙트, 슬로우 연출, 패링 카운터 처리
+            return true;
+        }
+        return false;
+    }
 
     #region 무적 상태 관리
     public bool IsInvincible()

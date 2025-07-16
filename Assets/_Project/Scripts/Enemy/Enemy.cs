@@ -203,6 +203,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         {
             if(hit.TryGetComponent(out IDamageable damageable))
             {
+                if(damageable is PlayerManager player)
+                {
+                    float attackTime = Time.time;
+                    if(player.TryParry(attackTime))
+                    {
+                        continue;
+                    }
+                }
+
                 damageable.TakeDamage(Damage);
                 // Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
@@ -219,6 +228,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         {
             if(hit.TryGetComponent(out IDamageable damageable))
             {
+                if(damageable is PlayerManager player)
+                {
+                    float attackTime = Time.time;
+                    if(player.TryParry(attackTime))
+                    {
+                        continue;
+                    }
+                }
+                
                 damageable.TakeDamage(Damage);
                 Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
