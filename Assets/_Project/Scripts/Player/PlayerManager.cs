@@ -33,6 +33,15 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private int staminaCost = 12;  // 약공격 기준 (강공격 2배 소모)
     [SerializeField] private int dashStaminaCost = 15;
 
+    [Header("방어 관련")]
+    [SerializeField] private int blockHitCost = 15;
+    [SerializeField] private float blockDamageReduction = 0.4f;
+
+    public bool IsBlocking { get; set; } = false;
+    public float LastBlockEndTime { get; set; } = -999f;
+    public float BlockHitCost => blockHitCost;
+    public float BlockDamageReduction => blockDamageReduction;
+
     [Header("무적 상태")]
     [SerializeField] private bool isInvincible = false;
     [SerializeField] private float invincibilityTimer = 0f;
@@ -120,9 +129,27 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         // 무적 상태 체크
-        if (IsInvincible())
+        if (IsInvincible()) return;
+
+        // 방어 상태 체크
+        if(IsBlocking)
         {
-            return; // 무적 상태면 피격 무시
+            if(UseStaminaIfAvailable(BlockHitCost))
+            {
+                damage = Mathf.RoundToInt(damage * (1 - BlockDamageReduction));
+                Debug.Log($"방어 성공! 데미지 감소: {damage}");
+            }
+
+            currentHP -= damage;
+            currentHP = Mathf.Clamp(currentHP, 0, maxHP);
+            UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
+
+            if(currentHP <= 0)
+            {
+                Die();
+            }
+
+            return;
         }
         
         currentHP -= damage;
@@ -144,6 +171,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
             playerStateMachine?.ChangeState(new PlayerHitState(playerStateMachine));
         }
     }
+
 
     private void Die()
     {
@@ -260,6 +288,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     private void RecoverStaminaOverTime()
     {
+        if(IsBlocking) return;
+        
         if(currentStamina < maxStamina)
         {
             staminaRecoveryTimer += Time.deltaTime;

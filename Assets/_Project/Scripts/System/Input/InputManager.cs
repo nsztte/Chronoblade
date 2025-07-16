@@ -27,8 +27,8 @@ public class InputManager : MonoBehaviour
     public event Action OnRunStarted;                 // 왼쪽 Shift 시작
     public event Action OnRunCanceled;                // 왼쪽 Shift 종료
     public event Action OnCrouchPressed;              // 왼쪽 Ctrl
-    public event Action OnAttackPressed;              // 좌클릭
-    public event Action OnAttackHeld;                 // 좌클릭 유지
+    public event Action OnAttackPressed;              // 마우스 좌클릭
+    public event Action OnAttackHeld;                 // 마우스 좌클릭 유지
     public event Action OnReloadPressed;              // R
     public event Action OnAimStarted;                 // 마우스 오른쪽 클릭
     public event Action OnAimCanceled;                // 마우스 오른쪽 클릭 종료
@@ -36,6 +36,8 @@ public class InputManager : MonoBehaviour
     public event Action OnInteract;                   // F
     public event Action OnPause;                      // Esc
     public event Action OnDashPressed;                // Left Alt
+    public event Action OnBlockStarted;               // 마우스 우클릭 시작
+    public event Action OnBlockCanceled;              // 마우스 우클릭 종료
     public event Action OnLightAttackPressed;
     public event Action OnHeavyAttackPressed;
 
@@ -92,14 +94,23 @@ public class InputManager : MonoBehaviour
             }
         }
 
+        // 재장전 입력 (R)
         if (Input.GetKeyDown(KeyCode.R))
             OnReloadPressed?.Invoke();
 
+        // 총기류 조준 입력 (마우스 오른쪽 클릭)
         if (Input.GetMouseButtonDown(1))
-           OnAimStarted?.Invoke();
-        
+        {
+            OnAimStarted?.Invoke();
+            OnBlockStarted?.Invoke();
+        }
+
+        // 총기류 조준 취소 입력 (마우스 오른쪽 클릭 취소)
         if (Input.GetMouseButtonUp(1))
-           OnAimCanceled?.Invoke();
+        {
+            OnAimCanceled?.Invoke();
+            OnBlockCanceled?.Invoke();
+        }
 
         // 무기 전환 입력
         HandleWeaponSwitching();

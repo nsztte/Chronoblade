@@ -10,7 +10,8 @@ public enum PlayerState
     Hit,
     Death,
     Rewind,
-    Dash
+    Dash,
+    Block
 }
 public class PlayerStateMachine : MonoBehaviour
 {
@@ -50,6 +51,8 @@ public class PlayerStateMachine : MonoBehaviour
         stateTypeMap[typeof(PlayerHitState)] = PlayerState.Hit;
         stateTypeMap[typeof(PlayerDeathState)] = PlayerState.Death;
         stateTypeMap[typeof(PlayerRewindState)] = PlayerState.Rewind;
+        stateTypeMap[typeof(PlayerDashState)] = PlayerState.Dash;
+        stateTypeMap[typeof(PlayerBlockState)] = PlayerState.Block;
     }
 
     public void ChangeState(PlayerBaseState newState)

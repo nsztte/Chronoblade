@@ -22,6 +22,7 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnLightAttackPressed += OnLightAttackPressed;
         InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttackPressed;
         InputManager.Instance.OnDashPressed += OnDashPressed;
+        InputManager.Instance.OnBlockStarted += OnBlockStarted;
     }
 
     public override void Exit()
@@ -36,6 +37,7 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnLightAttackPressed -= OnLightAttackPressed;
         InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttackPressed;
         InputManager.Instance.OnDashPressed -= OnDashPressed;
+        InputManager.Instance.OnBlockStarted -= OnBlockStarted;
     }
 
     public override void Update()
@@ -76,6 +78,15 @@ public class PlayerLocomotionState : PlayerBaseState
         if(PlayerManager.Instance.UseStaminaIfAvailable(PlayerManager.Instance.DashStaminaCost))
         {
             stateMachine.ChangeState(new PlayerDashState(stateMachine));
+        }
+    }
+
+    private void OnBlockStarted()
+    {
+        var weapon = WeaponManager.Instance.CurrentWeapon;
+        if(weapon?.weaponData.weaponType == WeaponType.Sword)
+        {
+            stateMachine.ChangeState(new PlayerBlockState(stateMachine));
         }
     }
 
