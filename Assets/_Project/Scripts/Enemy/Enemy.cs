@@ -15,6 +15,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     [Header("공격 판정")]
     [SerializeField] protected LayerMask playerLayer;
+    [SerializeField] protected float stunDuration = 1.5f;
+    [SerializeField] protected float stunKnockbackForce = 1f;
+
+    private Animator animator;
+    private NavMeshAgent agent;
 
     #region 전투 감지 이벤트
     // 전투 감지 이벤트
@@ -46,6 +51,9 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         fsm = GetComponent<EnemyStateMachine>();
         timeController = GetComponent<EnemyTimeController>();
         finalComboController = GetComponent<FinalComboController>();
+
+        animator = GetComponent<Animator>();
+        agent = GetComponent<NavMeshAgent>();
     }
     
     // 향후 플레이어 거리기반 활성화 도입시 OnEnable으로 변경, OnDisable 추가
@@ -208,6 +216,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
                     float attackTime = Time.time;
                     if(player.TryParry(attackTime))
                     {
+                        OnParried();
                         continue;
                     }
                 }
@@ -233,13 +242,34 @@ public abstract class Enemy : MonoBehaviour, IDamageable
                     float attackTime = Time.time;
                     if(player.TryParry(attackTime))
                     {
+                        OnParried();
                         continue;
                     }
                 }
-                
+
                 damageable.TakeDamage(Damage);
                 Debug.Log($"에너미 {transform.name} 공격: {damageable.GetType().Name}이 {Damage} 입음");
             }
         }
+    }
+
+    private void OnParried()
+    {
+        fsm.enabled = false;
+        agent.isStopped = true;
+        animator.SetBool("IsStunned", true);
+
+        ApplyKnockback(stunKnockbackForce);
+
+        StartCoroutine(RecoverFromStun(stunDuration));
+    }
+
+    private IEnumerator RecoverFromStun(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        fsm.enabled = true;
+        agent.isStopped = false;
+        animator.SetBool("IsStunned", false);
     }
 }

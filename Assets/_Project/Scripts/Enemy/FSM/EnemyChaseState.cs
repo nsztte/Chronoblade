@@ -11,13 +11,13 @@ public class EnemyChaseState : EnemyBaseState
     {
         enemy.Agent.isStopped = false;
         lastDistanceUpdate = 0f; // 캐시 초기화
-        // enemy.Animator.SetBool("IsChasing", true);
     }
 
     public override void Update(EnemyStateMachine enemy)
     {
+        if(enemy.Agent.isStopped) return;
+        
         enemy.Agent.SetDestination(enemy.Target.position);
-        // Debug.Log($"Enemy Destination: {enemy.Agent.destination}");
 
         float distance = GetCachedDistance(enemy);
         
@@ -66,6 +66,5 @@ public class EnemyChaseState : EnemyBaseState
     public override void Exit(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        // enemy.Animator.SetBool("IsChasing", false);
     }
 }
