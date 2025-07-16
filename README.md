@@ -990,6 +990,51 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.16 (수) 작업 기록
+
+### 주요 작업
+
+- **플레이어 대쉬 시스템 구현**
+  - `LeftAlt` 키 입력 시 대쉬 발동
+  - `InputManager`에 `OnDashPressed` 이벤트 추가
+  - `PlayerLocomotionState`에서 입력 감지 후 `PlayerDashState`로 전이
+  - 대쉬 중 방향 기반 빠른 이동 및 무적 시간 적용
+  - 일정 시간 후 `LocomotionState`로 복귀
+  - `PlayerController`에 `lastMoveInput` 저장 및 직접 이동 함수 구현
+
+- **플레이어 방어 시스템 구현 (BlockState)**
+  - 마우스 우클릭 입력 시 `PlayerBlockState` 진입
+  - `InputManager`에 `OnBlockStarted`, `OnBlockCanceled` 이벤트 추가
+  - 근접 무기일 경우에만 진입
+  - 방어 해제 시 자동으로 `LocomotionState`로 복귀
+  - 방어 중에는 스태미너 자연 회복 차단
+  - 애니메이터 파라미터 `IsBlocking`과 FSM 연동
+  - 방어 중 피격 시 `PlayerManager.TakeDamage()`에서 스태미너를 소비해 데미지 감소 처리
+  - 방어 관련 수치 `PlayerManager`에서 통합 관리 (`blockHitCost`, `blockDamageReduction` 등)
+
+- **타이밍 기반 패링 시스템 구현**
+  - 방어 해제 시각과 적 공격 시각의 차이를 비교해 패링 성공 여부 판정
+  - `PlayerManager.TryParry(float attackTime)` 함수 추가
+  - 패링 성공 시 무적 상태 부여 및 데미지 무효 처리
+  - 패링 판정은 `Enemy`의 공격 함수(`DealDamagedWithCapsule`, `DealDamagedWithSphere`) 내에서 선검사
+  - `BlockState`는 패링 판정 로직과 분리되어 상태 유지만 수행
+
+- **패링 성공 시 에너미 스턴 및 FSM 정지 처리**
+  - `Enemy.OnParried()`에서 FSM 정지 및 `agent` 정지 처리
+  - 넉백 연출 포함 (`ApplyKnockback`)
+  - `Animator.SetBool("IsStunned", true)`로 스턴 애니메이션 적용
+  - 일정 시간 후 FSM 복구 및 애니메이션 초기화 (`RecoverFromStun()` 코루틴)
+  - `EnemyChaseState`, `EnemyAttackState` 내에서 `isStopped` 체크 추가
+  - 스턴 상태 전용 FSM 상태는 도입하지 않고 FSM 자체를 일시 정지하는 방식으로 처리
+
+### 메모
+
+- 스턴 중에도 FSM이 전이되면서 `agent.isStopped`가 해제되는 문제가 있었으며, 이를 해결하기 위해 FSM 자체를 `enabled = false`로 비활성화하는 구조를 채택
+- 방어, 패링, 스턴 각각의 로직은 분리하되 상호 연계성 있게 동작하도록 설계
+- 연출 요소(이펙트, 사운드, 카메라 흔들림, 애니메이션 등)는 추후 마무리 단계에서 일괄 추가 예정
+
+---
+
 
 ## 관련 문서
 
