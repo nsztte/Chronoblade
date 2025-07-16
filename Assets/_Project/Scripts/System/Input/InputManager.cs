@@ -32,10 +32,10 @@ public class InputManager : MonoBehaviour
     public event Action OnReloadPressed;              // R
     public event Action OnAimStarted;                 // 마우스 오른쪽 클릭
     public event Action OnAimCanceled;                // 마우스 오른쪽 클릭 종료
-    // public event Action OnSkillPressed;               // Q
     public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
     public event Action OnInteract;                   // F
     public event Action OnPause;                      // Esc
+    public event Action OnDashPressed;                // Left Alt
     public event Action OnLightAttackPressed;
     public event Action OnHeavyAttackPressed;
 
@@ -111,6 +111,10 @@ public class InputManager : MonoBehaviour
         // 일시정지(Esc)
         if (Input.GetKeyDown(KeyCode.Escape))
             OnPause?.Invoke();
+
+        // 대쉬 입력 (Left Alt)
+        if (Input.GetKeyDown(KeyCode.LeftAlt))
+            OnDashPressed?.Invoke();
     }
 
     private void HandleWeaponSwitching()

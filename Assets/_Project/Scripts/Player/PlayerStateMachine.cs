@@ -9,7 +9,8 @@ public enum PlayerState
     Combo,
     Hit,
     Death,
-    Rewind
+    Rewind,
+    Dash
 }
 public class PlayerStateMachine : MonoBehaviour
 {

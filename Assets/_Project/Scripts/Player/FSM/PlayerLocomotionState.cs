@@ -21,6 +21,7 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnAttackHeld += OnAttackHeld;
         InputManager.Instance.OnLightAttackPressed += OnLightAttackPressed;
         InputManager.Instance.OnHeavyAttackPressed += OnHeavyAttackPressed;
+        InputManager.Instance.OnDashPressed += OnDashPressed;
     }
 
     public override void Exit()
@@ -34,6 +35,7 @@ public class PlayerLocomotionState : PlayerBaseState
         InputManager.Instance.OnAttackHeld -= OnAttackHeld;
         InputManager.Instance.OnLightAttackPressed -= OnLightAttackPressed;
         InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttackPressed;
+        InputManager.Instance.OnDashPressed -= OnDashPressed;
     }
 
     public override void Update()
@@ -67,6 +69,14 @@ public class PlayerLocomotionState : PlayerBaseState
     private void OnCrouchPressed()
     {
         playerController.ToggleCrouch();
+    }
+
+    private void OnDashPressed()
+    {
+        if(PlayerManager.Instance.UseStaminaIfAvailable(PlayerManager.Instance.DashStaminaCost))
+        {
+            stateMachine.ChangeState(new PlayerDashState(stateMachine));
+        }
     }
 
     // 총기류 공격 - 타이밍 판정 없이 즉시 공격

@@ -20,6 +20,11 @@ public class PlayerController : MonoBehaviour
     private Vector2 moveInput;
     private Vector3 velocity;
 
+    // 대쉬 관련 변수
+    private Vector2 lastMoveInput;
+    private float lastMoveTime;
+    public Vector2 LastMoveInput => Time.time - lastMoveTime > 0.2f ? Vector2.zero : lastMoveInput;
+
     private bool isRunning = false;
     private bool isCrouching = false;
 
@@ -28,9 +33,6 @@ public class PlayerController : MonoBehaviour
     private Vector3 originalControllerCenter;
     private float crouchControllerHeight;
     private Vector3 crouchControllerCenter;
-
-    // 프로퍼티
-    public float JumpForce => jumpForce;
 
     private void Awake()
     {
@@ -42,11 +44,21 @@ public class PlayerController : MonoBehaviour
         crouchControllerHeight = originalControllerHeight * crouchingMultiplier;
         crouchControllerCenter = new Vector3(originalControllerCenter.x, originalControllerCenter.y * crouchingMultiplier, originalControllerCenter.z);
     }
-
-    // FSM에서 호출할 메서드들
+    
+    #region FSM에서 호출할 메서드들
     public void SetMoveInput(Vector2 input)
     {
         moveInput = input;
+        if(input != Vector2.zero)
+        {
+            lastMoveInput = input;
+            lastMoveTime = Time.time;
+        }
+    }
+
+    public void MoveDirectly(Vector3 move)
+    {
+        controller.Move(move * Time.deltaTime);
     }
 
     public bool IsGrounded()
@@ -110,8 +122,9 @@ public class PlayerController : MonoBehaviour
             CameraController.Instance.SetCameraHeight(targetY, 10f);
         }
     }
+    #endregion
 
-    // FSM LocomotionState에서 호출할 이동 관련 Update
+    #region FSM LocomotionState에서 호출할 이동 관련 Update
     public void LocomotionUpdate()
     {
         // 달리기 중 스태미너 소모
@@ -175,4 +188,5 @@ public class PlayerController : MonoBehaviour
             }
         }
     }
+    #endregion
 }

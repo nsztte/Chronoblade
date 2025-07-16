@@ -31,6 +31,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     [Header("스태미너 소모")]
     [SerializeField] private int staminaCost = 12;  // 약공격 기준 (강공격 2배 소모)
+    [SerializeField] private int dashStaminaCost = 15;
 
     [Header("무적 상태")]
     [SerializeField] private bool isInvincible = false;
@@ -58,6 +59,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public int Gold => gold;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
     public int StaminaCost => staminaCost;
+    public int DashStaminaCost => dashStaminaCost;
     public bool IsInvincibleProperty => isInvincible;
     public ComboAttackData CurrentCombo => currentCombo;
     #endregion
