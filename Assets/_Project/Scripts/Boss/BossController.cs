@@ -1,16 +1,56 @@
 using UnityEngine;
 
-public class BossController : MonoBehaviour
+[RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
+public class BossController : MonoBehaviour, IDamageable
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [Header("FSM")]
+    private BossStateMachine stateMachine;
+    [SerializeField] private BaseBossState currentState;
+
+    [Header("페이즈")]
+    private BossPhaseManager phaseManager;
+
+    [Header("스탯")]
+    [SerializeField] private float maxHP = 1000f;
+    [SerializeField] private float currentHP;
+    [SerializeField] private int damage = 20;
+
+    private Animator animator;
+
+    private void Awake()
     {
-        
+        stateMachine = new BossStateMachine();
+        phaseManager = GetComponent<BossPhaseManager>();
+        animator = GetComponent<Animator>();
+
+        currentHP = maxHP;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Start()
     {
-        
+        // 초기 상태 설정
+        var introState = new BossIntroState(this, stateMachine);
+        stateMachine.Initialize(introState);
     }
+
+    private void Update()
+    {
+        stateMachine.Update();
+    }
+
+    public void TakeDamage(int damage)
+    {
+        currentHP -= damage;
+        currentHP = Mathf.Max(currentHP, 0);
+
+        phaseManager.UpdatePhase(currentHP, maxHP);
+        Debug.Log($"Boss HP: {currentHP}, Phase: {phaseManager.CurrentPhase}");
+    }
+
+    public void PlayAnimation(string triggerName)
+    {
+        animator.SetTrigger(triggerName);
+    }
+
+    public void ApplyKnockback(float force){}
 }
