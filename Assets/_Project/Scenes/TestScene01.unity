@@ -2772,6 +2772,10 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 1
       objectReference: {fileID: 0}
+    - target: {fileID: 966017030217762890, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
+      propertyPath: stunKnockbackForce
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6637047101635948288, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
       propertyPath: m_LocalPosition.x
       value: -3.27
@@ -4022,10 +4026,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8606516330785623606, guid: 4f6a4ff9a00e3404e8dee12187e03a12, type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 1873127979}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -5330,10 +5330,6 @@ PrefabInstance:
       propertyPath: m_IsActive
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8735043758595713121, guid: 6603d064b8ae1f44ea74c4cd142e2330, type: 3}
-      propertyPath: target
-      value: 
-      objectReference: {fileID: 1873127979}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
