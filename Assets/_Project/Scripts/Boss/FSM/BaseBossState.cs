@@ -16,11 +16,6 @@ public abstract class BaseBossState
     public virtual void Update() { }
     public virtual void Exit() { }
 
-    protected void WaitAndReturnToIdle(float delay)
-    {
-        boss.StartCoroutine(WaitAndChangeCoroutine(delay, new BossIdleState(boss, stateMachine)));
-    }
-
     protected void WaitAndChangeToState(float delay, BaseBossState nextState)
     {
         boss.StartCoroutine(WaitAndChangeCoroutine(delay, nextState));

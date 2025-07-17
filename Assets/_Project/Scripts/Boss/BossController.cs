@@ -17,6 +17,8 @@ public class BossController : MonoBehaviour, IDamageable
 
     private Animator animator;
 
+    public BossPhaseManager PhaseManager => phaseManager;
+
     private void Awake()
     {
         stateMachine = new BossStateMachine();

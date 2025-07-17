@@ -13,6 +13,6 @@ public class SpawnSlowZoneState : BaseBossState
         Debug.Log("SpawnSlowZoneState: 슬로우 존 생성");
         // TODO: 이펙트 생성, 위치 계산 등 처리
 
-        WaitAndReturnToIdle(duration);
+        WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
     }
 }

@@ -13,6 +13,6 @@ public class BossIntroState : BaseBossState
         boss.PlayAnimation("Intro");
 
         float duration = boss.GetCurrentAnimationLength() + 0.2f;
-        WaitAndReturnToIdle(duration);
+        WaitAndChangeToState(duration, new BossIdleState(boss, stateMachine));
     }
 }

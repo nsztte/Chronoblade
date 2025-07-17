@@ -16,6 +16,12 @@ public class BossIdleState : BaseBossState
     {
         yield return new WaitForSeconds(1f);
 
+        if(boss.PhaseManager.CurrentPhase == BossPhase.Puzzle1)
+        {
+            stateMachine.ChangeState(new PuzzlePhase1State(boss, stateMachine));
+            yield break;
+        }
+
         int randomIndex = Random.Range(0, 5);
         switch(randomIndex)
         {

@@ -12,6 +12,6 @@ public class TimeStopAttackState : BaseBossState
         boss.PlayAnimation("TimeStop");
 
         float duration = boss.GetAnimationClipLengthFromState("TimeStop");
-        WaitAndReturnToIdle(duration);
+        WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
     }
 }

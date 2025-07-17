@@ -14,6 +14,6 @@ public class BaseBossAttackState : BaseBossState
         boss.PlayAnimation(animationTrigger);
 
         float duration = boss.GetAnimationClipLengthFromState(animationStateName);
-        WaitAndReturnToIdle(duration);
+        WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
     }
 }
