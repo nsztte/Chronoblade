@@ -17,6 +17,12 @@
 
 ---
 
+## 관련 문서
+
+- [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
+
+---
+
 ## 1주차 목표
 
 - [x] Unity 프로젝트 생성
@@ -60,6 +66,8 @@
 - [x] 콤보 공격 시 넉백 효과 적용 (IDamageable 확장 + Enemy 이동 처리)
 - [x] 콤보 어택 시 플레이어 스태미너 차감 로직 반영
 
+---
+
 ## 4주차 목표
 - [x] 콤보 파이널 스킬 구조화 및 상태이상 시스템 완성
 - [x] AOE / 다단히트 / 리듬 기반 데미지 적용 통합
@@ -67,6 +75,8 @@
 - [x] 상점 시스템 + 인벤토리 연동 및 구매/판매 UI
 - [x] 시간 시스템 완성 (정지/되감기/빨리감기)
 - [x] 리와인드 보간 연출 기반 퍼즐 연계 테스트 준비
+
+---
 
 ## 5주차 목표
 - [x] 게임 상태머신 시스템 구축
@@ -85,7 +95,9 @@
 Assets/
 ├── _Project/
 │   ├── Animations/
+│   │   ├── Boss/
 │   │   ├── Enemies/
+│   │   ├── Environment/
 │   │   ├── Player/
 │   │   ├── Weapons/
 │   ├── Art/
@@ -100,10 +112,15 @@ Assets/
 │   ├── Materials/
 │   ├── Prefabs/
 │   │   ├── Enemy/
+│   │   ├── Environment/
 │   │   ├── GameStates/
 │   │   ├── UI/
 │   ├── Scenes/
 │   └── Scripts/
+│   │   ├── Boss/
+│   │   │   ├── FSM/
+│   │   │   │   ├── Phase1/
+│   │   │   │   ├── Puzzle/
 │   │   ├── Enemy/
 │   │   │   ├── FSM/
 │   │   ├── Item/
@@ -1035,7 +1052,44 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.17 (목) 작업 기록
 
-## 관련 문서
+### 주요 작업
+- **보스 FSM 시스템 구조 설계 및 초기 구성**
+  - `BossStateMachine` 클래스 설계 및 상태 등록/전이/갱신 흐름 구현
+  - `BaseBossState` 추상 클래스 정의: Enter/Update/Exit 구조, BossController 참조 주입
 
-- [Input_Structure_Design.md](./Docs/Input_Structure_Design.md) - 입력 구조 설계 문서
+- **Phase 전이 구조 구현 (BossPhaseManager)**
+  - 체력 기반 Phase 자동 전이 (Phase1 → Puzzle1 → Phase2 → FinalPuzzle → Ending)
+  - 퍼즐 페이즈 전환 조건 0.5로 조정
+  - 수동 전이를 위한 `SetPhase()` 함수 작성
+
+- **보스 컨트롤러 설계 (`BossController`)**
+  - FSM 및 PhaseManager 초기화 및 연동
+  - FSM 상태 업데이트 및 애니메이션 트리거 실행 구조 구성
+  - `TakeDamage()` 내에서 체력 감소 + Phase 업데이트 처리
+  - `IDamageable` 인터페이스 구현 (넉백 추후 구현)
+  - 애니메이션 유틸 함수: `GetCurrentAnimationLength`, `GetAnimationClipLengthFromState`
+
+- **Phase1 공격 FSM 구현**
+  - `BossIdleState` 구현: 5가지 공격 패턴 랜덤 선택
+  - `HorizontalSlashState`, `VerticalSmashState`, `EnergyBoltState` 구현
+  - 공통 상속 `BaseBossAttackState`를 통해 애니메이션 길이 기반 상태 복귀 처리
+  - 특수 공격 상태: `SpawnSlowZoneState`, `TimeStopAttackState` 구현
+    - 연출 스텁 함수만 정의, 실제 효과는 추후 연동
+
+- **Phase1 종료 및 Puzzle1 전이 FSM 구성**
+  - `CheckPhase1EndState` 구현: 체력 ≤ 50% 조건일 때 퍼즐 상태 진입
+  - 모든 공격 상태에서 종료 시 `CheckPhase1EndState`를 거쳐 전이 구조 통일
+  - `BossIdleState`에서도 체력 조건 만족 시 퍼즐로 진입 가능하도록 처리
+  - `PuzzlePhase1State` 생성 (아직 퍼즐 입력/연출 미구현)
+
+- **애니메이션/이펙트 연출 스텁 정의**
+  - `BossController` 내 `SpawnSlowZoneAtPosition()`, `StartTimeStopEffect()` 등 연출용 자리 확보
+  - 각 상태 내에서 스텁 호출까지 연동 완료
+
+### 메모
+- Animator 파라미터 트리거는 모두 등록 완료 (애니메이션 클립은 아직 미연결 상태)
+- `bool` 타입 애니메이션 파라미터는 현재 구조에선 불필요, Phase2에서는 필요할 가능성 있음
+
+---
