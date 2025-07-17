@@ -51,6 +51,7 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void PlayAnimation(string triggerName)
     {
+        animator.ResetTrigger(triggerName);
         animator.SetTrigger(triggerName);
     }
 
@@ -76,6 +77,24 @@ public class BossController : MonoBehaviour, IDamageable
 
         Debug.LogWarning($"애니메이션 클립 '{stateName}'을 찾을 수 없습니다.");
         return 1f;
+    }
+
+    public void SpawnSlowZoneAtPosition(Vector3 position)
+    {
+        Debug.Log($"슬로우존 생성");
+        // TODO: 슬로우존 생성 로직 구현 (Instantiate or Pooling)
+    }
+
+    public void StartTimeStopEffect()
+    {
+        Debug.Log("타임 스탑 효과 시작");
+        // TODO: 화면 흑백효과, 타임스케일 조정 등
+    }
+
+    public void EndTimeStopEffect()
+    {
+        Debug.Log("타임 스탑 효과 종료");
+        // TODO: 복원
     }
 
     public void ApplyKnockback(float force){}

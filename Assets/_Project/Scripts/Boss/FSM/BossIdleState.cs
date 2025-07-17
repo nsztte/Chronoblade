@@ -9,6 +9,7 @@ public class BossIdleState : BaseBossState
 
     public override void Enter()
     {
+        boss.PlayAnimation("Idle");
         boss.StartCoroutine(DecideNextPattern());
     }
 
