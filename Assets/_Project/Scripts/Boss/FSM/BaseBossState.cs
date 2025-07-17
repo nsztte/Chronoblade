@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public abstract class BaseBossState
@@ -14,4 +15,20 @@ public abstract class BaseBossState
     public virtual void Enter() { }
     public virtual void Update() { }
     public virtual void Exit() { }
+
+    protected void WaitAndReturnToIdle(float delay)
+    {
+        boss.StartCoroutine(WaitAndChangeCoroutine(delay, new BossIdleState(boss, stateMachine)));
+    }
+
+    protected void WaitAndChangeToState(float delay, BaseBossState nextState)
+    {
+        boss.StartCoroutine(WaitAndChangeCoroutine(delay, nextState));
+    }
+
+    private IEnumerator WaitAndChangeCoroutine(float delay, BaseBossState nextState)
+    {
+        yield return new WaitForSeconds(delay);
+        stateMachine.ChangeState(nextState);
+    }
 }

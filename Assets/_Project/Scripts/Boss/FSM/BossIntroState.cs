@@ -8,16 +8,11 @@ public class BossIntroState : BaseBossState
 
     public override void Enter()
     {
+        Debug.Log("BossIntroState: 보스 등장 시작");
 
-    }
+        boss.PlayAnimation("Intro");
 
-    public override void Update()
-    {
-
-    }
-
-    public override void Exit()
-    {
-
+        float duration = boss.GetCurrentAnimationLength() + 0.2f;
+        WaitAndReturnToIdle(duration);
     }
 }
