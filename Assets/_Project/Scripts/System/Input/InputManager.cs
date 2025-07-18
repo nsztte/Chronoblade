@@ -48,6 +48,8 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        if(PlayerManager.Instance.IsFrozen) return;
+
         // 이동 입력 (WASD)
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         OnMoveInput?.Invoke(moveInput);

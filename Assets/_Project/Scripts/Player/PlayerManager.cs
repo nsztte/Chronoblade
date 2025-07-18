@@ -78,6 +78,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public int DashStaminaCost => dashStaminaCost;
     public bool IsInvincibleProperty => isInvincible;
     public ComboAttackData CurrentCombo => currentCombo;
+    public bool IsFrozen => playerController.IsFrozen;
     #endregion
 
     #region Singleton

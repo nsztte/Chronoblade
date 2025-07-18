@@ -23,6 +23,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     private float originalAnimSpeed;
     private bool isSlowed = false;
     private bool isFrozen = false;
+    public bool IsFrozen => isFrozen;
 
     private CharacterController controller;
     private Animator animator;
@@ -217,9 +218,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 if(!isFrozen)
                 {
                     isFrozen = true;
-                    originalMoveSpeed = moveSpeed;
                     originalAnimSpeed = animator.speed;
-                    moveSpeed = 0f;
                     animator.speed = 0f;
                 }
                 break;
@@ -242,7 +241,6 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 if(isFrozen)
                 {
                     isFrozen = false;
-                    moveSpeed = originalMoveSpeed;
                     animator.speed = originalAnimSpeed;
                 }
                 break;
