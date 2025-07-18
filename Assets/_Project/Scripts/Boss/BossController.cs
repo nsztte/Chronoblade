@@ -123,6 +123,28 @@ public class BossController : MonoBehaviour, IDamageable
     }
 
     #region 공격 애니메이션 이벤트 등록 함수
+    public void TriggerHorizontalSlash()
+    {
+        if(stateMachine.CurrentState is HorizontalSlashState horizontalSlashState)
+        {
+            horizontalSlashState.isWindingUp = false;
+        }
+    }
+    public void TriggerVerticalSlash()
+    {
+        if(stateMachine.CurrentState is VerticalSmashState verticalSmashState)
+        {
+            verticalSmashState.isWindingUp = false;
+        }
+    }
+    public void TriggerEnergyBolt()
+    {
+        if(stateMachine.CurrentState is EnergyBoltState energyBoltState)
+        {
+            energyBoltState.isWindingUp = false;
+        }
+    }
+    
     public void TriggerSpawnSlowZone()
     {
         if(stateMachine.CurrentState is SpawnSlowZoneState slowZoneState)
@@ -136,6 +158,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
             // 광역 슬래시 히트박스 생성 or 타격 이펙트
+            timeStopState.isWindingUp = false;
         }
     }
     #endregion
