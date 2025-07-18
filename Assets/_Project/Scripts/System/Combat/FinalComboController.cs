@@ -72,4 +72,12 @@ public class FinalComboController : MonoBehaviour, IStatusEffectable
         animator.speed = originalAnimSpeed;
         currentStatus = StatusEffectType.None;
     }
+
+    public void ApplyStatus(StatusEffectType effect)
+    {
+    }
+
+    public void RemoveStatus(StatusEffectType effect)
+    {
+    }
 }

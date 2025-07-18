@@ -16,4 +16,20 @@ public class SpawnSlowZoneState : BaseBossState
         float duration = boss.GetAnimationClipLengthFromState("SpawnSlowZone");
         WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
     }
+
+    public void SpawnSlowZone()
+    {
+        Vector3 center = boss.Player.position;
+        int count = 3;  // 슬로우 존 개수
+        float radius = 3f;  // 슬로우 존 반경
+
+        for(int i = 0; i < count; i++)
+        {
+            Vector2 randomCircle = Random.insideUnitCircle * radius;
+            Vector3 spawnPosition = center + new Vector3(randomCircle.x, 0, randomCircle.y);
+
+            boss.SpawnSlowZoneAtPosition(spawnPosition);
+            Debug.Log($"슬로우 존 생성: {spawnPosition}");
+        }
+    }
 }

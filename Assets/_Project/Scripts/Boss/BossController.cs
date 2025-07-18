@@ -16,10 +16,14 @@ public class BossController : MonoBehaviour, IDamageable
     [SerializeField] private float currentHP;
     [SerializeField] private int damage = 20;
 
+    [Header("공격 프리팹")]
+    public GameObject slowZonePrefab;
+
     private Animator animator;
     private Transform player;
 
     public BossPhaseManager PhaseManager => phaseManager;
+    public Transform Player => player;
 
     private void Awake()
     {
@@ -86,7 +90,7 @@ public class BossController : MonoBehaviour, IDamageable
     public void SpawnSlowZoneAtPosition(Vector3 position)
     {
         Debug.Log($"슬로우존 생성");
-        // TODO: 슬로우존 생성 로직 구현 (Instantiate or Pooling)
+        GameObject slowZone = GameObject.Instantiate(slowZonePrefab, position, Quaternion.identity);
     }
 
     public void StartTimeStopEffect()
@@ -114,6 +118,16 @@ public class BossController : MonoBehaviour, IDamageable
             transform.rotation = targetRotation;
         }
     }
+
+    #region 공격 애니메이션 이벤트 등록 함수
+    public void TriggerSpawnSlowZone()
+    {
+        if(stateMachine.CurrentState is SpawnSlowZoneState slowZoneState)
+        {
+            slowZoneState.SpawnSlowZone();
+        }
+    }
+    #endregion
 
     public void ApplyKnockback(float force){}
 }

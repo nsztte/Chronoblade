@@ -1,7 +1,7 @@
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
-public class PlayerController : MonoBehaviour
+public class PlayerController : MonoBehaviour, IStatusEffectable
 {
     [Header("Movement")]
     [SerializeField] private float moveSpeed = 5f;
@@ -16,7 +16,15 @@ public class PlayerController : MonoBehaviour
     [Header("스태미너 소모")]
     [SerializeField] private float runStaminaCostPerSecond = 15f;
 
+    [Header("상태 이상 효과")]
+    [SerializeField] private float slowedMultiplier = 0.5f;
+
+    private float originalMoveSpeed;
+    private float originalAnimSpeed;
+    private bool isSlowed = false;
+
     private CharacterController controller;
+    private Animator animator;
     private Vector2 moveInput;
     private Vector3 velocity;
 
@@ -37,6 +45,7 @@ public class PlayerController : MonoBehaviour
     private void Awake()
     {
         controller = GetComponent<CharacterController>();
+        animator = GetComponent<Animator>();
 
         // 원래 컨트롤러 값 저장
         originalControllerHeight = controller.height;
@@ -187,6 +196,42 @@ public class PlayerController : MonoBehaviour
                 velocity.y += gravity * Time.deltaTime;
             }
         }
+    }
+
+    public void ApplyStatus(StatusEffectType effect)
+    {
+        switch(effect)
+        {
+            case StatusEffectType.Slow:
+                if(!isSlowed)
+                {
+                    isSlowed = true;
+                    originalMoveSpeed = moveSpeed;
+                    originalAnimSpeed = animator.speed;
+                    moveSpeed *= slowedMultiplier;
+                    animator.speed = originalAnimSpeed * slowedMultiplier;
+                }
+                break;
+        }
+    }
+
+    public void RemoveStatus(StatusEffectType effect)
+    {
+        switch(effect)
+        {
+            case StatusEffectType.Slow:
+                if(isSlowed)
+                {
+                    isSlowed = false;
+                    moveSpeed = originalMoveSpeed;
+                    animator.speed = originalAnimSpeed;
+                }
+                break;
+        }
+    }
+
+    public void ApplyStatus(ComboAttackData attackData)
+    {
     }
     #endregion
 }
