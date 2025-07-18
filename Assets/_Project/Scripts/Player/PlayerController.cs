@@ -55,6 +55,14 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         crouchControllerHeight = originalControllerHeight * crouchingMultiplier;
         crouchControllerCenter = new Vector3(originalControllerCenter.x, originalControllerCenter.y * crouchingMultiplier, originalControllerCenter.z);
     }
+
+    private void Update()
+    {
+        if(isFrozen && TimeManager.Instance.CurrentTimeState == TimeState.Normal)
+        {
+            RemoveStatus(StatusEffectType.Freeze);
+        }
+    }
     
     #region FSM에서 호출할 메서드들
     public void SetMoveInput(Vector2 input)
