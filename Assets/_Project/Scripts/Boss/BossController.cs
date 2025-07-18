@@ -1,4 +1,3 @@
-using TreeEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
@@ -96,13 +95,17 @@ public class BossController : MonoBehaviour, IDamageable
     public void StartTimeStopEffect()
     {
         Debug.Log("타임 스탑 효과 시작");
-        // TODO: 화면 흑백효과, 타임스케일 조정 등
+        // TODO: 화면 흑백효과
+        TimeManager.Instance.SetTimeState(TimeState.Stop);
+        PlayerManager.Instance.PlayerController.ApplyStatus(StatusEffectType.Freeze);
     }
 
     public void EndTimeStopEffect()
     {
         Debug.Log("타임 스탑 효과 종료");
         // TODO: 복원
+        TimeManager.Instance.SetTimeState(TimeState.Normal);
+        PlayerManager.Instance.PlayerController.RemoveStatus(StatusEffectType.Freeze);
     }
 
     public void LookAtPlayer()
@@ -125,6 +128,14 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is SpawnSlowZoneState slowZoneState)
         {
             slowZoneState.SpawnSlowZone();
+        }
+    }
+
+    public void TriggerTimeStopAttack()
+    {
+        if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
+        {
+            // 광역 슬래시 히트박스 생성 or 타격 이펙트
         }
     }
     #endregion

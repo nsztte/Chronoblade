@@ -22,6 +22,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     private float originalMoveSpeed;
     private float originalAnimSpeed;
     private bool isSlowed = false;
+    private bool isFrozen = false;
 
     private CharacterController controller;
     private Animator animator;
@@ -212,6 +213,16 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     animator.speed = originalAnimSpeed * slowedMultiplier;
                 }
                 break;
+            case StatusEffectType.Freeze:
+                if(!isFrozen)
+                {
+                    isFrozen = true;
+                    originalMoveSpeed = moveSpeed;
+                    originalAnimSpeed = animator.speed;
+                    moveSpeed = 0f;
+                    animator.speed = 0f;
+                }
+                break;
         }
     }
 
@@ -223,6 +234,14 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 if(isSlowed)
                 {
                     isSlowed = false;
+                    moveSpeed = originalMoveSpeed;
+                    animator.speed = originalAnimSpeed;
+                }
+                break;
+            case StatusEffectType.Freeze:
+                if(isFrozen)
+                {
+                    isFrozen = false;
                     moveSpeed = originalMoveSpeed;
                     animator.speed = originalAnimSpeed;
                 }

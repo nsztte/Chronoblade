@@ -57,6 +57,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     private Animator animator;
     private PlayerStateMachine playerStateMachine;
+    private PlayerController playerController;
 
     // 회복 타이머
     private float mpRecoveryTimer = 0f;
@@ -72,6 +73,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public float CurrentStamina => currentStamina;
     public int Gold => gold;
     public PlayerStateMachine PlayerStateMachine => playerStateMachine;
+    public PlayerController PlayerController => playerController;
     public int StaminaCost => staminaCost;
     public int DashStaminaCost => dashStaminaCost;
     public bool IsInvincibleProperty => isInvincible;
