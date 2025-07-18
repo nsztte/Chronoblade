@@ -1,3 +1,4 @@
+using TreeEditor;
 using UnityEngine;
 
 [RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
@@ -16,6 +17,7 @@ public class BossController : MonoBehaviour, IDamageable
     [SerializeField] private int damage = 20;
 
     private Animator animator;
+    private Transform player;
 
     public BossPhaseManager PhaseManager => phaseManager;
 
@@ -30,6 +32,8 @@ public class BossController : MonoBehaviour, IDamageable
 
     private void Start()
     {
+        player = PlayerManager.Instance.PlayerTransform;
+
         // 초기 상태 설정
         var introState = new BossIntroState(this, stateMachine);
         stateMachine.Initialize(introState);
@@ -95,6 +99,20 @@ public class BossController : MonoBehaviour, IDamageable
     {
         Debug.Log("타임 스탑 효과 종료");
         // TODO: 복원
+    }
+
+    public void LookAtPlayer()
+    {
+        if(player == null) return;
+
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0f;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = targetRotation;
+        }
     }
 
     public void ApplyKnockback(float force){}
