@@ -1141,23 +1141,31 @@ Enemy FSM(상태머신) 시스템 구현
   - 시간 정지 패턴 등에서도 안정적인 조작 차단 가능
   - 향후 상태이상(Stun, Sleep 등) 확장 가능성 고려한 구조
 
-- **플레이어가 타임 정지를 해제했을 때 Freeze 상태도 자동 복원되도록 개선**
-  - `PlayerController.Update()` 내에서 다음 조건 추가:
-    - `isFrozen == true` && `TimeManager.CurrentState == TimeState.Normal`
-    - 해당 조건 만족 시 `RemoveStatus(StatusEffectType.Freeze)` 자동 호출
-  - 결과적으로 보스가 걸었던 시간 정지를 플레이어가 직접 해제했을 경우, 별도 처리 없이도 정상적으로 조작 가능
+- **TimeManager.cs**
+  - `SetTimeStop(bool isTimeStop)` 함수 추가
+    - TimeState를 변경하지 않고, 등록된 `ITimeControllable` 대상에게만 `SetTimeScale(0/1)` 적용
+    - 플레이어는 포함되지 않으므로 시간 정지 중에도 Freeze로 제어 필요
+  - 기존 `SetTimeState()`는 플레이어의 시간 조작(정지/재생)에만 사용
 
-- **입력 구조는 기존과 동일**
-  - `TimeInputHandler`에서는 시간 상태(TimeState)만 변경
-  - 상태 해제는 `PlayerController`가 자가 판단하여 수행
+- **BossController.cs**
+  - `StartTimeStopEffect()` / `EndTimeStopEffect()` 구조 변경
+    - 보스가 시간 정지를 시작/해제할 때는 TimeManager.SetTimeStop(bool)만 호출
+    - 동시에 `PlayerController.ApplyStatus(StatusEffectType.Freeze)` 호출로 조작 제한
+
+- **PlayerController.cs**
+  - Freeze 상태 처리 개선
+    - 이동속도 설정 제거 (입력 자체 차단되므로 중복 처리 방지)
+    - 애니메이션 정지(0f), 복원(1f)은 그대로 유지
+    - 중복 Freeze 방지를 위한 플래그 포함
 
 ### 메모
 - 보스는 시간 스킬 면역이지만, 콤보 디버프는 추후 별도 논의
 - 이벤트 기반 구조로 변경하면서 연출 타이밍 연동이 수월해짐
 - 슬로우는 PlayerController에서 이동/애니메이션만 느려지는 상태로 유지
 - 프리즈는 FSM/입력 레벨에서 전반적 차단을 통해 완전한 정지 상태 구성
-- 타임스탑 해제 타이밍과 조작 가능 상태의 싱크를 맞추기 위한 UX 보완 목적
-- Freeze 해제를 명시적으로 처리할 필요 없이 상태 변화 기반으로 자동 관리 가능
+- 플레이어가 시간 정지 해제 키를 눌러도 currentTimeState는 Normal로 유지됨
+- 하지만 Freeze 상태가 유지되므로 보스가 설정한 타임스탑은 플레이어에 의해 해제 불가
+- 보스의 시간 지배력과 패턴 연출 신뢰도 확보
 - 다음 작업: FSM 순환 흐름 테스트, 히트박스 임시 적용, BossModel 연결 (주말 예정)
 
 ---
