@@ -96,7 +96,7 @@ public class BossController : MonoBehaviour, IDamageable
     {
         Debug.Log("타임 스탑 효과 시작");
         // TODO: 화면 흑백효과
-        TimeManager.Instance.SetTimeState(TimeState.Stop);
+        TimeManager.Instance.SetTimeStop(true);
         PlayerManager.Instance.PlayerController.ApplyStatus(StatusEffectType.Freeze);
     }
 
@@ -104,7 +104,7 @@ public class BossController : MonoBehaviour, IDamageable
     {
         Debug.Log("타임 스탑 효과 종료");
         // TODO: 복원
-        TimeManager.Instance.SetTimeState(TimeState.Normal);
+        TimeManager.Instance.SetTimeStop(false);
         PlayerManager.Instance.PlayerController.RemoveStatus(StatusEffectType.Freeze);
     }
 
@@ -144,7 +144,7 @@ public class BossController : MonoBehaviour, IDamageable
             energyBoltState.isWindingUp = false;
         }
     }
-    
+
     public void TriggerSpawnSlowZone()
     {
         if(stateMachine.CurrentState is SpawnSlowZoneState slowZoneState)

@@ -101,6 +101,25 @@ public class TimeManager : MonoBehaviour
         Time.timeScale = timeScale;
     }
 
+    // 보스 전용 시간 제어 함수
+    public void SetTimeStop(bool isTimeStop)
+    {
+        if(isTimeStop)
+        {
+            foreach(var controllable in controllables)
+            {
+                controllable.SetTimeScale(0f);
+            }
+        }
+        else
+        {
+            foreach(var controllable in controllables)
+            {
+                controllable.SetTimeScale(1f);
+            }
+        }
+    }
+
     public void InitializeTimeState()
     {
         if(currentTimeState == TimeState.Normal) return;
