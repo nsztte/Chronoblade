@@ -22,7 +22,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     private float originalMoveSpeed;
     private float originalAnimSpeed;
     private bool isSlowed = false;
-    private bool isFrozen = false;
+    [SerializeField] private bool isFrozen = false;
     public bool IsFrozen => isFrozen;
 
     private CharacterController controller;
@@ -138,6 +138,8 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     #region FSM LocomotionState에서 호출할 이동 관련 Update
     public void LocomotionUpdate()
     {
+        if(IsFrozen) return;
+
         // 달리기 중 스태미너 소모
         if (isRunning && moveInput.y > 0)
         {
@@ -217,6 +219,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
             case StatusEffectType.Freeze:
                 if(!isFrozen)
                 {
+                    Debug.Log("PlayerController: ApplyStatus Freeze");
                     isFrozen = true;
                     originalAnimSpeed = animator.speed;
                     animator.speed = 0f;

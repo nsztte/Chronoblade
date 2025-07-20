@@ -13,13 +13,18 @@ public class TimeStopAttackState : BaseBossState
     public override void Enter()
     {
         Debug.Log("TimeStopAttackState: 타임 스탑 공격 시작");
+
         isWindingUp = true;
+
         boss.PlayAnimation("TimeStop"); 
         boss.StartTimeStopEffect();
     }
 
     public override void Update()
     {
+        float rotationSpeed = isWindingUp ? 12f : 6f;
+        boss.LookAtPlayer(rotationSpeed);
+
         if(!isWindingUp && !hasHandled)
         {
             hasHandled = true;

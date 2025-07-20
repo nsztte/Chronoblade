@@ -48,15 +48,15 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        // 시점 회전 입력 (마우스)
+        Vector2 lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        OnLookInput?.Invoke(lookInput);
+
         if(PlayerManager.Instance.IsFrozen) return;
 
         // 이동 입력 (WASD)
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));
         OnMoveInput?.Invoke(moveInput);
-
-        // 시점 회전 입력 (마우스)
-        Vector2 lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        OnLookInput?.Invoke(lookInput);
 
         // 점프 입력
         if (Input.GetKeyDown(KeyCode.Space))

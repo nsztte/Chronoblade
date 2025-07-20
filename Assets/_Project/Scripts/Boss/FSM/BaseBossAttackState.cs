@@ -24,9 +24,7 @@ public class BaseBossAttackState : BaseBossState
 
     public override void Update()
     {
-        if(isWindingUp)
-        {
-            boss.LookAtPlayer();
-        }
+        float rotationSpeed = isWindingUp ? 12f : 6f;
+        boss.LookAtPlayer(rotationSpeed);
     }
 }

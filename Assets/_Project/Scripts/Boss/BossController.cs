@@ -108,7 +108,7 @@ public class BossController : MonoBehaviour, IDamageable
         PlayerManager.Instance.PlayerController.RemoveStatus(StatusEffectType.Freeze);
     }
 
-    public void LookAtPlayer()
+    public void LookAtPlayer(float rotationSpeed)
     {
         if(player == null) return;
 
@@ -118,7 +118,7 @@ public class BossController : MonoBehaviour, IDamageable
         if (direction != Vector3.zero)
         {
             Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = targetRotation;
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
     }
 

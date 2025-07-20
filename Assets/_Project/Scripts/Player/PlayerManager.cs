@@ -105,6 +105,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     private void Start()
     {
         playerStateMachine = GetComponent<PlayerStateMachine>();
+        playerController = GetComponent<PlayerController>();
         
         currentHP = maxHP;
         currentMP = maxMP;

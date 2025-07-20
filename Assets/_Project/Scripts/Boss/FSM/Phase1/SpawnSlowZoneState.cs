@@ -16,6 +16,11 @@ public class SpawnSlowZoneState : BaseBossState
         float duration = boss.GetAnimationClipLengthFromState("SpawnSlowZone");
         WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
     }
+    
+    public override void Update()
+    {
+        boss.LookAtPlayer(6f);
+    }
 
     public void SpawnSlowZone()
     {
