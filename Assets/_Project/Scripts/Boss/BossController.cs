@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections;
 
 [RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
 public class BossController : MonoBehaviour, IDamageable
@@ -17,6 +18,14 @@ public class BossController : MonoBehaviour, IDamageable
 
     [Header("공격 프리팹")]
     public GameObject slowZonePrefab;
+
+    [Header("히트박스 마커")]
+    [SerializeField] private Transform slashHitboxMarker;
+    private Coroutine slashCoroutine;
+
+    [Header("히트박스 세팅")]
+    [SerializeField] private LayerMask hitboxLayer;
+    
 
     private Animator animator;
     private Transform player;
@@ -128,6 +137,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is HorizontalSlashState horizontalSlashState)
         {
             horizontalSlashState.isWindingUp = false;
+            TriggerFollowSlashHitbox(0.1f);
         }
     }
     public void TriggerVerticalSlash()
@@ -135,6 +145,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is VerticalSmashState verticalSmashState)
         {
             verticalSmashState.isWindingUp = false;
+            TriggerFollowSlashHitbox(0.1f);
         }
     }
     public void TriggerEnergyBolt()
@@ -157,11 +168,66 @@ public class BossController : MonoBehaviour, IDamageable
     {
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
-            // 광역 슬래시 히트박스 생성 or 타격 이펙트
             timeStopState.isWindingUp = false;
         }
     }
+
+    public void TriggerTimeStopAttackHitbox()
+    {
+        if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
+        {
+            Debug.Log("타임 스탑 공격 히트박스 트리거");
+            TriggerFollowSlashHitbox(0.1f);
+        }
+    }
     #endregion
+
+    private void TriggerFollowSlashHitbox(float duration)
+    {
+        if(slashCoroutine != null) StopCoroutine(slashCoroutine);
+        slashCoroutine = StartCoroutine(FollowSlashHitbox(duration));
+    }
+
+    private IEnumerator FollowSlashHitbox(float duration)
+    {
+        float timer = 0f;
+
+        while(timer < duration)
+        {
+            timer += Time.deltaTime;
+            Vector3 center = slashHitboxMarker.position;
+            Vector3 halfSize = slashHitboxMarker.localScale * 0.5f;
+            Quaternion rotation = slashHitboxMarker.rotation;
+
+            Collider[] hits = Physics.OverlapBox(center, halfSize, rotation, hitboxLayer);
+            foreach(var hit in hits)
+            {
+                if(hit.TryGetComponent(out IDamageable damageable))
+                {
+                    Debug.Log($"히트박스 히트: {hit.name}");
+                    damageable.TakeDamage(damage);
+                }
+            }
+
+            yield return null;
+            timer += Time.deltaTime;
+        }
+
+        slashCoroutine = null;
+    }
+
+    private void OnDrawGizmos()
+    {
+        if (slashHitboxMarker == null) return;
+
+        Vector3 center = slashHitboxMarker.position;
+        Vector3 halfSize = slashHitboxMarker.localScale * 0.5f;
+        Quaternion rotation = slashHitboxMarker.rotation;
+
+        Gizmos.color = Color.red;
+        Gizmos.matrix = Matrix4x4.TRS(center, rotation, Vector3.one);
+        Gizmos.DrawWireCube(Vector3.zero, halfSize * 2f);
+    }
 
     public void ApplyKnockback(float force){}
 }

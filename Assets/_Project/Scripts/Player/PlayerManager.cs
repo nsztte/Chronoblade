@@ -148,7 +148,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
                 damage = Mathf.RoundToInt(damage * (1 - BlockDamageReduction));
                 Debug.Log($"방어 성공! 데미지 감소: {damage}");
             }
-
+            
             currentHP -= damage;
             currentHP = Mathf.Clamp(currentHP, 0, maxHP);
             UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);

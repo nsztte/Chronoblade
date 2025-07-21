@@ -23,11 +23,11 @@ public class BossIdleState : BaseBossState
             yield break;
         }
 
-        int randomIndex = Random.Range(0, 5);
+        int randomIndex = Random.Range(0, 4);
         switch(randomIndex)
         {
             case 0:
-                stateMachine.ChangeState(new EnergyBoltState(boss, stateMachine));
+                stateMachine.ChangeState(new TimeStopAttackState(boss, stateMachine));
                 break;
             case 1:
                 stateMachine.ChangeState(new HorizontalSlashState(boss, stateMachine));
@@ -37,9 +37,6 @@ public class BossIdleState : BaseBossState
                 break;
             case 3:
                 stateMachine.ChangeState(new SpawnSlowZoneState(boss, stateMachine));
-                break;
-            case 4:
-                stateMachine.ChangeState(new TimeStopAttackState(boss, stateMachine));
                 break;
         }
     }
