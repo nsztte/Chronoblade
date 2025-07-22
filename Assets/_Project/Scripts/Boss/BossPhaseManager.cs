@@ -36,5 +36,6 @@ public class BossPhaseManager : MonoBehaviour
     public void SetPhase(BossPhase phase)
     {
         CurrentPhase = phase;
+        Debug.Log($"BossPhaseManager: 페이즈 변경 - {phase}");
     }
 }

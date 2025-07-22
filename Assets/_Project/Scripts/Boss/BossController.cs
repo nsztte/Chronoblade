@@ -8,9 +8,6 @@ public class BossController : MonoBehaviour, IDamageable
     private BossStateMachine stateMachine;
     [SerializeField] private BaseBossState currentState;
 
-    [Header("페이즈")]
-    private BossPhaseManager phaseManager;
-
     [Header("스탯")]
     [SerializeField] private float maxHP = 1000f;
     [SerializeField] private float currentHP;
@@ -25,12 +22,17 @@ public class BossController : MonoBehaviour, IDamageable
 
     [Header("히트박스 세팅")]
     [SerializeField] private LayerMask hitboxLayer;
-    
 
+    [Header("매니저")]
+    [SerializeField] private PuzzleClockManager puzzleClockManager;
+    private BossPhaseManager phaseManager;
+
+    // 참조
     private Animator animator;
     private Transform player;
 
     public BossPhaseManager PhaseManager => phaseManager;
+    public PuzzleClockManager PuzzleClockManager => puzzleClockManager;
     public Transform Player => player;
 
     private void Awake()
@@ -54,6 +56,8 @@ public class BossController : MonoBehaviour, IDamageable
     private void Update()
     {
         stateMachine.Update();
+
+        phaseManager.UpdatePhase(currentHP, maxHP);
     }
 
     public void TakeDamage(int damage)
@@ -129,6 +133,12 @@ public class BossController : MonoBehaviour, IDamageable
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
+
+    public void StartPuzzle()
+    {
+        puzzleClockManager.gameObject.SetActive(true);
+        puzzleClockManager.StartPuzzle();
     }
 
     #region 공격 애니메이션 이벤트 등록 함수

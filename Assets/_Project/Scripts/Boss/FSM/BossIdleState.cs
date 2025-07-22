@@ -10,10 +10,17 @@ public class BossIdleState : BaseBossState
     public override void Enter()
     {
         boss.PlayAnimation("Idle");
-        boss.StartCoroutine(DecideNextPattern());
+        if(boss.PhaseManager.CurrentPhase == BossPhase.Phase1)
+        {
+            boss.StartCoroutine(DecideNextPatternPhase1());
+        }
+        else if(boss.PhaseManager.CurrentPhase == BossPhase.Phase2)
+        {
+            boss.StartCoroutine(DecideNextPatternPhase2());
+        }
     }
 
-    private IEnumerator DecideNextPattern()
+    private IEnumerator DecideNextPatternPhase1()
     {
         yield return new WaitForSeconds(1f);
 
@@ -38,6 +45,17 @@ public class BossIdleState : BaseBossState
             case 3:
                 stateMachine.ChangeState(new SpawnSlowZoneState(boss, stateMachine));
                 break;
+        }
+    }
+
+    private IEnumerator DecideNextPatternPhase2()
+    {
+        yield return new WaitForSeconds(1f);
+
+        if(boss.PhaseManager.CurrentPhase == BossPhase.FinalPuzzle)
+        {
+            stateMachine.ChangeState(new FinalPuzzleState(boss, stateMachine));
+            yield break;
         }
     }
 }

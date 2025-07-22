@@ -12,11 +12,14 @@ public class PuzzleHand : MonoBehaviour, IRewindable, ITimeControllable
     private float timeScale = 1f;
     private bool isRewinding = false;
 
-    // 테스트 이후에는 OnEnable으로 변경
-    private void Start()
+    private PuzzleClockManager puzzleClockManager;
+
+    private void OnEnable()
     {
         TimeManager.Instance.RegisterControllable(this);
         TimeManager.Instance.RegisterRewindable(this);
+
+        puzzleClockManager = GetComponentInParent<PuzzleClockManager>();
     }
 
     private void OnDisable()
@@ -27,12 +30,19 @@ public class PuzzleHand : MonoBehaviour, IRewindable, ITimeControllable
 
     private void Update()
     {
+        if(!puzzleClockManager.IsPuzzleActive || puzzleClockManager.IsPuzzleCleared) return;
+
         // 방향 설정
         float direction = isRight ? 1 : -1;
         if(isRewinding) direction *= -1;
 
         float rotationThisFrame = rotationSpeed * Time.deltaTime * timeScale;
         transform.Rotate(0, 0, rotationThisFrame * direction);
+
+        if(IsAligned())
+        {
+            Debug.Log($"PuzzleHand: {name} 정렬됨");
+        }
     }
 
     public bool IsAligned()

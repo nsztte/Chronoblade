@@ -1,5 +1,5 @@
-using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
+using System;
 
 public class PuzzleClockManager : MonoBehaviour
 {
@@ -11,10 +11,19 @@ public class PuzzleClockManager : MonoBehaviour
     [Header("퍼즐 시간 설정")]
     [SerializeField] private float puzzleTimeLimit = 25f;
 
+    [Tooltip("퍼즐 남은 시간")]
+    [SerializeField] private float remainingTime;
+    [SerializeField] private bool isPuzzleActive = false;
+    [SerializeField] private bool isPuzzleCleared = false;
+
     private Animator animator;
-    private float remainingTime;
-    private bool isPuzzleActive = false;
-    private bool isPuzzleCleared = false;
+
+    public event Action OnPuzzleSuccess;
+    public event Action OnPuzzleFail;
+
+    public bool IsPuzzleActive => isPuzzleActive;
+    public bool IsPuzzleCleared => isPuzzleCleared;
+
 
     private void Start()
     {
@@ -38,7 +47,7 @@ public class PuzzleClockManager : MonoBehaviour
             return;
         }
 
-        if(IsPuzzleCleared())
+        if(IsPuzzleSuccess())
         {
             PuzzleSuccess();
         }
@@ -46,8 +55,6 @@ public class PuzzleClockManager : MonoBehaviour
 
     public void StartPuzzle()
     {
-        GameManager.Instance.EnterPuzzle();
-
         isPuzzleActive = true;
         isPuzzleCleared = false;
         remainingTime = puzzleTimeLimit;
@@ -55,7 +62,7 @@ public class PuzzleClockManager : MonoBehaviour
         Debug.Log("[PuzzleClockManager] 퍼즐 시작");
     }
 
-    private bool IsPuzzleCleared()
+    private bool IsPuzzleSuccess()
     {
         return hourHand.IsAligned() && minuteHand.IsAligned() && secondHand.IsAligned()
             && TimeManager.Instance.CurrentTimeState == TimeState.Stop;
@@ -69,9 +76,7 @@ public class PuzzleClockManager : MonoBehaviour
         Debug.Log("[PuzzleClockManager] 퍼즐 성공");
         TimeManager.Instance.InitializeTimeState();
 
-        // TODO: 퍼즐 클리어 연출
-
-        GameManager.Instance.EnterCombat();
+        OnPuzzleSuccess?.Invoke();
     }
 
     private void PuzzleFail()
@@ -82,9 +87,7 @@ public class PuzzleClockManager : MonoBehaviour
         Debug.Log("[PuzzleClockManager] 퍼즐 실패");
         TimeManager.Instance.InitializeTimeState();
 
-        // TODO: 퍼즐 실패 연출, 플레이어 패널티 or 보스 체력 회복
-
-        GameManager.Instance.EnterCombat();
+        OnPuzzleFail?.Invoke();
     }
 
     private void UpdateAnimationSpeed()
