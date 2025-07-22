@@ -25,13 +25,16 @@ public class PuzzlePhase1State : BaseBossState
     {
         boss.PuzzleClockManager.OnPuzzleSuccess -= OnPuzzleSuccess;
         boss.PuzzleClockManager.OnPuzzleFail -= OnPuzzleFail;
+
+        boss.EndPuzzle();
     }
 
     private void OnPuzzleSuccess()
     {
-        // TODO: 퍼즐 성공 연출 / 보스 패널티
+        // TODO: 퍼즐 성공 연출
 
-        ChangeToPhase2();
+        // 취약점 노출
+        boss.ExposeWeakPoint(5f, () => ChangeToPhase2());
     }
 
     private void OnPuzzleFail()

@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections;
+using System;
 
 [RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
 public class BossController : MonoBehaviour, IDamageable
@@ -26,6 +27,9 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("매니저")]
     [SerializeField] private PuzzleClockManager puzzleClockManager;
     private BossPhaseManager phaseManager;
+
+    [Header("취약점 세팅")]
+    [SerializeField] private GameObject weakPointObject;
 
     // 참조
     private Animator animator;
@@ -69,6 +73,21 @@ public class BossController : MonoBehaviour, IDamageable
         Debug.Log($"Boss HP: {currentHP}, Phase: {phaseManager.CurrentPhase}");
     }
 
+    public void LookAtPlayer(float rotationSpeed)
+    {
+        if(player == null) return;
+
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0f;
+
+        if (direction != Vector3.zero)
+        {
+            Quaternion targetRotation = Quaternion.LookRotation(direction);
+            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
+        }
+    }
+
+    #region 애니메이션 관련 함수
     public void PlayAnimation(string triggerName)
     {
         animator.ResetTrigger(triggerName);
@@ -98,7 +117,9 @@ public class BossController : MonoBehaviour, IDamageable
         Debug.LogWarning($"애니메이션 클립 '{stateName}'을 찾을 수 없습니다.");
         return 1f;
     }
+    #endregion
 
+    #region 패턴 관련 함수
     public void SpawnSlowZoneAtPosition(Vector3 position)
     {
         Debug.Log($"슬로우존 생성");
@@ -121,25 +142,35 @@ public class BossController : MonoBehaviour, IDamageable
         PlayerManager.Instance.PlayerController.RemoveStatus(StatusEffectType.Freeze);
     }
 
-    public void LookAtPlayer(float rotationSpeed)
-    {
-        if(player == null) return;
-
-        Vector3 direction = (player.position - transform.position).normalized;
-        direction.y = 0f;
-
-        if (direction != Vector3.zero)
-        {
-            Quaternion targetRotation = Quaternion.LookRotation(direction);
-            transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
-        }
-    }
-
     public void StartPuzzle()
     {
         puzzleClockManager.gameObject.SetActive(true);
         puzzleClockManager.StartPuzzle();
     }
+
+    public void EndPuzzle()
+    {
+        puzzleClockManager.gameObject.SetActive(false);
+    }
+
+    public void ExposeWeakPoint(float duration, Action onComplete = null)
+    {
+        StartCoroutine(ExposeCoroutine(duration, onComplete));
+    }
+
+    private IEnumerator ExposeCoroutine(float duration, Action onComplete)
+    {
+        weakPointObject.SetActive(true);
+        animator.SetBool("IsWeakExposed", true);
+
+        yield return new WaitForSeconds(duration);
+
+        weakPointObject.SetActive(false);
+        animator.SetBool("IsWeakExposed", false);
+
+        onComplete?.Invoke();
+    }
+    #endregion
 
     #region 공격 애니메이션 이벤트 등록 함수
     public void TriggerHorizontalSlash()
@@ -192,6 +223,7 @@ public class BossController : MonoBehaviour, IDamageable
     }
     #endregion
 
+    #region 히트박스 트리거
     private void TriggerFollowSlashHitbox(float duration)
     {
         if(slashCoroutine != null) StopCoroutine(slashCoroutine);
@@ -238,6 +270,7 @@ public class BossController : MonoBehaviour, IDamageable
         Gizmos.matrix = Matrix4x4.TRS(center, rotation, Vector3.one);
         Gizmos.DrawWireCube(Vector3.zero, halfSize * 2f);
     }
+    #endregion
 
     public void ApplyKnockback(float force){}
 }

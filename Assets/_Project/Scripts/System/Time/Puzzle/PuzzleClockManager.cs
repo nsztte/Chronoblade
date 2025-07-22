@@ -29,7 +29,7 @@ public class PuzzleClockManager : MonoBehaviour
     {
         animator = GetComponent<Animator>();
     }
-
+    
     private void Update()
     {
         if(!isPuzzleActive || isPuzzleCleared) return;
