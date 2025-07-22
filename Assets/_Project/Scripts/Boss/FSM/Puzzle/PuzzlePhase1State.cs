@@ -32,16 +32,19 @@ public class PuzzlePhase1State : BaseBossState
     private void OnPuzzleSuccess()
     {
         // TODO: 퍼즐 성공 연출
-
         // 취약점 노출
-        boss.ExposeWeakPoint(5f, () => ChangeToPhase2());
+        boss.SetClockPartsTarget(false);
+        boss.PuzzleClockManager.LaunchAllClockParts();
+        boss.WaitPartsArrival(() => boss.ExposeWeakPoint(5f, () => ChangeToPhase2()));
     }
 
     private void OnPuzzleFail()
     {
         // TODO: 퍼즐 실패 연출 / 플레이어 패널티 or 보스 체력 회복
 
-        ChangeToPhase2();
+        boss.SetClockPartsTarget(true);
+        boss.PuzzleClockManager.LaunchAllClockParts();
+        boss.WaitPartsArrival(() => ChangeToPhase2());
     }
 
     private void ChangeToPhase2()

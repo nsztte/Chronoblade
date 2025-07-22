@@ -153,6 +153,22 @@ public class BossController : MonoBehaviour, IDamageable
         puzzleClockManager.gameObject.SetActive(false);
     }
 
+    public void SetClockPartsTarget(bool isPlayer)
+    {
+        puzzleClockManager.SetClockPartsTarget(isPlayer);
+    }
+
+    public void WaitPartsArrival(Action onComplete)
+    {
+        StartCoroutine(CoWaitArrived(onComplete));
+    }
+
+    private IEnumerator CoWaitArrived(Action onComplete)
+    {
+        yield return new WaitUntil(() => puzzleClockManager.AreAllPartsArrived());
+        onComplete?.Invoke();
+    }
+
     public void ExposeWeakPoint(float duration, Action onComplete = null)
     {
         StartCoroutine(ExposeCoroutine(duration, onComplete));

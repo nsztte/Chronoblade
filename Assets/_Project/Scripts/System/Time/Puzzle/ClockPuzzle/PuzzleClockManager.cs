@@ -16,6 +16,9 @@ public class PuzzleClockManager : MonoBehaviour
     [SerializeField] private bool isPuzzleActive = false;
     [SerializeField] private bool isPuzzleCleared = false;
 
+    [Header("퍼즐 클럭 파트")]
+    [SerializeField] private ClockPart[] clockParts;
+
     private Animator animator;
 
     public event Action OnPuzzleSuccess;
@@ -24,10 +27,11 @@ public class PuzzleClockManager : MonoBehaviour
     public bool IsPuzzleActive => isPuzzleActive;
     public bool IsPuzzleCleared => isPuzzleCleared;
 
-
-    private void Start()
+    private void Awake()
     {
         animator = GetComponent<Animator>();
+
+        clockParts = GetComponentsInChildren<ClockPart>();
     }
     
     private void Update()
@@ -60,6 +64,40 @@ public class PuzzleClockManager : MonoBehaviour
         remainingTime = puzzleTimeLimit;
 
         Debug.Log("[PuzzleClockManager] 퍼즐 시작");
+    }
+
+    public void SetClockPartsTarget(bool isPlayer)
+    {
+        foreach(var clockPart in clockParts)
+        {
+            clockPart.SetTarget(isPlayer);
+        }
+    }
+
+    public bool AreAllPartsArrived()
+    {
+        foreach (ClockPart clockPart in clockParts)
+        {
+            if (!clockPart.HasArrived) return false;
+        }
+
+        return true;
+    }
+
+    public void LaunchAllClockParts()
+    {
+        foreach(ClockPart clockPart in clockParts)
+        {
+            clockPart.Launch();
+        }
+    }
+
+    public void ResetAllClockParts()
+    {
+        foreach(ClockPart clockPart in clockParts)
+        {
+            clockPart.ForceReset();
+        }
     }
 
     private bool IsPuzzleSuccess()
