@@ -1231,3 +1231,48 @@ Enemy FSM(상태머신) 시스템 구현
 - 이후 퍼즐 목표 각도 정답 판정, 퍼즐 매니저와 FSM 연동 예정
 
 ---
+
+## 2025.07.22 (화) 작업 기록
+
+### 주요 작업
+
+- **퍼즐 바늘 정답 판정 및 시계 애니메이션 제어 개선**
+  - `PuzzleHand.cs`에 `IsAligned()` 함수 구현: targetAngle과의 z축 회전 차이 계산 → 허용 오차 이내 여부 판정
+  - Animator 연동 제거: 전체 애니메이션 속도 제어는 `PuzzleClockManager`로 일원화
+
+- **`PuzzleClockManager.cs` 기능 확장**
+  - 퍼즐 전체 흐름 및 판정 로직 통합 관리
+  - 현재 `TimeManager.TimeState`에 따라 Animator 속도 자동 갱신
+  - 퍼즐 성공 조건 `IsPuzzleCleared()`: 바늘 3개가 정렬 상태이면서 시간 정지 중일 때
+  - 퍼즐 성공 시 `OnPuzzleSuccess`, 실패 시 `OnPuzzleFail` 이벤트 발생
+  - 성공/실패 후 TimeManager 초기화 및 GameState 전환 처리
+
+- **퍼즐 FSM 상태 처리 구조 정리**
+  - `PuzzlePhase1State.cs`에서 `PuzzleClockManager` 이벤트 구독
+  - 퍼즐 시작 시 `GameManager.EnterPuzzle()` 호출
+  - 성공 시 약점 노출, 실패 시 보스에게 clockParts 발사 후 Phase2 진입
+  - `PuzzleSuccess()` / `PuzzleFail()`에 후속 연출/패널티 위치 TODO로 명시
+
+- **보스 약점 노출 시스템 구현**
+  - `BossController.cs`에 `ExposeWeakPoint(float duration, Action onComplete)` 함수 구현
+    - Animator의 `"IsWeakExposed"` bool 파라미터 기반 약점 애니메이션 전환
+    - 노출 종료 시 FSM Phase2 전이 콜백 연결
+  - `WeaknessHitbox.cs`: 보스 약점용 IDamageable → BossController로 데미지 위임, 배율 적용
+
+- **시계 부품 발사 및 충돌 처리 로직 구현**
+  - `ClockPart.cs`에 `Launch()` 함수 구현: 랜덤 방향 + Force + 일정 시간 후 타겟 추적
+  - `OnTriggerEnter()`에서 Player/Boss에 닿을 경우 도착 처리 + 데미지 적용
+    - 중복 처리 방지를 위한 `hasArrived` 체크 도입
+  - `PuzzleClockManager.cs` → `AreAllPartsArrived()` 검사 후 완료 콜백 처리
+  - `BossController.cs`에서 `WaitClockPartsArrival(Action onComplete)` 코루틴 구현
+  - `PuzzlePhase1State.cs`에서 성공/실패 결과에 따라 타겟 지정 후 부품 발사 및 Phase2 전환
+
+### 메모
+
+- 퍼즐 로직과 보스 FSM/게임 FSM 전이 처리를 깔끔하게 분리하여 확장성과 유지보수성 향상
+- 약점 노출 방식은 스턴 상태가 아닌 별도 애니메이션 + 배율 데미지로 차별화
+- ClockPart의 충돌 처리 안정성을 위해 `hasArrived` 체크는 반드시 필요
+- 추후 FinalPuzzle에도 재활용 가능하도록 PuzzleClockManager와 ClockPart는 확장성 고려함
+
+---
+
