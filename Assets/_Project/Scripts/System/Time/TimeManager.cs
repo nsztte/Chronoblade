@@ -19,6 +19,9 @@ public class TimeManager : MonoBehaviour
     [Range(0, 1)] [SerializeField] private float slowFactor = 0.01f;
     [Range(0, 5)] [SerializeField] private float fastForwardFactor = 1.8f;
 
+    public float SlowFactor => slowFactor;
+    public float FastForwardFactor => fastForwardFactor;
+
     #region Singleton
     public static TimeManager Instance { get; private set; }
 
