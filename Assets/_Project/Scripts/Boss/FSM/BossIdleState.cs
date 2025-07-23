@@ -57,5 +57,22 @@ public class BossIdleState : BaseBossState
             stateMachine.ChangeState(new FinalPuzzleState(boss, stateMachine));
             yield break;
         }
+
+        int randomIndex = Random.Range(0, 4);
+        switch(randomIndex)
+        {
+            case 0:
+                stateMachine.ChangeState(new DelayedMineState(boss, stateMachine));
+                break;
+            case 1:
+                stateMachine.ChangeState(new DoubleSlashComboState(boss, stateMachine));
+                break;
+            case 2:
+                stateMachine.ChangeState(new StaggerCheckState(boss, stateMachine));
+                break;
+            case 3:
+                stateMachine.ChangeState(new RapidEnergyShotState(boss, stateMachine));
+                break;
+        }
     }
 }
