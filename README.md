@@ -1314,6 +1314,17 @@ Enemy FSM(상태머신) 시스템 구현
   - DelayedMine: 지뢰 생성 타이밍에 이벤트 등록
   - RapidEnergyShot: 3연속 투사체 발사 타이밍에 이벤트 등록
 
+### 추가작업
+- **보스 퍼즐 진입 조건 상태 통합 (CheckPhaseEndState)**
+  - 기존 CheckPhase1EndState, CheckPhase2EndState 클래스를 하나의 CheckPhaseEndState로 리팩토링
+  - 보스 페이즈(PhaseManager.CurrentPhase)에 따라 Puzzle1 또는 FinalPuzzle 상태로 분기
+  - IdleState에서 페이즈별 공격 패턴 결정이 이미 분리되어 있어 상태 통합이 자연스러움
+
+- **테스트용 프리팹 적용 및 전투 패턴 동작 검증**
+  - Mine(지뢰) 프리팹: 간단한 메시 및 Collider 기반 폭발 테스트 완료
+  - EnergyBolt 프리팹: 보스 기준 원형 생성 및 플레이어 방향 발사 테스트 완료
+  - 향후 연출/이펙트 적용 전까지 기능 테스트용으로 유지
+
 ### 메모
 - 보스 FSM 전반의 흐름이 정교화되어 실시간 패턴 전이가 자연스러움
 - 마비/스턴 등 상태이상에 따른 연출은 추후 시각 효과 및 사운드 연동 필요
