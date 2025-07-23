@@ -7,7 +7,7 @@ public class Mine : MonoBehaviour
     [SerializeField] private float maxDelay = 3f;
     [SerializeField] private float warningTime = 0.3f;
     [SerializeField] private float explosionRadius = 2f;
-    [SerializeField] private int damage = 20;
+    [SerializeField] private int damage = 12;
     [SerializeField] private LayerMask targetLayer;
 
     private bool hasExploded = false;

@@ -12,7 +12,7 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("스탯")]
     [SerializeField] private float maxHP = 1000f;
     [SerializeField] private float currentHP;
-    [SerializeField] private int damage = 20;
+    // [SerializeField] private int damage = 20;
 
     [Header("공격 프리팹")]
     public GameObject slowZonePrefab;
@@ -216,7 +216,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is HorizontalSlashState horizontalSlashState)
         {
             horizontalSlashState.isWindingUp = false;
-            TriggerFollowSlashHitbox(0.1f);
+            TriggerFollowSlashHitbox(0.1f, horizontalSlashState.damage);
         }
     }
     public void TriggerVerticalSlash()
@@ -224,7 +224,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is VerticalSmashState verticalSmashState)
         {
             verticalSmashState.isWindingUp = false;
-            TriggerFollowSlashHitbox(0.1f);
+            TriggerFollowSlashHitbox(0.1f, verticalSmashState.damage);
         }
     }
     public void TriggerEnergyBolt()
@@ -251,12 +251,18 @@ public class BossController : MonoBehaviour, IDamageable
         }
     }
 
-    public void TriggerTimeStopAttackHitbox()
+    // TriggerTimeStopAttack, TriggerDoubleSlashCombo 에서 공통으로 사용
+    public void TriggerAttackHitbox()
     {
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
-            Debug.Log("타임 스탑 공격 히트박스 트리거");
-            TriggerFollowSlashHitbox(0.1f);
+            timeStopState.isWindingUp = false;
+            TriggerFollowSlashHitbox(0.1f, timeStopState.damage);
+        }
+        else if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
+        {
+            doubleSlashComboState.isWindingUp = false;
+            TriggerFollowSlashHitbox(0.1f, doubleSlashComboState.damage);
         }
     }
 
@@ -274,7 +280,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
         {
             doubleSlashComboState.isWindingUp = false;
-            TriggerFollowSlashHitbox(0.5f); //애니메이션 길이에 따라 조절
+            // 각 공격 프레임에 TriggerAttackHitbox 이벤트 등록
         }
     }
 
@@ -288,13 +294,13 @@ public class BossController : MonoBehaviour, IDamageable
     #endregion
 
     #region 히트박스 트리거
-    private void TriggerFollowSlashHitbox(float duration)
+    private void TriggerFollowSlashHitbox(float duration, int damage)
     {
         if(slashCoroutine != null) StopCoroutine(slashCoroutine);
-        slashCoroutine = StartCoroutine(FollowSlashHitbox(duration));
+        slashCoroutine = StartCoroutine(FollowSlashHitbox(duration, damage));
     }
 
-    private IEnumerator FollowSlashHitbox(float duration)
+    private IEnumerator FollowSlashHitbox(float duration, int damage)
     {
         float timer = 0f;
 

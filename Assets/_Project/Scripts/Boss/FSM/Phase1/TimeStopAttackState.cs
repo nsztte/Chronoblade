@@ -5,6 +5,7 @@ public class TimeStopAttackState : BaseBossState
 {
     public bool isWindingUp = true;
     private bool hasHandled = false;
+    public int damage = 15;
     
     public TimeStopAttackState(BossController boss, BossStateMachine stateMachine) : base(boss, stateMachine)
     {

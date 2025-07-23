@@ -7,7 +7,7 @@ public class EnergyBoltProjectile : MonoBehaviour
     [SerializeField] private float speed = 20f;
     [SerializeField] private float delay = 0.5f;
     [SerializeField] private float lifeTime = 5f;
-    [SerializeField] private int damage = 20;
+    [SerializeField] private int damage = 10;
     [SerializeField] private float paralysisDuration = 1f;
     [SerializeField] private LayerMask targetLayer;
 
