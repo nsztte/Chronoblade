@@ -9,6 +9,10 @@ public class StaggerCheckState : BaseBossState
 
     public override void Enter()
     {
-
+        if(boss.IsPlayerInAttackRange())
+        {
+            stateMachine.ChangeState(new BossDashState(boss, stateMachine, this));
+            return;
+        }
     }
 }

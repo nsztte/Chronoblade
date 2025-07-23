@@ -12,6 +12,7 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("스탯")]
     [SerializeField] private float maxHP = 1000f;
     [SerializeField] private float currentHP;
+    [SerializeField] private float attackRange = 1.5f;
     // [SerializeField] private int damage = 20;
 
     [Header("공격 프리팹")]
@@ -87,6 +88,11 @@ public class BossController : MonoBehaviour, IDamageable
             Quaternion targetRotation = Quaternion.LookRotation(direction);
             transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, rotationSpeed * Time.deltaTime);
         }
+    }
+
+    public bool IsPlayerInAttackRange()
+    {
+        return Vector3.Distance(player.position, transform.position) <= attackRange;
     }
 
     #region 애니메이션 관련 함수
