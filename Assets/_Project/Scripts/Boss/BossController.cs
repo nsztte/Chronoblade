@@ -16,6 +16,7 @@ public class BossController : MonoBehaviour, IDamageable
 
     [Header("공격 프리팹")]
     public GameObject slowZonePrefab;
+    public GameObject minePrefab;
 
     [Header("히트박스 마커")]
     [SerializeField] private Transform slashHitboxMarker;
@@ -126,6 +127,12 @@ public class BossController : MonoBehaviour, IDamageable
         GameObject slowZone = GameObject.Instantiate(slowZonePrefab, position, Quaternion.identity);
     }
 
+    public void SpawnMineAtPosition(Vector3 position)
+    {
+        Debug.Log($"마인 생성");
+        GameObject mine = GameObject.Instantiate(minePrefab, position, Quaternion.identity);
+    }
+
     public void StartTimeStopEffect()
     {
         Debug.Log("타임 스탑 효과 시작");
@@ -189,6 +196,7 @@ public class BossController : MonoBehaviour, IDamageable
     #endregion
 
     #region 공격 애니메이션 이벤트 등록 함수
+    // 패이즈1
     public void TriggerHorizontalSlash()
     {
         if(stateMachine.CurrentState is HorizontalSlashState horizontalSlashState)
@@ -235,6 +243,15 @@ public class BossController : MonoBehaviour, IDamageable
         {
             Debug.Log("타임 스탑 공격 히트박스 트리거");
             TriggerFollowSlashHitbox(0.1f);
+        }
+    }
+
+    // 패이즈2
+    public void TriggerDelayedMine()
+    {
+        if(stateMachine.CurrentState is DelayedMineState delayedMineState)
+        {
+            delayedMineState.SpawnMine();
         }
     }
     #endregion

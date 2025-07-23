@@ -9,7 +9,6 @@ public class ClockPart : MonoBehaviour
     [SerializeField] private float maxLaunchForce = 10f;
     [SerializeField] private float homingDelay = 0.5f;
     [SerializeField] private float homingSpeed = 8f;
-    [SerializeField] private float returnSpeed = 4f;
 
     private Vector3 originalPosition;
     private Quaternion originalRotation;
