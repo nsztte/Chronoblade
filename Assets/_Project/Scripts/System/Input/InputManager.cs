@@ -48,11 +48,15 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        // 시간 정지 상태에서는 모든 입력 및 시점 회전 차단
+        if(PlayerManager.Instance.IsFrozen) return; 
+
         // 시점 회전 입력 (마우스)
         Vector2 lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         OnLookInput?.Invoke(lookInput);
 
-        if(PlayerManager.Instance.IsFrozen) return;
+        // 마비 상태에서는 시점 회전만 적용, 나머지 조작 차단
+        if(PlayerManager.Instance.IsParalyzed) return;
 
         // 이동 입력 (WASD)
         Vector2 moveInput = new Vector2(Input.GetAxisRaw("Horizontal"), Input.GetAxisRaw("Vertical"));

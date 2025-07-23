@@ -79,6 +79,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public bool IsInvincibleProperty => isInvincible;
     public ComboAttackData CurrentCombo => currentCombo;
     public bool IsFrozen => playerController.IsFrozen;
+    public bool IsParalyzed => playerController.IsParalyzed;
     #endregion
 
     #region Singleton

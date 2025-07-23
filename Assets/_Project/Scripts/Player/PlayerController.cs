@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 [RequireComponent(typeof(CharacterController))]
@@ -22,8 +23,10 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     private float originalMoveSpeed;
     private float originalAnimSpeed;
     private bool isSlowed = false;
-    [SerializeField] private bool isFrozen = false;
+    private bool isFrozen = false;
     public bool IsFrozen => isFrozen;
+    private bool isParalyzed = false;
+    public bool IsParalyzed => isParalyzed;
 
     private CharacterController controller;
     private Animator animator;
@@ -202,6 +205,8 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         }
     }
 
+    // TODO: 각 스테이트 카메라 효과 추가
+    // 향후 필요하다면 duration이 0이 아닌 경우 remove 코루틴이 재생되도록 전반적인 수정 고려
     public void ApplyStatus(StatusEffectType effect, float duration = 0f)
     {
         switch(effect)
@@ -223,6 +228,17 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     isFrozen = true;
                     originalAnimSpeed = animator.speed;
                     animator.speed = 0f;
+                }
+                break;
+            case StatusEffectType.Paralysis:
+                if(!isParalyzed)
+                {
+                    Debug.Log("PlayerController: ApplyStatus Paralysis");
+                    isParalyzed = true;
+
+                    // TODO: 전기 파티클, 카메라 흔들림 등 연출 삽입 위치
+                    StopCoroutine("RemoveParalysisAfter");
+                    StartCoroutine(RemoveParalysisAfter(duration));
                 }
                 break;
         }
@@ -247,7 +263,21 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     animator.speed = originalAnimSpeed;
                 }
                 break;
+            case StatusEffectType.Paralysis:
+                if(isParalyzed)
+                {
+                    isParalyzed = false;
+                }
+                break;
         }
+    }
+
+    private IEnumerator RemoveParalysisAfter(float duration)
+    {
+        if(duration <= 0f) yield break;
+
+        yield return new WaitForSeconds(duration);
+        RemoveStatus(StatusEffectType.Paralysis);
     }
 
     public void ApplyStatus(ComboAttackData attackData)
