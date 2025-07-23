@@ -202,7 +202,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         }
     }
 
-    public void ApplyStatus(StatusEffectType effect)
+    public void ApplyStatus(StatusEffectType effect, float duration = 0f)
     {
         switch(effect)
         {

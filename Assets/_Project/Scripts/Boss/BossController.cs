@@ -17,6 +17,7 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("공격 프리팹")]
     public GameObject slowZonePrefab;
     public GameObject minePrefab;
+    public GameObject energyBoltPrefab;
 
     [Header("히트박스 마커")]
     [SerializeField] private Transform slashHitboxMarker;
@@ -131,6 +132,19 @@ public class BossController : MonoBehaviour, IDamageable
     {
         Debug.Log($"마인 생성");
         GameObject mine = GameObject.Instantiate(minePrefab, position, Quaternion.identity);
+    }
+
+    public void SpawnEnergyBolt(Vector3 position, Vector3 direction)
+    {
+        GameObject energyBolt = GameObject.Instantiate(energyBoltPrefab, position, Quaternion.LookRotation(direction));
+        if (energyBolt.TryGetComponent(out EnergyBoltProjectile bolt))
+        {
+            bolt.SetDirection(direction);
+        }
+        else
+        {
+            Debug.LogWarning("EnergyBoltProjectile 스크립트가 프리팹에 없음");
+        }
     }
 
     public void StartTimeStopEffect()
@@ -252,6 +266,23 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is DelayedMineState delayedMineState)
         {
             delayedMineState.SpawnMine();
+        }
+    }
+
+    public void TriggerDoubleSlashCombo()
+    {
+        if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
+        {
+            doubleSlashComboState.isWindingUp = false;
+            TriggerFollowSlashHitbox(0.5f); //애니메이션 길이에 따라 조절
+        }
+    }
+
+    public void TriggerRapidEnergyShot()
+    {
+        if(stateMachine.CurrentState is RapidEnergyShotState rapidEnergyShotState)
+        {
+            rapidEnergyShotState.isWindingUp = false;
         }
     }
     #endregion
