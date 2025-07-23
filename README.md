@@ -1276,3 +1276,48 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.23 (수) 작업 기록
+
+### 주요 작업
+- **지뢰 생성 패턴 구현 (DelayedMineState)**
+  - 플레이어 주변에 지뢰 3개 생성 후 일정 시간 뒤 폭발
+  - 애니메이션 이벤트를 통해 생성 타이밍 제어
+  - 폭발 전 경고 애니메이션 실행 및 범위 내 데미지 처리
+
+- **에너지 볼트 패턴 구현 (RapidEnergyShotState)**
+  - 보스 기준 원형 위치에 에너지 볼트 3개 생성
+  - 플레이어 방향으로 0.3초 간격 발사
+  - EnergyBoltProjectile.cs에서 직선 이동 및 마비 효과 적용
+
+- **플레이어 마비(Paralysis) 상태 구현**
+  - 일정 시간 동안 입력 차단 (시점 회전 제외)
+  - InputManager에서 마비 상태 처리 및 차단
+  - 상태 해제는 자동 코루틴으로 처리
+  - 추후 연출 추가(TODO) 주석 기입
+
+- **히트박스 트리거 구조 개선**
+  - TriggerAttackHitbox() 함수 개선
+    - 각 FSM에서 개별 데미지를 전달하도록 구조 변경
+  - duration과 damage를 분리하여 확장성 강화
+
+- **보스 대시 상태(BossDashState) 구현**
+  - 지정 방향으로 고속 이동 후 후속 공격 상태로 전이
+  - DoubleSlashComboState에서 거리 조건 판단 → 대시 후 공격 처리
+  - StaggerCheckState 초안 작성 (향후 연동 예정)
+
+- **Phase2 패턴 결정 코루틴 구현**
+  - DecideNextPatternPhase2(): Phase2 진입 시 랜덤으로 공격 패턴 선택
+    - DoubleSlashCombo, DelayedMine, RapidEnergyShot, StaggerCheck 중 택1
+
+- **패턴별 애니메이션 클립 제작 및 이벤트 등록**
+  - DoubleSlashCombo: 두 번 베기 타이밍에 히트박스 이벤트
+  - DelayedMine: 지뢰 생성 타이밍에 이벤트 등록
+  - RapidEnergyShot: 3연속 투사체 발사 타이밍에 이벤트 등록
+
+### 메모
+- 보스 FSM 전반의 흐름이 정교화되어 실시간 패턴 전이가 자연스러움
+- 마비/스턴 등 상태이상에 따른 연출은 추후 시각 효과 및 사운드 연동 필요
+- 현재까지 FSM 흐름 및 공격 애니메이션 이벤트 연계는 매우 안정적이며 구조적 통일성 유지됨
+
+---
+
