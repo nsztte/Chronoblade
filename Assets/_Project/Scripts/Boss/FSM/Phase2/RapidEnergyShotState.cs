@@ -55,7 +55,7 @@ public class RapidEnergyShotState : BaseBossAttackState
         {
             float angle = i * 2 * Mathf.PI / count;
             Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-            Vector3 position = center + direction * radius + Vector3.up * 0.5f; // 테스트하면서 보스 높이에 맞추기
+            Vector3 position = center + direction * radius + Vector3.up * 2f; // 테스트하면서 보스 높이에 맞추기
             positions.Add(position);
         }
 

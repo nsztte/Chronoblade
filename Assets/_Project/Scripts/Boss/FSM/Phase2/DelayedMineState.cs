@@ -14,7 +14,7 @@ public class DelayedMineState : BaseBossState
         boss.PlayAnimation("DelayedMine");
 
         float duration = boss.GetAnimationClipLengthFromState("DelayedMine");
-        WaitAndChangeToState(duration, new CheckPhase2EndState(boss, stateMachine));
+        WaitAndChangeToState(duration, new CheckPhaseEndState(boss, stateMachine));
     }
 
     public override void Update()

@@ -39,6 +39,6 @@ public class TimeStopAttackState : BaseBossState
 
         yield return new WaitForSeconds(2.5f);
 
-        stateMachine.ChangeState(new CheckPhase1EndState(boss, stateMachine));
+        stateMachine.ChangeState(new CheckPhaseEndState(boss, stateMachine));
     }
 }

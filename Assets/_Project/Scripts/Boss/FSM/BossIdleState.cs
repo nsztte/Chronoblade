@@ -10,14 +10,17 @@ public class BossIdleState : BaseBossState
     public override void Enter()
     {
         boss.PlayAnimation("Idle");
-        if(boss.PhaseManager.CurrentPhase == BossPhase.Phase1)
-        {
-            boss.StartCoroutine(DecideNextPatternPhase1());
-        }
-        else if(boss.PhaseManager.CurrentPhase == BossPhase.Phase2)
-        {
-            boss.StartCoroutine(DecideNextPatternPhase2());
-        }
+        // if(boss.PhaseManager.CurrentPhase == BossPhase.Phase1)
+        // {
+        //     boss.StartCoroutine(DecideNextPatternPhase1());
+        // }
+        // else if(boss.PhaseManager.CurrentPhase == BossPhase.Phase2)
+        // {
+        //     boss.StartCoroutine(DecideNextPatternPhase2());
+        // }
+
+        boss.StartCoroutine(DecideNextPatternPhase2()); // 패이즈2 테스트 후 복원 필요
+
     }
 
     private IEnumerator DecideNextPatternPhase1()
@@ -58,7 +61,7 @@ public class BossIdleState : BaseBossState
             yield break;
         }
 
-        int randomIndex = Random.Range(0, 4);
+        int randomIndex = Random.Range(0, 3);
         switch(randomIndex)
         {
             case 0:
@@ -68,11 +71,11 @@ public class BossIdleState : BaseBossState
                 stateMachine.ChangeState(new DoubleSlashComboState(boss, stateMachine));
                 break;
             case 2:
-                stateMachine.ChangeState(new StaggerCheckState(boss, stateMachine));
-                break;
-            case 3:
                 stateMachine.ChangeState(new RapidEnergyShotState(boss, stateMachine));
                 break;
+            // case 3:
+            //     stateMachine.ChangeState(new StaggerCheckState(boss, stateMachine));
+            //     break;
         }
     }
 }

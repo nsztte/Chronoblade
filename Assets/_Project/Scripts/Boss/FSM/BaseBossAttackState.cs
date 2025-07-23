@@ -19,7 +19,7 @@ public class BaseBossAttackState : BaseBossState
         boss.PlayAnimation(animationTrigger);
 
         float duration = boss.GetAnimationClipLengthFromState(animationStateName);
-        WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
+        WaitAndChangeToState(duration, new CheckPhaseEndState(boss, stateMachine));
     }
 
     public override void Update()

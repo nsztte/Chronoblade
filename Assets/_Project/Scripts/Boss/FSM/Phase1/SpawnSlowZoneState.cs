@@ -14,7 +14,7 @@ public class SpawnSlowZoneState : BaseBossState
         // TODO: 이펙트 생성, 위치 계산 등 처리
 
         float duration = boss.GetAnimationClipLengthFromState("SpawnSlowZone");
-        WaitAndChangeToState(duration, new CheckPhase1EndState(boss, stateMachine));
+        WaitAndChangeToState(duration, new CheckPhaseEndState(boss, stateMachine));
     }
     
     public override void Update()

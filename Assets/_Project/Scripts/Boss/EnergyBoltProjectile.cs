@@ -71,5 +71,6 @@ public class EnergyBoltProjectile : MonoBehaviour
         }
 
         Destroy(gameObject);
+        Debug.Log("에너지볼트 폭발");
     }
 }

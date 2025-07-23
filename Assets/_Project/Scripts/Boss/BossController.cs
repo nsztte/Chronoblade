@@ -233,13 +233,6 @@ public class BossController : MonoBehaviour, IDamageable
             TriggerFollowSlashHitbox(0.1f, verticalSmashState.damage);
         }
     }
-    public void TriggerEnergyBolt()
-    {
-        if(stateMachine.CurrentState is EnergyBoltState energyBoltState)
-        {
-            energyBoltState.isWindingUp = false;
-        }
-    }
 
     public void TriggerSpawnSlowZone()
     {
