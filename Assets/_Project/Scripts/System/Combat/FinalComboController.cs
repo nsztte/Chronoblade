@@ -73,7 +73,7 @@ public class FinalComboController : MonoBehaviour, IStatusEffectable
         currentStatus = StatusEffectType.None;
     }
 
-    public void ApplyStatus(StatusEffectType effect)
+    public void ApplyStatus(StatusEffectType effect, float duration = 0f)
     {
     }
 
