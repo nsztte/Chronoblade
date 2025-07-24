@@ -22,17 +22,18 @@ public class BossDashState : BaseBossState
         startPos = boss.transform.position;
         targetPos = player.position;
         direction = (targetPos - startPos).normalized;
-        boss.PlayAnimation("Dash");
+        boss.PlayAnimation("IsDash", true);
     }
 
     public override void Update()
     {
         boss.LookAtPlayer(12f);
-        
+
         boss.transform.position += direction * dashSpeed * Time.deltaTime;
 
         if(Vector3.Distance(boss.transform.position, targetPos) <= stoppingDistance)
         {
+            boss.PlayAnimation("IsDash", false);
             stateMachine.ChangeState(nextState);
         }
     }

@@ -25,7 +25,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     private bool isSlowed = false;
     private bool isFrozen = false;
     public bool IsFrozen => isFrozen;
-    private bool isParalyzed = false;
+    [SerializeField] private bool isParalyzed = false;
     public bool IsParalyzed => isParalyzed;
 
     private CharacterController controller;

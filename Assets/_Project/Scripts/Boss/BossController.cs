@@ -110,6 +110,11 @@ public class BossController : MonoBehaviour, IDamageable
         animator.SetTrigger(triggerName);
     }
 
+    public void PlayAnimation(string boolName, bool value)
+    {
+        animator.SetBool(boolName, value);
+    }
+
     public float GetCurrentAnimationLength()
     {
         if(animator.GetCurrentAnimatorClipInfoCount(0) == 0) return 0f;
