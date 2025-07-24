@@ -37,6 +37,7 @@ public class BossController : MonoBehaviour, IDamageable
     // 참조
     private Animator animator;
     private Transform player;
+    private Collider col;
 
     public BossPhaseManager PhaseManager => phaseManager;
     public PuzzleClockManager PuzzleClockManager => puzzleClockManager;
@@ -47,6 +48,7 @@ public class BossController : MonoBehaviour, IDamageable
         stateMachine = new BossStateMachine();
         phaseManager = GetComponent<BossPhaseManager>();
         animator = GetComponent<Animator>();
+        col = GetComponent<Collider>();
 
         currentHP = maxHP;
     }
@@ -93,6 +95,11 @@ public class BossController : MonoBehaviour, IDamageable
     public bool IsPlayerInAttackRange()
     {
         return Vector3.Distance(player.position, transform.position) <= attackRange;
+    }
+
+    public void SetInvincibility(bool isInvincible)
+    {
+        col.enabled = !isInvincible;
     }
 
     #region 애니메이션 관련 함수
@@ -288,6 +295,15 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is RapidEnergyShotState rapidEnergyShotState)
         {
             rapidEnergyShotState.isWindingUp = false;
+        }
+    }
+
+    public void TriggerLeapSmash()
+    {
+        if(stateMachine.CurrentState is LeapSmashState leapSmashState)
+        {
+            leapSmashState.isWindingUp = false;
+            TriggerFollowSlashHitbox(0.5f, leapSmashState.damage);
         }
     }
     #endregion

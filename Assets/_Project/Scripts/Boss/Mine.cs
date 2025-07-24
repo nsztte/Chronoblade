@@ -51,7 +51,7 @@ public class Mine : MonoBehaviour
         Destroy(gameObject, 0.5f);  // 애니메이션 클립 길이만큼으로 수정
     }
 
-    private void OnDrawGizmosSelected()
+    private void OnDrawGizmos()
     {
         Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, explosionRadius);
