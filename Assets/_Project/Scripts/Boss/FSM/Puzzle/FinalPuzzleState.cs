@@ -8,6 +8,6 @@ public class FinalPuzzleState : BaseBossState
 
     public override void Enter()
     {
-        Debug.Log("FinalPuzzleState: 퍼즐 페이즈2 시작");
+        Debug.Log("FinalPuzzleState: 파이널퍼즐 시작");
     }
 }

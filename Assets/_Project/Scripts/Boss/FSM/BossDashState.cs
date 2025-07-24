@@ -9,7 +9,7 @@ public class BossDashState : BaseBossState
     private Vector3 targetPos;
     private Vector3 direction;
     private float dashSpeed = 15f;
-    private float stoppingDistance = 1.5f;
+    private float stoppingDistance = 3f;
 
     public BossDashState(BossController boss, BossStateMachine stateMachine, BaseBossState nextState) : base(boss, stateMachine)
     {
@@ -27,6 +27,8 @@ public class BossDashState : BaseBossState
 
     public override void Update()
     {
+        boss.LookAtPlayer(12f);
+        
         boss.transform.position += direction * dashSpeed * Time.deltaTime;
 
         if(Vector3.Distance(boss.transform.position, targetPos) <= stoppingDistance)

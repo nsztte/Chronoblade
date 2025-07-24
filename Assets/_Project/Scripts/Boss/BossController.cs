@@ -258,17 +258,19 @@ public class BossController : MonoBehaviour, IDamageable
         }
     }
 
-    // TriggerTimeStopAttack, TriggerDoubleSlashCombo 에서 공통으로 사용
+    // TriggerTimeStopAttack, LeapSmash, TriggerDoubleSlashCombo 에서 공통으로 사용
     public void TriggerAttackHitbox()
     {
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
-            timeStopState.isWindingUp = false;
             TriggerParryHitbox(0.1f, timeStopState.damage);
+        }
+        else if(stateMachine.CurrentState is LeapSmashState leapSmashState)
+        {
+            TriggerParryHitbox(0.05f, leapSmashState.damage);
         }
         else if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
         {
-            doubleSlashComboState.isWindingUp = false;
             TriggerFollowSlashHitbox(0.1f, doubleSlashComboState.damage);
         }
     }
@@ -304,7 +306,6 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is LeapSmashState leapSmashState)
         {
             leapSmashState.isWindingUp = false;
-            TriggerParryHitbox(0.5f, leapSmashState.damage);
         }
     }
     #endregion

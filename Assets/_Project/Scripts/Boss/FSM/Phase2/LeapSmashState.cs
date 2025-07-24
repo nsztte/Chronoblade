@@ -24,6 +24,8 @@ public class LeapSmashState : BaseBossAttackState
 
     public override void Update()
     {
+        base.Update();
+        
         if(!isWindingUp && !hasAttacked)
         {
             hasAttacked = true;
