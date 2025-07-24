@@ -100,6 +100,7 @@ public class BossController : MonoBehaviour, IDamageable
     public void SetInvincibility(bool isInvincible)
     {
         col.enabled = !isInvincible;
+        Debug.Log($"무적상태: {isInvincible}, 콜라이더 활성화: {col.enabled}");
     }
 
     #region 애니메이션 관련 함수
@@ -263,7 +264,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
             timeStopState.isWindingUp = false;
-            TriggerFollowSlashHitbox(0.1f, timeStopState.damage);
+            TriggerParryHitbox(0.1f, timeStopState.damage);
         }
         else if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
         {
@@ -303,7 +304,7 @@ public class BossController : MonoBehaviour, IDamageable
         if(stateMachine.CurrentState is LeapSmashState leapSmashState)
         {
             leapSmashState.isWindingUp = false;
-            TriggerFollowSlashHitbox(0.5f, leapSmashState.damage);
+            TriggerParryHitbox(0.5f, leapSmashState.damage);
         }
     }
     #endregion
@@ -321,7 +322,6 @@ public class BossController : MonoBehaviour, IDamageable
 
         while(timer < duration)
         {
-            timer += Time.deltaTime;
             Vector3 center = slashHitboxMarker.position;
             Vector3 halfSize = slashHitboxMarker.localScale * 0.5f;
             Quaternion rotation = slashHitboxMarker.rotation;
@@ -332,6 +332,47 @@ public class BossController : MonoBehaviour, IDamageable
                 if(hit.TryGetComponent(out IDamageable damageable))
                 {
                     Debug.Log($"히트박스 히트: {hit.name}");
+                    damageable.TakeDamage(damage);
+                }
+            }
+
+            yield return null;
+            timer += Time.deltaTime;
+        }
+
+        slashCoroutine = null;
+    }
+    
+    private void TriggerParryHitbox(float duration, int damage)
+    {
+        if(slashCoroutine != null) StopCoroutine(slashCoroutine);
+        slashCoroutine = StartCoroutine(ParrySlashHitbox(duration, damage));
+    }
+
+    private IEnumerator ParrySlashHitbox(float duration, int damage)
+    {
+        float timer = 0f;
+
+        while(timer < duration)
+        {
+            Vector3 center = slashHitboxMarker.position;
+            Vector3 halfSize = slashHitboxMarker.localScale * 0.5f;
+            Quaternion rotation = slashHitboxMarker.rotation;
+
+            Collider[] hits = Physics.OverlapBox(center, halfSize, rotation, hitboxLayer);
+            foreach(var hit in hits)
+            {
+                if(hit.TryGetComponent(out IDamageable damageable))
+                {
+                    if(damageable is PlayerManager player)
+                    {
+                        if(player.TryParry(Time.time))
+                        {
+                            Debug.Log("패리 성공");
+                            stateMachine.ChangeState(new StaggerCheckState(this, stateMachine));
+                            yield break;
+                        }
+                    }
                     damageable.TakeDamage(damage);
                 }
             }
