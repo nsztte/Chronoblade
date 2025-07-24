@@ -153,6 +153,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
             currentHP -= damage;
             currentHP = Mathf.Clamp(currentHP, 0, maxHP);
             UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
+            SetInvincible(true, hitInvincibilityDuration);
 
             if(currentHP <= 0)
             {

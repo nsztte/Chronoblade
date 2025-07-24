@@ -13,6 +13,6 @@ public class StaggerCheckState : BaseBossState
 
         boss.PlayAnimation("Stagger");
 
-        WaitAndChangeToState(0.5f, new CheckPhaseEndState(boss, stateMachine));
+        WaitAndChangeToState(1f, new CheckPhaseEndState(boss, stateMachine));
     }
 }

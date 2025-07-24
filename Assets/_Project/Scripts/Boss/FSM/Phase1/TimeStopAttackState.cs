@@ -1,13 +1,11 @@
 using UnityEngine;
-using System.Collections;
 
-public class TimeStopAttackState : BaseBossState
+public class TimeStopAttackState : BaseBossAttackState
 {
-    public bool isWindingUp = true;
     private bool hasHandled = false;
     public int damage = 15;
     
-    public TimeStopAttackState(BossController boss, BossStateMachine stateMachine) : base(boss, stateMachine)
+    public TimeStopAttackState(BossController boss, BossStateMachine stateMachine) : base(boss, stateMachine, "TimeStop", "TimeStop")
     {
     }
 
@@ -15,30 +13,21 @@ public class TimeStopAttackState : BaseBossState
     {
         Debug.Log("TimeStopAttackState: 타임 스탑 공격 시작");
 
-        isWindingUp = true;
+        hasHandled = false;
 
-        boss.PlayAnimation("TimeStop"); 
+        base.Enter();
+
         boss.StartTimeStopEffect();
     }
 
     public override void Update()
     {
-        float rotationSpeed = isWindingUp ? 12f : 6f;
-        boss.LookAtPlayer(rotationSpeed);
+        base.Update();
 
         if(!isWindingUp && !hasHandled)
         {
             hasHandled = true;
-            boss.StartCoroutine(HandleTimeStopAttack());
+            boss.EndTimeStopEffect();
         }
-    }
-
-    private IEnumerator HandleTimeStopAttack()
-    {
-        boss.EndTimeStopEffect();
-
-        yield return new WaitForSeconds(2.5f);
-
-        stateMachine.ChangeState(new CheckPhaseEndState(boss, stateMachine));
     }
 }

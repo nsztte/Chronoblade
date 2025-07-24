@@ -3,7 +3,7 @@ using UnityEngine;
 public class LeapSmashState : BaseBossAttackState
 {
     private bool hasAttacked = false;
-    public int damage = 50;
+    public int damage = 2;
     public LeapSmashState(BossController boss, BossStateMachine stateMachine) : base(boss, stateMachine, "LeapSmash", "LeapSmash")
     {
     }
@@ -29,5 +29,11 @@ public class LeapSmashState : BaseBossAttackState
             hasAttacked = true;
             boss.SetInvincibility(false);
         }
+    }
+
+    public override void Exit()
+    {
+        boss.SetInvincibility(false);
+        base.Exit();
     }
 }

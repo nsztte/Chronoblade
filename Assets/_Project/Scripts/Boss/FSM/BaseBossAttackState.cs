@@ -27,4 +27,9 @@ public class BaseBossAttackState : BaseBossState
         float rotationSpeed = isWindingUp ? 12f : 6f;
         boss.LookAtPlayer(rotationSpeed);
     }
+
+    public override void Exit()
+    {
+        StopTransitionCoroutine();
+    }
 }

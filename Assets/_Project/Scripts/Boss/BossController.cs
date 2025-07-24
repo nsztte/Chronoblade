@@ -333,6 +333,7 @@ public class BossController : MonoBehaviour, IDamageable
                 {
                     Debug.Log($"히트박스 히트: {hit.name}");
                     damageable.TakeDamage(damage);
+                    yield break;
                 }
             }
 
@@ -374,6 +375,7 @@ public class BossController : MonoBehaviour, IDamageable
                         }
                     }
                     damageable.TakeDamage(damage);
+                    yield break;
                 }
             }
 

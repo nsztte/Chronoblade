@@ -5,6 +5,7 @@ public abstract class BaseBossState
 {
     protected BossController boss;
     protected BossStateMachine stateMachine;
+    protected Coroutine transitionCoroutine;
 
     public BaseBossState(BossController boss, BossStateMachine stateMachine)
     {
@@ -18,7 +19,16 @@ public abstract class BaseBossState
 
     protected void WaitAndChangeToState(float delay, BaseBossState nextState)
     {
-        boss.StartCoroutine(WaitAndChangeCoroutine(delay, nextState));
+        transitionCoroutine = boss.StartCoroutine(WaitAndChangeCoroutine(delay, nextState));
+    }
+
+    protected void StopTransitionCoroutine()
+    {
+        if(transitionCoroutine != null)
+        {
+            boss.StopCoroutine(transitionCoroutine);
+            transitionCoroutine = null;
+        }
     }
 
     private IEnumerator WaitAndChangeCoroutine(float delay, BaseBossState nextState)
