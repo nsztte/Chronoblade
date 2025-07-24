@@ -1332,3 +1332,46 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.24 (목) 작업 기록
+
+### 주요 작업
+
+- **LeapSmashState 구현 (도약 후 내려찍기 공격)**
+  - `LeapSmashState.cs` 추가: `BaseBossAttackState` 상속
+  - 애니메이션 기반 도약 후 내려찍기 FSM 구성
+  - 무적 처리 및 히트박스 생성 타이밍 제어 (0.05초 유지)
+  - `BossController.TriggerLeapSmash()`에서 히트박스 발동
+
+- **보스 패링 히트박스 분리 및 스턴 상태 연동**
+  - `TriggerParryHitbox()`, `ParrySlashHitbox()`로 분리
+  - 플레이어가 패링 성공 시 `StaggerCheckState`로 전이
+  - `yield break`로 히트박스 중복 타격 방지
+
+- **공격 FSM 전환 로직 정비**
+  - `BaseBossAttackState.Exit()`에서 상태 전이용 코루틴 중지
+  - `LeapSmashState`, `TimeStopAttackState` 등에서 `base.Exit()` 호출
+  - `TimeStopAttackState` 구조 변경 → `BaseBossAttackState` 상속으로 패링 대응 가능화
+
+- **수치/연출 조정**
+  - `Mine` 딜레이, 범위 조정
+  - `BossDashState` 회전/스톱 거리 수정 → 과도한 밀착 방지
+  - `LeapSmashState` 히트박스 유지 시간 조정 (`0.05초`)
+  - `Dash` 애니메이션 클립 추가 및 FSM 연결 (`PlayAnimation(string, bool)` 오버로드 사용)
+
+- **에너지볼트 추적 로직 및 프리팹 연결**
+  - `RapidEnergyShotState`에서 3발 중 첫 번째만 추적형
+  - `SpawnEnergyBolt()`에 `isHoming` 인자 추가 → 추적 분기 처리
+  - `EnergyBoltProjectile.cs`
+    - `SetTarget()` 도입 → 플레이어 위치 유도
+    - 일정 거리(`homingEndDistance`) 이내 접근 시 추적 해제
+    - `target.GetComponent<Collider>().bounds.center.y`를 기준으로 수직 조준 정확도 개선
+  - 프리팹에 스크립트 및 이펙트 연결 완료
+
+### 메모
+
+- 추적 해제 타이밍 덕분에 플레이어는 반응하거나 회피할 기회 확보 가능
+- FSM 구조 전반이 일관되게 통합되어 추후 유지보수 및 확장 용이
+- 연출적 예고(도약, 대시 방향 고정 등)가 잘 녹아들어 보스 패턴의 읽기성이 향상됨
+
+---
+
