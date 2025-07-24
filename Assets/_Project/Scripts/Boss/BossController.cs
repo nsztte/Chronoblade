@@ -153,12 +153,19 @@ public class BossController : MonoBehaviour, IDamageable
         GameObject mine = GameObject.Instantiate(minePrefab, position, Quaternion.identity);
     }
 
-    public void SpawnEnergyBolt(Vector3 position, Vector3 direction)
+    public void SpawnEnergyBolt(Vector3 position, Vector3 direction, bool isHoming = false)
     {
         GameObject energyBolt = GameObject.Instantiate(energyBoltPrefab, position, Quaternion.LookRotation(direction));
         if (energyBolt.TryGetComponent(out EnergyBoltProjectile bolt))
         {
-            bolt.SetDirection(direction);
+            if(isHoming)
+            {
+                bolt.SetTarget(player);
+            }
+            else
+            {
+                bolt.SetDirection(direction);
+            }
         }
         else
         {

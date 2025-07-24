@@ -11,9 +11,14 @@ public class EnergyBoltProjectile : MonoBehaviour
     [SerializeField] private float paralysisDuration = 1f;
     [SerializeField] private LayerMask targetLayer;
 
+    [Header("추적")]
+    [SerializeField] private bool isHoming = false;
+    [SerializeField] private float homingEndDistance = 1.5f;
+    private Transform target;
 
     [Header("이펙트")]
     [SerializeField] private GameObject electricEffectPrefab;
+
 
     private Vector3 direction;
     private float timeElapsed = 0f;
@@ -22,6 +27,12 @@ public class EnergyBoltProjectile : MonoBehaviour
     public void SetDirection(Vector3 direction)
     {
         this.direction = direction;
+    }
+
+    public void SetTarget(Transform target)
+    {
+        isHoming = true;
+        this.target = target;
     }
 
     private void Start()
@@ -35,6 +46,23 @@ public class EnergyBoltProjectile : MonoBehaviour
     private void Update()
     {
         timeElapsed += Time.deltaTime;
+
+        if(isHoming && target != null)
+        {
+            float distance = Vector3.Distance(transform.position, target.position);
+
+            if(distance <= homingEndDistance)
+            {
+                isHoming = false;
+            }
+            else
+            {
+                Vector3 targetPos = target.position;
+                Collider targetCollider = target.GetComponent<Collider>();
+                targetPos.y = targetCollider.bounds.center.y;
+                direction = (targetPos - transform.position).normalized;
+            }
+        }
 
         if(direction != Vector3.zero && timeElapsed >= delay)
         {

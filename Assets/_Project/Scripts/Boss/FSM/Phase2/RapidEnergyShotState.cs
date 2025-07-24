@@ -31,8 +31,9 @@ public class RapidEnergyShotState : BaseBossAttackState
 
         var positions = GetBoltPositions(boltCount, radius, boss.transform.position);
 
-        foreach(var position in positions)
+        for(int i = 0; i < positions.Count; i++)
         {
+            Vector3 position = positions[i];
             Vector3 targetPosition = boss.Player.position;
             Collider targetCollider = boss.Player.GetComponent<Collider>();
 
@@ -42,7 +43,7 @@ public class RapidEnergyShotState : BaseBossAttackState
             }
 
             Vector3 direction = (targetPosition - position).normalized;
-            boss.SpawnEnergyBolt(position, direction);
+            boss.SpawnEnergyBolt(position, direction, isHoming: i == 0);
             yield return new WaitForSeconds(interval);
         }
     }
@@ -55,7 +56,7 @@ public class RapidEnergyShotState : BaseBossAttackState
         {
             float angle = i * 2 * Mathf.PI / count;
             Vector3 direction = new Vector3(Mathf.Cos(angle), 0, Mathf.Sin(angle));
-            Vector3 position = center + direction * radius + Vector3.up * 2f; // 테스트하면서 보스 높이에 맞추기
+            Vector3 position = center + direction * radius + Vector3.up * 2f;
             positions.Add(position);
         }
 
