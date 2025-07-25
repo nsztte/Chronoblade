@@ -64,6 +64,11 @@ public class BossController : MonoBehaviour, IDamageable
 
     private void Update()
     {
+        if(Input.GetKeyDown(KeyCode.P)) // @@@@@@퍼즐 테스트용@@@@@ 나중에 반드시 지워야함
+        {
+            currentHP = 500;
+        }
+        
         stateMachine.Update();
 
         phaseManager.UpdatePhase(currentHP, maxHP);
@@ -191,12 +196,14 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void StartPuzzle()
     {
+        // 퍼즐 시작
         puzzleClockManager.gameObject.SetActive(true);
         puzzleClockManager.StartPuzzle();
     }
 
     public void EndPuzzle()
     {
+        // 퍼즐 종료
         puzzleClockManager.gameObject.SetActive(false);
     }
 

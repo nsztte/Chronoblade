@@ -19,32 +19,45 @@ public class PuzzlePhase1State : BaseBossState
 
         // 퍼즐 시작
         boss.StartPuzzle();
+
+        // 카메라 연출 시작
+        CutsceneCameraManager.Instance.StartPuzzle();
     }
 
     public override void Exit()
     {
         boss.PuzzleClockManager.OnPuzzleSuccess -= OnPuzzleSuccess;
         boss.PuzzleClockManager.OnPuzzleFail -= OnPuzzleFail;
-
-        boss.EndPuzzle();
     }
 
     private void OnPuzzleSuccess()
     {
         // TODO: 퍼즐 성공 연출
         // 취약점 노출
+
+        // 퍼즐 종료 카메라 이동
+        CutsceneCameraManager.Instance.EndPuzzle();
+
+        // 퍼즐 종료 연출
         boss.SetClockPartsTarget(false);
         boss.PuzzleClockManager.LaunchAllClockParts();
-        boss.WaitPartsArrival(() => boss.ExposeWeakPoint(5f, () => ChangeToPhase2()));
+        boss.WaitPartsArrival(() => {
+            boss.EndPuzzle();
+            boss.ExposeWeakPoint(5f, () => ChangeToPhase2());
+        });
     }
 
     private void OnPuzzleFail()
     {
         // TODO: 퍼즐 실패 연출 / 플레이어 패널티 or 보스 체력 회복
 
+        CutsceneCameraManager.Instance.EndPuzzle();
         boss.SetClockPartsTarget(true);
         boss.PuzzleClockManager.LaunchAllClockParts();
-        boss.WaitPartsArrival(() => ChangeToPhase2());
+        boss.WaitPartsArrival(() => {
+            boss.EndPuzzle();
+            ChangeToPhase2();
+        });
     }
 
     private void ChangeToPhase2()
