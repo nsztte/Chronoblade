@@ -1406,3 +1406,40 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.07.26 (토) 작업 기록
+
+### 주요 작업
+
+- **보스 파이널 퍼즐 상태 구현 및 보스 상태/체력 제어 로직 개선**
+  - `FinalPuzzleState.cs`:
+    - 보스 FSM에 최종 상태 `FinalPuzzleState` 구현
+    - 퍼즐 성공 시 `boss.SetHPWithPercent(0)` → 체력 0 처리 및 엔딩 상태 전이
+    - 퍼즐 실패 시 `boss.SetHPWithPercent(20)` → 체력 20% 회복 및 Phase2 전이
+  - `BossController.cs`:
+    - `SetHPWithPercent(int percent)` 함수 추가
+    - 체력 변경 시 자동으로 `BossPhaseManager.UpdatePhase()` 호출
+  - `BossPhaseManager.cs`:
+    - `UpdatePhase()` 조건 분기 로직 명확화
+    - 체력과 퍼즐 클리어 여부 기반으로 보스 페이즈 자동 전이 구조 완성
+
+- **파이널 퍼즐 순차 진행 및 퍼즐1/파이널 분기 로직 구현**
+  - `PuzzleClockManager.cs`:
+    - `BossPhase`에 따라 퍼즐1(동시 조작)과 파이널 퍼즐(순차 조작) 분기
+    - 파이널 퍼즐 시작 시 `currentProgress = HandProgress.Hour` 초기화
+    - 퍼즐 성공 판정 방식 분리 (동시 or 순차)
+  - `PuzzleHand.cs`:
+    - 파이널 퍼즐 중 현재 단계(HandProgress)에 해당하는 바늘만 조작 가능
+    - 바늘별 각도 판정에 `finalPuzzleTargetAngle` 추가 도입
+
+- **퍼즐 성공/실패 연출을 카메라 연출 이후로 순서 조정**
+  - `FinalPuzzleState.cs` / `PuzzlePhase1State.cs`:
+    - `CutsceneCameraManager.EndPuzzle()` 완료 후 퍼즐 성공/실패 처리 시작
+    - 이후 clock 파츠 발사 및 연출 로직 순차적으로 실행되도록 변경
+  - **연출 안정성 향상**
+    - 카메라 블렌딩 완료 후 상태 전이 → 갑작스러운 시점 전환 방지
+
+### 메모
+
+- 퍼즐1은 **동시 정렬**, 파이널 퍼즐은 **시 → 분 → 초 순차 정렬** 구조로 확실히 분리됨
+- 퍼즐 연출 타이밍(카메라 → clock 파츠 → 상태전이)이 명확하게 분리되어 안정적
+- `CutsceneCameraManager` 구조 덕분에 이후 퍼즐 외 다른 컷씬 연출에도 동일 방식으로 재사용 가능
