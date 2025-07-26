@@ -28,6 +28,8 @@ public class PuzzlePhase1State : BaseBossState
     {
         boss.PuzzleClockManager.OnPuzzleSuccess -= OnPuzzleSuccess;
         boss.PuzzleClockManager.OnPuzzleFail -= OnPuzzleFail;
+
+        GameManager.Instance.EnterCombat();
     }
 
     private void OnPuzzleSuccess()
@@ -63,7 +65,6 @@ public class PuzzlePhase1State : BaseBossState
     private void ChangeToPhase2()
     {
         boss.PhaseManager.SetPhase(BossPhase.Phase2);
-        GameManager.Instance.EnterCombat();
         stateMachine.ChangeState(new BossIdleState(boss, stateMachine));
     }
 }

@@ -11,33 +11,46 @@ public enum BossPhase
 
 public class BossPhaseManager : MonoBehaviour
 {
-    public BossPhase CurrentPhase { get; private set; } = BossPhase.Phase1;
+    [SerializeField] private BossPhase currentPhase = BossPhase.Phase1;
+    public BossPhase CurrentPhase => currentPhase;
     private bool isPuzzle1Cleared = false;
     private bool isFinalPuzzleCleared = false;
 
     public void UpdatePhase(float currentHP, float maxHP)
     {
-        if(currentHP <= 0)
+        if(currentPhase == BossPhase.Ending) return;
+
+        if(currentHP <= maxHP * 0.05f)
         {
-            CurrentPhase = BossPhase.Ending;
+            if(!isFinalPuzzleCleared)
+            {
+                currentPhase = BossPhase.FinalPuzzle;
+            }
+            else
+            {
+                currentPhase = BossPhase.Ending;
+            }
         }
-        else if(currentHP <= maxHP * 0.05f && !isFinalPuzzleCleared)
+        else if(currentHP <= maxHP * 0.5f)
         {
-            CurrentPhase = BossPhase.FinalPuzzle;
-        }
-        else if(currentHP <= maxHP * 0.5f && !isPuzzle1Cleared)
-        {
-            CurrentPhase = BossPhase.Puzzle1;
+            if(!isPuzzle1Cleared)
+            {
+                currentPhase = BossPhase.Puzzle1;
+            }
+            else
+            {
+                currentPhase = BossPhase.Phase2;
+            }
         }
         else
         {
-            CurrentPhase = BossPhase.Phase1;
+            currentPhase = BossPhase.Phase1;
         }
     }
 
     public void SetPhase(BossPhase phase)
     {
-        CurrentPhase = phase;
+        currentPhase = phase;
         if(phase == BossPhase.Phase2)
         {
             isPuzzle1Cleared = true;

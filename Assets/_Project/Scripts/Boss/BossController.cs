@@ -108,6 +108,11 @@ public class BossController : MonoBehaviour, IDamageable
         Debug.Log($"무적상태: {isInvincible}, 콜라이더 활성화: {col.enabled}");
     }
 
+    public void SetHPWithPercent(int percent)
+    {
+        currentHP = maxHP * percent / 100f;
+    }
+
     #region 애니메이션 관련 함수
     public void PlayAnimation(string triggerName)
     {
