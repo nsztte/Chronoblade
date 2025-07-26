@@ -19,6 +19,14 @@ public class PuzzleClockManager : MonoBehaviour
     [Header("퍼즐 클럭 파트")]
     [SerializeField] private ClockPart[] clockParts;
 
+    // 파이널 퍼즐 전용
+    public enum HandProgress { Hour, Minute, Second, Done }
+    private HandProgress currentProgress = HandProgress.Hour;
+    public HandProgress CurrentProgress => currentProgress;
+    public BossPhase CurrentPhase => bossPhaseManager.CurrentPhase;
+
+    private BossPhaseManager bossPhaseManager;
+
     private Animator animator;
 
     public event Action OnPuzzleSuccess;
@@ -29,6 +37,8 @@ public class PuzzleClockManager : MonoBehaviour
 
     private void Awake()
     {
+        bossPhaseManager = GetComponentInParent<BossPhaseManager>();
+
         animator = GetComponent<Animator>();
 
         clockParts = GetComponentsInChildren<ClockPart>();
@@ -51,14 +61,49 @@ public class PuzzleClockManager : MonoBehaviour
             return;
         }
 
-        if(IsPuzzleSuccess())
+        if(CurrentPhase == BossPhase.Puzzle1)
         {
-            PuzzleSuccess();
+            if(IsPuzzleSuccess())
+            {
+                PuzzleSuccess();
+            }
+        }
+        else if(CurrentPhase == BossPhase.FinalPuzzle)
+        {
+            switch(currentProgress)
+            {
+                case HandProgress.Hour:
+                    if(hourHand.IsAligned() && TimeManager.Instance.CurrentTimeState == TimeState.Stop)
+                    {
+                        currentProgress = HandProgress.Minute;
+                        TimeManager.Instance.InitializeTimeState();
+                    }
+                    break;
+                case HandProgress.Minute:
+                    if(minuteHand.IsAligned() && TimeManager.Instance.CurrentTimeState == TimeState.Stop)
+                    {
+                        currentProgress = HandProgress.Second;
+                        TimeManager.Instance.InitializeTimeState();
+                    }
+                    break;
+                case HandProgress.Second:
+                    if(secondHand.IsAligned() && TimeManager.Instance.CurrentTimeState == TimeState.Stop)
+                    {
+                        currentProgress = HandProgress.Done;
+                        PuzzleSuccess();
+                    }
+                    break;
+            }
         }
     }
 
     public void StartPuzzle()
     {
+        if(CurrentPhase == BossPhase.FinalPuzzle)
+        {
+            currentProgress = HandProgress.Hour;
+        }
+
         isPuzzleActive = true;
         isPuzzleCleared = false;
         remainingTime = puzzleTimeLimit;

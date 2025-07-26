@@ -66,7 +66,12 @@ public class BossController : MonoBehaviour, IDamageable
     {
         if(Input.GetKeyDown(KeyCode.P)) // @@@@@@퍼즐 테스트용@@@@@ 나중에 반드시 지워야함
         {
-            currentHP = 500;
+            SetHPWithPercent(50);
+        }
+
+        if(Input.GetKeyDown(KeyCode.O)) // @@@@@@퍼즐 테스트용@@@@@ 나중에 반드시 지워야함
+        {
+            SetHPWithPercent(0);
         }
         
         stateMachine.Update();

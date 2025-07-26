@@ -8,6 +8,6 @@ public class BossEndingState : BaseBossState
 
     public override void Enter()
     {
-        
+        Debug.Log("BossEndingState: 보스 엔딩 시작");
     }
 }
