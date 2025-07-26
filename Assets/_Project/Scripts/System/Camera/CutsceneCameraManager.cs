@@ -1,6 +1,7 @@
 using UnityEngine;
 using Unity.Cinemachine;
 using System.Collections;
+using System;
 
 public class CutsceneCameraManager : MonoBehaviour
 {
@@ -27,10 +28,10 @@ public class CutsceneCameraManager : MonoBehaviour
         StartCoroutine(EnableClockCamNextFrame());
     }
 
-    public void EndPuzzle()
+    public void EndPuzzle(Action onComplete)
     {
         clockPuzzleCinemachineCamera.SetActive(false);
-        StartCoroutine(DisablePlayerCameraAfterBlend());
+        StartCoroutine(DisablePlayerCameraAfterBlend(onComplete));
     }
 
     private IEnumerator EnableClockCamNextFrame()
@@ -39,13 +40,14 @@ public class CutsceneCameraManager : MonoBehaviour
         clockPuzzleCinemachineCamera.SetActive(true);
     }
 
-    private IEnumerator DisablePlayerCameraAfterBlend()
+    private IEnumerator DisablePlayerCameraAfterBlend(Action onComplete)
     {
         yield return null;
 
         yield return new WaitUntil(() => !IsBlending());
 
         playerCinemachineCamera.SetActive(false);
+        onComplete?.Invoke();
     }
 
     private bool IsBlending()

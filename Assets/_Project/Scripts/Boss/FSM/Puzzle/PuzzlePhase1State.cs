@@ -38,11 +38,8 @@ public class PuzzlePhase1State : BaseBossState
         // 취약점 노출
 
         // 퍼즐 종료 카메라 이동
-        CutsceneCameraManager.Instance.EndPuzzle();
-
-        // 퍼즐 종료 연출
         boss.SetClockPartsTarget(false);
-        boss.PuzzleClockManager.LaunchAllClockParts();
+        CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
         boss.WaitPartsArrival(() => {
             boss.EndPuzzle();
             boss.ExposeWeakPoint(5f, () => ChangeToPhase2());
@@ -53,9 +50,8 @@ public class PuzzlePhase1State : BaseBossState
     {
         // TODO: 퍼즐 실패 연출 / 플레이어 패널티 or 보스 체력 회복
 
-        CutsceneCameraManager.Instance.EndPuzzle();
         boss.SetClockPartsTarget(true);
-        boss.PuzzleClockManager.LaunchAllClockParts();
+        CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
         boss.WaitPartsArrival(() => {
             boss.EndPuzzle();
             ChangeToPhase2();

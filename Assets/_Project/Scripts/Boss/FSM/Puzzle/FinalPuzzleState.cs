@@ -31,9 +31,8 @@ public class FinalPuzzleState : BaseBossState
     private void OnPuzzleSuccess()
     {
         // TODO: 퍼즐 성공 -> 엔딩
-        CutsceneCameraManager.Instance.EndPuzzle();
         boss.SetClockPartsTarget(true);
-        boss.PuzzleClockManager.LaunchAllClockParts();
+        CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
         boss.WaitPartsArrival(() => {
             boss.EndPuzzle();
             boss.SetHPWithPercent(0);
@@ -44,9 +43,8 @@ public class FinalPuzzleState : BaseBossState
     private void OnPuzzleFail()
     {
         // TODO: 퍼즐 실패 -> 보스 체력 20% 회복 -> 페이즈2 재시작
-        CutsceneCameraManager.Instance.EndPuzzle();
         boss.SetClockPartsTarget(true);
-        boss.PuzzleClockManager.LaunchAllClockParts();
+        CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
         boss.WaitPartsArrival(() => {
             boss.EndPuzzle();
             boss.SetHPWithPercent(20);
