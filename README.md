@@ -1443,3 +1443,38 @@ Enemy FSM(상태머신) 시스템 구현
 - 퍼즐1은 **동시 정렬**, 파이널 퍼즐은 **시 → 분 → 초 순차 정렬** 구조로 확실히 분리됨
 - 퍼즐 연출 타이밍(카메라 → clock 파츠 → 상태전이)이 명확하게 분리되어 안정적
 - `CutsceneCameraManager` 구조 덕분에 이후 퍼즐 외 다른 컷씬 연출에도 동일 방식으로 재사용 가능
+
+---
+
+## 2025.07.30 (화) 작업 기록
+
+### 주요 작업
+- 최종장 맵 에셋 탐색 및 테스트 전용 프로젝트 구성
+  - 새로운 프로젝트를 생성하여 다양한 맵 에셋을 비교 테스트
+  - 시네머신, 전투 연출, 퍼즐 구성에 적합한 구조를 기준으로 최종 후보 선정
+  - 현재 맵은 계단형 회랑 구조 + 중앙 건축물 배치가 인상적인 에셋으로 결정
+
+- 라이팅 및 포스트프로세싱 설정 적용
+  - Directional Light: 따뜻한 석양빛 (#FFD6A5), Intensity 2.5
+  - Ambient Color: 연한 노란색 (#FFF0C8), Skybox 제거
+  - Volume Profile 구성:
+    - Bloom: 1.5, Exposure: 0, Tonemapping: ACES
+    - White Balance: Temperature +30
+    - SSAO: Renderer Feature에서 Intensity 1.2 설정
+
+- Roughness 텍스처 → Smoothness 텍스처 변환 에디터 툴 구현
+  - Tools > Texture Tools > Invert Roughness Map 메뉴 생성
+  - 지정한 Roughness 텍스처를 반전시켜 PNG 저장
+  - 저장 경로와 파일명 자동 지정, 덮어쓰기 방지 확인창 포함
+
+- 맵 충돌 테스트
+  - 구조물에 BoxCollider, MeshCollider 배치
+    - 정적 구조물은 Convex 미사용
+  - 플레이어 프리팹을 배치해 맵 전체를 직접 이동하며 충돌 및 시야 테스트 완료
+
+### 메모
+- URP 최신 버전에서는 Ambient Occlusion이 Volume Profile이 아닌 Renderer Feature에서 직접 조정됨
+- Smoothness 적용 시 Roughness 텍스처는 반드시 반전한 후 사용해야 효과가 명확히 반영됨
+- 최종장 맵은 보스전, 컷씬, 시간 퍼즐, 감정 연출 등 다양한 기능을 복합적으로 설계하기에 적절한 구조로 판단됨
+
+---
