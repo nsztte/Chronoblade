@@ -1509,3 +1509,29 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 날짜: 2025.08.04 (월) 작업 기록
+
+### 주요 작업
+- 보스 연출용 라이팅 및 포스트프로세싱 설정
+  - Directional Light를 추가하여 어두운 보스 연출 개선
+    - 기존 Spot Light 단독 사용 시 캐릭터 실루엣이 너무 어두워짐
+    - 노란 계열 조명을 사용하고 Intensity를 2.5로 설정하여 시인성 확보
+    - 그림자 비활성화(Shadow Type: No Shadows) 처리
+  - 포스트 프로세싱 설정 변경
+    - Color Adjustments: Post Exposure=1.8, Contrast=20, Hue Shift = -5, Saturation=0
+    - White Balance: Temperature/Tint 모두 -10으로 설정하여 차가운 느낌 연출
+    - Vignette 및 Bloom 값을 미세 조정하여 집중도 있는 분위기 형성
+  - Directional Light 및 PostProcess Volume을 **보스 오브젝트의 자식으로 등록**
+    - 보스 활성화 시 함께 켜지도록 구성
+    - 전투 연출 시점에만 효과 적용되도록 제어
+
+### 메모
+- 챕터2 맵 구성 관련 고민
+  - 기존에 3개 맵 구성(연구소, 미래구역, 신전)을 고려했으나 실제 배치와 설계 시간, 분위기 연출 효율 등을 종합적으로 판단하여 **2개 맵 구성으로 확정**
+  - **Watcher, ChronoMonk**: 챕터1 맵(연구소)에서 주로 배치
+  - **MirrorDuelist**: 챕터2 맵(신전)에서 제한적으로 등장
+    - 신전은 따뜻한 조명과 건축양식으로 차분한 분위기이므로 MirrorDuelist는 **특별 이벤트**에서만 등장
+    - 등장 시에는 기존 분위기를 **차갑고 전투적인 느낌으로 전환**하기 위해 포스트프로세싱 변경 처리
+
+---
+
