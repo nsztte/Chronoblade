@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
@@ -22,6 +23,9 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
 
         TimeManager.Instance.RegisterControllable(this);
         TimeManager.Instance.RegisterRewindable(this);
+
+        float delay = Random.Range(0,5);
+        Invoke("StartAnimation", delay);
     }
 
     private void OnDisable()
@@ -42,6 +46,11 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
             animator.SetFloat("Speed", -1);
         else
             animator.SetFloat("Speed", 1);
+    }
+
+    private void StartAnimation()
+    {
+        animator.SetTrigger("Start");
     }
 
     private bool IsPlayerInSight()
