@@ -4,6 +4,6 @@ public interface IRewindable
 {
     void StartRewind();
     void StopRewind();
-    void ApplySnapshot(RewindSnapshot snapshot);
-    void RecordSnapshot();
+    // void ApplySnapshot(RewindSnapshot snapshot);
+    // void RecordSnapshot();
 }

@@ -75,12 +75,4 @@ public class PuzzleHand : MonoBehaviour, IRewindable, ITimeControllable
     {
         return timeScale;
     }
-
-    public void ApplySnapshot(RewindSnapshot snapshot)
-    {
-    }
-
-    public void RecordSnapshot()
-    {
-    }
 }
