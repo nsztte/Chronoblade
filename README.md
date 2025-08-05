@@ -1535,3 +1535,36 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.08.05 (화) 작업 기록
+
+### 주요 작업
+
+- **트리거 기반 자동문 시스템 구현**
+  - `DoorController.cs` 작성
+    - `OnTriggerEnter/Exit`로 플레이어 접근 감지
+    - Animator 트리거(`Open`, `Close`)를 통해 문 열림/닫힘 제어
+    - `isOpen` 플래그로 중복 호출 방지
+  - 문 오브젝트에 애니메이션 클립 적용 및 트리거 콜라이더 범위 조정
+
+- **기계장치 키카드 퍼즐 시스템 구축**
+  - `KeycardMover.cs` 작성
+    - 일정 시간 간격으로 키카드가 `KeyCardPoints` 중 랜덤 위치로 이동
+    - `rewindIndices`를 통해 과거 위치 저장 → 되감기 시 이전 위치로 되돌아감
+    - `timeScale == 0`일 경우 `WaitUntil`로 처리해 시간 정지 대응
+  - `PuzzleStateTrigger.cs`
+    - 퍼즐방 입구에 트리거 배치
+    - GameManager의 상태를 `PuzzleState`로 전환
+    - 방 이탈 시 자동으로 `ExplorationState` 복귀 처리
+
+- **CCTV 리와인드 및 탐지 연출 개선**
+  - `CCTVPlayerDetector.cs` 수정
+    - `isRewinding`일 때 애니메이터 `Speed` 파라미터를 -1로 설정 → 역재생 시도
+    - `Start()`에서 `Invoke("StartAnimation", Random.Range(0, 5))`으로 CCTV 시작 타이밍 분산
+    - 탐지 범위 표시용 콘(빨간색) 시각적 조정 완료
+
+### 메모
+
+- 퍼즐방 트리거 진입/퇴장 상태 전환은 GameManager와 구조적으로 안정적으로 연동됨
+- 자동문 시스템은 각 문에 쉽게 적용 가능하도록 재사용성 확보됨
+
+---
