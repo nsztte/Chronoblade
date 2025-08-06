@@ -3,13 +3,14 @@ using UnityEngine;
 
 public class WeaponManager : MonoBehaviour
 {
-    [SerializeField] private PlayerController playerController;
 
     [Header("무기 슬롯")]
     [SerializeField] private List<WeaponController> weaponSlots;
     private int currentWeaponIndex = -1;
     private WeaponController currentWeapon;
     public WeaponController CurrentWeapon => currentWeapon;
+    private PlayerController playerController;
+
 
     #region Singleton
     public static WeaponManager Instance { get; private set; }
@@ -31,6 +32,8 @@ public class WeaponManager : MonoBehaviour
     private void Start()
     {
         InputManager.Instance.OnWeaponSwitch += OnWeaponSwitch;
+
+        playerController = PlayerManager.Instance.PlayerController;
     }
 
     private void OnDisable()
@@ -51,6 +54,14 @@ public class WeaponManager : MonoBehaviour
     private void EquipWeapon(int index)
     {
         if(index < 0 || index >= weaponSlots.Count) return;
+
+        var weapon = weaponSlots[index];
+
+        if (!InventoryManager.Instance.IsWeaponObtained(weapon.weaponData))
+        {
+            Debug.LogWarning($"[WeaponManager] {weapon.weaponData.weaponName} 은 아직 획득하지 않았습니다.");
+            return;
+        }
 
         if(currentWeapon != null)
         {

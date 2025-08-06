@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class InventoryManager : MonoBehaviour
 {
@@ -21,12 +20,22 @@ public class InventoryManager : MonoBehaviour
     }
     #endregion
 
+    [SerializeField] private WeaponData defaultPistolData;
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
+    private HashSet<string> obtainedWeapons = new HashSet<string>();
 
     // 슬롯 기반 인벤토리 구조(확장용, 실제 슬롯 로직은 추후 구현)
     // public List<InventorySlot> slots = new List<InventorySlot>();
 
+    private void Start()
+    {
+        if(defaultPistolData != null)
+        {
+            RegisterWeapon(defaultPistolData);
+        }
+    }
+    
     public int TryAddItem(ItemData item, int amount, out string faliReason)
     {
         faliReason = string.Empty;
@@ -194,6 +203,24 @@ public class InventoryManager : MonoBehaviour
     {
         if (ammoCounts.TryGetValue(type, out int count)) return count;
         return 0;
+    }
+    #endregion
+
+    #region 무기 획득 관리
+    public void RegisterWeapon(WeaponData weapon)
+    {
+        if(weapon == null) return;
+
+        if(!obtainedWeapons.Contains(weapon.weaponName))
+        {
+            obtainedWeapons.Add(weapon.weaponName);
+            Debug.Log($"[InventoryManager] 무기 획득 등록됨: {weapon.weaponName}");
+        }
+    }
+
+    public bool IsWeaponObtained(WeaponData weapon)
+    {
+        return obtainedWeapons.Contains(weapon.weaponName);
     }
     #endregion
 }

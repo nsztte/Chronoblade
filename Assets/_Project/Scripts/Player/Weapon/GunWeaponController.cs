@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections;
-using System.Runtime.CompilerServices;
 
 [RequireComponent(typeof(Animator))]
 public class GunWeaponController : WeaponController

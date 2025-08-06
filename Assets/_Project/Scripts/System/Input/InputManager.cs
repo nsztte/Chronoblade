@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 using System;
 
 public class InputManager : MonoBehaviour
@@ -138,6 +139,7 @@ public class InputManager : MonoBehaviour
     {
         int currentWeaponIndex = WeaponManager.Instance.GetCurrentWeaponIndex();
         int maxWeaponCount = WeaponManager.Instance.GetMaxWeaponCount();
+        var weaponSlots = WeaponManager.Instance.GetWeaponSlots();
 
         // 숫자 키로 직접 무기 선택
         if (Input.GetKeyDown(KeyCode.Alpha1))
@@ -164,14 +166,35 @@ public class InputManager : MonoBehaviour
 
         if (scrollWheel > 0f) // 휠 위로
         {
-            int nextWeapon = (currentWeaponIndex - 1 + maxWeaponCount) % maxWeaponCount;
-            SwitchWeapon(nextWeapon, currentWeaponIndex, maxWeaponCount);
+            int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, -1, weaponSlots);
+            if(nextIndex != currentWeaponIndex)
+                SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
         }
         else if (scrollWheel < 0f) // 휠 아래로
         {
-            int nextWeapon = (currentWeaponIndex + 1) % maxWeaponCount;
-            SwitchWeapon(nextWeapon, currentWeaponIndex, maxWeaponCount);
+            int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, -1, weaponSlots);
+            if(nextIndex != currentWeaponIndex)
+                SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
         }
+    }
+
+    private int GetNextObtainedWeaponIndex(int startIndex, int direction, List<WeaponController> slots)
+    {
+        int count = slots.Count;
+        int index = startIndex;
+
+        for(int i = 0; i < count; i++)
+        {
+            index = (index + direction + count) % count;
+
+            var data = slots[index].weaponData;
+            if (InventoryManager.Instance.IsWeaponObtained(data))
+            {
+                return index;
+            }
+        }
+
+        return startIndex;
     }
 
     private void SwitchWeapon(int weaponIndex, int currentIndex, int maxCount)

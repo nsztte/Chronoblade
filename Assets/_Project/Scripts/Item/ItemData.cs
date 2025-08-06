@@ -22,6 +22,9 @@ public class ItemData : ScriptableObject
 
     [Header("설명")]
     [TextArea(3, 10)] public string description;
+    
+    [Header("장비 데이터")]
+    public WeaponData weaponData;  // itemType == Equipment일 때만 사용
 }
 
 /// <summary>
