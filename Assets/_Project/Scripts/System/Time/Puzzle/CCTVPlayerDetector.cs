@@ -9,6 +9,14 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
     [SerializeField] private Transform cameraPoint;
     [SerializeField] private LayerMask detectionLayer;
 
+    [Header("감지 설정")]
+    [SerializeField] private float detectionThreshold = 3f;
+    [SerializeField] private Transform cctvBody; // CCTV가 회전하는 본체
+    [SerializeField] private GameObject alarmLight; // 경고등
+    [SerializeField] private GameObject door; // 문 애니메이션 포함 오브젝트
+    //[SerializeField] private EnemySpawner enemySpawner; // 와쳐 소환용
+    [SerializeField] private float detectedTimer = 0f;
+
     // 리와인드 설정
     private bool isRewinding = false;
 
@@ -37,15 +45,32 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
 
     private void Update()
     {
-        if(player != null && IsPlayerInSight())
+        bool inSight = player != null && IsPlayerInSight();
+
+        if(isRewinding)
+        {
+            animator.SetFloat("Speed", -1);
+            return;
+        }
+
+        if(inSight)
         {
             Debug.Log("플레이어 감지");
+            detectedTimer += Time.deltaTime;
+            animator.speed = 0f;
+            RotateToPlayer();
+
+            if(detectedTimer >= detectionThreshold)
+            {
+                TriggerAlarm();
+            }
         }
-        
-        if(isRewinding)
-            animator.SetFloat("Speed", -1);
         else
+        {
+            detectedTimer = 0f;
             animator.SetFloat("Speed", 1);
+            animator.speed = timeScale;
+        }
     }
 
     private void StartAnimation()
@@ -75,6 +100,20 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
         }
 
         return false;
+    }
+
+    private void RotateToPlayer()
+    {
+        Vector3 direction = (player.position - transform.position).normalized;
+        direction.y = 0f;
+        Quaternion lookRotation = Quaternion.LookRotation(direction);
+        cctvBody.rotation = Quaternion.Slerp(cctvBody.rotation, lookRotation, Time.deltaTime * 20f);
+    }
+
+
+    private void TriggerAlarm()
+    {
+        Debug.Log("알람 실행");
     }
 
     public void SetTimeScale(float timeScale)
