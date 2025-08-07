@@ -397,7 +397,7 @@ NavMeshAgent:
   m_Enabled: 1
   m_AgentTypeID: -334000983
   m_Radius: 1.1032448
-  m_Speed: 3.5
+  m_Speed: 3
   m_Acceleration: 8
   avoidancePriority: 50
   m_AngularSpeed: 120
@@ -1480,7 +1480,6 @@ MonoBehaviour:
   initialDirection: {x: 1, y: 0, z: 0}
   recordInterval: 0.1
   maxHistoryCount: 100
-  crystalParticles: {fileID: 0}
 --- !u!65 &1169574949
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -187995,6 +187994,7 @@ GameObject:
   - component: {fileID: 8869551745797079572}
   - component: {fileID: 2879452947841046823}
   - component: {fileID: 268735056}
+  - component: {fileID: 8869551745797079574}
   - component: {fileID: 6004463957448152260}
   - component: {fileID: 8869551745797079573}
   m_Layer: 0
@@ -257649,8 +257649,32 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8863840ff71fe5641bc73c89938fd923, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damage: 30
+  knockbackSpeed: 7
+  knockbackDistance: 7
   recordInterval: 0.1
   maxStoredPosition: 100
+--- !u!65 &8869551745797079574
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6414953240036029217}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Size: {x: 0.5, y: 1.5, z: 0.5}
+  m_Center: {x: 0, y: 0, z: 0}
 --- !u!33 &8870510356438830565
 MeshFilter:
   m_ObjectHideFlags: 0

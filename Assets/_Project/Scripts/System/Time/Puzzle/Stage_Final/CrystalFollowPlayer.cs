@@ -1,16 +1,18 @@
 using System.Collections.Generic;
+using System.Collections;
 using UnityEngine;
 using UnityEngine.AI;
 
 public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
 {
-    private NavMeshAgent agent;
-    private ParticleSystem[] crystalParticles;
-    private Transform target;
-
-    // 속도
+    [Header("기본 설정")]
+    [SerializeField] private int damage = 30;
     private float baseSpeed = 3.5f;
     private float baseAngularSpeed  = 120f;
+
+    [Header("넉백 설정")]
+    [SerializeField] private float knockbackSpeed = 5f;
+    [SerializeField] private float knockbackDistance = 5f;
 
     [Header("되감기 설정")]
     [SerializeField] private float recordInterval = 0.1f;
@@ -21,6 +23,10 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
 
     private bool isRewinding = false;
     private int rewindIndex = 0;
+
+    private NavMeshAgent agent;
+    private ParticleSystem[] crystalParticles;
+    private Transform target;
 
     private void Start()
     {
@@ -77,6 +83,41 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
                 }
             }
         }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(!other.CompareTag("Player")) return;
+
+        if(other.TryGetComponent(out IDamageable damageable))
+        {
+            damageable.TakeDamage(damage);
+
+            ApplyKnockback(other.transform);
+        }
+    }
+
+    private void ApplyKnockback(Transform target)
+    {
+        Vector3 dir = (transform.position - target.position).normalized;
+        dir.y = 0f;
+        StartCoroutine(KnockbackRoutine(dir));
+    }
+
+    private IEnumerator KnockbackRoutine(Vector3 dir)
+    {
+        agent.isStopped = true;
+
+        Vector3 startPos = transform.position;
+        Vector3 targetPos = startPos + dir * knockbackDistance;
+
+        while (Vector3.Distance(transform.position, targetPos) > 0.05f)
+        {
+            transform.position = Vector3.MoveTowards(transform.position, targetPos, knockbackSpeed * Time.deltaTime);
+            yield return null;
+        }
+
+        agent.isStopped = false;
     }
 
     public float GetTimeScale()
