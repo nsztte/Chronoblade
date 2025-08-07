@@ -52,14 +52,21 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     {
         controller = GetComponent<CharacterController>();
         animator = GetComponent<Animator>();
+    }
 
+    private void Start()
+    {
         // 원래 컨트롤러 값 저장
         originalControllerHeight = controller.height;
         originalControllerCenter = controller.center;
         crouchControllerHeight = originalControllerHeight * crouchingMultiplier;
         crouchControllerCenter = new Vector3(originalControllerCenter.x, originalControllerCenter.y * crouchingMultiplier, originalControllerCenter.z);
+
+        // 원본 스피드 저장
+        originalMoveSpeed = moveSpeed;
+        originalAnimSpeed = animator.speed;
     }
-    
+
     #region FSM에서 호출할 메서드들
     public void SetMoveInput(Vector2 input)
     {
@@ -216,11 +223,9 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 if(!isSlowed)
                 {
                     Debug.Log("PlayerController: ApplyStatus Slow");
-                    
+
                     isSlowed = true;
-                    originalMoveSpeed = moveSpeed;
-                    originalAnimSpeed = animator.speed;
-                    moveSpeed *= slowedMultiplier;
+                    moveSpeed = originalMoveSpeed * slowedMultiplier;
                     animator.speed = originalAnimSpeed * slowedMultiplier;
 
                     if(statusCoroutine != null)
@@ -233,7 +238,6 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 {
                     Debug.Log("PlayerController: ApplyStatus Freeze");
                     isFrozen = true;
-                    originalAnimSpeed = animator.speed;
                     animator.speed = 0f;
 
                     if(statusCoroutine != null)

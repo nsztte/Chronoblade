@@ -37,7 +37,10 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
 
         baseSpeed = agent.speed;
         baseAngularSpeed = agent.angularSpeed;
+    }
 
+    private void OnEnable()
+    {
         TimeManager.Instance.RegisterControllable(this);
         TimeManager.Instance.RegisterRewindable(this);
     }

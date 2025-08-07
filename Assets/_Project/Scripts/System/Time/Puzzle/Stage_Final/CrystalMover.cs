@@ -35,7 +35,10 @@ public class CrystalMover : MonoBehaviour, ITimeControllable, IRewindable
             float randomAngle = Random.Range(-45f, 45f);
             moveDirection = Quaternion.Euler(0, randomAngle, 0) * initialDirection.normalized;
         }
+    }
 
+    private void OnEnable()
+    {
         TimeManager.Instance.RegisterControllable(this);
         TimeManager.Instance.RegisterRewindable(this);
     }
