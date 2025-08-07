@@ -1611,3 +1611,74 @@ Enemy FSM(상태머신) 시스템 구현
 - 키카드 UI 표시, 획득 연출 등은 나중에 UI 정비 시 추가 가능
 
 ---
+
+## 2025.08.07 (목) 작업 기록
+
+### 주요 작업
+- **파이널 챕터 최적화**
+  - 일부 MeshCollider 삭제 및 BoxCollider로 대체하여 물리 연산 최적화
+  - Convex 처리로 충돌 메시 단순화
+  - 사용하지 않는 베이크된 라이팅 제거 및 LightingData 삭제
+  - 맵 전체 Static으로 설정하여 조명/렌더링/내비메시 성능 향상
+  - Skybox를 변경하여 시각적 완성도 향상
+
+- **3번 퍼즐방 전용 NavMesh 설정 및 결정체 에이전트 적용**
+  - PuzzleNavMeshSurface 오브젝트 구성
+    - Agent Type: `PuzzleOrb`
+    - Area: `PuzzleOnly`
+    - Layer: `PuzzleRoom`
+    - Collect Objects: Volume
+  - Crystal_red 프리팹에 NavMeshAgent 추가 및 속성 조정
+  - 퍼즐룸 관련 오브젝트 계층 정리
+
+- **퍼즐룸3 PuzzleStateTrigger 적용 및 상태 전환 처리**
+  - 챕터1에서 사용하던 트리거 프리팹 재활용
+  - 퍼즐룸 진입 시 GameStateMachine이 `PuzzleState`로 전환되도록 구성
+  - 퍼즐 상태에서 시간 스킬 사용 정상화
+
+- **CrystalFollowPlayer 개선**
+  - NavMeshAgent 속도 및 회전 속도에 timeScale 반영
+  - 되감기(positionHistory 기반) 부드럽게 작동
+  - 자식 파티클에도 simulationSpeed 반영
+  - 되감기 후 positionHistory 유지
+
+- **CrystalMover 리팩토링 및 이동/되감기 시스템 통합**
+  - PingPong, Bounce 이동 로직을 하나의 구조로 통합
+    - isBouncing 여부에 따라 방향 랜덤 offset 적용
+  - TimeManager timeScale 반영
+  - 일정 간격으로 위치 저장 및 MoveTowards 기반 되감기 구현
+  - Crystal_blue에 Rigidbody, BoxCollider, CrystalMover 부착
+
+- **시간 스킬 시 자식 파티클까지 일괄 적용**
+  - `GetComponentsInChildren<ParticleSystem>()` 활용
+  - 모든 자식 파티클의 simulationSpeed에 timeScale 반영
+
+- **Crystal_red 데미지 및 넉백 기능 구현**
+  - 플레이어 충돌 시 IDamageable 통해 데미지 적용
+  - 충돌 방향 반대쪽으로 수평 넉백 (dir.y = 0)
+  - MoveTowards 기반 넉백 코루틴 구현
+  - 넉백 중 NavMeshAgent 일시 정지
+
+- **상태이상 적용 및 결정체 배치**
+  - CrystalMover 충돌 시 슬로우/프리즈 상태 적용
+  - IStatusEffectable 인터페이스로 상태이상 전달
+  - PlayerController 상태이상 중첩 방지 및 자동 회복 구조 개선
+  - 결정체 배치:
+    - 레드 1개
+    - 블루 3개
+    - 그린 2개
+
+- **퍼즐룸 진입 시 문과 퍼즐 오브젝트 활성화 처리**
+  - PuzzleStateTrigger에서 `Invoke(nameof(...), 0.5f)`로 문과 오브젝트 활성화
+  - `GetComponentsInChildren(true)`로 비활성 오브젝트까지 포함 활성화
+
+- **기타 개선 사항**
+  - CrystalMover, CrystalFollowPlayer의 TimeManager 등록 위치를 Start → OnEnable/OnDisable로 변경
+  - PlayerController에서 originalMoveSpeed 및 originalAnimSpeed를 Start에서 1회만 저장하도록 수정
+
+### 메모
+- 결정체 상태이상, 시간 되감기, 충돌 및 넉백 기능이 정상적으로 연동됨
+- 퍼즐 난이도는 테스트를 거쳐 지속적으로 밸런싱 예정
+- PuzzleStateTrigger 구조는 FinalPuzzle에도 재활용 가능
+
+---
