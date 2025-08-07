@@ -9,6 +9,8 @@ public class CrystalMover : MonoBehaviour, ITimeControllable, IRewindable
     [SerializeField] private float moveSpeed = 2f;
     [SerializeField] private Vector3 initialDirection = Vector3.right;
     private Vector3 moveDirection;
+    [Header("디버프 설정")]
+    [SerializeField] private float debuffDuration = 5f;
 
     [Header("되감기 설정")]
     [SerializeField] private float recordInterval = 0.1f;
@@ -79,6 +81,17 @@ public class CrystalMover : MonoBehaviour, ITimeControllable, IRewindable
     }
 
     private void OnCollisionEnter(Collision collision)
+    {
+        Reflect(collision);
+
+        if(collision.transform.TryGetComponent(out IStatusEffectable effectable))
+        {
+            var effect = isBouncing ? StatusEffectType.Slow : StatusEffectType.Freeze;
+            effectable.ApplyStatus(effect, debuffDuration);
+        }
+    }
+
+    private void Reflect(Collision collision)
     {
         Vector3 normal = collision.contacts[0].normal;
 

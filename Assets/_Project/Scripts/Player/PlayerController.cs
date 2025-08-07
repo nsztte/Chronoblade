@@ -19,6 +19,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
 
     [Header("상태 이상 효과")]
     [SerializeField] private float slowedMultiplier = 0.5f;
+    private Coroutine statusCoroutine;
 
     private float originalMoveSpeed;
     private float originalAnimSpeed;
@@ -214,11 +215,17 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
             case StatusEffectType.Slow:
                 if(!isSlowed)
                 {
+                    Debug.Log("PlayerController: ApplyStatus Slow");
+                    
                     isSlowed = true;
                     originalMoveSpeed = moveSpeed;
                     originalAnimSpeed = animator.speed;
                     moveSpeed *= slowedMultiplier;
                     animator.speed = originalAnimSpeed * slowedMultiplier;
+
+                    if(statusCoroutine != null)
+                        StopCoroutine(statusCoroutine);
+                    statusCoroutine = StartCoroutine(RemoveStatusAfter(StatusEffectType.Slow, duration));
                 }
                 break;
             case StatusEffectType.Freeze:
@@ -228,6 +235,10 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     isFrozen = true;
                     originalAnimSpeed = animator.speed;
                     animator.speed = 0f;
+
+                    if(statusCoroutine != null)
+                        StopCoroutine(statusCoroutine);
+                    statusCoroutine = StartCoroutine(RemoveStatusAfter(StatusEffectType.Freeze, duration));
                 }
                 break;
             case StatusEffectType.Paralysis:
@@ -237,8 +248,9 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     isParalyzed = true;
 
                     // TODO: 전기 파티클, 카메라 흔들림 등 연출 삽입 위치
-                    StopCoroutine("RemoveParalysisAfter");
-                    StartCoroutine(RemoveParalysisAfter(duration));
+                    if(statusCoroutine != null)
+                        StopCoroutine(statusCoroutine);
+                    statusCoroutine = StartCoroutine(RemoveStatusAfter(StatusEffectType.Paralysis, duration));
                 }
                 break;
         }
@@ -272,12 +284,13 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         }
     }
 
-    private IEnumerator RemoveParalysisAfter(float duration)
+    private IEnumerator RemoveStatusAfter(StatusEffectType effect, float duration)
     {
         if(duration <= 0f) yield break;
 
         yield return new WaitForSeconds(duration);
-        RemoveStatus(StatusEffectType.Paralysis);
+        RemoveStatus(effect);
+        statusCoroutine = null;
     }
 
     public void ApplyStatus(ComboAttackData attackData)
