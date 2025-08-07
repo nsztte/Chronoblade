@@ -12,7 +12,7 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
     private float baseSpeed = 3.5f;
     private float baseAngularSpeed  = 120f;
 
-    // 되감기 설정
+    [Header("되감기 설정")]
     [SerializeField] private float recordInterval = 0.1f;
     [SerializeField] private int maxStoredPosition = 100;
     private List<Vector3> positionHistory = new();
