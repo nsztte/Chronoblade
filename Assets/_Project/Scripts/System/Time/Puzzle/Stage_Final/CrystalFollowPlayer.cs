@@ -5,7 +5,7 @@ using UnityEngine.AI;
 public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
 {
     private NavMeshAgent agent;
-    private ParticleSystem crystalParticles;
+    private ParticleSystem[] crystalParticles;
     private Transform target;
 
     // 속도
@@ -25,7 +25,7 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
     private void Start()
     {
         agent = GetComponent<NavMeshAgent>();
-        crystalParticles = GetComponent<ParticleSystem>();
+        crystalParticles = GetComponentsInChildren<ParticleSystem>();
 
         target = PlayerManager.Instance.PlayerTransform;
 
@@ -76,10 +76,6 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
                     rewindIndex--;
                 }
             }
-            else
-            {
-                StopRewind();
-            }
         }
     }
 
@@ -93,10 +89,13 @@ public class CrystalFollowPlayer : MonoBehaviour, ITimeControllable, IRewindable
         agent.speed = baseSpeed * timeScale;
         agent.angularSpeed = baseAngularSpeed * timeScale;
 
-        if (crystalParticles != null)
+        if (crystalParticles.Length > 0)
         {
-            var main = crystalParticles.main;
-            main.simulationSpeed = timeScale;
+            foreach(var ps in crystalParticles)
+            {
+                var main = ps.main;
+                main.simulationSpeed = timeScale;
+            }
         }
     }
 

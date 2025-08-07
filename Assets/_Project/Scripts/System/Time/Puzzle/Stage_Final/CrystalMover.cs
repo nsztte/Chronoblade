@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using System.Linq;
 
 public class CrystalMover : MonoBehaviour, ITimeControllable, IRewindable
 {
@@ -18,10 +19,12 @@ public class CrystalMover : MonoBehaviour, ITimeControllable, IRewindable
     private int rewindIndex = -1;
     private float timeScale = 1f;
 
-    [SerializeField] private ParticleSystem crystalParticles;
+    private ParticleSystem[] crystalParticles;
 
     private void Start()
     {
+        crystalParticles = GetComponentsInChildren<ParticleSystem>();
+
         moveDirection = initialDirection.normalized;
 
         if (isBouncing)
@@ -100,10 +103,13 @@ public class CrystalMover : MonoBehaviour, ITimeControllable, IRewindable
     public void SetTimeScale(float timeScale)
     {
         this.timeScale = timeScale;
-        if (crystalParticles != null)
+        if (crystalParticles.Length > 0)
         {
-            var main = crystalParticles.main;
-            main.simulationSpeed = timeScale;
+            foreach(var ps in crystalParticles)
+            {
+                var main = ps.main;
+                main.simulationSpeed = timeScale;
+            }
         }
     }
 
