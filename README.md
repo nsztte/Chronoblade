@@ -1682,3 +1682,46 @@ Enemy FSM(상태머신) 시스템 구현
 - PuzzleStateTrigger 구조는 FinalPuzzle에도 재활용 가능
 
 ---
+
+## 2025.08.08 (금) 작업 기록
+
+### 주요 작업
+- 퍼즐룸5 보초병 조각상 퍼즐 오브젝트 구현
+  - Rigidbody 기반 파편 오브젝트 분해 구조 설계
+  - Lerp 기반 복원 시스템 구축 (시간 정지 중 복원 정지 가능)
+  - IRewindable, ITimeControllable 인터페이스 연동
+  - 퍼즐룸 입장 시 자동 복원 시작 / 완료 후 충돌체 활성화 처리
+
+- 석판 회전 퍼즐(PuzzlePlate) 시스템 구현
+  - IInteractable 인터페이스 상호작용 구조 도입
+  - 정답 방향(localRotation) 저장 후 무작위 회전
+  - 90도 회전 기능 구현 및 부드러운 회전 연출 적용
+  - 3x4 석판 배치 및 정답 맞추기 퍼즐 구성
+
+- 퍼즐 매니저 공통 구조 정비
+  - PuzzleRoomManager 추상 클래스 도입
+    - isCleared 및 CheckPuzzle(), OnPuzzleSolved() 공통화
+  - PuzzleRoom5Manager 구현
+    - 퍼즐판 자동 수집 및 정답 일괄 체크 구조 확립
+    - 정답 시 clearedPortal, clearedReward 오브젝트 활성화 처리
+  - PuzzleStateTrigger에서 PuzzleRoomManager 상속 구조 연동
+
+- TeleportPortal 기능 구현
+  - 퍼즐 완료 시 생성되는 포탈을 통해 보스룸 전방으로 순간이동
+  - 지정 위치 + 회전으로 이동
+  - Collider 자동 트리거 설정 처리
+
+### 추가 작업
+
+- Metallic + Roughness 통합용 에디터 유틸리티 구현
+  - `Tools/Texture Tools/Metallic Smoothness Combiner` 메뉴 추가
+  - 메탈릭 텍스처(R)와 러프니스 텍스처를 선택하여 하나의 마스크(R + A)로 통합 저장
+  - 저장 후 자동 임포트 설정 및 프로젝트 내 TextureType 적용 처리
+  - 출력된 텍스처는 마테리얼의 MetallicSmoothness Map으로 바로 사용 가능
+
+### 메모
+- PuzzlePlate의 정답 체크는 현재 Update 기반으로 유지 (단순성 및 참조 최소화 목적)
+- 퍼즐 클리어 → 리워드 획득 → 포탈 생성 → 보스룸 이동까지 흐름이 자연스럽게 연결됨
+- 이후 리워드를 수집해 보스룸 앞 석판에 끼우는 구조로 확장 예정
+
+---
