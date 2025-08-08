@@ -3,7 +3,7 @@ using UnityEngine;
 public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
 {
     [Header("기본 설정")]
-    [SerializeField] private float initializationDelay = 3f;
+    [SerializeField] private PuzzleRoomManager puzzleRoomManager;
     [SerializeField] private float restorationThreshold = 0.05f;
 
     private Collider rootCollider;
@@ -12,7 +12,7 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
     private Quaternion[] originalRotations;
 
     private float timeScale = 1f;
-    [SerializeField] private bool isRewinding = false;
+    private bool isRewinding = false;
     private bool isStarted = false;
 
     private void Awake()
@@ -35,10 +35,9 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
         }
 
         SetChildrenPhysics(false);
-        Invoke(nameof(ChangeState), initializationDelay);
     }
 
-    private void OnEnable()
+    private void Start()
     {
         TimeManager.Instance?.RegisterControllable(this);
         TimeManager.Instance?.RegisterRewindable(this);
@@ -64,12 +63,11 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
                 Restoring();
             }
         }
-    }
 
-    private void ChangeState()
-    {
-        isStarted = true;
-        gameObject.SetActive(false);
+        if(puzzleRoomManager.IsActivated && !isStarted)
+        {
+            isStarted = true;
+        }
     }
 
     private void SetChildrenPhysics(bool enabled)

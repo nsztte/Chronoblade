@@ -33,15 +33,17 @@ public class PuzzleStateTrigger : MonoBehaviour
                 Debug.Log("퍼즐 방 진입");
                 GameManager.Instance.EnterPuzzle();
                 isActive = true;
+                puzzleRoomManager?.ChangeState(true);
 
                 Invoke(nameof(ActivePuzzleRoomDoor), 0.5f);
-                Invoke(nameof(ActivePuzzleObjects), 0.5f);              
+                Invoke(nameof(ActivePuzzleObjects), 0.5f);
             }
             else if(GameManager.Instance.CurrentGameState is PuzzleState && isActive)
             {
                 Debug.Log("퍼즐 방 나가기");
                 GameManager.Instance.EnterExploration();
                 isActive = false;
+                puzzleRoomManager?.ChangeState(false);
             }
         }
     }
