@@ -4,9 +4,10 @@ public class PuzzleStateTrigger : MonoBehaviour
 {
     [SerializeField] private GameObject puzzleRoomDoor;
     [SerializeField] private GameObject puzzleObjects;
+    [SerializeField] private PuzzleRoomManager puzzleRoomManager;
     private bool isActive = false;
     private bool isCleared = false;
-    public bool IsCleared { get => isCleared; set => isCleared = value; }
+    public bool IsCleared { get => puzzleRoomManager ? puzzleRoomManager.IsCleared : isCleared; set => isCleared = value; }
 
     private void Start()
     {
@@ -16,7 +17,7 @@ public class PuzzleStateTrigger : MonoBehaviour
 
     private void Update()
     {
-        if(isCleared)
+        if(IsCleared)
         {
             GameManager.Instance.EnterExploration();
             gameObject.SetActive(false);
@@ -27,7 +28,7 @@ public class PuzzleStateTrigger : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            if(GameManager.Instance.CurrentGameState is ExplorationState && !isCleared && !isActive)
+            if(GameManager.Instance.CurrentGameState is ExplorationState && !IsCleared && !isActive)
             {
                 Debug.Log("퍼즐 방 진입");
                 GameManager.Instance.EnterPuzzle();
