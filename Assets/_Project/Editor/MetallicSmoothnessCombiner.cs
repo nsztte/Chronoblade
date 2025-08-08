@@ -7,7 +7,7 @@ public class MetallicSmoothnessCombiner : EditorWindow
     Texture2D metallicMap;
     Texture2D roughnessMap;
 
-    [MenuItem("Tools/Texture Tools/MetallicSmoothnessCombiner")]
+    [MenuItem("Tools/Texture Tools/Metallic Smoothness Combiner")]
     public static void ShowWindow()
     {
         GetWindow<MetallicSmoothnessCombiner>("Metallic Smoothness Combiner");
@@ -27,7 +27,7 @@ public class MetallicSmoothnessCombiner : EditorWindow
                 return;
             }
 
-            string path = EditorUtility.SaveFilePanel("Save Combined Texture", "Assets/_Project/Art", "_MetallicSmoothness", "png");
+            string path = EditorUtility.SaveFilePanel("Save Combined Texture", "Assets/_Project/Art/Model", "_MetallicSmoothness", "png");
             if (string.IsNullOrEmpty(path)) return;
 
             Texture2D combined = CombineTextures(metallicMap, roughnessMap);
