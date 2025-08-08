@@ -25,6 +25,9 @@ public class PuzzlePlate : MonoBehaviour, IInteractable
     private void Rotate()
     {
         targetRotation *= Quaternion.Euler(0f, rotationStep, 0f);
+
+        if(IsCorrect())
+            Debug.Log(transform.name + "완료");
     }
 
     public bool IsCorrect()

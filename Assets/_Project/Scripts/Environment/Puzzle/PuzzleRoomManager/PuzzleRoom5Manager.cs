@@ -3,15 +3,24 @@ using UnityEngine;
 public class PuzzleRoom5Manager : PuzzleRoomManager
 {
     [SerializeField] private GameObject Pedestals;
-    [SerializeField] private GameObject clearedPortal;
-    [SerializeField] private GameObject clearedReward;
     private PuzzlePlate[] puzzlePlates;
 
     private void Awake()
     {
         puzzlePlates = Pedestals.GetComponentsInChildren<PuzzlePlate>();
+
+        if(clearedPortal)
+            clearedPortal.SetActive(false);
+
+        if(clearedReward)
+            clearedReward.SetActive(false);
     }
-    
+
+    private void Update()
+    {
+        CheckPuzzle();
+    }
+
     protected override void CheckPuzzle()
     {
         if(IsCleared) return;
