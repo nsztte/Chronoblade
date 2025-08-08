@@ -51,6 +51,14 @@ public class TimeInputHandler : MonoBehaviour
             isQKeyPressed = true;
             qKeyHoldTime = 0f;
             isRewindInvoked = false;
+
+            if (isFastForwardInvoked)
+            {
+                OnTimeFastForwardEnd?.Invoke();
+                isEKeyPressed = false;
+                eKeyHoldTime = 0f;
+                isFastForwardInvoked = false;
+            }
         }
         
         // Q 키 홀드 처리
@@ -90,6 +98,14 @@ public class TimeInputHandler : MonoBehaviour
             isEKeyPressed = true;
             eKeyHoldTime = 0f;
             isFastForwardInvoked = false;
+
+            if (isRewindInvoked)
+            {
+                OnTimeRewindEnd?.Invoke();
+                isQKeyPressed = false;
+                qKeyHoldTime = 0f;
+                isRewindInvoked = false;
+            }
         }
         
         if (Input.GetKey(KeyCode.E) && isEKeyPressed)
