@@ -11,6 +11,7 @@ public class PuzzleClockManager : MonoBehaviour
     [Header("퍼즐 시간 설정")]
     [SerializeField] private float puzzleTimeLimit = 25f;
 
+    // 이 아래는 디버그용
     [Tooltip("퍼즐 남은 시간")]
     [SerializeField] private float remainingTime;
     [SerializeField] private bool isPuzzleActive = false;

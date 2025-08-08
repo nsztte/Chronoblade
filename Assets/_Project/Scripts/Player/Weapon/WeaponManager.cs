@@ -7,7 +7,7 @@ public class WeaponManager : MonoBehaviour
     [Header("무기 슬롯")]
     [SerializeField] private List<WeaponController> weaponSlots;
     private int currentWeaponIndex = -1;
-    private WeaponController currentWeapon;
+    [SerializeField] private WeaponController currentWeapon;
     public WeaponController CurrentWeapon => currentWeapon;
     private PlayerController playerController;
 
@@ -43,24 +43,27 @@ public class WeaponManager : MonoBehaviour
     
     private void OnWeaponSwitch(int index)
     {
-        // 무기 전환 시 조준 취소
-        CameraController.Instance?.CancelAim();
-        // 반동 복구 속도 업데이트
-        CameraController.Instance?.UpdateRecoilRecoverySpeed();
-        // 무기 전환
-        EquipWeapon(index);
+        // 무기 전환 시도
+        bool weaponChanged = EquipWeapon(index);
+        
+        // 무기 전환이 실제로 성공했을 때만 조준 취소
+        if (weaponChanged)
+        {
+            CameraController.Instance?.CancelAim();
+            CameraController.Instance?.UpdateRecoilRecoverySpeed();
+        }
     }
 
-    private void EquipWeapon(int index)
+    private bool EquipWeapon(int index)
     {
-        if(index < 0 || index >= weaponSlots.Count) return;
+        if(index < 0 || index >= weaponSlots.Count) return false;
 
         var weapon = weaponSlots[index];
 
         if (!InventoryManager.Instance.IsWeaponObtained(weapon.weaponData))
         {
             Debug.LogWarning($"[WeaponManager] {weapon.weaponData.weaponName} 은 아직 획득하지 않았습니다.");
-            return;
+            return false;
         }
 
         if(currentWeapon != null)
@@ -78,6 +81,8 @@ public class WeaponManager : MonoBehaviour
         bool isGun = currentWeapon.weaponData.weaponType != WeaponType.Sword;
         PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", isSword);
         PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", isGun);
+        
+        return true;
     }
 
     public void UnEquipWeapon()

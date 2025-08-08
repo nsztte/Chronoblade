@@ -87,14 +87,10 @@ public class CameraController : MonoBehaviour
             playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
         }
 
-
         // 카메라 Y 위치 부드럽게 이동
         Vector3 localPos = transform.localPosition;
         localPos.y = Mathf.Lerp(localPos.y, targetLocalY, cameraLerpSpeed * Time.deltaTime);
         transform.localPosition = localPos;
-
-        // // 카메라 위치 부드럽게 이동 (근접 공격 등 효과 반영)
-        // transform.localPosition = Vector3.Lerp(transform.localPosition, targetLocalPosition, cameraLerpSpeed * Time.deltaTime);
 
         // 복구 전 Clamp 제한
         recoilX = Mathf.Clamp(recoilX, -10f, 10f);
