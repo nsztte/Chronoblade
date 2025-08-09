@@ -94,7 +94,7 @@ LightmapSettings:
     m_TrainingDataDestination: TrainingData
     m_LightProbeSampleCountMultiplier: 4
   m_LightingDataAsset: {fileID: 112000000, guid: d0be4b2b0e43ef14fa086ef8d382537c, type: 2}
-  m_LightingSettings: {fileID: 0}
+  m_LightingSettings: {fileID: 4890085278179872738, guid: 2cec2aaae5c69da48b7cbfc1760b4e62, type: 2}
 --- !u!196 &4
 NavMeshSettings:
   serializedVersion: 2
@@ -2703,12 +2703,12 @@ GameObject:
   - component: {fileID: 77021140}
   - component: {fileID: 77021142}
   m_Layer: 0
-  m_Name: Directional Light
+  m_Name: Directional Light_ex
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!108 &77021140
 Light:
   m_ObjectHideFlags: 0
@@ -60751,12 +60751,12 @@ GameObject:
   - component: {fileID: 2015011052}
   - component: {fileID: 2015011051}
   m_Layer: 0
-  m_Name: Global Volume
+  m_Name: Global Volume_ex
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &2015011051
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -356481,8 +356481,8 @@ SceneRoots:
   m_Roots:
   - {fileID: 268168151}
   - {fileID: 77021141}
-  - {fileID: 543450653001562030}
   - {fileID: 2015011052}
+  - {fileID: 543450653001562030}
   - {fileID: 346420167}
   - {fileID: 27333255}
   - {fileID: 1049884653}
