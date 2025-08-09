@@ -1728,3 +1728,34 @@ Enemy FSM(상태머신) 시스템 구현
 - 이후 리워드를 수집해 보스룸 앞 석판에 끼우는 구조로 확장 예정
 
 ---
+
+## 2025.08.09 (토) 작업 기록
+
+### 주요 작업
+- 기존 라이팅 세팅 및 라이트맵 초기화
+  - 불필요한 베이크 데이터 제거 후, 새로운 공통 라이팅 환경 구축
+- 공통 Directional Light 프리팹 제작
+  - 색상, 강도, 그림자, 캐스케이드 설정 적용
+  - 맵 전역에 동일 프리팹 배치로 일관성 확보
+- Global Post-process Volume(공통 프로파일) 제작
+  - Tonemapping, Bloom, Contrast, Saturation, Vignette, White Balance 등 기본값 세팅
+- Reflection Probe 전역 적용
+  - Box Projection 활성화로 반사 왜곡 최소화
+  - 중심부 배치 및 사이즈 여유 확보로 전체 커버리지 보장
+- 상황별 볼륨 스냅샷 3종 제작
+  - Exploration / Combat / TimeStop 각 프로파일 독립 생성
+  - 상황별 색감, 대비, 포스트프로세싱 값 초기 설정
+- VolumeSnapshotController 스크립트 구현 및 테스트
+  - Snapshot enum 기반 전환 기능
+  - SmoothStep 보간 + unscaledDeltaTime 사용
+  - 디버그 입력(Alpha8/9/0)으로 전환 테스트 완료
+
+### 메모
+- Reflection Probe 베이크 시 중심 위치와 주변 환경에 따라 전반적인 색감이 크게 변함을 확인  
+  → 톤 연출용 꼼수로 쓰일 수 있으나, 최종 라이팅 확정 후 적용하는 것이 안전
+- Box Projection 적용 시 방 단위 프로브보다 전역 프로브 하나로도 충분한 품질 확보 가능
+- Volume Profile 복사 후 개별 수정해야 서로 영향을 주지 않음 (공유 상태에서 수정하면 모든 볼륨이 변함)
+- 포스트프로세싱은 프로브 베이크 결과를 기반으로 후처리하는 편이 자연스러움
+- 디렉셔널 라이트와 Reflection Probe 범위가 겹칠 때 광원 톤과 반사 톤이 따로 노는 현상 주의
+
+---
