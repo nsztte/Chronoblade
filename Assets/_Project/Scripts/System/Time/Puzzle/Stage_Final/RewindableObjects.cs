@@ -4,6 +4,7 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
 {
     [Header("기본 설정")]
     [SerializeField] private PuzzleRoomManager puzzleRoomManager;
+    [SerializeField] private float restorationSpeed = 5f;
     [SerializeField] private float restorationThreshold = 0.05f;
 
     private Collider rootCollider;
@@ -87,10 +88,10 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
             childrenRb[i].isKinematic = true;
 
             childrenRb[i].transform.position = Vector3.Lerp(
-                childrenRb[i].transform.position, originalPositions[i], Time.deltaTime * 5f * timeScale);
+                childrenRb[i].transform.position, originalPositions[i], Time.deltaTime * restorationSpeed * timeScale);
 
             childrenRb[i].transform.rotation = Quaternion.Slerp(
-                childrenRb[i].transform.rotation, originalRotations[i], Time.deltaTime * 5f * timeScale);
+                childrenRb[i].transform.rotation, originalRotations[i], Time.deltaTime * restorationSpeed * timeScale);
 
             if (Vector3.Distance(childrenRb[i].transform.position, originalPositions[i]) > restorationThreshold)
             {

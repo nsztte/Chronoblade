@@ -1004,9 +1004,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4ac8861cafa70864595d45f45892fc64, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  initializationDelay: 3
+  puzzleRoomManager: {fileID: 0}
+  restorationSpeed: 5
   restorationThreshold: 0.05
-  isRewinding: 0
 --- !u!1 &9221238011415846044
 GameObject:
   m_ObjectHideFlags: 0
