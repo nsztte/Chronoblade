@@ -58,10 +58,10 @@ MonoBehaviour:
     m_Value: 1
   threshold:
     m_OverrideState: 1
-    m_Value: 1.15
+    m_Value: 1.2
   intensity:
     m_OverrideState: 1
-    m_Value: 0.35
+    m_Value: 0.25
   scatter:
     m_OverrideState: 0
     m_Value: 0.7
@@ -97,7 +97,7 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: d7fd9488000d3734a9e00ee676215985, type: 3}
-  m_Name: Profile_Global_Combat
+  m_Name: Profile_Chapter_1_Combat
   m_EditorClassIdentifier: 
   components:
   - {fileID: -3187808681504062643}
@@ -105,8 +105,6 @@ MonoBehaviour:
   - {fileID: 7905393822856133257}
   - {fileID: 3608898571709614965}
   - {fileID: 1649724059929483743}
-  - {fileID: 1721274725532958645}
-  - {fileID: 3910803163393467286}
 --- !u!114 &1649724059929483743
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -122,38 +120,10 @@ MonoBehaviour:
   active: 1
   temperature:
     m_OverrideState: 1
-    m_Value: 0
+    m_Value: -5
   tint:
     m_OverrideState: 1
     m_Value: 0
---- !u!114 &1721274725532958645
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c5e1dc532bcb41949b58bc4f2abfbb7e, type: 3}
-  m_Name: LensDistortion
-  m_EditorClassIdentifier: 
-  active: 1
-  intensity:
-    m_OverrideState: 1
-    m_Value: -0.02
-  xMultiplier:
-    m_OverrideState: 0
-    m_Value: 1
-  yMultiplier:
-    m_OverrideState: 0
-    m_Value: 1
-  center:
-    m_OverrideState: 0
-    m_Value: {x: 0.5, y: 0.5}
-  scale:
-    m_OverrideState: 0
-    m_Value: 1
 --- !u!114 &3608898571709614965
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -175,29 +145,13 @@ MonoBehaviour:
     m_Value: {x: 0.5, y: 0.5}
   intensity:
     m_OverrideState: 1
-    m_Value: 0.2
+    m_Value: 0.25
   smoothness:
     m_OverrideState: 1
     m_Value: 0.3
   rounded:
     m_OverrideState: 0
     m_Value: 0
---- !u!114 &3910803163393467286
-MonoBehaviour:
-  m_ObjectHideFlags: 3
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 81180773991d8724ab7f2d216912b564, type: 3}
-  m_Name: ChromaticAberration
-  m_EditorClassIdentifier: 
-  active: 1
-  intensity:
-    m_OverrideState: 1
-    m_Value: 0.05
 --- !u!114 &7905393822856133257
 MonoBehaviour:
   m_ObjectHideFlags: 3
@@ -218,11 +172,11 @@ MonoBehaviour:
     m_OverrideState: 1
     m_Value: 25
   colorFilter:
-    m_OverrideState: 0
-    m_Value: {r: 1, g: 1, b: 1, a: 1}
+    m_OverrideState: 1
+    m_Value: {r: 0.7834776, g: 0.96535635, b: 1.1892071, a: 1}
   hueShift:
     m_OverrideState: 0
     m_Value: 0
   saturation:
     m_OverrideState: 1
-    m_Value: 5
+    m_Value: -15
