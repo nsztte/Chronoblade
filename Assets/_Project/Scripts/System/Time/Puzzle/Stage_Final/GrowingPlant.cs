@@ -1,15 +1,15 @@
 using UnityEngine;
 
-public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
+public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
 {
     [Header("참조")]
-    [SerializeField] Transform canPosition;
-    [SerializeField] WateringCan wateringCan;
+    [SerializeField] private WateringCan wateringCan;
+    [SerializeField] private float fastforwardMultiplier = 10;
 
-    // private bool isWatering = false;
-    private Animator animator;
+    private bool isWaterd = false;
+    
     private float timeScale = 1f;
-    private bool IsRewinding = false;
+    private Animator animator;
 
     private void Awake()
     {
@@ -20,22 +20,19 @@ public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
     {
         TimeManager.Instance.RegisterControllable(this);    // 테스트 이후에 OnEnable로 옮길것
         TimeManager.Instance.RegisterRewindable(this);
-
-        if(animator != null)
-        {
-            animator.SetFloat("Speed", 1f);
-            animator.SetBool("IsRunning", true);
-        }
     }
 
     private void OnEnable()
     {
-        wateringCan.OnPlaced += OnPlaced;
+        // TimeManager.Instance.RegisterControllable(this);    // 테스트 이후에 OnEnable로 옮길것
+        // TimeManager.Instance.RegisterRewindable(this);
+
+        wateringCan.OnWatered += OnWatered;
     }
 
     private void OnDisable()
     {
-        wateringCan.OnPlaced -= OnPlaced;
+        wateringCan.OnWatered -= OnWatered;
 
         TimeManager.Instance.UnregisterControllable(this);
         TimeManager.Instance.UnregisterRewindable(this);
@@ -45,7 +42,8 @@ public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
     {
         if(other.CompareTag("Player") && wateringCan.IsHeld)
         {
-            wateringCan.IsNearFaucet = true;
+            Debug.Log("플레이어 근처에 있음");
+            wateringCan.IsNearPlant = true;
         }
     }
 
@@ -53,29 +51,26 @@ public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
     {
         if(other.CompareTag("Player") && wateringCan.IsHeld)
         {
-            wateringCan.IsNearFaucet = false;
+            wateringCan.IsNearPlant = false;
         }
     }
 
-    // 애니메이션 떨어지는 시점에 이벤트 등록
-    public void AnimDrip()
+    private void OnWatered()
     {
-        if(!wateringCan.IsPlaced) return;
+        if(!wateringCan.IsFull) return;
+        if(isWaterd) return;
 
-        wateringCan.AddDrop(!IsRewinding);
-    }
-    
-    private void OnPlaced()
-    {
-        wateringCan.PlaceTo(canPosition, false);
+        Debug.Log("식물에 물주기");
+        isWaterd = true;
+        animator.SetTrigger("Growing");
+        animator.SetFloat("Speed", timeScale);
     }
 
-    #region 인터페이스 구현부
     public void SetTimeScale(float timeScale)
     {
         this.timeScale = timeScale;
-        if(animator != null)
-            animator.SetFloat("Speed", timeScale);
+        float animSpeed = timeScale > 1.5f ? timeScale * fastforwardMultiplier : timeScale;
+        animator.SetFloat("Speed", animSpeed);
     }
 
     public float GetTimeScale()
@@ -85,14 +80,11 @@ public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
 
     public void StartRewind()
     {
-        IsRewinding = true;
         animator.SetFloat("Speed", -1);
     }
 
     public void StopRewind()
     {
-        IsRewinding = false;
         animator.SetFloat("Speed", timeScale);
     }
-    #endregion
 }

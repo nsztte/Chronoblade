@@ -10,12 +10,14 @@ public class WateringCan : MonoBehaviour, IInteractable
     [SerializeField] float fillPerDrop = 0.05f;
     [SerializeField] private Transform startParent;
 
-    private float currentFill = 0f;
+    [SerializeField] private float currentFill = 0f;
     public Action OnPlaced;
+    public Action OnWatered;
 
     public bool IsHeld { get; private set; } = false;
     public bool IsPlaced { get; private set; } = false;
     public bool IsNearFaucet { get; set; } = false;
+    public bool IsNearPlant { get; set; } = false;
     public bool IsEmpty => currentFill <= 0f;
     public bool IsFull => currentFill >= 1f;
 
@@ -67,6 +69,11 @@ public class WateringCan : MonoBehaviour, IInteractable
             TryPickUp();
         else if(IsNearFaucet)
             OnPlaced?.Invoke();
+        else if(IsNearPlant)
+        {
+            OnWatered?.Invoke();
+            // 물주는 모션 추가
+        }
         else
         {
             IsHeld = false;
