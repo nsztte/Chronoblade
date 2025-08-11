@@ -1800,3 +1800,38 @@ Enemy FSM(상태머신) 시스템 구현
 - Occlusion Culling 및 LODGroup 적용은 프로젝트 최적화 단계에서 진행 예정
 
 ---
+
+## 2025.08.11 (월) 작업 기록
+
+### 주요 작업
+- **수도꼭지 및 물통 상호작용 시스템 구현**
+  - `WateringCan`
+    - 물 수위에 따라 시각적으로 변하는 워터 메쉬 적용
+    - 플레이어가 들고 있는 상태, 놓여 있는 상태, 수도꼭지·식물 근처 여부 등 상태 관리
+    - 물 한 방울 단위의 수위 증감(AddDrop) 로직 구현 (가득 참/비었음 상태 검사 포함)
+    - F키 상호작용 시:
+      - 손에 없으면 플레이어 손 위치로 픽업
+      - 손에 있고 수도꼭지 근처면 `OnPlaced` 이벤트 호출
+      - 손에 있고 식물 근처면 `OnWatered` 이벤트 호출
+      - 그 외엔 시작 위치로 되돌려 놓기
+    - Rigidbody 활성/비활성 처리로 물리 충돌 관리
+  - `WaterFaucet`
+    - `WateringCan.OnPlaced` 이벤트 수신 후 지정 위치(`canPosition`)에 캔 장착
+    - 애니메이션 이벤트(`AnimDrip`)로 물방울 떨어질 때마다 물통 수위 변화
+    - 플레이어가 캔을 들고 수도꼭지 범위에 들어오면 `IsNearFaucet` 플래그 설정
+    - `ITimeControllable`, `IRewindable` 구현으로 시간 가속/되감기 시 애니메이션 속도 및 물 수위 역변화 지원
+
+- **4번방 물받기/물주기 퍼즐 기본 구현**
+  - `WateringCan`
+    - 식물 근처(`IsNearPlant`)에서 상호작용 시 `OnWatered` 이벤트 트리거
+  - `GrowingPlant`
+    - `WateringCan.OnWatered` 구독 → 가득 찬 캔일 때만 성장 시작
+    - 애니메이터 트리거(`Growing`) 및 속도 제어(`SetTimeScale` / `StartRewind` / `StopRewind`) 연동
+    - 트리거 범위 내에서 플레이어가 캔을 들고 있으면 `IsNearPlant` 플래그 갱신
+
+### 메모
+- 물주기 로직은 현재 한 번만 동작하도록 `isWaterd` 플래그로 중복 방지
+- 향후 성장 애니메이션 속도는 `timeScale`을 반영하도록 조정 가능
+
+---
+
