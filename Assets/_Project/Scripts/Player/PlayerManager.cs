@@ -51,6 +51,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private bool isInvincible = false;
     [SerializeField] private float invincibilityTimer = 0f;
     [SerializeField] private float hitInvincibilityDuration = 0.5f;
+    
+     [Header("장착 소켓")]
+    [SerializeField] private Transform heldPosition;
 
     private float currentComboDamage;
     private ComboAttackData currentCombo;
@@ -65,6 +68,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     #region Properties
     public Transform PlayerTransform => playerTransform;
+    public Transform HeldPosition => heldPosition;
     public int MaxHP => maxHP;
     public float CurrentHP => currentHP;
     public int MaxMP => maxMP;
