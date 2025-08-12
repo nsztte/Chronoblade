@@ -60,7 +60,6 @@ public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
         if(!wateringCan.IsFull) return;
         if(isWaterd) return;
 
-        Debug.Log("식물에 물주기");
         isWaterd = true;
         animator.SetTrigger("Growing");
         animator.SetFloat("Speed", timeScale);

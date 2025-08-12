@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using UnityEngine;
 
 public class WateringCan : MonoBehaviour, IInteractable
@@ -9,11 +10,15 @@ public class WateringCan : MonoBehaviour, IInteractable
     [SerializeField] float maxHeight = 1.0f;
     [SerializeField] float fillPerDrop = 0.05f;
     [SerializeField] private Transform startParent;
+    [SerializeField] private Vector3 heldOffset = new Vector3(0, 0, 0);
+    [SerializeField] private ParticleSystem pourEffect;
+    [SerializeField] private float pouringDuration = 5f;
 
-    [SerializeField] private float currentFill = 0f;
+    private bool isPouring = false;
+    [SerializeField] private float currentFill = 0f; // 디버그용
+
     public Action OnPlaced;
     public Action OnWatered;
-
     public bool IsHeld { get; private set; } = false;
     public bool IsPlaced { get; private set; } = false;
     public bool IsNearFaucet { get; set; } = false;
@@ -35,8 +40,19 @@ public class WateringCan : MonoBehaviour, IInteractable
         IsPlaced = !IsHeld;
         rb.isKinematic = true;
         transform.SetParent(socket);
-        transform.localPosition = Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+
+        if(IsHeld)
+        {
+            PlayerManager.Instance.SetHeldObject(gameObject);
+            transform.localPosition = heldOffset;
+            transform.localRotation = Quaternion.identity;  // 향후 회전 오프셋도 적용 가능성 있음
+        }
+        else
+        {
+            PlayerManager.Instance.ClearHeldObject();
+            transform.localPosition = Vector3.zero;
+            transform.localRotation = Quaternion.identity;
+        }
     }
 
     public void AddDrop(bool isPlus)
@@ -63,6 +79,62 @@ public class WateringCan : MonoBehaviour, IInteractable
         waterMesh.localPosition = p;
     }
 
+    private void DropToStart()
+    {
+        IsHeld = false;
+        IsPlaced = false;
+        IsNearFaucet = false;
+
+        PlayerManager.Instance.ClearHeldObject();
+
+        transform.SetParent(startParent);            
+        rb.isKinematic = false;
+    }
+
+    private void PlayPourAnimation()
+    {
+        if(isPouring) return;
+        isPouring = true;
+        PlayerManager.Instance.SetAnimatorBool("IsPour", true);
+
+        if(pourEffect != null)
+            pourEffect.Play();
+
+        StartCoroutine(StopPourAnimation(pouringDuration));
+        StartCoroutine(DrainWaterOverTime(pouringDuration));
+    }
+
+    private IEnumerator StopPourAnimation(float duration)
+    {
+        yield return new WaitForSeconds(duration);
+
+        PlayerManager.Instance.SetAnimatorBool("IsPour", false);
+
+        if(pourEffect != null)
+            pourEffect.Stop();
+        
+        isPouring = false;
+        DropToStart();
+    }
+
+    private IEnumerator DrainWaterOverTime(float duration)
+    {
+        float startFill = currentFill;
+        float elapsed = 0f;
+
+        while (elapsed < duration)
+        {
+            elapsed += Time.deltaTime;
+            float t = Mathf.Clamp01(elapsed / duration);
+            currentFill = Mathf.Lerp(startFill, 0f, t);
+            ApplyFillVisual();
+            yield return null;
+        }
+
+        currentFill = 0f;
+        ApplyFillVisual();
+    }
+
     public void Interact()
     {
         if(!IsHeld)
@@ -72,15 +144,11 @@ public class WateringCan : MonoBehaviour, IInteractable
         else if(IsNearPlant)
         {
             OnWatered?.Invoke();
-            // 물주는 모션 추가
+            PlayPourAnimation();
         }
         else
         {
-            IsHeld = false;
-            IsPlaced = false;
-            IsNearFaucet = false;
-            transform.SetParent(startParent);
-            rb.isKinematic = false;
+            DropToStart();
         }
     }
 }

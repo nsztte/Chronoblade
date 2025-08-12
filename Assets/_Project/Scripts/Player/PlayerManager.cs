@@ -54,6 +54,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     
      [Header("장착 소켓")]
     [SerializeField] private Transform heldPosition;
+    private GameObject currentHeldObject;
 
     private float currentComboDamage;
     private ComboAttackData currentCombo;
@@ -137,6 +138,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
         RecoverMpOverTime();
         RecoverStaminaOverTime();
         UpdateInvincibility();
+        HeldSomething();
     }
 
     #region 플레이어 상태 관리
@@ -187,7 +189,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
         }
     }
 
-
     private void Die()
     {
         // 게임 오버 처리
@@ -197,6 +198,23 @@ public class PlayerManager : MonoBehaviour, IDamageable
         playerStateMachine?.ChangeState(new PlayerDeathState(playerStateMachine));
     }
 
+    public void SetHeldObject(GameObject obj)
+    {
+        currentHeldObject = obj;
+        HeldSomething();
+    }
+
+    public void ClearHeldObject()
+    {
+        currentHeldObject = null;
+        HeldSomething();
+    }
+
+    private void HeldSomething()
+    {
+        bool isHolding = currentHeldObject != null;
+        SetAnimatorBool("IsHeld", isHolding);
+    }
 
     #endregion
 

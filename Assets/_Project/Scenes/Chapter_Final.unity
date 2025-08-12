@@ -2515,6 +2515,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.66732997, y: 1.7987548, z: 0.5419009}
   m_Center: {x: -0.017159436, y: 0.8993774, z: 0.0037424276}
+--- !u!4 &770292214 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5328345830871219941, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
+  m_PrefabInstance: {fileID: 1841705849}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &795798803
 GameObject:
   m_ObjectHideFlags: 0
@@ -4823,11 +4828,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2644141858824963807, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
   m_PrefabInstance: {fileID: 1841705849}
   m_PrefabAsset: {fileID: 0}
---- !u!4 &1658968813 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 1062656909117928978, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
-  m_PrefabInstance: {fileID: 1841705849}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1001 &1677703041
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -5595,8 +5595,8 @@ PrefabInstance:
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 1062656909117928978, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
-      insertIndex: 1
+    - targetCorrespondingSourceObject: {fileID: 5328345830871219941, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
+      insertIndex: 0
       addedObject: {fileID: 2032858376}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 6f79ac4aff716444380863ae37b0fbfc, type: 3}
@@ -6017,13 +6017,13 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 2032858375}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1.193, z: 0.461}
+  m_LocalRotation: {x: -0.5645145, y: -0.7890667, z: -0.097295135, w: 0.22188018}
+  m_LocalPosition: {x: 0.007, y: -0.029, z: -0.116}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
-  m_Father: {fileID: 1658968813}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_Father: {fileID: 770292214}
+  m_LocalEulerAnglesHint: {x: -23.832, y: 195.231, z: 67.929}
 --- !u!1 &2059914329
 GameObject:
   m_ObjectHideFlags: 0
@@ -6235,7 +6235,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!4 &2077626266
 Transform:
   m_ObjectHideFlags: 0
@@ -6345,7 +6345,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 0
   prewarm: 0
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -39900,6 +39900,8 @@ MonoBehaviour:
   maxHeight: 1
   fillPerDrop: 0.5
   startParent: {fileID: 1216660259}
+  heldOffset: {x: -0.307, y: -0.163, z: 0}
+  pourEffect: {fileID: 0}
   currentFill: 0
 --- !u!65 &919132148225500859
 BoxCollider:
