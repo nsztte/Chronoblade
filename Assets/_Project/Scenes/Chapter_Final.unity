@@ -5359,6 +5359,7 @@ Transform:
   m_Children:
   - {fileID: 859644793}
   - {fileID: 442272013}
+  - {fileID: 543450653431526590}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1271340419
@@ -30826,8 +30827,8 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 919132149423877636}
   serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0.7071068, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: -27.15, y: 16.87, z: -59.67}
+  m_LocalRotation: {x: -0, y: 0.7071068, z: -0, w: 0.7071068}
+  m_LocalPosition: {x: -0.27999878, y: -0.26999855, z: 0.030002594}
   m_LocalScale: {x: 30, y: 50, z: 30}
   m_ConstrainProportionsScale: 0
   m_Children:
@@ -30835,7 +30836,7 @@ Transform:
   - {fileID: 6548708718337932737}
   - {fileID: 7531589271468705516}
   - {fileID: 372415306}
-  m_Father: {fileID: 0}
+  m_Father: {fileID: 1247172075}
   m_LocalEulerAnglesHint: {x: 0, y: 90, z: 0}
 --- !u!1 &544609072594774252
 GameObject:
@@ -42995,13 +42996,46 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 543450653431526590}
-  m_Layer: 0
-  m_Name: maze_anim
+  - component: {fileID: 919132149423877637}
+  m_Layer: 10
+  m_Name: Maze
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
+--- !u!114 &919132149423877637
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 919132149423877636}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7a5ac11cc976e418e8d13136b07e1f52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SerializedVersion: 0
+  m_AgentTypeID: 1479372276
+  m_CollectObjects: 2
+  m_Size: {x: 10, y: 10, z: 10}
+  m_Center: {x: 0, y: 2, z: 0}
+  m_LayerMask:
+    serializedVersion: 2
+    m_Bits: 1024
+  m_UseGeometry: 0
+  m_DefaultArea: 4
+  m_GenerateLinks: 0
+  m_IgnoreNavMeshAgent: 1
+  m_IgnoreNavMeshObstacle: 1
+  m_OverrideTileSize: 0
+  m_TileSize: 256
+  m_OverrideVoxelSize: 0
+  m_VoxelSize: 0.06666667
+  m_MinRegionArea: 2
+  m_NavMeshData: {fileID: 23800000, guid: 61e509446bfae764ea6cf35b4e8bd61a, type: 2}
+  m_BuildHeightMesh: 0
 --- !u!1 &919132149495219758
 GameObject:
   m_ObjectHideFlags: 0
@@ -43808,12 +43842,12 @@ GameObject:
   - component: {fileID: 2753460593730797372}
   - component: {fileID: 9140302696809477826}
   - component: {fileID: 1366755538}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Wall
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &946294668016586928
 BoxCollider:
@@ -311177,12 +311211,12 @@ GameObject:
   - component: {fileID: 306745783287702073}
   - component: {fileID: 1576632438887592879}
   - component: {fileID: 8716696373546016798}
-  m_Layer: 0
+  m_Layer: 10
   m_Name: Ground
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
+  m_StaticEditorFlags: 2147483647
   m_IsActive: 1
 --- !u!65 &8716696373546016798
 BoxCollider:
@@ -328667,10 +328701,9 @@ SceneRoots:
   - {fileID: 1271340421}
   - {fileID: 305962132}
   - {fileID: 2150924297739667227}
+  - {fileID: 2588690735736877759}
   - {fileID: 959623819}
   - {fileID: 333278906}
   - {fileID: 93677061}
   - {fileID: 930125194}
   - {fileID: 1656381684}
-  - {fileID: 543450653431526590}
-  - {fileID: 2588690735736877759}
