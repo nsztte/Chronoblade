@@ -24,7 +24,10 @@ public class MazeStatue : MonoBehaviour
     private void Start()
     {
         if(wayPoint != null && wayPoints.Count > 0)
+        {
+            transform.position = wayPoints[0].position;
             StartCoroutine(MoveRoutine());
+        }
     }
 
     private IEnumerator MoveRoutine()
