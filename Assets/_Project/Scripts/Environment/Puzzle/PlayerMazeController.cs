@@ -3,7 +3,6 @@ using System.Collections;
 
 public class PlayerMazeController : MonoBehaviour
 {
-    [SerializeField] private int chance = 2;
     [SerializeField] private Transform startPosition;
     [SerializeField] private float moveSpeed = 5f;
     [SerializeField] private float rayDistance = 2f;
@@ -12,15 +11,16 @@ public class PlayerMazeController : MonoBehaviour
     [SerializeField] private LayerMask waypointLayer;
     [SerializeField] private LayerMask wallLayer;
 
+    private Quaternion startRotation;
     private float lastMoveTime = -Mathf.Infinity;
     private bool isMoving = false;
     private bool isRotating = false;
 
     private void Start()
     {
-        Vector3 target = startPosition.position;
-        target.y = transform.position.y;
-        transform.position = target;
+        startRotation = transform.rotation;
+
+        Reset();
     }
 
     private void Update()
@@ -95,5 +95,19 @@ public class PlayerMazeController : MonoBehaviour
 
         transform.rotation = endRot;
         isRotating = false;
+    }
+
+    public void Reset()
+    {        
+        StopAllCoroutines();
+
+        isMoving = false;
+        isRotating = false;
+
+        Vector3 target = startPosition.position;
+        target.y = transform.position.y;
+        transform.position = target;
+
+        transform.rotation = startRotation;
     }
 }

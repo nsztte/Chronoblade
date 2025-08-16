@@ -1,8 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
-using UnityEngine.InputSystem.Utilities;
 
 public class MazeStatue : MonoBehaviour
 {
@@ -22,6 +20,16 @@ public class MazeStatue : MonoBehaviour
             target.y = transform.position.y;
             transform.position = target;
             StartCoroutine(MoveRoutine());
+        }
+    }
+
+    private void OnTriggerEnter(Collider other)
+    {
+        if(other.TryGetComponent(out PlayerMazeController playerStatue))
+        {
+            // 플레이어 빙의 해제
+
+            playerStatue.Reset();
         }
     }
 
