@@ -6,26 +6,21 @@ using UnityEngine.InputSystem.Utilities;
 
 public class MazeStatue : MonoBehaviour
 {
-    [SerializeField] private Transform wayPoint;
+    [SerializeField] private List<Transform> wayPoints;
     [SerializeField] private float moveInterval = 2f;
     [SerializeField] private float moveSpeed = 2f;
     
-    private List<Transform> wayPoints;
     private int currentIndex = 0;
     private int direction = 1;
     private bool isMoving = false;
 
-    private void Awake()
-    {
-        if(wayPoint != null)
-            wayPoints = wayPoint.GetComponentsInChildren<Transform>().Skip(1).ToList();
-    }
-
     private void Start()
     {
-        if(wayPoint != null && wayPoints.Count > 0)
+        if(wayPoints.Count > 0)
         {
-            transform.position = wayPoints[0].position;
+            Vector3 target = wayPoints[0].position;
+            target.y = transform.position.y;
+            transform.position = target;
             StartCoroutine(MoveRoutine());
         }
     }
@@ -61,6 +56,7 @@ public class MazeStatue : MonoBehaviour
         }
 
         Vector3 target = wayPoints[currentIndex].position;
+        target.y = transform.position.y;
 
         Vector3 directionVec = (target - start).normalized;
 
@@ -73,7 +69,7 @@ public class MazeStatue : MonoBehaviour
         else if (Vector3.Angle(directionVec, Vector3.left) < threshold) angle = 270f;
 
         transform.rotation = Quaternion.Euler(0f, angle, 0f);
-
+        
         float t = 0f;
         while(t < 1f)
         {
