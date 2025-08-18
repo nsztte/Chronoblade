@@ -41,7 +41,11 @@ public class PlayerMazeController : MonoBehaviour
             }
         }
 
-        if(Input.GetKeyDown(KeyCode.LeftControl))
+        if (Input.GetMouseButtonDown(0)) // 좌클릭 → 왼쪽 회전
+        {
+            StartCoroutine(SmoothRotate(-90f));
+        }
+        else if (Input.GetMouseButtonDown(1)) // 우클릭 → 오른쪽 회전
         {
             StartCoroutine(SmoothRotate(90f));
         }
@@ -116,6 +120,11 @@ public class PlayerMazeController : MonoBehaviour
     public void SetPossessed(bool value)
     {
         isPossessed = value;
-        PlayerStatueCamera.SetActive(value);
+        PlayerManager.Instance.SetPossessed(value);
+
+        if(value)
+            PlayerStatueCamera.SetActive(value);
+        else
+            CutsceneCameraManager.Instance.EndCutscene(PlayerStatueCamera);
     }
 }

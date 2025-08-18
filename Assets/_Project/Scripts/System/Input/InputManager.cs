@@ -49,6 +49,15 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        // 빙의시 상호작용 외에 다른 움직임 차단
+        if (PlayerManager.Instance.IsPossessed)
+        {
+            if (Input.GetKeyDown(KeyCode.F))
+                OnInteract?.Invoke();
+
+            return;
+        }
+
         // 시간 정지 상태에서는 모든 입력 및 시점 회전 차단
         if(PlayerManager.Instance.IsFrozen) return; 
 

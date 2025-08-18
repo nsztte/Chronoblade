@@ -3268,7 +3268,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   Priority:
     Enabled: 1
-    m_Value: 10
+    m_Value: 30
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -11121,7 +11121,8 @@ MonoBehaviour:
   wallLayer:
     serializedVersion: 2
     m_Bits: 16384
-  isPossession: 0
+  PlayerStatueCamera: {fileID: 561179772}
+  isPossessed: 0
 --- !u!1 &1776970734
 GameObject:
   m_ObjectHideFlags: 0
@@ -323695,7 +323696,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   mazeCamera: {fileID: 372415305}
-  targetPossessObject: {fileID: 0}
+  playerMazeController: {fileID: 1749294902}
 --- !u!198 &8445763113843158285
 ParticleSystem:
   m_ObjectHideFlags: 0

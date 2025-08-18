@@ -52,7 +52,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private float invincibilityTimer = 0f;
     [SerializeField] private float hitInvincibilityDuration = 0.5f;
     
-     [Header("장착 소켓")]
+    [Header("장착 소켓")]
     [SerializeField] private Transform heldPosition;
     private GameObject currentHeldObject;
 
@@ -66,6 +66,10 @@ public class PlayerManager : MonoBehaviour, IDamageable
     // 회복 타이머
     private float mpRecoveryTimer = 0f;
     private float staminaRecoveryTimer = 0f;
+
+    // 플레이어 빙의 관련
+    public bool IsPossessed { get; private set; }
+    public void SetPossessed(bool value) => IsPossessed = value;
 
     #region Properties
     public Transform PlayerTransform => playerTransform;
