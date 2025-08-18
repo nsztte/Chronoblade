@@ -10,8 +10,9 @@ public class PlayerMazeController : MonoBehaviour
     [SerializeField] private float rotationDuration = 0.2f;
     [SerializeField] private LayerMask waypointLayer;
     [SerializeField] private LayerMask wallLayer;
+    [SerializeField] private GameObject PlayerStatueCamera;
 
-    [SerializeField] private bool isPossession = false;
+    [SerializeField] private bool isPossessed = false;
     private Quaternion startRotation;
     private float lastMoveTime = -Mathf.Infinity;
     private bool isMoving = false;
@@ -26,7 +27,7 @@ public class PlayerMazeController : MonoBehaviour
 
     private void Update()
     {
-        if(!isPossession || isMoving || isRotating) return;
+        if(!isPossessed || isMoving || isRotating) return;
 
         if (Time.time - lastMoveTime >= moveDelay)
         {
@@ -110,5 +111,11 @@ public class PlayerMazeController : MonoBehaviour
         transform.position = target;
 
         transform.rotation = startRotation;
+    }
+
+    public void SetPossessed(bool value)
+    {
+        isPossessed = value;
+        PlayerStatueCamera.SetActive(value);
     }
 }
