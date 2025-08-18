@@ -29,11 +29,13 @@ public class PossessionPortal : MonoBehaviour, IInteractable
     {
         if (!isPlayerInside) return;
 
-        isPlayerInside = false;
-
-        CutsceneCameraManager.Instance.EndCutscene(mazeCamera, () =>
+        if(playerMazeController.IsNearPortal && playerMazeController.IsPossessed)
         {
-            playerMazeController?.SetPossessed(true);
-        });
+            playerMazeController.SetPossessed(false);
+        }
+        else
+        {
+            playerMazeController.SetPossessed(true);
+        }
     }
 }

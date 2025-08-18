@@ -12,7 +12,8 @@ public class PlayerMazeController : MonoBehaviour
     [SerializeField] private LayerMask wallLayer;
     [SerializeField] private GameObject PlayerStatueCamera;
 
-    [SerializeField] private bool isPossessed = false;
+    public bool IsPossessed { get; private set; } = false;
+    public bool IsNearPortal { get; set; }
     private Quaternion startRotation;
     private float lastMoveTime = -Mathf.Infinity;
     private bool isMoving = false;
@@ -27,7 +28,7 @@ public class PlayerMazeController : MonoBehaviour
 
     private void Update()
     {
-        if(!isPossessed || isMoving || isRotating) return;
+        if(!IsPossessed || isMoving || isRotating) return;
 
         if (Time.time - lastMoveTime >= moveDelay)
         {
@@ -119,12 +120,8 @@ public class PlayerMazeController : MonoBehaviour
 
     public void SetPossessed(bool value)
     {
-        isPossessed = value;
+        IsPossessed = value;
         PlayerManager.Instance.SetPossessed(value);
-
-        if(value)
-            PlayerStatueCamera.SetActive(value);
-        else
-            CutsceneCameraManager.Instance.EndCutscene(PlayerStatueCamera);
+        PlayerStatueCamera.SetActive(value);
     }
 }
