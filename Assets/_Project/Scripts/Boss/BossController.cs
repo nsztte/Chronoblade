@@ -34,6 +34,9 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("취약점 세팅")]
     [SerializeField] private GameObject weakPointObject;
 
+    [Header("시네머신 카메라")]
+    [SerializeField] private GameObject clockPuzzleCamera;
+
     // 참조
     private Animator animator;
     private Transform player;
@@ -42,6 +45,7 @@ public class BossController : MonoBehaviour, IDamageable
     public BossPhaseManager PhaseManager => phaseManager;
     public PuzzleClockManager PuzzleClockManager => puzzleClockManager;
     public Transform Player => player;
+    public GameObject ClockPuzzleCamera => clockPuzzleCamera;
 
     private void Awake()
     {

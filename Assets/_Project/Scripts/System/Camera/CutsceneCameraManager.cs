@@ -6,7 +6,7 @@ using System;
 public class CutsceneCameraManager : MonoBehaviour
 {
     [SerializeField] private GameObject playerCinemachineCamera;
-    [SerializeField] private GameObject clockPuzzleCinemachineCamera;
+    // [SerializeField] private GameObject clockPuzzleCinemachineCamera;
 
     #region Singleton
     public static CutsceneCameraManager Instance { get; private set; }
@@ -22,25 +22,43 @@ public class CutsceneCameraManager : MonoBehaviour
     }
     #endregion
 
-    public void StartPuzzle()
+    // public void StartPuzzle()
+    // {
+    //     playerCinemachineCamera.SetActive(true);
+    //     StartCoroutine(EnableClockCamNextFrame());
+    // }
+
+    // public void EndPuzzle(Action onComplete)
+    // {
+    //     clockPuzzleCinemachineCamera.SetActive(false);
+    //     StartCoroutine(DisablePlayerCameraAfterBlend(onComplete));
+    // }
+
+    // private IEnumerator EnableClockCamNextFrame()
+    // {
+    //     yield return null;
+    //     clockPuzzleCinemachineCamera.SetActive(true);
+    // }
+
+    public void StartCutscene(GameObject targetCamera)
     {
         playerCinemachineCamera.SetActive(true);
-        StartCoroutine(EnableClockCamNextFrame());
+        StartCoroutine(EnableCamNextFrame(targetCamera));
     }
 
-    public void EndPuzzle(Action onComplete)
+    public void EndCutscene(GameObject targetCamera, Action onComplete = null)
     {
-        clockPuzzleCinemachineCamera.SetActive(false);
+        targetCamera.SetActive(false);
         StartCoroutine(DisablePlayerCameraAfterBlend(onComplete));
     }
 
-    private IEnumerator EnableClockCamNextFrame()
+    private IEnumerator EnableCamNextFrame(GameObject cam)
     {
         yield return null;
-        clockPuzzleCinemachineCamera.SetActive(true);
+        cam.SetActive(true);
     }
 
-    private IEnumerator DisablePlayerCameraAfterBlend(Action onComplete)
+    private IEnumerator DisablePlayerCameraAfterBlend(Action onComplete = null)
     {
         yield return null;
 

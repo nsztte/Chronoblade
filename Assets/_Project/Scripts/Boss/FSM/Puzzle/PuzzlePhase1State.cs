@@ -21,7 +21,8 @@ public class PuzzlePhase1State : BaseBossState
         boss.StartPuzzle();
 
         // 카메라 연출 시작
-        CutsceneCameraManager.Instance.StartPuzzle();
+        // CutsceneCameraManager.Instance.StartPuzzle();
+        CutsceneCameraManager.Instance.StartCutscene(boss.ClockPuzzleCamera);
     }
 
     public override void Exit()
@@ -39,7 +40,8 @@ public class PuzzlePhase1State : BaseBossState
 
         // 퍼즐 종료 카메라 이동
         boss.SetClockPartsTarget(false);
-        CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
+        // CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
+        CutsceneCameraManager.Instance.EndCutscene(boss.ClockPuzzleCamera, () => boss.PuzzleClockManager.LaunchAllClockParts());
         boss.WaitPartsArrival(() => {
             boss.EndPuzzle();
             boss.ExposeWeakPoint(5f, () => ChangeToPhase2());
@@ -51,7 +53,8 @@ public class PuzzlePhase1State : BaseBossState
         // TODO: 퍼즐 실패 연출 / 플레이어 패널티 or 보스 체력 회복
 
         boss.SetClockPartsTarget(true);
-        CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
+        // CutsceneCameraManager.Instance.EndPuzzle(() => boss.PuzzleClockManager.LaunchAllClockParts());
+        CutsceneCameraManager.Instance.EndCutscene(boss.ClockPuzzleCamera, () => boss.PuzzleClockManager.LaunchAllClockParts());
         boss.WaitPartsArrival(() => {
             boss.EndPuzzle();
             ChangeToPhase2();
