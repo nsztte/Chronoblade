@@ -34483,7 +34483,7 @@ PrefabInstance:
     - target: {fileID: 9054690738797417494, guid: 4f9b3f5ed3fbbd64396dbdbe65be3f48, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 0}
+      objectReference: {fileID: 1063076768}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -36258,6 +36258,57 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1062656914}
   m_Mesh: {fileID: -5076798556035486163, guid: 3e84791e198282a4784a56da24094952, type: 3}
+--- !u!1 &1063076767
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1063076769}
+  - component: {fileID: 1063076768}
+  m_Layer: 0
+  m_Name: PuzzleRoom6Manager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &1063076768
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063076767}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6853e5749fa5c494587f2dac30a9868d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  clearedPortal: {fileID: 0}
+  clearedReward: {fileID: 0}
+  endPoint: {fileID: 1682708915}
+  detectRadius: 0.5
+  statueLayer:
+    serializedVersion: 2
+    m_Bits: 1
+--- !u!4 &1063076769
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1063076767}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1247172075}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1067990949
 GameObject:
   m_ObjectHideFlags: 0
@@ -46946,6 +46997,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1063076769}
   - {fileID: 859644793}
   - {fileID: 442272013}
   - {fileID: 1749294900}
