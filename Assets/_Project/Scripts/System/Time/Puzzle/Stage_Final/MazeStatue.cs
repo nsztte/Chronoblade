@@ -26,8 +26,11 @@ public class MazeStatue : MonoBehaviour, ITimeControllable, IRewindable
             transform.position = target;
             moveRoutine = StartCoroutine(MoveRoutine());
         }
+    }
 
-        TimeManager.Instance.RegisterControllable(this);    // 나중에 OnEnable로 옮기기
+    private void OnEnable()
+    {
+        TimeManager.Instance.RegisterControllable(this);
         TimeManager.Instance.RegisterRewindable(this);
     }
 
@@ -41,9 +44,8 @@ public class MazeStatue : MonoBehaviour, ITimeControllable, IRewindable
     {
         if(other.TryGetComponent(out PlayerMazeController playerStatue))
         {
-            // 플레이어 빙의 해제
-
-            playerStatue.Reset();
+            playerStatue.SetPossessed(false);   // 플레이어 빙의 해제
+            playerStatue.Reset();               // 플레이어 조각상 위치 초기화
         }
     }
 
