@@ -1969,3 +1969,39 @@ Enemy FSM(상태머신) 시스템 구현
 - 각 조각상마다 독립 루틴으로 작동 → 개별 시간 스킬 연동 가능
 
 ---
+
+## 2025.08.18 (월) 작업 기록
+
+### 주요 작업
+- 컷씬 카메라 시스템 리팩토링
+  - `StartPuzzle()`, `EndPuzzle()` 제거
+  - `StartCutscene(GameObject)`, `EndCutscene(GameObject, Action)` 범용 함수로 통합
+  - PlayerCinemachine → 대상 컷씬 카메라 순으로 자연스러운 블렌딩 처리 구현
+
+- 퍼즐6 빙의 시스템 구현
+  - `PossessionPortal.cs` 추가: F키 상호작용 기반 빙의 전환 처리
+  - `PlayerMazeController.cs`: `SetPossessed(bool)` 구현 및 카메라/입력 제어 분기 추가
+  - `CutsceneCameraManager`와 연동하여 자연스러운 시야 전환 구현
+
+- 입력 제어 시스템 개선
+  - `InputManager.cs`에서 빙의 상태일 경우 상호작용(F키)만 허용
+  - 입력 처리 흐름을 `IsPossessed > IsFrozen > IsParalyzed` 순으로 재정렬
+  - 조각상 회전 입력을 마우스 클릭(좌/우) 기반으로 변경
+
+- 빙의 해제 시스템 구현
+  - `UnpossessPortal.cs`: 조각상 트리거 진입 감지 및 해제 조건 전달
+  - `PossessionPortal.cs`: 빙의 상태일 경우 F키 입력 시 해제 처리
+  - 양방향 빙의-해제 흐름을 트리거 + 인터랙션 기반으로 구현
+
+- 퍼즐6 매니저 구현 (`PuzzleRoom6Manager.cs`)
+  - 조각상이 endPoint 근처에 도달했는지 감지하여 퍼즐 해금 처리
+  - `clearedPortal`, `clearedReward` 오브젝트 활성화
+  - 기존 `PuzzleRoomManager` 구조와 동일한 방식으로 구현하여 일관성 유지
+
+### 메모
+- 컷씬/카메라/입력 구조가 일관적으로 정비되어 퍼즐6 외 다른 퍼즐이나 컷씬 연출에 재활용 가능
+- 빙의 상태 시 플레이어 입력 차단을 InputManager 중심으로 처리해 확장성 확보
+- 조각상 태그/레이어는 추후 폴리싱 단계에서 정리할 예정
+- 퍼즐 해금 조건을 퍼즐매니저 쪽에서 전담하도록 분리해 유지보수에 유리한 구조 완성
+
+---
