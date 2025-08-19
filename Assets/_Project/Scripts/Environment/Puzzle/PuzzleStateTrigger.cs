@@ -9,12 +9,6 @@ public class PuzzleStateTrigger : MonoBehaviour
     private bool isCleared = false;
     public bool IsCleared { get => puzzleRoomManager ? puzzleRoomManager.IsCleared : isCleared; set => isCleared = value; }
 
-    private void Start()
-    {
-        if(puzzleRoomDoor != null)
-            puzzleRoomDoor.SetActive(false);
-    }
-
     private void Update()
     {
         if(IsCleared)
