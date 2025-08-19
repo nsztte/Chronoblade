@@ -89,6 +89,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public ComboAttackData CurrentCombo => currentCombo;
     public bool IsFrozen => playerController.IsFrozen;
     public bool IsParalyzed => playerController.IsParalyzed;
+    public GameObject CurrentHeldObject => currentHeldObject;
     #endregion
 
     #region Singleton

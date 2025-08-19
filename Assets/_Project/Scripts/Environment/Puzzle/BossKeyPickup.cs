@@ -1,13 +1,21 @@
+using System;
 using UnityEngine;
 
 public class BossKeyPickup : MonoBehaviour, IInteractable
 {
     [SerializeField] private Transform startParent;
     [SerializeField] private Vector3 heldOffset = new Vector3(0, 0, 0);
-
+    public int SlotIndex;
+    public Action insert;
     private bool isHeld = false;
+    private bool isInserted = false;
     private Rigidbody rb;
     private Collider col;
+
+    public bool IsHeld => isHeld;
+    public bool IsInserted => isInserted;
+    public bool CanInsert { get; set; } = false;
+
 
     private void Awake()
     {
@@ -17,6 +25,22 @@ public class BossKeyPickup : MonoBehaviour, IInteractable
 
         if (startParent == null) startParent = transform.parent;
     }
+    
+    public void InsertToSocket(Transform socket)
+    {
+        isInserted = true;
+        isHeld = false;
+
+        rb.isKinematic = true;
+        col.enabled = false;
+
+        PlayerManager.Instance?.ClearHeldObject();
+
+        transform.SetParent(socket, false);
+        transform.localPosition =Vector3.zero;
+        transform.localRotation = Quaternion.identity;
+    }
+
 
     private void PickUp(bool value)
     {
@@ -43,6 +67,16 @@ public class BossKeyPickup : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        PickUp(!isHeld);
+        if(isInserted) return;
+
+        if(CanInsert)
+        {
+            insert?.Invoke();
+            CanInsert = false;
+        }
+        else
+        {
+            PickUp(!isHeld);
+        }
     }
 }
