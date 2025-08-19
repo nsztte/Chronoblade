@@ -12,6 +12,11 @@ public class PuzzleProgressManager : MonoBehaviour
     private readonly HashSet<int> cleared  = new();
     private int keyCount = 0;
 
+    private static readonly Dictionary<int, int> unlockMap = new()
+    {
+        {3, 5}, {5, 4}, {4, 6}
+    };
+
     #region Singleton
     public static PuzzleProgressManager Instance { get; private set; }
 
@@ -32,14 +37,14 @@ public class PuzzleProgressManager : MonoBehaviour
     #endregion
 
     public bool IsUnlocked(int roomId) => unlocked.Contains(roomId);
+    public bool IsCleared (int roomId) => cleared.Contains(roomId);
+    public int GetKeyCount() => keyCount;
 
     public void MarkCleared(int roomId)
     {
         if (!cleared.Add(roomId)) return;
         OnRoomCleared?.Invoke(roomId);
-        if (roomId == 3) Unlock(5);
-        else if (roomId == 5) Unlock(4);
-        else if (roomId == 4) Unlock(6);
+        if (unlockMap.TryGetValue(roomId, out var next)) Unlock(next);
     }
 
     public void ReportKeyInserted(int total)
