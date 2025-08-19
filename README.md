@@ -2005,3 +2005,46 @@ Enemy FSM(상태머신) 시스템 구현
 - 퍼즐 해금 조건을 퍼즐매니저 쪽에서 전담하도록 분리해 유지보수에 유리한 구조 완성
 
 ---
+
+## 2025.08.19 (화) 작업 기록
+
+### 주요 작업
+- PuzzleProgressManager 구현 및 퍼즐 해금 체인 설계
+  - 중앙 퍼즐 진행 매니저(PuzzleProgressManager) 신규 구현
+  - 이벤트 시스템(OnRoomUnlocked / OnRoomCleared / OnKeyInserted) 구축
+  - 퍼즐 해금 체인: 3번 → 5번 → 4번 → 6번
+  - 초기 해금 방: 3번
+  - Dictionary 기반 unlockMap으로 해금 순서 간결화
+  - IsCleared, GetKeyCount 함수로 클리어 및 키 삽입 여부 체크 가능
+
+- PuzzleGate 컴포넌트 구현 및 각 퍼즐방 도어에 연동
+  - 각 퍼즐 도어에 PuzzleGate 부착
+  - PuzzleProgressManager의 해금 이벤트 구독하여 해금 시 자동 비활성화 처리
+  - Start 시 초기 해금 상태 동기화 적용
+
+- BossKeyPickup 구현 (보스 키 상호작용 오브젝트)
+  - IInteractable 구현, F키 상호작용 가능
+  - 플레이어 손 위치(HeldPosition)에 부착/해제 가능
+  - 들고 있을 때 isKinematic 활성화, 콜라이더 비활성화
+  - InsertToSocket() 구현: 소켓에 삽입 시 상태 변경 및 비주얼 처리
+  - insert 델리게이트 이벤트 구조로 삽입 요청 전달
+
+- BossAltar 구현 (보스 키 소켓 구조)
+  - OnTriggerStay로 플레이어가 들고 있는 BossKeyPickup의 CanInsert 설정
+  - InsertKey()로 유효한 소켓에 키 삽입 처리
+    - childCount 기준 중복 방지
+    - 삽입 시 inserted 카운트 증가
+    - PuzzleProgressManager.ReportKeyInserted(inserted) 호출
+    - 모든 슬롯 삽입 완료 시 bossGateToOpen 오브젝트 활성화
+
+- 구조 개선 및 방어 코드 추가
+  - BossKeyPickup의 중복 삽입 방지
+  - BossAltar의 슬롯 인덱스 유효성 및 상태 점검
+  - 이벤트 해제 시점 명확화(OnDisable 등 정리)
+
+### 메모
+- 향후 보스 키 삽입 연출(회전 구조물, 빛 이펙트 등)은 에셋 확보 이후 폴리싱 단계에서 구현 예정
+- 퍼즐 실패 → 부활 처리, PlayerPrefs 저장 로직 등은 UI 작업 이후 진행
+- 보스방 개방 컷씬은 폴리싱 단계로 이관 예정
+
+---
