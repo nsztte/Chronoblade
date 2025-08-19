@@ -50,7 +50,7 @@ public class TimeManager : MonoBehaviour
         TimeInputHandler.Instance.OnTimeFastForwardEnd += OnTimeFastForwardEnd;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         // 이벤트 구독 해제
         if (TimeInputHandler.Instance != null)

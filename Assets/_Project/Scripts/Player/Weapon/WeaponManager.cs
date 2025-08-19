@@ -36,7 +36,7 @@ public class WeaponManager : MonoBehaviour
         playerController = PlayerManager.Instance.PlayerController;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         InputManager.Instance.OnWeaponSwitch -= OnWeaponSwitch;
     }

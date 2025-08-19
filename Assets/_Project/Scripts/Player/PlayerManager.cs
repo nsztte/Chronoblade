@@ -131,7 +131,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
         InputManager.Instance.OnInteract += OnHandleInteract;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         if (InputManager.Instance != null)
             InputManager.Instance.OnInteract -= OnHandleInteract;

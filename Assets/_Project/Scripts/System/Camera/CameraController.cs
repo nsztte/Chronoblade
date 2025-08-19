@@ -72,7 +72,7 @@ public class CameraController : MonoBehaviour
         // targetLocalPosition = defaultLocalPosition;
     }
 
-    private void OnDisable()
+    private void OnDestroy()
     {
         InputManager.Instance.OnLookInput -= OnLookInput;
         InputManager.Instance.OnAimStarted -= OnAimStarted;
