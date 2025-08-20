@@ -3,42 +3,42 @@ using UnityEngine;
 
 public class BossKeyPickup : MonoBehaviour, IInteractable
 {
-    [SerializeField] private Transform startParent;
     [SerializeField] private Vector3 heldOffset = new Vector3(0, 0, 0);
+    private Transform startParent;
     public int SlotIndex;
     public Action insert;
     private bool isHeld = false;
-    private bool isInserted = false;
+    private bool isActivated = false;
     private Rigidbody rb;
-    private Collider col;
+    // private Collider col;
 
     public bool IsHeld => isHeld;
-    public bool IsInserted => isInserted;
-    public bool CanInsert { get; set; } = false;
+    public bool IsActivated => isActivated;
+    public bool CanActive { get; set; } = false;
 
 
     private void Awake()
     {
         rb = GetComponent<Rigidbody>();
-        col = GetComponent<Collider>();
+        // col = GetComponent<Collider>();
         rb.isKinematic = false;
 
-        if (startParent == null) startParent = transform.parent;
+        startParent = transform.parent;
     }
-    
-    public void InsertToSocket(Transform socket)
+
+    private void OnDisable()
     {
-        isInserted = true;
+        if (isHeld) PlayerManager.Instance?.ClearHeldObject();
+    }
+
+    public void ActivateSocket(GameObject socket)
+    {
+        isActivated = true;
         isHeld = false;
 
-        rb.isKinematic = true;
-        col.enabled = false;
-
         PlayerManager.Instance?.ClearHeldObject();
-
-        transform.SetParent(socket, false);
-        transform.localPosition =Vector3.zero;
-        transform.localRotation = Quaternion.identity;
+        socket.SetActive(true);
+        Destroy(gameObject);
     }
 
 
@@ -50,7 +50,7 @@ public class BossKeyPickup : MonoBehaviour, IInteractable
 
         isHeld = value;
         rb.isKinematic = value;
-        col.enabled = !value;
+        // col.enabled = !value;
         transform.SetParent(socket, true);
 
         if(value)
@@ -67,12 +67,13 @@ public class BossKeyPickup : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if(isInserted) return;
+        if (isActivated) return;
+        if (!isHeld && PlayerManager.Instance != null && PlayerManager.Instance?.CurrentHeldObject) return;
 
-        if(CanInsert)
+        if(CanActive)
         {
             insert?.Invoke();
-            CanInsert = false;
+            CanActive = false;
         }
         else
         {

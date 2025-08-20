@@ -1,11 +1,28 @@
+using System.Linq;
 using UnityEngine;
 
 public class BossAltar : MonoBehaviour
 {
-    [SerializeField] private Transform[] keySockets;
+    [SerializeField] private GameObject[] keySockets;
     [SerializeField] private GameObject bossGateToOpen;
+    [SerializeField] private GameObject lastPart;
+ 
+    [SerializeField] private int activated = 0;
+    private Animator animator;
 
-    private int inserted = 0;
+    private void Start()
+    {
+        animator = GetComponent<Animator>();
+        
+        if(PuzzleProgressManager.Instance != null)
+            PuzzleProgressManager.Instance.OnAllCleared += OnAllCleared;
+    }
+
+    private void OnDestroy()
+    {
+        if(PuzzleProgressManager.Instance != null)
+            PuzzleProgressManager.Instance.OnAllCleared -= OnAllCleared;
+    }
 
     private void OnTriggerStay(Collider other)
     {
@@ -14,10 +31,21 @@ public class BossAltar : MonoBehaviour
         var held = PlayerManager.Instance?.CurrentHeldObject;
         if (held == null) return;
 
-        if(held.TryGetComponent(out BossKeyPickup key) && !key.IsInserted)
+        if(held.TryGetComponent(out BossKeyPickup key) && !key.IsActivated)
         {
-            key.CanInsert = true;
+            key.CanActive = true;
             key.insert = () => InsertKey(key);
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (!other.CompareTag("Player")) return;
+        var held = PlayerManager.Instance?.CurrentHeldObject;
+        if (held != null && held.TryGetComponent(out BossKeyPickup key))
+        {
+            key.CanActive = false;
+            key.insert = null;
         }
     }
 
@@ -26,19 +54,27 @@ public class BossAltar : MonoBehaviour
         int i = Mathf.Clamp(key.SlotIndex, 0, keySockets.Length - 1);
         var socket = keySockets[i];
 
-        if (key.IsInserted) return;
-        if(socket.childCount > 0) return;
+        if (key.IsActivated) return;
+        if (socket.gameObject.activeSelf) return;
 
-        key.InsertToSocket(socket);
+        key.ActivateSocket(socket);
 
-        inserted++;
+        activated++;
 
-        PuzzleProgressManager.Instance.ReportKeyInserted(inserted);
+        PuzzleProgressManager.Instance.ReportKeyInserted(activated, keySockets.Length);
 
-        if (inserted >= keySockets.Length && bossGateToOpen)
+        if (activated >= keySockets.Length && bossGateToOpen)
         {
             // 문 열림 연출
             bossGateToOpen.SetActive(true);
         }
+    }
+
+    private void OnAllCleared()
+    {
+        if (lastPart) lastPart.SetActive(true);
+        if (animator) animator.SetTrigger("Active");
+
+        // 그 외 연출
     }
 }

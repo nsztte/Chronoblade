@@ -7,10 +7,13 @@ public class PuzzleProgressManager : MonoBehaviour
     public event Action<int> OnRoomUnlocked;
     public event Action<int> OnRoomCleared;
     public event Action<int> OnKeyInserted;
+    public event Action OnAllCleared;
 
     private readonly HashSet<int> unlocked = new();
     private readonly HashSet<int> cleared  = new();
     private int keyCount = 0;
+    private int maxCount = 0;
+    private bool allClearedRaised = false;
 
     private static readonly Dictionary<int, int> unlockMap = new()
     {
@@ -47,10 +50,20 @@ public class PuzzleProgressManager : MonoBehaviour
         if (unlockMap.TryGetValue(roomId, out var next)) Unlock(next);
     }
 
-    public void ReportKeyInserted(int total)
+    public void ReportKeyInserted(int total, int max)
     {
         keyCount = total;
-        OnKeyInserted?.Invoke(keyCount);
+        maxCount = max;
+
+        if(!allClearedRaised && keyCount == maxCount)
+        {
+            allClearedRaised = true;
+            OnAllCleared?.Invoke();
+        }
+        else
+        {
+            OnKeyInserted?.Invoke(keyCount);
+        }
     }
 
     private void Unlock(int roomId)
