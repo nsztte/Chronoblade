@@ -2048,3 +2048,42 @@ Enemy FSM(상태머신) 시스템 구현
 - 보스방 개방 컷씬은 폴리싱 단계로 이관 예정
 
 ---
+
+## 2025.08.20 (수) 작업 기록
+
+### 주요 작업
+- 퍼즐 진행도 연동 및 보스 제단 개선
+  - PuzzleProgressManager에 OnAllCleared 이벤트 및 중복 방지 플래그 추가
+  - 보스 제단(BossAltar)에서 socket 활성화 방식으로 전환
+  - BossKeyPickup → ActivateSocket() 구조로 변경, 삽입 후 self 파괴
+  - key 삽입 → manager에 ReportKeyInserted(total, max) 보고
+  - 각 클래스 널 가드, 상태 초기화 처리 보강
+
+- 퍼즐룸 3 클리어 조건 구현
+  - PuzzleRoom3Manager: 플레이어가 특정 위치에 도달하면 클리어 처리
+  - Physics.OverlapSphere로 영역 감지, layerMask 기반 필터링
+  - 클리어 시 포탈/보상 오브젝트 자동 활성화
+
+- 퍼즐룸 매니저 공통 처리 구조 개선
+  - PuzzleRoomManager: OnPuzzleSolved 함수 내부 공통화
+  - roomId 기반으로 PuzzleProgressManager에 클리어 보고
+  - clearedPortal, clearedReward 자동 처리 → 자식 클래스에서 중복 제거
+
+- 퍼즐 전체 연동 테스트 및 마무리 작업
+  - PuzzleRoom4Manager, PuzzleRoom6Manager 구현 마무리
+    - GrowingPlant 성장 완료 시 퍼즐 클리어 처리
+    - 퍼즐6은 빙의 해제(controller.SetPossessed(false)) 포함
+  - PossessionPortal: OnDisable로 상태 초기화 대응
+  - PuzzleStateTrigger: 퍼즐 진입 시 플레이어를 앞으로 밀기 로직 추가
+  - TeleportPortal: CharacterController 일시 비활성화로 순간이동 오류 해결
+  - PuzzleRoom3Manager: FillUpHP()로 입장 시 체력 회복
+
+### 메모
+- PuzzleProgressManager의 디버깅 편의를 위해 상태 갱신 함수 및 디버그 변수 추가함
+- 각 퍼즐 클리어 조건은 추상 메서드 대신 공통 구현 구조로 변경하여 관리 편의성 확보
+- 보스 퍼즐 파트는 key 삽입 → 소켓 활성화 → 최종 조합으로 단순화 및 시연 최적화됨
+- 퍼즐 전체 흐름은 완전하게 구성 및 테스트 완료
+- 연출적인 요소는 향후 폴리싱 단계에서 진행
+
+---
+
