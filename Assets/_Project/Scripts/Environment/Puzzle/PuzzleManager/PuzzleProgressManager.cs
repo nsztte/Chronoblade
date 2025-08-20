@@ -4,6 +4,12 @@ using UnityEngine;
 
 public class PuzzleProgressManager : MonoBehaviour
 {
+    // 테스트용
+    [SerializeField] private bool puzzle3Cleared = false;
+    [SerializeField] private bool puzzle4Cleared = false;
+    [SerializeField] private bool puzzle5Cleared = false;
+    [SerializeField] private bool puzzle6Cleared = false;
+
     public event Action<int> OnRoomUnlocked;
     public event Action<int> OnRoomCleared;
     public event Action<int> OnKeyInserted;
@@ -38,6 +44,21 @@ public class PuzzleProgressManager : MonoBehaviour
         Unlock(3);
     }
     #endregion
+
+    private void Update()
+    {
+        if(puzzle3Cleared)
+            MarkCleared(3);
+
+        if(puzzle5Cleared)
+            MarkCleared(5);
+
+        if(puzzle4Cleared) 
+            MarkCleared(4);
+
+        if(puzzle6Cleared)
+            MarkCleared(6);
+    }
 
     public bool IsUnlocked(int roomId) => unlocked.Contains(roomId);
     public bool IsCleared (int roomId) => cleared.Contains(roomId);

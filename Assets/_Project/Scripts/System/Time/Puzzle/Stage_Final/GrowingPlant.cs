@@ -3,6 +3,7 @@ using UnityEngine;
 public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
 {
     [Header("참조")]
+    [SerializeField] private PuzzleRoom4Manager puzzleManager;
     [SerializeField] private WateringCan wateringCan;
     [SerializeField] private float fastforwardMultiplier = 10;
 
@@ -42,7 +43,6 @@ public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
     {
         if(other.CompareTag("Player") && wateringCan.IsHeld)
         {
-            Debug.Log("플레이어 근처에 있음");
             wateringCan.IsNearPlant = true;
         }
     }
@@ -63,6 +63,11 @@ public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
         isWaterd = true;
         animator.SetTrigger("Growing");
         animator.SetFloat("Speed", timeScale);
+    }
+
+    public void ChangeManagerState()
+    {
+        puzzleManager.ChangeIsCleared();
     }
 
     public void SetTimeScale(float timeScale)

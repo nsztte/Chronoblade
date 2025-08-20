@@ -21,7 +21,7 @@ public class BossKeyPickup : MonoBehaviour, IInteractable
     {
         rb = GetComponent<Rigidbody>();
         // col = GetComponent<Collider>();
-        rb.isKinematic = false;
+        // rb.isKinematic = false;
 
         startParent = transform.parent;
     }

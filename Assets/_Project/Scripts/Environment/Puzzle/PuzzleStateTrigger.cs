@@ -14,6 +14,8 @@ public class PuzzleStateTrigger : MonoBehaviour
         if(IsCleared)
         {
             GameManager.Instance.EnterExploration();
+            if (puzzleRoomDoor) puzzleRoomDoor.SetActive(false);
+            if (puzzleObjects) puzzleObjects.SetActive(false);
             gameObject.SetActive(false);
         }
     }
@@ -24,17 +26,17 @@ public class PuzzleStateTrigger : MonoBehaviour
         {
             if(GameManager.Instance.CurrentGameState is ExplorationState && !IsCleared && !isActive)
             {
-                Debug.Log("퍼즐 방 진입");
                 GameManager.Instance.EnterPuzzle();
                 isActive = true;
                 puzzleRoomManager?.ChangeState(true);
 
                 Invoke(nameof(ActivePuzzleRoomDoor), 0.5f);
                 Invoke(nameof(ActivePuzzleObjects), 0.5f);
+
+                Invoke(nameof(PushPlayerForward), 0.1f);
             }
             else if(GameManager.Instance.CurrentGameState is PuzzleState && isActive)
             {
-                Debug.Log("퍼즐 방 나가기");
                 GameManager.Instance.EnterExploration();
                 isActive = false;
                 puzzleRoomManager?.ChangeState(false);
@@ -61,5 +63,21 @@ public class PuzzleStateTrigger : MonoBehaviour
                 obj.gameObject.SetActive(true);
             }
         }
+    }
+
+    private void PushPlayerForward()
+    {
+        var player = PlayerManager.Instance;
+        if (player == null) return;
+
+        var controller = player.GetComponent<CharacterController>();
+        if (controller == null) return;
+
+        // 플레이어 기준 앞으로 밀기
+        Vector3 forward = player.transform.forward;
+        forward.y = 0f;
+        forward.Normalize();
+
+        controller.Move(forward * 0.5f);
     }
 }

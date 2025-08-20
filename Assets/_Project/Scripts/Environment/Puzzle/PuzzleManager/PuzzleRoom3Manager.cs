@@ -6,9 +6,17 @@ public class PuzzleRoom3Manager : PuzzleRoomManager
     [SerializeField] private float detectRadius = 0.5f;
     [SerializeField] private LayerMask playerLayer;
 
+    private bool isStarted = false;
+
     private void Update()
     {
-        if(isCleared || isActivated) return;
+        if(isActivated && !isStarted)
+        {
+            isStarted = true;
+            FillUpHP();
+        }
+
+        if(isCleared || !isActivated) return;
 
         CheckPuzzle();
     }
@@ -25,5 +33,10 @@ public class PuzzleRoom3Manager : PuzzleRoomManager
                 break;
             }
         }
+    }
+
+    private void FillUpHP()
+    {
+        PlayerManager.Instance.HealHP(PlayerManager.Instance.MaxHP);
     }
 }

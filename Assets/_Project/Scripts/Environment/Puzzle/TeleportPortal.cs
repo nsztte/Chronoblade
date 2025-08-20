@@ -17,9 +17,15 @@ public class TeleportPortal : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-            // 순간이동 연출 추가
+           var controller = other.GetComponent<CharacterController>();
+            if (controller != null)
+                controller.enabled = false;
+
             other.transform.position = teleportPosition.position;
             other.transform.rotation = teleportPosition.rotation;
+
+            if (controller != null)
+                controller.enabled = true;
         }
     }
 }

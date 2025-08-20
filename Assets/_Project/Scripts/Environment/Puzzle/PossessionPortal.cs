@@ -7,6 +7,11 @@ public class PossessionPortal : MonoBehaviour, IInteractable
 
     private bool isPlayerInside = false;
 
+    private void OnDisable()
+    {
+        CutsceneCameraManager.Instance.EndCutscene(mazeCamera);
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
