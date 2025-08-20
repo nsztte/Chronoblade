@@ -35,13 +35,4 @@ public class PuzzleRoom5Manager : PuzzleRoomManager
 
         OnPuzzleSolved();
     }
-
-    protected override void OnPuzzleSolved()
-    {
-        if(clearedPortal)
-            clearedPortal.SetActive(true);
-
-        if(clearedReward)
-            clearedReward.SetActive(true);
-    }
 }

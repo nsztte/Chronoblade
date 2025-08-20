@@ -26,11 +26,4 @@ public class PuzzleRoom6Manager : PuzzleRoomManager
             }
         }
     }
-
-    protected override void OnPuzzleSolved()
-    {
-        Debug.Log("퍼즐 성공");
-        if (clearedPortal) clearedPortal.SetActive(true);
-        if (clearedReward) clearedReward.SetActive(true);
-    }
 }
