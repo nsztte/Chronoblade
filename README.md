@@ -2087,3 +2087,34 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.08.21 (목) 작업 기록
+
+### 주요 작업
+- 폰트 에셋 추가 및 TMP 기본 설정 완료
+  - HUD용 텍스트 폰트 에셋(SDF) 생성 및 연결
+- BarWidget 프리팹 제작 및 슬라이더 기반 게이지 구조 구현
+  - Slider + Fill 방식으로 HP/STA/Time 공용 게이지 구조 구성
+  - Fill 색상 차이만으로 Variant 생성 가능하도록 설계
+- PlayerHUD 구현 및 UIManager 연동
+  - HP/STA/Time 슬라이더 값 연동 처리
+  - 저체력 시 깜빡임 처리 (LowHpBlink Coroutine)
+  - Gold/Ammo 텍스트 연결 및 표시 처리
+- HUD 배치 및 레이아웃 구성
+  - TopLeft 패널: HP/STA/Time BarWidget 배치
+  - TopRight 패널: AmmoPanel, GoldPanel 배치
+  - 각 패널 Anchor 및 Position 통일
+- WeaponManager → UIManager 연동
+  - 무기 장착/해제 시 AmmoPanel 자동 활성화/비활성화 처리
+  - 총기류 장착 시만 탄약 패널 노출되도록 구현
+- PlayerManager → UIManager → PlayerHUD 흐름 테스트 완료
+  - HP/STA/Gold 값 반영 정상 확인
+  - MP는 시간 자원 로직 미연결로 테스트 보류
+
+### 메모
+- HUD UI 전반은 디자인 적용 없이 기능 우선 구현
+- MP(Time) 바는 구조는 완성되어 있으나 TimeManager 연동 필요
+- 크로스헤어 및 퀵슬롯 UI는 마무리 단계에서 통일성 고려해 적용 예정
+- TMP 폰트는 Pretendard 기반으로 작업, 한글 포함 전용 폰트로 나중에 교체 가능
+- 모든 바(HP/STA/Time)는 BarWidget 하나로 통일해 관리되며, 재사용성 높음
+
+---
