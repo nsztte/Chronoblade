@@ -57,6 +57,11 @@ public class UIManager : MonoBehaviour
         playerHUD?.UpdateAmmo(current, total);
     }
 
+    public void ActiveAmmoPanel(bool value)
+    {
+        playerHUD?.AmmoPanel.SetActive(value);
+    }
+
     // === 골드 ===
     public void UpdateGold(int amount)
     {

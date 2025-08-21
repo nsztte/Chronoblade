@@ -30,7 +30,6 @@ public class GunWeaponController : WeaponController
         originPosition = transform.localPosition;
         currentTargetPosition = originPosition;
 
-        // 초기 탄약 UI 업데이트
         int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
         UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
     }

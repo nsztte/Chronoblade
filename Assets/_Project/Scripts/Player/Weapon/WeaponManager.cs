@@ -81,6 +81,10 @@ public class WeaponManager : MonoBehaviour
         bool isGun = currentWeapon.weaponData.weaponType != WeaponType.Sword;
         PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", isSword);
         PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", isGun);
+
+        // UI 활성화
+        bool showAmmo = currentWeapon.weaponData.weaponType != WeaponType.Sword;
+        UIManager.Instance?.ActiveAmmoPanel(showAmmo);
         
         return true;
     }
@@ -101,6 +105,9 @@ public class WeaponManager : MonoBehaviour
         // 애니메이터 상태 해제
         PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", false);
         PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", false);
+
+        // UI 비활성화
+        UIManager.Instance?.ActiveAmmoPanel(false);
     }
 
     public int GetCurrentWeaponIndex()

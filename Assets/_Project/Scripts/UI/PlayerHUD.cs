@@ -23,6 +23,9 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Color hpNormalColor = Color.red;
     [SerializeField] private Color hpLowColor = new Color(1f, 0.35f, 0.35f);
 
+    [Header("총알 패널")]
+    public GameObject AmmoPanel;
+
     private bool isBlinking;
     private Coroutine lowHpBlinkRoutine;
 
