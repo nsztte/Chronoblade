@@ -20,7 +20,7 @@ public class PlayerHUD : MonoBehaviour
     [Header("체력 경고 관련")]
     [Range(0f, 1f)] [SerializeField] private float lowHpThreshold = 0.3f;
     [SerializeField] private float blinkSpeed = 6f;
-    [SerializeField] private Color hpNormalColor = Color.white;
+    [SerializeField] private Color hpNormalColor = Color.red;
     [SerializeField] private Color hpLowColor = new Color(1f, 0.35f, 0.35f);
 
     private bool isBlinking;
