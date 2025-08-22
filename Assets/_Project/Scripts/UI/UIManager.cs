@@ -80,6 +80,18 @@ public class UIManager : MonoBehaviour
     // }
     #endregion
 
+    #region 타임 스테이트 업데이트
+    public void ShowTimeState(TimeState state)
+    {
+        playerHUD?.ShowTimeState(state);
+    }
+
+    public void ClearTimeState()
+    {
+        playerHUD?.ClearTimeState();
+    }
+    #endregion
+    
     #region 게임스테이트 디버그용 (추후 UI로 대체)
     public void ShowMainMenu() => Debug.Log("[UI] Show Main Menu");
     public void HideMainMenu() => Debug.Log("[UI] Hide Main Menu");

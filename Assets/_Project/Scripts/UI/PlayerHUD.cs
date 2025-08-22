@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using System.Collections;
 using TMPro;
 public class PlayerHUD : MonoBehaviour
 {
@@ -26,8 +27,16 @@ public class PlayerHUD : MonoBehaviour
     [Header("총알 패널")]
     public GameObject AmmoPanel;
 
+    [Header("시간 아이콘")]
+    [SerializeField] private Image rewindIcon;
+    [SerializeField] private Image stopIcon;
+    [SerializeField] private Image slowIcon;
+    [SerializeField] private Image fastIcon;
+    [SerializeField] private float timeBlinkSpeed = 3f;
+
     private bool isBlinking;
     private Coroutine lowHpBlinkRoutine;
+    private Coroutine blinkRoutine;
 
     private void Awake()
     {
@@ -107,7 +116,7 @@ public class PlayerHUD : MonoBehaviour
         }
     }
 
-    System.Collections.IEnumerator LowHpBlink()
+    private IEnumerator LowHpBlink()
     {
         CanvasGroup cg = null;
 
@@ -131,4 +140,67 @@ public class PlayerHUD : MonoBehaviour
             yield return null;
         }
     }
+
+    #region 시간 관련
+    public void ShowTimeState(TimeState state)
+    {
+        ResetAll();
+
+        Image target = IconOf(state);
+        if (target != null)
+        {
+            if (blinkRoutine != null) StopCoroutine(blinkRoutine);
+            blinkRoutine = StartCoroutine(Blink(target));
+        }
+    }
+
+    public void ClearTimeState()
+    {
+        if (blinkRoutine != null)
+        { 
+            StopCoroutine(blinkRoutine); 
+            blinkRoutine = null; 
+        }
+
+        ResetAll();
+    }
+
+    private IEnumerator Blink(Image img)
+    {
+        while (true)
+        {
+            float a = 0.35f + 0.65f * (0.5f * (Mathf.Sin(Time.unscaledTime * timeBlinkSpeed) + 1f));
+            var c = img.color; c.a = a; img.color = c;
+            yield return null;
+        }
+    }
+
+    private void ResetAll()
+    {
+        SetAlpha(rewindIcon, 0f);
+        SetAlpha(stopIcon, 0f);
+        SetAlpha(slowIcon, 0f);
+        SetAlpha(fastIcon, 0f);
+    }
+
+    private void SetAlpha(Image img, float a)
+    {
+        if (!img) return;
+        var c = img.color;
+        c.a = a;
+        img.color = c;
+    }
+
+    private Image IconOf(TimeState s)
+    {
+        switch (s)
+        {
+            case TimeState.Rewind: return rewindIcon;
+            case TimeState.Stop: return stopIcon;
+            case TimeState.Slow: return slowIcon;
+            case TimeState.FastForward: return fastIcon;
+            default: return null;
+        }
+    }
+    #endregion
 }

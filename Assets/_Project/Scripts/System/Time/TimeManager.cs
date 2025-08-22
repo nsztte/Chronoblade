@@ -217,6 +217,8 @@ public class TimeManager : MonoBehaviour
             default:
                 break;
         }
+
+        UpdateTimeUI();
     }
 
     public TimeState CurrentTimeState => currentTimeState;
@@ -239,6 +241,8 @@ public class TimeManager : MonoBehaviour
             ApplyTimeScale(slowFactor);
             Debug.Log($"[TimeManager] 시간 슬로우 실행");
         }
+
+        UpdateTimeUI();
     }
 
     private void OnTimeStop()
@@ -257,6 +261,8 @@ public class TimeManager : MonoBehaviour
             ApplyTimeScale(0f);
             Debug.Log($"[TimeManager] 시간 정지 실행");
         }
+
+        UpdateTimeUI();
     }
 
     private void OnTimeRewindStart()
@@ -271,6 +277,8 @@ public class TimeManager : MonoBehaviour
         {
             rewindable.StartRewind();
         }
+
+        UpdateTimeUI();
     }
 
     private void OnTimeRewindEnd()
@@ -284,6 +292,8 @@ public class TimeManager : MonoBehaviour
         {
             rewindable.StopRewind();
         }
+
+        UpdateTimeUI();
     }
 
     private void OnTimeFastForwardStart()
@@ -294,6 +304,8 @@ public class TimeManager : MonoBehaviour
         currentTimeState = TimeState.FastForward;
         ApplyTimeScale(fastForwardFactor);
         Debug.Log($"[TimeManager] 시간 빨리감기 실행");
+
+        UpdateTimeUI();
     }
 
     private void OnTimeFastForwardEnd()
@@ -303,6 +315,8 @@ public class TimeManager : MonoBehaviour
         currentTimeState = TimeState.Normal;
         ApplyTimeScale(1f);
         Debug.Log($"[TimeManager] 시간 빨리감기 해제");
+
+        UpdateTimeUI();
     }
 
     private void ApplyTimeScale(float timeScale)
@@ -310,6 +324,30 @@ public class TimeManager : MonoBehaviour
         foreach (var controllable in controllables)
         {
             controllable.SetTimeScale(timeScale);
+        }
+    }
+    #endregion
+
+    #region UI 동기화
+    private void UpdateTimeUI()
+    {
+        switch (currentTimeState)
+        {
+            case TimeState.Normal:
+                UIManager.Instance?.ClearTimeState();
+                break;
+            case TimeState.Slow:
+                UIManager.Instance?.ShowTimeState(TimeState.Slow);
+                break;
+            case TimeState.Stop:
+                UIManager.Instance?.ShowTimeState(TimeState.Stop);
+                break;
+            case TimeState.Rewind:
+                UIManager.Instance?.ShowTimeState(TimeState.Rewind);
+                break;
+            case TimeState.FastForward:
+                UIManager.Instance?.ShowTimeState(TimeState.FastForward);
+                break;
         }
     }
     #endregion
