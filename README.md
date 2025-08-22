@@ -2118,3 +2118,49 @@ Enemy FSM(상태머신) 시스템 구현
 - 모든 바(HP/STA/Time)는 BarWidget 하나로 통일해 관리되며, 재사용성 높음
 
 ---
+
+## 날짜: 2025.08.22 (금) 작업 기록
+
+### 주요 작업
+- **시간 스킬 MP 소모 및 HUD 연동**
+  - TimeManager에 초당 MP 소모량 설정 (rewind, stop, slow, fastForward)
+  - MP 고갈 시 시간 스킬 자동 종료 및 상태 Normal로 전환
+  - PlayerManager의 UseMP() 재활용, HUD MP바 실시간 갱신
+
+- **시간 스킬 아이콘 표시 및 깜빡임 구현**
+  - PlayerHUD에서 시간 상태에 따른 아이콘 표시/숨김 처리
+    - 활성 상태는 알파값 1 + 깜빡임(Blink), 나머지는 알파 0
+  - TimeManager에서 시간 상태 변경 시 UIManager를 통해 HUD 동기화
+
+- **시간 스킬 HUD 레이아웃 정비**
+  - TopRight_Panel 내부에 Time_Panel 구성
+  - 아이콘은 겹쳐 배치되도록 정렬, 레이아웃 컴포넌트 제거
+  - 위치 고정: TopRight 기준 Anchor / Time_Panel Pos = (0,0)
+
+- **무기 아이콘 자동 캡처 및 전용 스크린샷 씬 구성**
+  - WeaponIconCapture 스크립트 구현 (512x512, 투명 PNG 캡처)
+  - ScreenshotScene 구성: 전용 배경, 조명, 무기 프리팹 배치
+  - 검, 권총, 소총, 샷건 아이콘 각각 캡처 완료
+
+- **무기 아이콘 HUD 연동**
+  - 무기 장착 시 weaponData.iconSprite → UIManager 전달
+  - PlayerHUD.SetWeaponImage()로 이미지 자동 갱신
+  - 근접 무기(Sword)일 경우 탄약 패널 자동 숨김 처리
+
+- **크로스헤어 시스템 구현**
+  - 무기 장착 시 크로스헤어 활성화, 해제 시 비활성화
+  - 무기 타입별 크로스헤어 이미지 자동 변경
+  - 발사 시 크로스헤어 일시 확대, 줌인 시 축소
+  - 사정거리 내 적 조준 시 크로스헤어 색상 빨간색으로 전환
+
+- **WeaponHolder 카메라 자식으로 이동**
+  - 사격 정확도 확보를 위해 WeaponHolder를 MainCamera 자식으로 배치
+  - FirePoint를 카메라 중심 기준으로 전환하여 탄착 정확도 개선
+
+### 메모
+- 시간 스킬의 연출과 조작 피드백이 HUD를 통해 자연스럽게 전달되도록 구현
+- 무기 아이콘 및 크로스헤어 시각적 일관성 확보 완료
+- 총기 사격 방향과 HUD 크로스헤어가 완전히 일치하여 조준 신뢰도 향상
+- 조준 시 무기 이동 연출은 유지하여 몰입감 유지
+
+---
