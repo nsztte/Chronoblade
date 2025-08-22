@@ -1,4 +1,5 @@
 using UnityEngine;
+using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -51,10 +52,16 @@ public class UIManager : MonoBehaviour
         playerHUD?.UpdateStamina(current, max);
     }
 
-    // === 탄약 ===
+    // === 무기 ===
     public void UpdateAmmo(int current, int total)
     {
         playerHUD?.UpdateAmmo(current, total);
+    }
+
+    public void ActiveWeaponPanel(bool value, Sprite weaponIcon = null)
+    {
+        playerHUD?.WeaponPanel.SetActive(value);
+        if(weaponIcon) playerHUD?.SetWeaponImage(weaponIcon);
     }
 
     public void ActiveAmmoPanel(bool value)

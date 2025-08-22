@@ -2,6 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
+using Unity.VisualScripting;
 public class PlayerHUD : MonoBehaviour
 {
     [Header("슬라이더")]
@@ -24,7 +25,8 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Color hpNormalColor = Color.red;
     [SerializeField] private Color hpLowColor = new Color(1f, 0.35f, 0.35f);
 
-    [Header("총알 패널")]
+    [Header("무기 패널")]
+    public GameObject WeaponPanel;
     public GameObject AmmoPanel;
 
     [Header("시간 아이콘")]
@@ -50,6 +52,7 @@ public class PlayerHUD : MonoBehaviour
             staminaFillImage = staminaBar.fillRect.GetComponent<Image>();
     }
 
+    #region 플레이어 상태 관련
     public void UpdateHP(int current, int max)
     {
         float t = Mathf.Clamp01(max > 0 ? (float)current / max : 0f);
@@ -140,6 +143,7 @@ public class PlayerHUD : MonoBehaviour
             yield return null;
         }
     }
+    #endregion
 
     #region 시간 관련
     public void ShowTimeState(TimeState state)
@@ -201,6 +205,14 @@ public class PlayerHUD : MonoBehaviour
             case TimeState.FastForward: return fastIcon;
             default: return null;
         }
+    }
+    #endregion
+
+    #region 무기 관련
+    public void SetWeaponImage(Sprite weapon)
+    {
+        Image weaponIcon = WeaponPanel.GetComponent<Image>();
+        weaponIcon.sprite = weapon;
     }
     #endregion
 }

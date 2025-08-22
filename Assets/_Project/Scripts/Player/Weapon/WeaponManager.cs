@@ -83,6 +83,7 @@ public class WeaponManager : MonoBehaviour
         PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", isGun);
 
         // UI 활성화
+        UIManager.Instance?.ActiveWeaponPanel(true, currentWeapon.weaponData.iconSprite);
         bool showAmmo = currentWeapon.weaponData.weaponType != WeaponType.Sword;
         UIManager.Instance?.ActiveAmmoPanel(showAmmo);
         
@@ -107,6 +108,7 @@ public class WeaponManager : MonoBehaviour
         PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", false);
 
         // UI 비활성화
+        UIManager.Instance?.ActiveWeaponPanel(false);
         UIManager.Instance?.ActiveAmmoPanel(false);
     }
 
