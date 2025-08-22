@@ -25,9 +25,13 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Color hpNormalColor = Color.red;
     [SerializeField] private Color hpLowColor = new Color(1f, 0.35f, 0.35f);
 
-    [Header("무기 패널")]
-    public GameObject WeaponPanel;
-    public GameObject AmmoPanel;
+    [Header("무기 관련")]
+    [SerializeField] GameObject weaponPanel;
+    [SerializeField] GameObject ammoPanel;
+    [SerializeField] GameObject crosshairPanel;
+    [SerializeField] private Image pistolCrosshair;
+    [SerializeField] private Image shotgunCrosshair;
+    [SerializeField] private Image rifleCrosshair;
 
     [Header("시간 아이콘")]
     [SerializeField] private Image rewindIcon;
@@ -39,6 +43,7 @@ public class PlayerHUD : MonoBehaviour
     private bool isBlinking;
     private Coroutine lowHpBlinkRoutine;
     private Coroutine blinkRoutine;
+    private Coroutine crosshairFireRoutine;
 
     private void Awake()
     {
@@ -211,8 +216,75 @@ public class PlayerHUD : MonoBehaviour
     #region 무기 관련
     public void SetWeaponImage(Sprite weapon)
     {
-        Image weaponIcon = WeaponPanel.GetComponent<Image>();
-        weaponIcon.sprite = weapon;
+        bool isValid = weapon != null;
+        weaponPanel.SetActive(isValid);
+
+        if (isValid)
+        {
+            Image weaponIcon = weaponPanel.GetComponent<Image>();
+            weaponIcon.sprite = weapon;
+        }
+    }
+
+    public void SetAmmoVisible(bool value)
+    {
+        ammoPanel.SetActive(value);
+    }
+
+    public void SetCrosshairVisible(bool value)
+    {
+        crosshairPanel.SetActive(value);
+    }
+
+    // 무기 장착 상태에 따라 크로스헤어 종류 적용
+    public void SetCrosshairType(WeaponType type)
+    {
+        pistolCrosshair.enabled = (type == WeaponType.Pistol);
+        shotgunCrosshair.enabled = (type == WeaponType.Shotgun);
+        rifleCrosshair.enabled = (type == WeaponType.Rifle);
+    }
+
+    // 줌인 / 줌아웃 시 크기 조절
+    public void SetCrosshairZoom(bool isZoomed)
+    {
+        float scale = isZoomed ? 0.6f : 1f;
+        crosshairPanel.transform.localScale = Vector3.one * scale;
+    }
+
+    // 발사 시 확장 효과 (코루틴)
+    public void TriggerCrosshairFireEffect()
+    {
+        if (crosshairFireRoutine != null)
+            StopCoroutine(crosshairFireRoutine);
+
+        crosshairFireRoutine = StartCoroutine(CrosshairFireEffect());
+    }
+
+    private IEnumerator CrosshairFireEffect()
+    {
+        Vector3 originalScale = crosshairPanel.transform.localScale;
+        Vector3 expandedScale = originalScale * 1.3f;
+        float t = 0f;
+        float duration = 0.15f;
+        Vector3 targetScale = expandedScale;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float lerp = t / duration;
+            crosshairPanel.transform.localScale = Vector3.Lerp(expandedScale, originalScale, lerp);
+            yield return null;
+        }
+
+        crosshairPanel.transform.localScale = originalScale;
+    }
+
+    // 적 조준 색상 전환
+    public void SetCrosshairColor(Color c)
+    {
+        if (pistolCrosshair.enabled) pistolCrosshair.color = c;
+        if (shotgunCrosshair.enabled) shotgunCrosshair.color = c;
+        if (rifleCrosshair.enabled) rifleCrosshair.color = c;
     }
     #endregion
 }

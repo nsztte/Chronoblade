@@ -152,6 +152,7 @@ public class CameraController : MonoBehaviour
                 isZoomed = true;
                 targetFOV = weaponData.aimFOV;
                 UpdateRecoilRecoverySpeed();
+                UIManager.Instance?.SetCrosshairZoom(true);
                 return;
             }
         }
@@ -165,6 +166,7 @@ public class CameraController : MonoBehaviour
         isZoomed = false;
         targetFOV = normalFOV;
         UpdateRecoilRecoverySpeed();
+        UIManager.Instance?.SetCrosshairZoom(false);
     }
 
     public void CancelAim()

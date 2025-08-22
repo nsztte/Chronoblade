@@ -5,7 +5,6 @@ public class UIManager : MonoBehaviour
 {
     [Header("HUD")]
     public PlayerHUD playerHUD;
-    public CrosshairUI crosshairUI;
     public QuickSlotUI quickSlotUI;
     public ShopUI shopUI;
 
@@ -58,15 +57,14 @@ public class UIManager : MonoBehaviour
         playerHUD?.UpdateAmmo(current, total);
     }
 
-    public void ActiveWeaponPanel(bool value, Sprite weaponIcon = null)
+    public void ActiveWeaponPanel(Sprite weaponIcon = null)
     {
-        playerHUD?.WeaponPanel.SetActive(value);
-        if(weaponIcon) playerHUD?.SetWeaponImage(weaponIcon);
+        playerHUD?.SetWeaponImage(weaponIcon);
     }
 
     public void ActiveAmmoPanel(bool value)
     {
-        playerHUD?.AmmoPanel.SetActive(value);
+        playerHUD?.SetAmmoVisible(value);
     }
 
     // === 골드 ===
@@ -75,16 +73,41 @@ public class UIManager : MonoBehaviour
         playerHUD?.UpdateGold(amount);
     }
 
-    // // === 크로스헤어, 퀵슬롯 ===
-    // public void SetCrosshairActive(bool isActive)
-    // {
-    //     crosshairUI?.SetActive(isActive);
-    // }
-
     // public void SetQuickSlotSelectedIndex(int index)
     // {
     //     quickSlotUI?.SetSelectedIndex(index);
     // }
+    #endregion
+
+    #region 크로스헤어
+    public void SetCrosshairActive(bool value)
+    {
+        playerHUD?.SetCrosshairVisible(value);
+    }
+
+    // 무기 타입에 따라 크로스헤어 교체
+    public void UpdateCrosshair(WeaponType type)
+    {
+        playerHUD?.SetCrosshairType(type);
+    }
+
+    // 조준 상태에 따라 크기 조절
+    public void SetCrosshairZoom(bool isZoomed)
+    {
+        playerHUD?.SetCrosshairZoom(isZoomed);
+    }
+
+    // 총 발사 시 크로스헤어 확대 효과
+    public void TriggerCrosshairFireEffect()
+    {
+        playerHUD?.TriggerCrosshairFireEffect();
+    }
+
+    // 조준 대상이 사정거리 내일 때 색상 변경
+    public void SetCrosshairColor(Color color)
+    {
+        playerHUD?.SetCrosshairColor(color);
+    }
     #endregion
 
     #region 타임 스테이트 업데이트

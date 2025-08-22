@@ -72880,9 +72880,10 @@ GameObject:
   - component: {fileID: 6639571131284518208}
   - component: {fileID: 8735043758595713121}
   - component: {fileID: 6321560643217703595}
+  - component: {fileID: 5841152705988260822}
   m_Layer: 7
   m_Name: ChronoMonk
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -72989,12 +72990,11 @@ MonoBehaviour:
   behaviorData: {fileID: 11400000, guid: 2548fd5f0aadc7845a99944193ff92dc, type: 2}
   currentHP: 0
   destroyTime: 1
-  attackStartPosition: {fileID: 0}
-  attackEndPosition: {fileID: 0}
-  attackRadius: 1
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  stunDuration: 1.5
+  stunKnockbackForce: 3
   projectileSpawnPoint: {fileID: 6272972601880773256}
   teleportEffect: {fileID: 4351332082603982324}
   deathEffect: {fileID: 1853620622448995768}
@@ -73010,7 +73010,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e067f925975f994194ad8f30efa173b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   currentStateType: 0
 --- !u!114 &6321560643217703595
 MonoBehaviour:
@@ -73024,6 +73023,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad5fee290477e3a4aa3f257928d8169f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &5841152705988260822
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6745759326774655905}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5407f037553e0e4888f76b054f30d87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowSpeed: 0.3
 --- !u!1 &6956603094518385328
 GameObject:
   m_ObjectHideFlags: 0

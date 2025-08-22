@@ -19,6 +19,10 @@ public class GunWeaponController : WeaponController
 
     private Animator animator;
 
+    [Header("적 감지")]
+    private float checkInterval = 0.1f;
+    private float checkTimer = 0f;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
@@ -51,6 +55,13 @@ public class GunWeaponController : WeaponController
     private void Update()
     {
         UpdateWeaponPosition();
+
+        checkTimer += Time.deltaTime;
+        if (checkTimer >= checkInterval)
+        {
+            checkTimer = 0f;
+            CheckEnemyInSight();
+        }
     }
 
     public int GetCurrentAmmoCount()
@@ -81,7 +92,7 @@ public class GunWeaponController : WeaponController
         // 공격 실행 후에 isAttacking 설정
         nextFireTime = Time.time + coolTime;
         currentAmmo = Mathf.Max(0, currentAmmo - 1);
-        Debug.Log($"탄약 사용: {currentAmmo}");        
+        Debug.Log($"탄약 사용: {currentAmmo}");
         if(weaponData.weaponType == WeaponType.Shotgun)
         {
             FireShotgun();
@@ -90,6 +101,10 @@ public class GunWeaponController : WeaponController
         {
             FireSingle();
         }
+
+        // 크로스헤어
+        UIManager.Instance?.TriggerCrosshairFireEffect();
+
         // 탄약 UI 업데이트
         int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
         UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
@@ -108,7 +123,7 @@ public class GunWeaponController : WeaponController
 
     private void FireSingle()
     {
-        Ray ray = new Ray(firePoint.position, firePoint.forward);
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
         if(Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
         {
             if(hit.collider.TryGetComponent(out IDamageable target))
@@ -118,7 +133,7 @@ public class GunWeaponController : WeaponController
             }
         }
 
-        Debug.DrawRay(firePoint.position, firePoint.forward * weaponData.range, Color.yellow, 0.5f);
+        Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * weaponData.range, Color.yellow, 0.5f);
         ApplyWeaponRecoil();
     }
 
@@ -133,9 +148,9 @@ public class GunWeaponController : WeaponController
             float randomPitch = Random.Range(-spreadAngle, spreadAngle);
             // 회전 적용
             Quaternion spreadRotation = Quaternion.Euler(randomPitch, randomYaw, 0);
-            Vector3 spreadDirection = spreadRotation * firePoint.forward;
+            Vector3 spreadDirection = spreadRotation * Camera.main.transform.forward;
 
-            Ray ray = new Ray(firePoint.position, spreadDirection);
+            Ray ray = new Ray(Camera.main.transform.position, spreadDirection);
             if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
             {
                 if (hit.collider.TryGetComponent(out IDamageable target))
@@ -159,6 +174,21 @@ public class GunWeaponController : WeaponController
             recoilY *= weaponData.aimRecoilMultiplier;
         }
         CameraController.Instance?.ApplyRecoil(recoilX, Random.Range(-recoilY, recoilY));
+    }
+
+    private void CheckEnemyInSight()
+    {
+        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
+        if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
+        {
+            if (hit.collider.CompareTag("Enemy"))
+            {
+                UIManager.Instance?.SetCrosshairColor(Color.red);
+                return;
+            }
+        }
+
+        UIManager.Instance?.SetCrosshairColor(Color.white);
     }
 
     /// <summary>

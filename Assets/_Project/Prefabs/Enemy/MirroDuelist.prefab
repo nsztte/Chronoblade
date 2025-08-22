@@ -1001,9 +1001,10 @@ GameObject:
   - component: {fileID: 2584235855105337054}
   - component: {fileID: 8606516330785623606}
   - component: {fileID: 2405885516332820869}
+  - component: {fileID: 1790617687067953524}
   m_Layer: 7
   m_Name: MirroDuelist
-  m_TagString: Untagged
+  m_TagString: Enemy
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -1110,6 +1111,8 @@ MonoBehaviour:
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+  stunDuration: 1.5
+  stunKnockbackForce: 3
   attackCenter: {fileID: 1404039361556307732}
   attackRadius: 0.3
 --- !u!114 &8606516330785623606
@@ -1124,7 +1127,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 9e067f925975f994194ad8f30efa173b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  target: {fileID: 0}
   currentStateType: 0
 --- !u!114 &2405885516332820869
 MonoBehaviour:
@@ -1138,6 +1140,19 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ad5fee290477e3a4aa3f257928d8169f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1790617687067953524
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3722155438514802442}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: e5407f037553e0e4888f76b054f30d87, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slowSpeed: 0.3
 --- !u!1 &3748798651711563162
 GameObject:
   m_ObjectHideFlags: 0
