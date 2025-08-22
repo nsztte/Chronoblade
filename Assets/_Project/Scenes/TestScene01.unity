@@ -2044,6 +2044,22 @@ PrefabInstance:
       propertyPath: defaultPistolData
       value: 
       objectReference: {fileID: 11400000, guid: 09030104b41056647b94513cc81f957c, type: 2}
+    - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
+      propertyPath: testWeaponData.Array.size
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
+      propertyPath: 'testWeaponData.Array.data[0]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c47487d22415269428eed5837e75bbf7, type: 2}
+    - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
+      propertyPath: 'testWeaponData.Array.data[1]'
+      value: 
+      objectReference: {fileID: 11400000, guid: c3b22a938915f5f4a8da76bfeb168998, type: 2}
+    - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
+      propertyPath: 'testWeaponData.Array.data[2]'
+      value: 
+      objectReference: {fileID: 11400000, guid: 7ad2eab8f0f84644b9c2fddf4992f398, type: 2}
     - target: {fileID: 8994884629098386020, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: shopUI
       value: 

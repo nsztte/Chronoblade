@@ -21,6 +21,7 @@ public class InventoryManager : MonoBehaviour
     #endregion
 
     [SerializeField] private WeaponData defaultPistolData;
+    [SerializeField] private WeaponData[] testWeaponData;   // 테스트 이후에는 모두 지울것
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
     private HashSet<string> obtainedWeapons = new HashSet<string>();
@@ -33,6 +34,14 @@ public class InventoryManager : MonoBehaviour
         if(defaultPistolData != null)
         {
             RegisterWeapon(defaultPistolData);
+        }
+
+        if(testWeaponData.Length > 0)   // 테스트 이후에는 모두 지울것
+        {
+            foreach(var w in testWeaponData)
+            {
+                RegisterWeapon(w);
+            }
         }
     }
     

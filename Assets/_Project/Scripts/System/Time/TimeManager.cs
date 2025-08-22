@@ -16,8 +16,16 @@ public class TimeManager : MonoBehaviour
     private readonly List<IRewindable> rewindables = new();
     [SerializeField] private TimeState currentTimeState = TimeState.Normal;
 
+    [Header("배속")]
     [Range(0, 1)] [SerializeField] private float slowFactor = 0.01f;
     [Range(0, 5)] [SerializeField] private float fastForwardFactor = 1.8f;
+
+
+    [Header("시간 스킬 MP 소모량(초당)")]
+    [SerializeField] private float rewindMpDrain = 30f;
+    [SerializeField] private float stopMpDrain = 25f;
+    [SerializeField] private float slowMpDrain = 10f;
+    [SerializeField] private float fastForwardMpDrain = 8f;
 
     public float SlowFactor => slowFactor;
     public float FastForwardFactor => fastForwardFactor;
@@ -61,6 +69,44 @@ public class TimeManager : MonoBehaviour
             TimeInputHandler.Instance.OnTimeStop -= OnTimeStop;
             TimeInputHandler.Instance.OnTimeFastForwardStart -= OnTimeFastForwardStart;
             TimeInputHandler.Instance.OnTimeFastForwardEnd -= OnTimeFastForwardEnd;
+        }
+    }
+
+    private void Update()
+    {
+        DrainMpPerTime();
+    }
+
+    private void DrainMpPerTime()
+    {
+        if (PlayerManager.Instance == null) return;
+
+        float drain = 0f;
+        switch (currentTimeState)
+        {
+            case TimeState.Rewind:
+                drain = rewindMpDrain;
+                break;
+            case TimeState.Stop:
+                drain = stopMpDrain;
+                break;
+            case TimeState.Slow:
+                drain = slowMpDrain;
+                break;
+            case TimeState.FastForward:
+                drain = fastForwardMpDrain;
+                break;
+        }
+
+        if (drain > 0f)
+        {
+            PlayerManager.Instance.UseMP(drain * Time.deltaTime);
+
+            if (PlayerManager.Instance.CurrentMP <= 0)
+            {
+                // MP가 바닥나면 자동 해제
+                SetTimeState(TimeState.Normal);
+            }
         }
     }
 
