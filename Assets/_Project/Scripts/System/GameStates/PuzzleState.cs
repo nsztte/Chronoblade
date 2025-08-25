@@ -5,7 +5,8 @@ public class PuzzleState : GameBaseState
     public override void Enter()
     {
         Debug.Log("[GameState] PuzzleState Enter");
-        UIManager.Instance.ShowPuzzleUI();
+        // UIManager.Instance.ShowPuzzleUI();
+        
 
         var previousState = gameManager.PreviousGameState;
 
@@ -21,7 +22,8 @@ public class PuzzleState : GameBaseState
 
     public override void Exit()
     {
-        UIManager.Instance.HidePuzzleUI();
+        // UIManager.Instance.HidePuzzleUI();
+        UIManager.Instance.ClearTimeState();
 
         // var previousState = gameManager.PreviousGameState;
         // if(previousState is ExplorationState || previousState is CombatState)
