@@ -43,4 +43,11 @@ public class PossessionPortal : MonoBehaviour, IInteractable
             playerMazeController.SetPossessed(true);
         }
     }
+
+    public string GetPrompt()
+    {
+        if (!isPlayerInside) return "";
+
+        return playerMazeController.IsPossessed ? "되돌아가기" : "빙의하기";
+    }
 }

@@ -110,6 +110,18 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
+    #region 상호작용 프롬프트
+    public void ShowPrompt(string text)
+    {
+        playerHUD?.ShowPrompt(text);
+    }
+
+    public void HidePrompt()
+    {
+        playerHUD?.HidePrompt();
+    }
+    #endregion
+
     #region 타임 스테이트 업데이트
     public void ShowTimeState(TimeState state)
     {

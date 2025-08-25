@@ -80,4 +80,12 @@ public class BossKeyPickup : MonoBehaviour, IInteractable
             PickUp(!isHeld);
         }
     }
+
+    public string GetPrompt()
+    {
+        if (isActivated) return "";
+        if (CanActive) return "삽입하기";
+        if (!isHeld && PlayerManager.Instance?.CurrentHeldObject != null) return "";
+        return isHeld ? "놓기" : "들기";
+    }
 }

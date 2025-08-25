@@ -40,4 +40,9 @@ public class PuzzlePlate : MonoBehaviour, IInteractable
     {
         Rotate();
     }
+
+    public string GetPrompt()
+    {
+        return "회전하기";
+    }
 }

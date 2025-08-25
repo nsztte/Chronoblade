@@ -2,7 +2,7 @@ using UnityEngine;
 using UnityEngine.UI;
 using System.Collections;
 using TMPro;
-using Unity.VisualScripting;
+
 public class PlayerHUD : MonoBehaviour
 {
     [Header("슬라이더")]
@@ -39,6 +39,10 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Image slowIcon;
     [SerializeField] private Image fastIcon;
     [SerializeField] private float timeBlinkSpeed = 3f;
+
+    [Header("상호작용 프롬프트")]
+    [SerializeField] private GameObject promptGroup;
+    [SerializeField] private TMP_Text promptText;
 
     private bool isBlinking;
     private Coroutine lowHpBlinkRoutine;
@@ -285,6 +289,20 @@ public class PlayerHUD : MonoBehaviour
         if (pistolCrosshair.enabled) pistolCrosshair.color = c;
         if (shotgunCrosshair.enabled) shotgunCrosshair.color = c;
         if (rifleCrosshair.enabled) rifleCrosshair.color = c;
+    }
+    #endregion
+
+    #region 상호작용 프롬프트
+    public void ShowPrompt(string text)
+    {
+        promptGroup.SetActive(true);
+        promptText.text = text;
+    }
+
+    public void HidePrompt()
+    {
+        promptGroup.SetActive(false);
+        promptText.text = "";
     }
     #endregion
 }

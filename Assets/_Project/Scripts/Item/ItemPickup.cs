@@ -73,4 +73,9 @@ public class ItemPickup : MonoBehaviour, IInteractable
             Debug.Log($"[ItemPickup] 일부만 획득됨. 남은 수량: {leftOver} | 사유: {failReason}");
         }
     }
+
+    public string GetPrompt()
+    {
+        return $"줍기: {itemData.itemName}";
+    }
 }

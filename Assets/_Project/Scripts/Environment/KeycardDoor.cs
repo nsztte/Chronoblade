@@ -25,4 +25,12 @@ public class KeycardDoor : MonoBehaviour, IInteractable
             Debug.Log("필요한 키카드가 없습니다: " + requiredKeycard.itemName);
         }
     }
+
+    public string GetPrompt()
+    {
+        if (isOpen) return "";
+
+        bool hasKey = InventoryManager.Instance.GetItemCount(requiredKeycard) > 0;
+        return hasKey ? "문 열기" : $"[잠김] {requiredKeycard.itemName} 필요";
+    }
 }

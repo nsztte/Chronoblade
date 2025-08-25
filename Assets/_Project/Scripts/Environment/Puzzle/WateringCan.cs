@@ -151,4 +151,12 @@ public class WateringCan : MonoBehaviour, IInteractable
             DropToStart();
         }
     }
+
+    public string GetPrompt()
+    {
+        if (!IsHeld) return "들기";
+        if (IsNearFaucet) return "채우기";
+        if (IsNearPlant) return "물 주기";
+        return "내려놓기";
+    }
 }

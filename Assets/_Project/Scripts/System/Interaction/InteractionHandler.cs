@@ -58,11 +58,11 @@ public class InteractionHandler : MonoBehaviour
 
             if (closest != null)
             {
-                // PlayerHUD.Instance.ShowPrompt($"[F] {closest.GetPrompt()}");
+                UIManager.Instance.ShowPrompt($"[F] {closest.GetPrompt()}");
             }
             else
             {
-                // PlayerHUD.Instance.HidePrompt();
+                UIManager.Instance.HidePrompt();
             }
         }
     }

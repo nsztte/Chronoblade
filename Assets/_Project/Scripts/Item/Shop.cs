@@ -4,6 +4,11 @@ public class Shop : MonoBehaviour, IInteractable
 {
     public ShopData shopData;
 
+    public string GetPrompt()
+    {
+        return "상점 열기";
+    }
+
     public void Interact()
     {
         if(shopData == null)
