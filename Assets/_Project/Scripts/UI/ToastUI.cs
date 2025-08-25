@@ -3,19 +3,12 @@ using UnityEngine;
 using UnityEngine.UI;
 using TMPro;
 
-public class ToastController : MonoBehaviour
+public class ToastUI : MonoBehaviour
 {
-    public static ToastController Instance { get; private set; }
-
     [SerializeField] private GameObject toastPrefab;
     [SerializeField] private Transform toastParent;
     [SerializeField] private float displayTime = 2.5f;
     [SerializeField] private float fadeDuration = 0.5f;
-
-    private void Awake()
-    {
-        Instance = this;
-    }
 
     public void Show(string message)
     {

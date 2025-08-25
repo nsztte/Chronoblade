@@ -1,12 +1,14 @@
+using System;
 using UnityEngine;
 using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    [Header("HUD")]
     public PlayerHUD playerHUD;
     public QuickSlotUI quickSlotUI;
     public ShopUI shopUI;
+    public ToastUI toastUI;
+    public ConfirmModalUI confirmModal;
 
 
     #region Singleton
@@ -134,6 +136,18 @@ public class UIManager : MonoBehaviour
     }
     #endregion
     
+    #region 토스트UI, 컨펌모달UI
+    public void ShowToast(string message)
+    {
+        toastUI?.Show(message);
+    }
+
+    public void ShowConfirm(string title, string message, Action onConfirm, Action onCancel)
+    {
+        confirmModal?.Show(title, message, onConfirm, onCancel);
+    }
+    #endregion
+
     #region 게임스테이트 디버그용 (추후 UI로 대체)
     public void ShowMainMenu() => Debug.Log("[UI] Show Main Menu");
     public void HideMainMenu() => Debug.Log("[UI] Hide Main Menu");
