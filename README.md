@@ -2164,3 +2164,50 @@ Enemy FSM(상태머신) 시스템 구현
 - 조준 시 무기 이동 연출은 유지하여 몰입감 유지
 
 ---
+
+## 2025.08.25 (월) 작업 기록
+
+### 주요 작업
+- 상호작용 프롬프트 시스템 완성
+  - InteractionHandler에서 주기적 탐색(0.2초 간격)으로 IInteractable 인식
+  - 상황별 프롬프트 문구 제공 (`GetPrompt()` 분기 로직 구현)
+  - UIManager → PlayerHUD 연동 구조 구성
+  - PlayerHUD.ShowPrompt() 기반으로 UI 표시
+
+- 다양한 IInteractable 오브젝트에 프롬프트 적용
+  - KeycardDoor: 키카드 보유 여부에 따른 문구 표시
+  - ItemPickup: 아이템 이름 기반 획득 문구
+  - Shop: 상점 열기
+  - BossKeyPickup: 들기 / 삽입 분기 대응
+  - PossessionPortal: 빙의 / 되돌아가기 조건별 문구 처리
+  - PuzzlePlate: 회전하기
+  - WateringCan: 들기 / 채우기 / 물주기 상태에 따라 문구 변경
+
+- 프롬프트 상태 갱신 개선
+  - InteractionHandler에서 currentTarget가 동일해도 매번 `GetPrompt()` 호출
+  - PossessionPortal 등 상태 변화 시 문구 즉시 반영되도록 수정
+- 시간 UI 초기화 처리
+  - 퍼즐 종료 또는 탐험 상태 진입 시 UIManager.ClearTimeState() 호출
+  - 시간 아이콘 및 깜빡임 상태 완전 리셋
+
+- 토스트 메시지 시스템 기본 틀 구현
+  - ToastPrefab 구성 (Text + Background + Layout 조절 + Fade 애니메이션)
+  - ToastController에서 Show(message) 호출로 토스트 출력
+  - LayoutRebuilder 적용으로 정렬 문제 해결
+  - 코루틴 기반 FadeIn → 유지 → FadeOut → 자동 제거 구조 구성
+
+- ConfirmModal UI 구현 및 중계 구조 구성
+  - ConfirmModalUI: 제목/내용/확인/취소 처리 및 콜백 등록 구조 구현
+  - UIManager.ShowConfirm(title, msg, onConfirm, onCancel) 중계 방식으로 호출 통일
+  - ToastUI, PlayerHUD와 동일한 UIManager 통합 방식 유지
+
+- ConfirmModal 커서 락 제어 및 입력 차단 연동
+  - ConfirmModalUI.Show() → 커서 락 해제 및 커서 표시
+  - Hide() → 락 복구 및 커서 숨김
+  - InputManager: Cursor.lockState != Locked일 경우 Update 입력 차단 처리
+
+### 메모
+- InteractionHandler의 프롬프트 시스템은 HUD 연동 상태만 남겨둔 상태
+- ConfirmModal은 추후 ESC 닫기, 애니메이션 처리 등 개선 여지 있음
+
+---
