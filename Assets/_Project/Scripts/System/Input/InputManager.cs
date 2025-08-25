@@ -49,6 +49,8 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        if (Cursor.lockState != CursorLockMode.Locked) return;
+        
         // 빙의시 상호작용 외에 다른 움직임 차단
         if (PlayerManager.Instance.IsPossessed)
         {

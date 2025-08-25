@@ -14,6 +14,7 @@ public class ConfirmModalUI : MonoBehaviour
     public void Show(string title, string message, Action onConfirm, Action onCancel)
     {
         root.SetActive(true);
+        UIManager.Instance.SetCursorLockState(CursorLockMode.None);
         titleText.text = title;
         messageText.text = message;
         confirmButton.onClick.RemoveAllListeners();
@@ -32,6 +33,7 @@ public class ConfirmModalUI : MonoBehaviour
 
     public void Hide()
     {
+        UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
         root.SetActive(false);
     }
 }
