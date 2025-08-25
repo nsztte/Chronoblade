@@ -26,8 +26,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [Header("골드")]
     [SerializeField] private int gold = 0;
 
-    [Header("상호작용")]
-    [SerializeField] private float interactRadius = 2f;
+    // [Header("상호작용")]
+    // [SerializeField] private float interactRadius = 2f;
 
     [Header("스태미너 소모")]
     [SerializeField] private int staminaCost = 12;  // 약공격 기준 (강공격 2배 소모)
@@ -129,14 +129,14 @@ public class PlayerManager : MonoBehaviour, IDamageable
         UIManager.Instance?.UpdateGold(gold);
 
         // 상호작용 이벤트 등록
-        InputManager.Instance.OnInteract += OnHandleInteract;
+        // InputManager.Instance.OnInteract += OnHandleInteract;
     }
 
-    private void OnDestroy()
-    {
-        if (InputManager.Instance != null)
-            InputManager.Instance.OnInteract -= OnHandleInteract;
-    }
+    // private void OnDestroy()
+    // {
+    //     if (InputManager.Instance != null)
+    //         InputManager.Instance.OnInteract -= OnHandleInteract;
+    // }
 
     private void Update()
     {
@@ -393,30 +393,30 @@ public class PlayerManager : MonoBehaviour, IDamageable
         currentCombo = comboAttackData;
     }
 
-    private void OnHandleInteract()
-    {
-        // 플레이어 주변의 IInteractable을 탐색하여 가장 가까운 것과 상호작용
-        Collider[] hits = Physics.OverlapSphere(transform.position, interactRadius);
-        IInteractable closest = null;
-        float minDistance = float.MaxValue;
-        foreach (var hit in hits)
-        {
-            var interactable = hit.GetComponent<IInteractable>();
-            if (interactable != null)
-            {
-                float distance = Vector3.Distance(transform.position, hit.transform.position);
-                if (distance < minDistance)
-                {
-                    minDistance = distance;
-                    closest = interactable;
-                }
-            }
-        }
-        if (closest != null)
-        {
-            closest.Interact();
-        }
-    }
+    // private void OnHandleInteract()
+    // {
+    //     // 플레이어 주변의 IInteractable을 탐색하여 가장 가까운 것과 상호작용
+    //     Collider[] hits = Physics.OverlapSphere(transform.position, interactRadius);
+    //     IInteractable closest = null;
+    //     float minDistance = float.MaxValue;
+    //     foreach (var hit in hits)
+    //     {
+    //         var interactable = hit.GetComponent<IInteractable>();
+    //         if (interactable != null)
+    //         {
+    //             float distance = Vector3.Distance(transform.position, hit.transform.position);
+    //             if (distance < minDistance)
+    //             {
+    //                 minDistance = distance;
+    //                 closest = interactable;
+    //             }
+    //         }
+    //     }
+    //     if (closest != null)
+    //     {
+    //         closest.Interact();
+    //     }
+    // }
 
     public void ApplyKnockback(float force) {}
 
