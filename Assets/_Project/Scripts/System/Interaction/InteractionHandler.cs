@@ -55,15 +55,20 @@ public class InteractionHandler : MonoBehaviour
         if (closest != currentTarget)
         {
             currentTarget = closest;
+        }
 
-            if (closest != null)
-            {
-                UIManager.Instance.ShowPrompt($"[F] {closest.GetPrompt()}");
-            }
-            else
-            {
+        // 프롬프트는 상태가 바뀌었을 수 있으므로 매번 갱신
+        if (currentTarget != null)
+        {
+            string prompt = currentTarget.GetPrompt();
+            if (string.IsNullOrEmpty(prompt))
                 UIManager.Instance.HidePrompt();
-            }
+            else
+                UIManager.Instance.ShowPrompt($"[F] {prompt}");
+        }
+        else
+        {
+            UIManager.Instance.HidePrompt();
         }
     }
 

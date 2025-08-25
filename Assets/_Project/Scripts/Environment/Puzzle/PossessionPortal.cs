@@ -46,7 +46,12 @@ public class PossessionPortal : MonoBehaviour, IInteractable
 
     public string GetPrompt()
     {
-        if (!isPlayerInside) return "";
+        if (!isPlayerInside)
+        return "";
+
+        // 빙의 중인데 조각상이 포탈 근처가 아니면 프롬프트 숨김
+        if (playerMazeController.IsPossessed && !playerMazeController.IsNearPortal)
+            return "";
 
         return playerMazeController.IsPossessed ? "되돌아가기" : "빙의하기";
     }
