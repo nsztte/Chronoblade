@@ -10,7 +10,11 @@ public class UIManager : MonoBehaviour
     [SerializeField] private ShopUI shopUI;
     [SerializeField] private ToastUI toastUI;
     [SerializeField] private ConfirmModalUI confirmModal;
+    [SerializeField] private PauseUI pauseUI;
 
+    [Header("오버레이")]
+    [SerializeField] private GameObject overlayBackground;
+    private int overlayCount = 0;
     public ShopUI ShopUI => shopUI;
 
 
@@ -97,10 +101,34 @@ public class UIManager : MonoBehaviour
     public void ClearTimeState() => playerHUD?.ClearTimeState();
     #endregion
     
-    #region 토스트UI, 컨펌모달UI
+    #region 오버레이, 토스트UI, 컨펌모달UI, 일시정지UI
+    public void ShowOverlayBackground()
+    {
+        overlayCount++;
+        if (overlayCount == 1)
+        {
+            overlayBackground?.SetActive(true);
+            SetCursorLockState(CursorLockMode.None);
+        }
+    }
+
+    public void HideOverlayBackground()
+    {
+        overlayCount = Mathf.Max(overlayCount - 1, 0);
+        if (overlayCount == 0)
+        {
+            overlayBackground?.SetActive(false);
+            SetCursorLockState(CursorLockMode.Locked);
+        }
+    }
+
     public void ShowToast(string message) => toastUI?.Show(message);
 
     public void ShowConfirm(string title, string message, Action onConfirm, Action onCancel) => confirmModal?.Show(title, message, onConfirm, onCancel);
+
+    public void ShowPause() => pauseUI?.Show();
+
+    public void ClosePause() => pauseUI?.Hide();
     #endregion
 
     #region 게임스테이트 디버그용 (추후 UI로 대체)

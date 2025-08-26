@@ -49,6 +49,10 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        // 일시정지(Esc)
+        if (Input.GetKeyDown(KeyCode.Escape))
+            OnPause?.Invoke();
+
         if (Cursor.lockState != CursorLockMode.Locked) return;
         
         // 빙의시 상호작용 외에 다른 움직임 차단
@@ -137,13 +141,14 @@ public class InputManager : MonoBehaviour
         if (Input.GetKeyDown(KeyCode.F))
             OnInteract?.Invoke();
 
-        // 일시정지(Esc)
-        if (Input.GetKeyDown(KeyCode.Escape))
-            OnPause?.Invoke();
-
         // 대쉬 입력 (Left Alt)
         if (Input.GetKeyDown(KeyCode.LeftAlt))
             OnDashPressed?.Invoke();
+    }
+
+    public void TriggerPause()
+    {
+        OnPause?.Invoke();
     }
 
     private void HandleWeaponSwitching()
