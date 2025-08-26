@@ -124,6 +124,7 @@ public class BossController : MonoBehaviour, IDamageable
         percent = Mathf.Clamp(percent, 0, 100);
         currentHP = maxHP * percent / 100f;
         UpdateBossHUD();
+        phaseManager.UpdatePhase(currentHP, maxHP);
     }
 
     #region 애니메이션 관련 함수

@@ -1749,7 +1749,7 @@ MonoBehaviour:
   endPoint: {fileID: 8860860428537723064}
   hitLayer:
     serializedVersion: 2
-    m_Bits: 128
+    m_Bits: 384
 --- !u!1 &4358773491706603103
 GameObject:
   m_ObjectHideFlags: 0
@@ -3406,9 +3406,21 @@ PrefabInstance:
       propertyPath: player
       value: 
       objectReference: {fileID: 6369319848746265967}
+    - target: {fileID: 1962568629482464446, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
+      propertyPath: hitLayer.m_Bits
+      value: 384
+      objectReference: {fileID: 0}
     - target: {fileID: 4116365856630799479, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
       propertyPath: m_Name
       value: Main Camera
+      objectReference: {fileID: 0}
+    - target: {fileID: 8067363351772988466, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
+      propertyPath: hitLayer.m_Bits
+      value: 384
+      objectReference: {fileID: 0}
+    - target: {fileID: 8429330037356695551, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
+      propertyPath: hitLayer.m_Bits
+      value: 384
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
