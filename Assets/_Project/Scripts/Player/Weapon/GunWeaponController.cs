@@ -115,7 +115,7 @@ public class GunWeaponController : WeaponController
         StartCoroutine(ResetIsAttackingAfterDelay(coolTime));
     }
 
-    private System.Collections.IEnumerator ResetIsAttackingAfterDelay(float delay)
+    private IEnumerator ResetIsAttackingAfterDelay(float delay)
     {
         yield return new WaitForSeconds(delay);
         isAttacking = false;

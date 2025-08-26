@@ -1,9 +1,11 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 [RequireComponent(typeof(Collider))]
 public class SlowZone : MonoBehaviour
 {
     [SerializeField] private float duration = 5f;
+    private readonly HashSet<IStatusEffectable> inside = new();
 
     private void Awake()
     {
@@ -19,7 +21,8 @@ public class SlowZone : MonoBehaviour
     {
         if(other.TryGetComponent(out IStatusEffectable effectable))
         {
-            effectable.ApplyStatus(StatusEffectType.Slow);
+            if (inside.Add(effectable))
+                effectable.ApplyStatus(StatusEffectType.Slow);
         }
     }
 
@@ -27,7 +30,15 @@ public class SlowZone : MonoBehaviour
     {
         if(other.TryGetComponent(out IStatusEffectable effectable))
         {
-            effectable.RemoveStatus(StatusEffectType.Slow);
+            if (inside.Remove(effectable))
+                effectable.RemoveStatus(StatusEffectType.Slow);
         }
+    }
+
+    private void OnDisable()
+    {
+        foreach (var e in inside)
+            e.RemoveStatus(StatusEffectType.Slow);
+        inside.Clear();
     }
 }
