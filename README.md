@@ -2211,3 +2211,70 @@ Enemy FSM(상태머신) 시스템 구현
 - ConfirmModal은 추후 ESC 닫기, 애니메이션 처리 등 개선 여지 있음
 
 ---
+
+## 2025.08.26 (화) 작업 기록
+
+### 주요 작업
+- **보스 HP 패널 및 Overlay 캔버스 구조 개선**
+  - HUD_Canvas 하위에 `TopCenter_Panel` 추가 후 `BossHP_Panel` 구성
+    - `BossNameText`, `BossHP_Bar` 하위 요소 배치
+    - 플레이어 HUD와 일관된 구조로 보스 HUD 관리 가능
+  - Overlay_Canvas 신설 → ConfirmModal, Pause, Option 등 오버레이 UI를 통합 관리
+
+- **BossHUD 구현 및 UIManager 리팩토링**
+  - BossHUD
+    - CanvasGroup 의존성 보장 및 중복 방지 속성 추가
+    - Show(cur,max), Hide() 단순화 및 게이지 갱신 안전화
+  - UIManager
+    - 참조 직렬화(PlayerHUD, BossHUD, Toast, ConfirmModal 등)
+    - 메서드 전반을 람다식/Null 전파 연산자로 간결화
+
+- **보스 HP HUD 연동 및 표시/숨김 로직 적용**
+  - BossController에서 UIManager 연동
+    - ShowBossHUD / UpdateBossHUD / HideBossHUD 호출로 일원화
+  - 전투 흐름에 맞춰 표시/숨김 타이밍 정리
+    - Intro 진입 → HUD 표시
+    - Puzzle 구간 진입 → HUD 숨김
+    - Puzzle 종료 → HUD 재표시
+    - Ending 상태 → HUD 숨김
+  - PhaseManager UpdatePhase 호출 위치 정리 → Update()에서 제거, 이벤트 지점에서만 호출
+
+- **슬로우존 파괴 시 버그 수정**
+  - 파괴될 때 플레이어 슬로우 상태가 해제되지 않는 문제 해결
+  - 내부 진입 대상 추적 및 OnDisable 시 일괄 상태 해제 보장
+  - OnTriggerStay 의존 제거로 안정성 강화
+
+- **일시정지 시스템 및 UI 통합 구현**
+  - PauseUI
+    - Resume / Options / Quit 버튼 구성
+    - CanvasGroup 기반 Show/Hide 처리
+  - UIManager
+    - PauseUI 관련 함수 (ShowPause, ClosePause) 추가
+    - OverlayBackground Show/Hide 함수 추가
+  - ConfirmModalUI에 OverlayBackground 처리 통합 적용
+  - InputManager
+    - Pause 입력(Esc) 최상단에서 처리
+    - TriggerPause() 함수 추가
+  - PausedState
+    - Enter: UIManager.ShowPause(), Time.timeScale = 0
+    - Exit: UIManager.ClosePause(), Time.timeScale = 1
+
+- **옵션 UI 레이아웃 구성**
+  - AudioGroup
+    - "오디오 설정" 라벨 + Master/BGM/SFX 슬라이더 구성
+  - ControlGroup
+    - "컨트롤 설정" 라벨 + 마우스 감도 슬라이더 구성
+  - ScreenGroup
+    - "스크린 설정" 라벨 + 해상도 드롭다운, 전체화면 토글 구성
+  - SaveGroup
+    - "저장" 탭에 저장하기/불러오기 버튼 배치
+    - 현재는 틀만 구성, 기능은 추후 구현 예정
+  - 탭 전환 버튼(오디오/컨트롤/스크린/저장) 추가 → 선택 시 해당 그룹만 표시되도록 설계
+
+### 메모
+- 보스 HUD/페이즈 로직과 UI 연동이 안정화됨
+- OverlayCanvas 신설로 Pause/ConfirmModal/Option 같은 오버레이 UI의 관리가 단순화됨
+- Pause 상태는 다른 모든 게임 입력보다 우선되도록 설계 → TimeState와 충돌 없이 동작 보장
+- 옵션 UI는 오디오/컨트롤/스크린/저장 4개 그룹 틀을 완성, 기능은 추후 구현 예정
+
+---
