@@ -80,13 +80,15 @@ public class BossController : MonoBehaviour, IDamageable
         
         stateMachine.Update();
 
-        phaseManager.UpdatePhase(currentHP, maxHP);
+        // phaseManager.UpdatePhase(currentHP, maxHP);
     }
 
     public void TakeDamage(int damage)
     {
         currentHP -= damage;
         currentHP = Mathf.Max(currentHP, 0);
+
+        UpdateBossHUD();
 
         phaseManager.UpdatePhase(currentHP, maxHP);
         Debug.Log($"Boss HP: {currentHP}, Phase: {phaseManager.CurrentPhase}");
@@ -119,7 +121,9 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void SetHPWithPercent(int percent)
     {
+        percent = Mathf.Clamp(percent, 0, 100);
         currentHP = maxHP * percent / 100f;
+        UpdateBossHUD();
     }
 
     #region 애니메이션 관련 함수
@@ -213,12 +217,16 @@ public class BossController : MonoBehaviour, IDamageable
         // 퍼즐 시작
         puzzleClockManager.gameObject.SetActive(true);
         puzzleClockManager.StartPuzzle();
+
+        HideBossHUD();
     }
 
     public void EndPuzzle()
     {
         // 퍼즐 종료
         puzzleClockManager.gameObject.SetActive(false);
+
+        ShowBossHUD();
     }
 
     public void SetClockPartsTarget(bool isPlayer)
@@ -432,6 +440,12 @@ public class BossController : MonoBehaviour, IDamageable
         Gizmos.matrix = Matrix4x4.TRS(center, rotation, Vector3.one);
         Gizmos.DrawWireCube(Vector3.zero, halfSize * 2f);
     }
+    #endregion
+
+    #region UI 훅
+    public void ShowBossHUD()  => UIManager.Instance?.ShowBoss(currentHP, maxHP);
+    private void UpdateBossHUD()=> UIManager.Instance?.SetBossHP(currentHP, maxHP);
+    public void HideBossHUD()  => UIManager.Instance?.HideBoss();
     #endregion
 
     public void ApplyKnockback(float force){}

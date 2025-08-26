@@ -15,4 +15,9 @@ public class BossIntroState : BaseBossState
         float duration = boss.GetCurrentAnimationLength() + 0.2f;
         WaitAndChangeToState(duration, new BossIdleState(boss, stateMachine));
     }
+
+    public override void Exit()
+    {
+        boss.ShowBossHUD();
+    }
 }
