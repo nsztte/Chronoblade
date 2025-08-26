@@ -24,7 +24,7 @@ public class ShopManager : MonoBehaviour
     {
         currentShop = shop;
 
-        UIManager.Instance.shopUI.OpenShopUI(shop.shopData);
+        UIManager.Instance.ShopUI.OpenShopUI(shop.shopData);
 
         UIManager.Instance.SetCursorLockState(CursorLockMode.None);
     }
@@ -86,7 +86,7 @@ public class ShopManager : MonoBehaviour
     public void CloseShop()
     {
         currentShop = null;
-        UIManager.Instance.shopUI.CloseShopUI();
+        UIManager.Instance.ShopUI.CloseShopUI();
 
         UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
     }

@@ -4,11 +4,14 @@ using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
-    public PlayerHUD playerHUD;
-    public QuickSlotUI quickSlotUI;
-    public ShopUI shopUI;
-    public ToastUI toastUI;
-    public ConfirmModalUI confirmModal;
+    [SerializeField] private PlayerHUD playerHUD;
+    [SerializeField] private BossHUD bossHUD;
+    [SerializeField] private QuickSlotUI quickSlotUI;
+    [SerializeField] private ShopUI shopUI;
+    [SerializeField] private ToastUI toastUI;
+    [SerializeField] private ConfirmModalUI confirmModal;
+
+    public ShopUI ShopUI => shopUI;
 
 
     #region Singleton
@@ -38,42 +41,21 @@ public class UIManager : MonoBehaviour
 
     #region 플레이어 상태 업데이트
     // === 체력, MP, 스태미나 ===
-    public void UpdateHP(int current, int max)
-    {
-        playerHUD?.UpdateHP(current, max);
-    }
+    public void UpdateHP(int current, int max) => playerHUD?.UpdateHP(current, max);
 
-    public void UpdateMP(int current, int max)
-    {
-        playerHUD?.UpdateMP(current, max);
-    }
+    public void UpdateMP(int current, int max) => playerHUD?.UpdateMP(current, max);
 
-    public void UpdateStamina(int current, int max)
-    {
-        playerHUD?.UpdateStamina(current, max);
-    }
+    public void UpdateStamina(int current, int max) => playerHUD?.UpdateStamina(current, max);
 
     // === 무기 ===
-    public void UpdateAmmo(int current, int total)
-    {
-        playerHUD?.UpdateAmmo(current, total);
-    }
+    public void UpdateAmmo(int current, int total) => playerHUD?.UpdateAmmo(current, total);
 
-    public void ActiveWeaponPanel(Sprite weaponIcon = null)
-    {
-        playerHUD?.SetWeaponImage(weaponIcon);
-    }
+    public void ActiveWeaponPanel(Sprite weaponIcon = null) => playerHUD?.SetWeaponImage(weaponIcon);
 
-    public void ActiveAmmoPanel(bool value)
-    {
-        playerHUD?.SetAmmoVisible(value);
-    }
+    public void ActiveAmmoPanel(bool value) => playerHUD?.SetAmmoVisible(value);
 
     // === 골드 ===
-    public void UpdateGold(int amount)
-    {
-        playerHUD?.UpdateGold(amount);
-    }
+    public void UpdateGold(int amount) => playerHUD?.UpdateGold(amount);
 
     // public void SetQuickSlotSelectedIndex(int index)
     // {
@@ -81,71 +63,44 @@ public class UIManager : MonoBehaviour
     // }
     #endregion
 
+    #region 보스 HP바
+    public void ShowBoss(float cur, float max) => bossHUD?.Show(cur, max);
+    public void SetBossHP(float cur, float max) => bossHUD?.SetHP(cur, max);
+    public void HideBoss() => bossHUD?.Hide();
+    #endregion
+
     #region 크로스헤어
-    public void SetCrosshairActive(bool value)
-    {
-        playerHUD?.SetCrosshairVisible(value);
-    }
+    public void SetCrosshairActive(bool value) => playerHUD?.SetCrosshairVisible(value);
 
     // 무기 타입에 따라 크로스헤어 교체
-    public void UpdateCrosshair(WeaponType type)
-    {
-        playerHUD?.SetCrosshairType(type);
-    }
+    public void UpdateCrosshair(WeaponType type) => playerHUD?.SetCrosshairType(type);
 
     // 조준 상태에 따라 크기 조절
-    public void SetCrosshairZoom(bool isZoomed)
-    {
-        playerHUD?.SetCrosshairZoom(isZoomed);
-    }
+    public void SetCrosshairZoom(bool isZoomed) => playerHUD?.SetCrosshairZoom(isZoomed);
 
     // 총 발사 시 크로스헤어 확대 효과
-    public void TriggerCrosshairFireEffect()
-    {
-        playerHUD?.TriggerCrosshairFireEffect();
-    }
+    public void TriggerCrosshairFireEffect() => playerHUD?.TriggerCrosshairFireEffect();
 
     // 조준 대상이 사정거리 내일 때 색상 변경
-    public void SetCrosshairColor(Color color)
-    {
-        playerHUD?.SetCrosshairColor(color);
-    }
+    public void SetCrosshairColor(Color color) => playerHUD?.SetCrosshairColor(color);
     #endregion
 
     #region 상호작용 프롬프트
-    public void ShowPrompt(string text)
-    {
-        playerHUD?.ShowPrompt(text);
-    }
+    public void ShowPrompt(string text) => playerHUD?.ShowPrompt(text);
 
-    public void HidePrompt()
-    {
-        playerHUD?.HidePrompt();
-    }
+    public void HidePrompt() => playerHUD?.HidePrompt();
     #endregion
 
     #region 타임 스테이트 업데이트
-    public void ShowTimeState(TimeState state)
-    {
-        playerHUD?.ShowTimeState(state);
-    }
+    public void ShowTimeState(TimeState state) => playerHUD?.ShowTimeState(state);
 
-    public void ClearTimeState()
-    {
-        playerHUD?.ClearTimeState();
-    }
+    public void ClearTimeState() => playerHUD?.ClearTimeState();
     #endregion
     
     #region 토스트UI, 컨펌모달UI
-    public void ShowToast(string message)
-    {
-        toastUI?.Show(message);
-    }
+    public void ShowToast(string message) => toastUI?.Show(message);
 
-    public void ShowConfirm(string title, string message, Action onConfirm, Action onCancel)
-    {
-        confirmModal?.Show(title, message, onConfirm, onCancel);
-    }
+    public void ShowConfirm(string title, string message, Action onConfirm, Action onCancel) => confirmModal?.Show(title, message, onConfirm, onCancel);
     #endregion
 
     #region 게임스테이트 디버그용 (추후 UI로 대체)
