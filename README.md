@@ -2278,3 +2278,40 @@ Enemy FSM(상태머신) 시스템 구현
 - 옵션 UI는 오디오/컨트롤/스크린/저장 4개 그룹 틀을 완성, 기능은 추후 구현 예정
 
 ---
+
+## 2025.08.27 (수) 작업 기록
+
+### 주요 작업
+- **InventoryShop 레이아웃 구축**
+  - 기존 `Shop_Canvas` → `InventoryShop_Canvas`로 리네임
+  - Canvas Scaler 설정: Screen Space Overlay, 1920×1080 기준, Match 0.5
+  - Body 컨테이너에 Horizontal Layout Group 적용
+    - Padding 16, Spacing 16
+    - 인벤토리 패널 960 / 상점 패널 720 (Preferred Width)으로 비율 조정
+  - 좌측 인벤토리 패널
+    - Header(Height 56) 구성: Title("인벤토리") 좌측 정렬
+    - 골드 표시 그룹(GoldGroup: 아이콘 24×24 + GoldText) 우측 고정
+    - InventoryGrid: Stretch + Offsets(Left 16 / Right 16 / Top 56 / Bottom 16)
+    - Grid Layout Group: CellSize 160×160, Spacing 16, FixedColumn 5
+  - 우측 상점 패널
+    - Header(Height 56): Title("상점")
+    - ShopGrid: CellSize 160×160, Spacing 16, FixedColumn 3
+  - 중앙 Divider(Width 2, Alpha ~0.3) 추가로 시각적 구분
+  - 인벤토리 단독 모드 대응: ShopPanel_Right 비활성화 시 레이아웃 자동 리플로우
+
+- **슬롯 프리팹 제작 및 적용**
+  - `InventorySlot` 프리팹
+    - 슬롯 크기 160×160
+    - 구성: Icon(96×96), NameText, CountBadge(xN), SelectionFrame
+    - CountBadge는 보유 수량에 따라 활성/비활성
+  - `ShopSlot` 프리팹
+    - 슬롯 크기 160×160, 상점 Grid 전용
+    - 구성: Icon, NameText, PriceText, SelectionFrame
+  - InventoryGrid와 ShopGrid에 프리팹 배치 테스트 완료
+    - 인벤토리: 5열 배치, 상점: 3열 배치
+    - 스크롤 지원 정상 동작 확인
+
+### 메모
+- 인벤토리는 그리드, 상점은 현재는 그리드로 두었으나 아이템 설명이 필요하다면 리스트 + 상세창 구조로 전환 고려 가능
+- 골드 표시를 인벤토리 헤더에 배치하여 인벤토리 단독 모드에서도 정보 완결성 확보
+- 다음 단계: Confirm/Toast 구매 플로우 연동, 이벤트 기반 인벤토리/골드 동기화
