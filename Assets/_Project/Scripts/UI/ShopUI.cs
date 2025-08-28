@@ -23,7 +23,6 @@ public class ShopUI : MonoBehaviour
     private void OnDisable()
     {
         InputManager.Instance.OnPause -= ShopManager.Instance.CloseShop;
-        InputManager.Instance.TriggerPause();
     }
 
     public void OpenShopUI(ShopData data)

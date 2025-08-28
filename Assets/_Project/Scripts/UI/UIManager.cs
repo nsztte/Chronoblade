@@ -18,7 +18,11 @@ public class UIManager : MonoBehaviour
     private int overlayCount = 0;
 
     public ShopUI ShopUI => shopUI;
-    public bool IsAnyUIOpen => shopUI.gameObject.activeSelf || inventoryUI.gameObject.activeSelf || pauseUI.gameObject.activeSelf;
+
+    public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;
+    public bool IsInventoryOpen => inventoryUI != null && inventoryUI.gameObject.activeSelf;
+    public bool IsShopOpen => shopUI != null && shopUI.gameObject.activeSelf;
+    public bool IsAnyUIOpen => IsPauseOpen || IsInventoryOpen || IsShopOpen;
 
 
     #region Singleton
@@ -50,8 +54,13 @@ public class UIManager : MonoBehaviour
 
     private void ToggleInventoryUI()
     {
+        if (IsShopOpen) return;
+
         bool isActive = inventoryUI.gameObject.activeSelf;
         inventoryUI.gameObject.SetActive(!isActive);
+
+        if(isActive)
+            InputManager.Instance.TriggerPause();
     }
 
     #region 마우스 커서 업데이트

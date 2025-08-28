@@ -13,6 +13,7 @@ public class InventoryUI : MonoBehaviour
     {
         InputManager.Instance.OnPause += Close;
         GameManager.Instance.EnterPaused();
+        UIManager.Instance.SetCursorLockState(CursorLockMode.None);
 
         Refresh();
     }
@@ -20,7 +21,7 @@ public class InventoryUI : MonoBehaviour
     private void OnDisable()
     {
         InputManager.Instance.OnPause -= Close;
-        InputManager.Instance.TriggerPause();
+        UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
     }
 
     private void Refresh()

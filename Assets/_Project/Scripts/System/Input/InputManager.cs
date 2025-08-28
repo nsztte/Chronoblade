@@ -50,12 +50,21 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
-        // 일시정지(Esc)
+        // 1) UI 열려 있으면 허용 키만 처리하고 종료
+        if (HandleUIBlockingInput())
+            return;
+
+        // 2) 아무 UI도 안 열렸을 때 전역 핫키(ESC/I)는 항상 처리
         if (Input.GetKeyDown(KeyCode.Escape))
             OnPause?.Invoke();
 
-        if (Cursor.lockState != CursorLockMode.Locked) return;
-        
+        if (Input.GetKeyDown(KeyCode.I))
+            OnInventoryChanged?.Invoke();
+
+        // 3) 커서 잠금 해제면 게임플레이 입력 차단
+        if (Cursor.lockState != CursorLockMode.Locked)
+            return;
+          
         // 빙의시 상호작용 외에 다른 움직임 차단
         if (PlayerManager.Instance.IsPossessed)
         {
@@ -154,6 +163,39 @@ public class InputManager : MonoBehaviour
     {
         OnPause?.Invoke();
     }
+
+    private bool HandleUIBlockingInput()
+    {
+        var ui = UIManager.Instance;
+        if (ui != null)
+        {
+            if (ui.IsPauseOpen)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    OnPause?.Invoke();
+                return true;
+            }
+
+            if (ui.IsInventoryOpen)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    OnPause?.Invoke();
+                if (Input.GetKeyDown(KeyCode.I))
+                    OnInventoryChanged?.Invoke();
+                return true;
+            }
+
+            if (ui.IsShopOpen)
+            {
+                if (Input.GetKeyDown(KeyCode.Escape))
+                    OnPause?.Invoke();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
 
     private void HandleWeaponSwitching()
     {
