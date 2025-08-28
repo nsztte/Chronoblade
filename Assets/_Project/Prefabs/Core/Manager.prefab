@@ -11,8 +11,8 @@ GameObject:
   - component: {fileID: 4182334992462411445}
   - component: {fileID: 4469891042141530253}
   - component: {fileID: 1814439384031099855}
+  - component: {fileID: 2609828516626921666}
   - component: {fileID: 6733175355444662607}
-  - component: {fileID: 8994884629098386020}
   - component: {fileID: 2087862047069520449}
   - component: {fileID: 1904765547464909815}
   - component: {fileID: 4449098473181579713}
@@ -66,12 +66,25 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 844d2426fb76b3e4987ed675f4e14eea, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  playerController: {fileID: 0}
   weaponSlots:
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
   - {fileID: 0}
+  currentWeapon: {fileID: 0}
+--- !u!114 &2609828516626921666
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 9151459008568226687}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 755a440b3ec5e0c4095df7dabd712d3e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemDatabase: {fileID: 11400000, guid: a22253c009a7f4b4aa644858e1e18027, type: 2}
 --- !u!114 &6733175355444662607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -84,22 +97,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: e37cc72e70881a84f838278c76fdcd2f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!114 &8994884629098386020
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9151459008568226687}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3c2d5cfed38f0e446988a592d2f96ae0, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  playerHUD: {fileID: 0}
-  crosshairUI: {fileID: 0}
-  quickSlotUI: {fileID: 0}
-  shopUI: {fileID: 0}
+  defaultPistolData: {fileID: 0}
+  testWeaponData: []
 --- !u!114 &2087862047069520449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -127,6 +126,10 @@ MonoBehaviour:
   currentTimeState: 0
   slowFactor: 0.2
   fastForwardFactor: 2
+  rewindMpDrain: 30
+  stopMpDrain: 25
+  slowMpDrain: 10
+  fastForwardMpDrain: 8
 --- !u!114 &4449098473181579713
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -164,6 +167,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255906bd268e27346b087f4ac50e1580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  isTimeTest: 0
   mainMenuState: {fileID: 2619704260623107056, guid: 2b08dcb064fdf7f4b974d887277cc602, type: 3}
   loadingState: {fileID: 9020382652373752339, guid: 091e843e84b09ff4d93e971b027cbd99, type: 3}
   explorationState: {fileID: 375632794893911895, guid: d8b663cbdf1af064c87b0360efce7347, type: 3}
@@ -197,4 +201,3 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   playerCinemachineCamera: {fileID: 0}
-  clockPuzzleCinemachineCamera: {fileID: 0}

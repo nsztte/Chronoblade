@@ -69,6 +69,9 @@ public class WeaponManager : MonoBehaviour
         if(currentWeapon != null)
         {
             currentWeapon.gameObject.SetActive(false);
+
+            // 인벤토리 연동
+            InventoryManager.Instance.Equip(currentWeapon.weaponData);
         }
 
         currentWeapon = weaponSlots[index];
@@ -96,6 +99,9 @@ public class WeaponManager : MonoBehaviour
         if(currentWeapon != null)
         {
             currentWeapon.gameObject.SetActive(false);
+
+            // 인벤토리 연동
+            InventoryManager.Instance.Unequip(currentWeapon.weaponData);
         }
         currentWeapon = null;
         currentWeaponIndex = -1;

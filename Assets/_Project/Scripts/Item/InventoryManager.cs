@@ -25,6 +25,7 @@ public class InventoryManager : MonoBehaviour
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
     private HashSet<string> obtainedWeapons = new HashSet<string>();
+    private WeaponData equippedWeapon;
 
     // 슬롯 기반 인벤토리 구조(확장용, 실제 슬롯 로직은 추후 구현)
     // public List<InventorySlot> slots = new List<InventorySlot>();
@@ -43,6 +44,20 @@ public class InventoryManager : MonoBehaviour
                 RegisterWeapon(w);
             }
         }
+    }
+
+    public Dictionary<ItemData, int> GetAllItems()
+    {
+        Dictionary<ItemData, int> result = new();
+
+        foreach (var kvp in itemCounts)
+        {
+            var item = ItemManager.Instance.GetItemByID(kvp.Key);
+            if (item != null)
+                result[item] = kvp.Value;
+        }
+
+        return result;
     }
     
     public int TryAddItem(ItemData item, int amount, out string faliReason)
@@ -88,7 +103,7 @@ public class InventoryManager : MonoBehaviour
             bool success = RemoveItem(item, amount);
             if(!success)
             {
-                failReason = $"아이템 보유량이 부족합니다. 아이템 보유량: {itemCounts[item.itemName]}";
+                failReason = $"아이템 보유량이 부족합니다. 아이템 보유량: {itemCounts[item.itemID]}";
             }
             return success;
         }
@@ -99,7 +114,7 @@ public class InventoryManager : MonoBehaviour
     {
         // 유효성 검사
         if (item == null || item.maxStack <= 0) return amount;
-        string key = item.itemName;
+        string key = item.itemID;
         if(!itemCounts.TryGetValue(key, out int currentCount))
             currentCount = 0;
 
@@ -115,7 +130,7 @@ public class InventoryManager : MonoBehaviour
     public bool RemoveItem(ItemData item, int amount)
     {
         if (item == null) return false;
-        string key = item.itemName;
+        string key = item.itemID;
         if(!itemCounts.ContainsKey(key)) return false;
         if(itemCounts[key] < amount) return false;
 
@@ -130,7 +145,7 @@ public class InventoryManager : MonoBehaviour
     public int GetItemCount(ItemData item)
     {
         if (item == null) return 0;
-        string key = item.itemName;
+        string key = item.itemID;
         if(itemCounts.TryGetValue(key, out int count)) return count;
         return 0;
     }
@@ -230,6 +245,23 @@ public class InventoryManager : MonoBehaviour
     public bool IsWeaponObtained(WeaponData weapon)
     {
         return obtainedWeapons.Contains(weapon.weaponName);
+    }
+    #endregion
+    
+    #region 무기 장착 관리
+    public bool IsEquipped(ItemData item)
+    {
+        return item.weaponData == equippedWeapon;
+    }
+
+    public void Equip(WeaponData weapon)
+    {
+        equippedWeapon = weapon;
+    }
+
+    public void Unequip(WeaponData weapon)
+    {
+        equippedWeapon = null;
     }
     #endregion
 }

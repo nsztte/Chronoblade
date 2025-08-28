@@ -1,25 +1,33 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class ItemManager : MonoBehaviour
 {
-    #region Singleton
     public static ItemManager Instance { get; private set; }
+
+    [SerializeField] private ItemDatabase itemDatabase;
 
     private void Awake()
     {
-        // Singleton pattern implementation
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
+        if (Instance != null && Instance != this)
         {
             Destroy(gameObject);
             return;
         }
+
+        Instance = this;
+        itemDatabase.Initialize(); // 데이터베이스 초기화
     }
-    #endregion
+
+    public ItemData GetItemByID(string id)
+    {
+        return itemDatabase.Get(id);
+    }
+
+    public List<ItemData> GetAllItems()
+    {
+        return itemDatabase.GetAllItems();
+    }
 
     // 아이템 사용
     public void UseItem(ItemData itemData)
@@ -42,38 +50,10 @@ public class ItemManager : MonoBehaviour
             case ConsumableItemEffectType.ManaRestore:
                 PlayerManager.Instance.RestoreMP(itemData.value);
                 break;
-            // case ConsumableItemEffectType.AmmoSupply:
-            //     InventoryManager.Instance.AddAmmo(itemData.ammoType, itemData.value);
-            //     break;
             default:
                 Debug.LogError($"아이템 효과 미지정: {itemData.itemName}");
                 break;
         }
         Debug.Log($"{itemData.itemName} 사용");
     }
-
-    // 인벤토리 연동 메서드
-    // public bool AddItem(ItemData item, int amount)
-    // {
-    //     string failReason;
-    //     if(InventoryManager.Instance.TryAddItem(item, amount, out failReason))
-    //     {
-    //         return true;
-    //     }
-    //     else
-    //     {
-    //         Debug.LogError($"[ItemManager] 아이템 추가 실패: {failReason}");
-    //         return false;
-    //     }
-    // }
-
-    // public bool RemoveItem(ItemData item, int amount)
-    // {
-    //     return InventoryManager.Instance.RemoveItem(item, amount);
-    // }
-
-    // public int GetItemCount(ItemData item)
-    // {
-    //     return InventoryManager.Instance.GetItemCount(item);
-    // }
 }

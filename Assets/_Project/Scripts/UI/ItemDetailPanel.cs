@@ -4,14 +4,24 @@ using TMPro;
 
 public class ItemDetailPanel : MonoBehaviour
 {
+    [SerializeField] private bool isInventoryMode;
     [SerializeField] private Image icon;
     [SerializeField] private TextMeshProUGUI nameText;
     [SerializeField] private TextMeshProUGUI typeTag;
     [SerializeField] private TextMeshProUGUI descriptionText;
     [SerializeField] private TextMeshProUGUI effectText;
     [SerializeField] private TextMeshProUGUI priceText;
-    [SerializeField] private Button buyButton;
-    [SerializeField] private Button sellButton;
+    [SerializeField] private Button firstButton;
+    [SerializeField] private Button secondButton;
+
+    private TextMeshProUGUI firstButtonText;
+    private TextMeshProUGUI secondButtonText;
+
+    private void Awake()
+    {
+        firstButtonText = firstButton.GetComponentInChildren<TextMeshProUGUI>();
+        secondButtonText = secondButton.GetComponentInChildren<TextMeshProUGUI>();
+    }
 
     public void Show(ItemData item)
     {
@@ -22,8 +32,12 @@ public class ItemDetailPanel : MonoBehaviour
         descriptionText.text = item.description;
         effectText.text = ItemEffectText(item);
         priceText.text = $"가격: {item.price:N0} G";
-        buyButton.gameObject.SetActive(true);
-        sellButton.gameObject.SetActive(true);
+
+        SetButtonText(item);
+
+        firstButton.gameObject.SetActive(!string.IsNullOrEmpty(firstButtonText.text));
+        secondButton.gameObject.SetActive(!string.IsNullOrEmpty(secondButtonText.text));
+
     }
 
     public void Clear()
@@ -34,9 +48,36 @@ public class ItemDetailPanel : MonoBehaviour
         descriptionText.text = "";
         effectText.text = "";
         priceText.text = "";
-        buyButton.gameObject.SetActive(false);
-        sellButton.gameObject.SetActive(false);
+        firstButton.gameObject.SetActive(false);
+        secondButton.gameObject.SetActive(false);
         gameObject.SetActive(false);
+    }
+
+    private void SetButtonText(ItemData item)
+    {
+        if(!isInventoryMode) return;
+
+        switch (item.itemType)
+        {
+            case ItemType.Consumable:
+                firstButtonText.text = "사용";
+                secondButtonText.text = "버리기";
+                break;
+            case ItemType.Equipment:
+                firstButtonText.text = InventoryManager.Instance.IsEquipped(item) ? "해제" : "장착";
+                secondButtonText.text = "버리기";
+                break;
+
+            case ItemType.Material:
+                firstButtonText.text = "사용";
+                secondButtonText.text = "버리기";
+                break;
+
+            case ItemType.Quest:
+                firstButtonText.text = "";
+                secondButtonText.text = "";
+                break;
+        }
     }
 
     private string TypeTagText(ItemData item)

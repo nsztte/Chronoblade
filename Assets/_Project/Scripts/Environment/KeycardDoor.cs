@@ -22,7 +22,7 @@ public class KeycardDoor : MonoBehaviour, IInteractable
         }
         else
         {
-            Debug.Log("필요한 키카드가 없습니다: " + requiredKeycard.itemName);
+            Debug.Log("필요한 키카드가 없습니다: " + requiredKeycard.itemID);
         }
     }
 
