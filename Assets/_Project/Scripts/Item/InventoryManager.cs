@@ -25,7 +25,7 @@ public class InventoryManager : MonoBehaviour
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
     private HashSet<string> obtainedWeapons = new HashSet<string>();
-    private WeaponData equippedWeapon;
+    [SerializeField] private WeaponData equippedWeapon;
 
     // 슬롯 기반 인벤토리 구조(확장용, 실제 슬롯 로직은 추후 구현)
     // public List<InventorySlot> slots = new List<InventorySlot>();

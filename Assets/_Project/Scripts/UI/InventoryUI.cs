@@ -11,10 +11,19 @@ public class InventoryUI : MonoBehaviour
 
     private void OnEnable()
     {
+        InputManager.Instance.OnPause += Close;
+        GameManager.Instance.EnterPaused();
+
         Refresh();
     }
 
-     public void Refresh()
+    private void OnDisable()
+    {
+        InputManager.Instance.OnPause -= Close;
+        InputManager.Instance.TriggerPause();
+    }
+
+    private void Refresh()
     {
         ClearSlots();
 
@@ -60,5 +69,10 @@ public class InventoryUI : MonoBehaviour
         {
             slot.SetSelected(slot == selected);
         }
+    }
+
+    private void Close()
+    {
+        gameObject.SetActive(false);
     }
 }

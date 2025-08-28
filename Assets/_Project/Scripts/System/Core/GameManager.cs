@@ -124,7 +124,7 @@ public class GameManager : MonoBehaviour
             ChangeState(PreviousGameState);
         }
         else
-        {
+        {            
             EnterPaused();
         }
     }

@@ -21,6 +21,16 @@ public class PauseUI : MonoBehaviour
         // quitButton.onClick.AddListener(() => UIManager.Instance.QuitToTitle());
     }
 
+    private void OnEnable()
+    {
+        InputManager.Instance.OnPause += Hide;
+    }
+
+    private void OnDisable()
+    {
+        InputManager.Instance.OnPause -= Hide;
+    }
+
     public void Show()
     {
         UIManager.Instance.ShowOverlayBackground();

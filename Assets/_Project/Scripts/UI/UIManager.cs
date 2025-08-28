@@ -6,6 +6,7 @@ public class UIManager : MonoBehaviour
 {
     [SerializeField] private PlayerHUD playerHUD;
     [SerializeField] private BossHUD bossHUD;
+    [SerializeField] private InventoryUI inventoryUI;
     [SerializeField] private QuickSlotUI quickSlotUI;
     [SerializeField] private ShopUI shopUI;
     [SerializeField] private ToastUI toastUI;
@@ -15,7 +16,9 @@ public class UIManager : MonoBehaviour
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
     private int overlayCount = 0;
+
     public ShopUI ShopUI => shopUI;
+    public bool IsAnyUIOpen => shopUI.gameObject.activeSelf || inventoryUI.gameObject.activeSelf || pauseUI.gameObject.activeSelf;
 
 
     #region Singleton
@@ -34,6 +37,22 @@ public class UIManager : MonoBehaviour
         }
     }
     #endregion
+
+    public void Start()
+    {
+        InputManager.Instance.OnInventoryChanged += ToggleInventoryUI;
+    }
+
+    public void OnDestroy()
+    {
+        InputManager.Instance.OnInventoryChanged -= ToggleInventoryUI;
+    }
+
+    private void ToggleInventoryUI()
+    {
+        bool isActive = inventoryUI.gameObject.activeSelf;
+        inventoryUI.gameObject.SetActive(!isActive);
+    }
 
     #region 마우스 커서 업데이트
     public void SetCursorLockState(CursorLockMode mode)

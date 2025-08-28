@@ -14,6 +14,18 @@ public class ShopUI : MonoBehaviour
     private InventorySlot currentSelected;
     private ItemData selectedItem;
 
+    private void OnEnable()
+    {
+        InputManager.Instance.OnPause += ShopManager.Instance.CloseShop;
+        GameManager.Instance.EnterPaused();
+    }
+
+    private void OnDisable()
+    {
+        InputManager.Instance.OnPause -= ShopManager.Instance.CloseShop;
+        InputManager.Instance.TriggerPause();
+    }
+
     public void OpenShopUI(ShopData data)
     {
         inventoryPanel.SetActive(true);

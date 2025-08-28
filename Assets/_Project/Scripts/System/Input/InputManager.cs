@@ -42,6 +42,7 @@ public class InputManager : MonoBehaviour
     public event Action OnLightAttackPressed;
     public event Action OnHeavyAttackPressed;
 
+    public event Action OnInventoryChanged;          // I
     #endregion
 
     private float attackKeyDownTime;
@@ -144,6 +145,9 @@ public class InputManager : MonoBehaviour
         // 대쉬 입력 (Left Alt)
         if (Input.GetKeyDown(KeyCode.LeftAlt))
             OnDashPressed?.Invoke();
+
+        if(Input.GetKeyDown(KeyCode.I))
+            OnInventoryChanged?.Invoke();
     }
 
     public void TriggerPause()

@@ -69,15 +69,15 @@ public class WeaponManager : MonoBehaviour
         if(currentWeapon != null)
         {
             currentWeapon.gameObject.SetActive(false);
-
-            // 인벤토리 연동
-            InventoryManager.Instance.Equip(currentWeapon.weaponData);
         }
 
         currentWeapon = weaponSlots[index];
         currentWeaponIndex = index;
         currentWeapon.SetWeaponData(currentWeapon.weaponData);
         currentWeapon.gameObject.SetActive(true);
+
+        // 인벤토리 연동
+        InventoryManager.Instance.Equip(currentWeapon.weaponData);
 
         // 무기 타입이 Sword인지 판별하여 애니메이터 bool 변경
         bool isSword = currentWeapon.weaponData.weaponType == WeaponType.Sword;
@@ -91,6 +91,7 @@ public class WeaponManager : MonoBehaviour
         UIManager.Instance?.ActiveWeaponPanel(currentWeapon.weaponData.iconSprite);
         UIManager.Instance?.ActiveAmmoPanel(isGun);
         
+        
         return true;
     }
 
@@ -99,7 +100,7 @@ public class WeaponManager : MonoBehaviour
         if(currentWeapon != null)
         {
             currentWeapon.gameObject.SetActive(false);
-
+            
             // 인벤토리 연동
             InventoryManager.Instance.Unequip(currentWeapon.weaponData);
         }

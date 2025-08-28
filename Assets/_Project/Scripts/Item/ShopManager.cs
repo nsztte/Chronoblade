@@ -86,6 +86,7 @@ public class ShopManager : MonoBehaviour
     public void CloseShop()
     {
         currentShop = null;
+
         UIManager.Instance.ShopUI.CloseShopUI();
 
         UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
