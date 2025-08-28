@@ -1,111 +1,86 @@
 using UnityEngine;
-using TMPro;
 using UnityEngine.UI;
-using System.Collections.Generic;
 
 public class ShopUI : MonoBehaviour
 {
-    public GameObject shopPanel;
-    public Transform itemListContainer;
-    public GameObject itemButtonPrefab;
-    public Button buyButton;
-    public Button sellButton;
-    public TextMeshProUGUI selectedInfoText;
+    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private GameObject shopPanel;
+    [SerializeField] private Transform itemListContainer;
+    [SerializeField] private GameObject shopSlotPrefab;
+    [SerializeField] private ItemDetailPanel detailPanel;
+    [SerializeField] private Button buyButton;
+    [SerializeField] private Button sellButton;
 
+    private InventorySlot currentSelected;
     private ItemData selectedItem;
-    private Dictionary<Button, ItemData> buttonItemMap = new ();
-    private Button currentSelectedButton;
 
-    private void Start()
+    public void OpenShopUI(ShopData data)
     {
+        inventoryPanel.SetActive(true);
+        shopPanel.SetActive(true);
+        ClearList();
+
+        foreach (var item in data.items)
+        {
+            var go = Instantiate(shopSlotPrefab, itemListContainer);
+            var slot = go.GetComponent<InventorySlot>();
+            slot.Set(item);
+            slot.Bind();
+            slot.onClick += OnSlotClicked;
+        }
+
         buyButton.onClick.AddListener(OnBuyClicked);
         sellButton.onClick.AddListener(OnSellClicked);
 
-        selectedInfoText.text = "";
+        UpdateActionButtons();
     }
-    
-    public void OpenShopUI(ShopData shopData)
+
+    private void OnSlotClicked(InventorySlot clicked)
     {
-        shopPanel.SetActive(true);
-        selectedItem = null;
-        selectedInfoText.text = "";
-        currentSelectedButton = null;
-        buttonItemMap.Clear();
+        if (currentSelected != null)
+            currentSelected.SetSelected(false);
 
-        // 기존 아이템 제거
-        foreach(Transform child in itemListContainer)
-        {
-            Destroy(child.gameObject);
-        }
-
-        // 아이템 버튼 생성
-        foreach(var item in shopData.items)
-        {
-            GameObject itemButton = Instantiate(itemButtonPrefab, itemListContainer);
-            TextMeshProUGUI itemNameText = itemButton.GetComponentInChildren<TextMeshProUGUI>();
-            itemNameText.text = $"{item.name} - {item.price}G";
-
-            Button button = itemButton.GetComponent<Button>();
-
-            buttonItemMap[button] = item;
-
-            button.onClick.AddListener(() => OnItemButtonClicked(button));
-        }
+        currentSelected = clicked;
+        currentSelected.SetSelected(true);
+        selectedItem = clicked.item;
+        detailPanel.Show(selectedItem);
 
         UpdateActionButtons();
     }
 
-    private void OnItemButtonClicked(Button clickedButton)
-    {
-        if(currentSelectedButton == clickedButton)
-        {
-            selectedItem = null;
-            selectedInfoText.text = "";
-            currentSelectedButton = null;
-        }
-        else
-        {
-            selectedItem = buttonItemMap[clickedButton];
-            currentSelectedButton = clickedButton;
-            selectedInfoText.text = $"{selectedItem.name}";
-        }
-
-        UpdateButtonHighlight();
-        UpdateActionButtons();
-    }
-
-    private void UpdateButtonHighlight()
-    {
-        foreach (var kvp in buttonItemMap)
-        {
-            var colors = kvp.Key.colors;
-            colors.normalColor = (kvp.Key == currentSelectedButton) ? Color.yellow : Color.white;
-            kvp.Key.colors = colors;
-        }
-    }
-
-    private void UpdateActionButtons()
-    {
-        buyButton.interactable = selectedItem != null;
-        sellButton.interactable = selectedItem != null && InventoryManager.Instance.GetItemCount(selectedItem) > 0;
-    }
-
-     public void OnBuyClicked()
+    private void OnBuyClicked()
     {
         if (selectedItem == null) return;
         ShopManager.Instance.BuyItem(selectedItem);
         UpdateActionButtons();
     }
 
-    public void OnSellClicked()
+    private void OnSellClicked()
     {
         if (selectedItem == null) return;
         ShopManager.Instance.SellItem(selectedItem);
         UpdateActionButtons();
     }
 
+    private void UpdateActionButtons()
+    {
+        buyButton.interactable = selectedItem != null;
+        sellButton.interactable = selectedItem != null &&
+            InventoryManager.Instance.GetItemCount(selectedItem) > 0;
+    }
+
+    private void ClearList()
+    {
+        foreach (Transform child in itemListContainer)
+            Destroy(child.gameObject);
+
+        selectedItem = null;
+        detailPanel.Clear();
+    }
+
     public void CloseShopUI()
     {
+        inventoryPanel.SetActive(false);
         shopPanel.SetActive(false);
     }
 }
