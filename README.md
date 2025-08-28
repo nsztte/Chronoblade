@@ -2315,3 +2315,42 @@ Enemy FSM(상태머신) 시스템 구현
 - 인벤토리는 그리드, 상점은 현재는 그리드로 두었으나 아이템 설명이 필요하다면 리스트 + 상세창 구조로 전환 고려 가능
 - 골드 표시를 인벤토리 헤더에 배치하여 인벤토리 단독 모드에서도 정보 완결성 확보
 - 다음 단계: Confirm/Toast 구매 플로우 연동, 이벤트 기반 인벤토리/골드 동기화
+
+---
+
+## 2025.08.29 (금) 작업 기록
+
+### 주요 작업
+- InputManager 입력 차단 구조 개선
+  - HandleUIBlockingInput() 함수 구현
+    - PauseUI: ESC만 허용
+    - InventoryUI: ESC, I만 허용
+    - ShopUI: ESC만 허용
+  - ESC/I 핫키는 UI 비활성 시에도 처리되도록 분리 처리
+- UIManager 입력 연동 개선
+  - UI 상태 확인용 프로퍼티 추가 (IsPauseOpen, IsInventoryOpen, IsShopOpen, IsAnyUIOpen)
+  - ToggleInventoryUI()에서 상점 열림 중일 경우 I키 입력 무시
+- InventoryUI / ShopUI 구조 개선
+  - OnEnable / OnDisable에서 InputManager.OnPause 등록 및 해제
+  - OnEnable 시 커서 LockState = None, OnDisable 시 LockState = Locked
+  - 기존 InputManager.TriggerPause() 호출 제거
+- ItemDetailPanel UI 신규 구성
+  - ShopPanel_Right 구조 개편 (좌측: 스크롤뷰, 우측: 디테일 패널 고정)
+  - 디테일 구성 요소:
+    - 아이콘 배경, 이름 텍스트, 타입 태그, 설명 텍스트, 효과 텍스트, 가격 표시, 버튼 그룹 등
+  - TextMeshPro의 멀티라인 및 워드랩 설정 적용
+- 상점 UI 동작 완성
+  - 슬롯 선택 시 ItemDetailPanel 연동
+  - Buy / Sell 버튼 클릭 시 ShopManager 연동 처리 완료
+- 인벤토리 시스템 리팩토링
+  - 아이템 관리 기준을 itemName → itemID로 전면 전환
+  - InventoryManager, ItemDatabase, ItemManager, InventoryUI 전반 수정
+  - 중복 ID 경고 및 Dictionary 수동 초기화 방식 도입
+  - 아이템 장착 전용 메서드 (Equip/Unequip) 정리
+
+### 메모
+- ESC 키 기반 UI 닫기 흐름이 명확하게 정리되어 UX 개선
+- ItemDetailPanel 기반의 아이템 정보 제공 및 연동 로직 완성
+- itemID 기반 구조로 아이템 시스템의 안정성과 확장성 향상됨
+
+---
