@@ -2354,3 +2354,44 @@ Enemy FSM(상태머신) 시스템 구현
 - itemID 기반 구조로 아이템 시스템의 안정성과 확장성 향상됨
 
 ---
+
+## 2025.08.29 (금) 작업 기록
+
+### 주요 작업
+- 무기 시스템 구조 통합 및 ItemData 연동
+  - WeaponData → ItemData 기반으로 무기 정의 및 장착 연동 구조 일원화
+  - InventoryManager에서 무기 등록 및 소유 체크 함수 통합
+  - WeaponController, WeaponManager, InputManager 등 연동 구조 정비
+
+- 총기 UI 및 획득 연동 개선
+  - GunWeaponController에 UpdateAmmoCount() 함수 추가
+    - 무기 장착 시 자동 호출되도록 설정
+    - 동일 AmmoType의 총알 획득 시 즉시 UI 반영
+  - InventoryManager에서 총알 획득 후 장착 무기와 매칭 시 UI 갱신 로직 추가
+
+- 인벤토리/상점 슬롯 UI 개선
+  - InventorySlot.Set()에서 isShopSlot 플래그 기반으로 CountBadge 표시 여부 분기
+    - 상점 슬롯: 개수 미표시
+    - 인벤토리 슬롯: 개수 표시
+
+- 인벤토리 UI 오픈 방식 개선 및 디테일 패널 분기 처리
+  - InventoryUI.Open() 함수에 overrideDetailPanel 인자 추가
+    - 단독 인벤토리: 내부 패널 사용
+    - 상점 호출: 상점 전용 패널 연동
+  - OnDisable() 시 디테일 패널이 켜져 있으면 자동 종료 처리
+  - UIManager에서 ToggleInventoryUI() 시 Open()을 호출하도록 변경
+
+- 인벤토리 컨텍스트 시스템 도입
+  - InventoryOpenContext 열거형 추가 (Standalone / Shop)
+  - context에 따라 그리드 패딩 반응형 적용
+  - AddSlot(), UpdateOrAddSlot() 함수로 슬롯 추가 및 갱신 로직 모듈화
+    - 구매 시: 슬롯 생성 또는 수량 증가
+    - 판매 시: 수량이 0이면 슬롯 제거
+  - ShopUI에서 구매/판매 시 inventoryPanel.UpdateOrAddSlot() 호출로 자동 동기화
+
+### 메모
+- UIManager와 InventoryUI의 연결 구조를 명확히 정리해두었기 때문에 UI 흐름이 훨씬 일관되고 관리하기 쉬워짐
+- 무기 시스템이 ItemData 기반으로 통합되면서 상점 → 인벤토리 → 무기 → HUD까지 흐름이 정돈됨
+- 디테일 패널 override 구조 덕분에 재사용성과 기능 분리도가 올라감
+
+---
