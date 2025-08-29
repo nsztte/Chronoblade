@@ -26,7 +26,7 @@ public class ItemDetailPanel : MonoBehaviour
     public void Show(ItemData item)
     {
         gameObject.SetActive(true);
-        icon.sprite = item.icon;
+        icon.sprite = item.Icon;
         nameText.text = item.itemName;
         typeTag.text = $"[{TypeTagText(item)}]";
         descriptionText.text = item.description;

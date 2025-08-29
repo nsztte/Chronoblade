@@ -35,7 +35,7 @@ public class ShopUI : MonoBehaviour
         {
             var go = Instantiate(shopSlotPrefab, itemListContainer);
             var slot = go.GetComponent<InventorySlot>();
-            slot.Set(item);
+            slot.Set(item, true);
             slot.Bind();
             slot.onClick += OnSlotClicked;
         }

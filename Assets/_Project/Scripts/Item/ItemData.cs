@@ -7,7 +7,8 @@ public class ItemData : ScriptableObject
     [Header("기본 정보")]
     public string itemID;
     public string itemName;
-    public Sprite icon => weaponData?.iconSprite;
+    public Sprite icon;
+    public Sprite Icon => weaponData ? weaponData.iconSprite : icon;
     public ItemType itemType;
     public ConsumableItemEffectType consumableItemEffectType;
     public AmmoType ammoType;   // AmmoSupply 타입일 경우 사용
