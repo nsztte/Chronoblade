@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections.Generic;
 
+public enum InventoryOpenContext { Standalone, Shop }
 public class InventoryUI : MonoBehaviour
 {
     [SerializeField] private Transform slotParent;
@@ -15,16 +16,25 @@ public class InventoryUI : MonoBehaviour
         GameManager.Instance.EnterPaused();
         UIManager.Instance.SetCursorLockState(CursorLockMode.None);
 
-        Refresh();
+        // Refresh();
     }
 
     private void OnDisable()
     {
         InputManager.Instance.OnPause -= Close;
         UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
+
+        if(detailPanel.gameObject.activeSelf)
+            detailPanel.gameObject.SetActive(false);
     }
 
-    private void Refresh()
+    public void Open(ItemDetailPanel overrideDetailPanel = null)
+    {
+        gameObject.SetActive(true);
+        Refresh(overrideDetailPanel);
+    }
+
+    private void Refresh(ItemDetailPanel overrideDetailPanel = null)
     {
         ClearSlots();
 
@@ -42,7 +52,11 @@ public class InventoryUI : MonoBehaviour
             // 선택 시 디테일 패널 연동
             slot.onClick = (s) =>
             {
-                ShowItemDetail(s.item);
+                if (overrideDetailPanel != null)
+                    overrideDetailPanel.Show(s.item);
+                else
+                    ShowItemDetail(s.item);
+
                 SetSelectedSlot(s);
             };
 

@@ -57,10 +57,16 @@ public class UIManager : MonoBehaviour
         if (IsShopOpen) return;
 
         bool isActive = inventoryUI.gameObject.activeSelf;
-        inventoryUI.gameObject.SetActive(!isActive);
 
-        if(isActive)
+        if (isActive)
+        {
+            inventoryUI.gameObject.SetActive(false);
             InputManager.Instance.TriggerPause();
+        }
+        else
+        {
+            inventoryUI.Open();
+        }
     }
 
     #region 마우스 커서 업데이트

@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class ShopUI : MonoBehaviour
 {
-    [SerializeField] private GameObject inventoryPanel;
+    [SerializeField] private InventoryUI inventoryPanel;
     [SerializeField] private GameObject shopPanel;
     [SerializeField] private Transform itemListContainer;
     [SerializeField] private GameObject shopSlotPrefab;
@@ -27,7 +27,7 @@ public class ShopUI : MonoBehaviour
 
     public void OpenShopUI(ShopData data)
     {
-        inventoryPanel.SetActive(true);
+        inventoryPanel.Open(detailPanel);
         shopPanel.SetActive(true);
         ClearList();
 
@@ -91,7 +91,7 @@ public class ShopUI : MonoBehaviour
 
     public void CloseShopUI()
     {
-        inventoryPanel.SetActive(false);
+        inventoryPanel.gameObject.SetActive(false);
         shopPanel.SetActive(false);
     }
 }
