@@ -76,6 +76,11 @@ public class WeaponManager : MonoBehaviour
         currentWeapon.SetWeaponData(currentWeapon.weaponData);
         currentWeapon.gameObject.SetActive(true);
 
+        if (currentWeapon is GunWeaponController gun)
+        {
+            gun.UpdateAmmoCount();
+        }
+
         // 인벤토리 연동
         InventoryManager.Instance.Equip(currentWeapon.weaponData);
 

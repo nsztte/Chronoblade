@@ -64,6 +64,12 @@ public class GunWeaponController : WeaponController
         }
     }
 
+    public void UpdateAmmoCount()
+    {
+        int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
+        UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+    }
+
     public int GetCurrentAmmoCount()
     {
         return currentAmmo;
@@ -106,11 +112,11 @@ public class GunWeaponController : WeaponController
         UIManager.Instance?.TriggerCrosshairFireEffect();
 
         // 탄약 UI 업데이트
-        int totalAmmo = InventoryManager.Instance.GetAmmoCount(weaponData.ammoType);
-        UIManager.Instance?.UpdateAmmo(currentAmmo, totalAmmo);
+        UpdateAmmoCount();
         
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
+        
         // 쿨타임 후 isAttacking 해제
         StartCoroutine(ResetIsAttackingAfterDelay(coolTime));
     }

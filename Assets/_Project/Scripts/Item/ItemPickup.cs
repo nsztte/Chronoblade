@@ -76,6 +76,6 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     public string GetPrompt()
     {
-        return $"줍기: {itemData.itemName}";
+        return itemData.isAutoPickup ? "" : $"줍기: {itemData.itemName}";
     }
 }

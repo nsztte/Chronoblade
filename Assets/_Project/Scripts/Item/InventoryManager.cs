@@ -168,6 +168,10 @@ public class InventoryManager : MonoBehaviour
         if (toAdd > 0)
             ammoCounts[type] = currentCount + toAdd;
 
+        var curWeapon = WeaponManager.Instance.CurrentWeapon;
+        if(curWeapon != null && curWeapon is GunWeaponController gun && curWeapon.weaponData.ammoType == type)
+            gun.UpdateAmmoCount();
+
         Debug.Log($"[InventoryManager] 탄약 추가 결과: {toAdd} | 남은 수량: {ammoCounts[type]}");
 
         return amount - toAdd; // 추가되지 못한 탄약 수량 반환
@@ -231,17 +235,6 @@ public class InventoryManager : MonoBehaviour
     #endregion
 
     #region 무기 획득 관리
-    // public void RegisterWeapon(WeaponData weapon)
-    // {
-    //     if(weapon == null) return;
-
-    //     if(!obtainedWeapons.Contains(weapon.weaponName))
-    //     {
-    //         obtainedWeapons.Add(weapon.weaponName);
-    //         Debug.Log($"[InventoryManager] 무기 획득 등록됨: {weapon.weaponName}");
-    //     }
-    // }
-
     public void RegisterWeapon(ItemData item)
     {
         // 유효성 검사: 무기 아이템인지 확인
@@ -253,11 +246,6 @@ public class InventoryManager : MonoBehaviour
 
         Debug.Log($"[InventoryManager] 무기 획득 등록됨: {item.itemName} (itemID: {item.itemID})");
     }
-
-    // public bool IsWeaponObtained(WeaponData weapon)
-    // {
-    //     return obtainedWeapons.Contains(weapon.weaponName);
-    // }
 
     public bool IsWeaponObtained(ItemData item)
     {
