@@ -48,7 +48,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         {
             if(itemData.itemType == ItemType.Equipment && itemData.weaponData != null)
             {
-                InventoryManager.Instance.RegisterWeapon(itemData.weaponData);
+                InventoryManager.Instance.RegisterWeapon(itemData);
             }
             Destroy(gameObject);
         }

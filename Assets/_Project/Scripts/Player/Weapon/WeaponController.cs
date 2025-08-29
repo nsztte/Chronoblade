@@ -2,7 +2,9 @@ using UnityEngine;
 
 public abstract class WeaponController : MonoBehaviour
 {
-    public WeaponData weaponData;
+    [SerializeField] private ItemData itemData;
+    public ItemData ItemData => itemData;
+    public WeaponData weaponData => itemData?.weaponData;
     protected float coolTime = 0.5f;
     [SerializeField] protected bool isAttacking = false;
     public bool IsAttacking => isAttacking;
@@ -48,7 +50,7 @@ public abstract class WeaponController : MonoBehaviour
     public virtual void SetWeaponData(WeaponData data)
     {
         UnregisterInput();
-        weaponData = data;
+        // weaponData = data;
 
         if(weaponData.weaponType == WeaponType.Sword)
             coolTime = 0.5f;

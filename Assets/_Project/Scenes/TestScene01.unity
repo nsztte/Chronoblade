@@ -203,7 +203,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 0209412791896094a9a14c0e8c1ff0b3, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  inventoryPanel: {fileID: 244645641}
   slotParent: {fileID: 8122424}
   slotPrefab: {fileID: 2416762527301266168, guid: 1fdba6d664691df4b8b125fa2fc44614, type: 3}
   detailPanel: {fileID: 954730382}
@@ -1062,7 +1061,7 @@ PrefabInstance:
     - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: defaultPistolData
       value: 
-      objectReference: {fileID: 11400000, guid: 09030104b41056647b94513cc81f957c, type: 2}
+      objectReference: {fileID: 11400000, guid: 75511cf7f5fb34e49a79169f69e0e0ac, type: 2}
     - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: testWeaponData.Array.size
       value: 2
@@ -1070,11 +1069,11 @@ PrefabInstance:
     - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: 'testWeaponData.Array.data[0]'
       value: 
-      objectReference: {fileID: 11400000, guid: c47487d22415269428eed5837e75bbf7, type: 2}
+      objectReference: {fileID: 11400000, guid: 4d569663473d1924ba283a349b2c6306, type: 2}
     - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: 'testWeaponData.Array.data[1]'
       value: 
-      objectReference: {fileID: 11400000, guid: c3b22a938915f5f4a8da76bfeb168998, type: 2}
+      objectReference: {fileID: 11400000, guid: 700d69de57e85ed429be20a12a1f962a, type: 2}
     - target: {fileID: 6733175355444662607, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: 'testWeaponData.Array.data[2]'
       value: 
@@ -2954,6 +2953,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3841364266522208371, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 4d569663473d1924ba283a349b2c6306, type: 2}
+    - target: {fileID: 4721528940800297215, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 700d69de57e85ed429be20a12a1f962a, type: 2}
     - target: {fileID: 6369319848746265967, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.12
@@ -2994,6 +3001,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6523968416953582386, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 75511cf7f5fb34e49a79169f69e0e0ac, type: 2}
+    - target: {fileID: 8531385874467698457, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 6beb5da11dc7b7941849993969293cac, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []

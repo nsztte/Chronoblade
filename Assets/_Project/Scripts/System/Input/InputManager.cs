@@ -234,7 +234,7 @@ public class InputManager : MonoBehaviour
         }
         else if (scrollWheel < 0f) // 휠 아래로
         {
-            int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, -1, weaponSlots);
+            int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, 1, weaponSlots);
             if(nextIndex != currentWeaponIndex)
                 SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
         }
@@ -249,7 +249,7 @@ public class InputManager : MonoBehaviour
         {
             index = (index + direction + count) % count;
 
-            var data = slots[index].weaponData;
+            var data = slots[index].ItemData;
             if (InventoryManager.Instance.IsWeaponObtained(data))
             {
                 return index;

@@ -20,8 +20,8 @@ public class InventoryManager : MonoBehaviour
     }
     #endregion
 
-    [SerializeField] private WeaponData defaultPistolData;
-    [SerializeField] private WeaponData[] testWeaponData;   // 테스트 이후에는 모두 지울것
+    [SerializeField] private ItemData defaultPistolData;
+    [SerializeField] private ItemData[] testWeaponData;   // 테스트 이후에는 모두 지울것
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
     private HashSet<string> obtainedWeapons = new HashSet<string>();
@@ -231,20 +231,40 @@ public class InventoryManager : MonoBehaviour
     #endregion
 
     #region 무기 획득 관리
-    public void RegisterWeapon(WeaponData weapon)
-    {
-        if(weapon == null) return;
+    // public void RegisterWeapon(WeaponData weapon)
+    // {
+    //     if(weapon == null) return;
 
-        if(!obtainedWeapons.Contains(weapon.weaponName))
-        {
-            obtainedWeapons.Add(weapon.weaponName);
-            Debug.Log($"[InventoryManager] 무기 획득 등록됨: {weapon.weaponName}");
-        }
+    //     if(!obtainedWeapons.Contains(weapon.weaponName))
+    //     {
+    //         obtainedWeapons.Add(weapon.weaponName);
+    //         Debug.Log($"[InventoryManager] 무기 획득 등록됨: {weapon.weaponName}");
+    //     }
+    // }
+
+    public void RegisterWeapon(ItemData item)
+    {
+        // 유효성 검사: 무기 아이템인지 확인
+        if (item == null || item.itemType != ItemType.Equipment || item.weaponData == null)
+            return;
+
+        // TryAddItem을 통해 인벤토리에 등록 (중복 방지 포함)
+        TryAddItem(item, 1, out string _);
+
+        Debug.Log($"[InventoryManager] 무기 획득 등록됨: {item.itemName} (itemID: {item.itemID})");
     }
 
-    public bool IsWeaponObtained(WeaponData weapon)
+    // public bool IsWeaponObtained(WeaponData weapon)
+    // {
+    //     return obtainedWeapons.Contains(weapon.weaponName);
+    // }
+
+    public bool IsWeaponObtained(ItemData item)
     {
-        return obtainedWeapons.Contains(weapon.weaponName);
+        return item != null &&
+            item.itemType == ItemType.Equipment &&
+            item.weaponData != null &&
+            GetItemCount(item) > 0;
     }
     #endregion
     

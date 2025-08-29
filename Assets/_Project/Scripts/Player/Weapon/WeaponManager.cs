@@ -60,9 +60,9 @@ public class WeaponManager : MonoBehaviour
 
         var weapon = weaponSlots[index];
 
-        if (!InventoryManager.Instance.IsWeaponObtained(weapon.weaponData))
+        if (!InventoryManager.Instance.IsWeaponObtained(weapon.ItemData))
         {
-            Debug.LogWarning($"[WeaponManager] {weapon.weaponData.weaponName} 은 아직 획득하지 않았습니다.");
+            Debug.LogWarning($"[WeaponManager] {weapon.ItemData.itemID} 은 아직 획득하지 않았습니다.");
             return false;
         }
 
