@@ -27,7 +27,7 @@ public class ShopUI : MonoBehaviour
 
     public void OpenShopUI(ShopData data)
     {
-        inventoryPanel.Open(detailPanel);
+        inventoryPanel.Open(InventoryOpenContext.Shop, detailPanel);
         shopPanel.SetActive(true);
         ClearList();
 
@@ -63,6 +63,7 @@ public class ShopUI : MonoBehaviour
     {
         if (selectedItem == null) return;
         ShopManager.Instance.BuyItem(selectedItem);
+        inventoryPanel.UpdateOrAddSlot(selectedItem, detailPanel);
         UpdateActionButtons();
     }
 
@@ -70,6 +71,7 @@ public class ShopUI : MonoBehaviour
     {
         if (selectedItem == null) return;
         ShopManager.Instance.SellItem(selectedItem);
+        inventoryPanel.UpdateOrAddSlot(selectedItem);
         UpdateActionButtons();
     }
 
