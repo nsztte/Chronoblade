@@ -124,6 +124,9 @@ public class InventoryManager : MonoBehaviour
         if(toAdd > 0)
             itemCounts[key] = currentCount + toAdd;
 
+        // 퀵슬롯 업데이트
+        QuickSlotManager.Instance?.RefreshAllSlotVisuals();
+
         return amount - toAdd;
     }
 
@@ -138,6 +141,9 @@ public class InventoryManager : MonoBehaviour
 
         if(itemCounts[key] <= 0)
             itemCounts.Remove(key);
+
+        // 퀵슬롯 업데이트
+        QuickSlotManager.Instance?.RefreshAllSlotVisuals();
 
         return true;
     }

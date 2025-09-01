@@ -52,6 +52,12 @@ public class ItemManager : MonoBehaviour
     // 소비형 아이템 효과 적용
     private void ApplyConsumableItemEffect(ItemData itemData)
     {
+        if(InventoryManager.Instance.GetItemCount(itemData) <= 0)
+        {
+            Debug.Log($"{itemData.itemName} 보유량 부족");
+            return;
+        }
+
         switch(itemData.consumableItemEffectType)
         {
             case ConsumableItemEffectType.Heal:

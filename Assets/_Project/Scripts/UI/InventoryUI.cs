@@ -99,6 +99,7 @@ public class InventoryUI : MonoBehaviour
     private void Close()
     {
         gameObject.SetActive(false);
+        SelectedItemContext.Clear();
     }
 
     private void AddSlot(ItemData itemData, ItemDetailPanel overrideDetailPanel = null)

@@ -20,6 +20,11 @@ public class QuickSlotManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
+
+        for(int i = 0; i < quickSlots.Count; i++)
+        {
+            quickSlots[i].SetIndex(i);
+        }
     }
     #endregion
 
@@ -29,6 +34,7 @@ public class QuickSlotManager : MonoBehaviour
 
         slotItems[index] = item;
         RefreshUI();
+        RefreshAllSlotVisuals();
     }
 
     public void ActivateSlot(int slotIndex)
@@ -86,6 +92,15 @@ public class QuickSlotManager : MonoBehaviour
         return slotItems[slotIndex];
     }
 
+    public void RefreshAllSlotVisuals()
+    {
+        for (int i = 0; i < slotItems.Length; i++)
+        {
+            if (quickSlots[i] != null)
+                quickSlots[i].UpdateVisual();
+        }
+    }
+
     public int GetCurrentWeaponSlotIndex()
     {
         var equippedWeapon = WeaponManager.Instance.CurrentWeapon;
@@ -115,19 +130,4 @@ public class QuickSlotManager : MonoBehaviour
 
         return currentIndex;
     }
-
-    // public int? GetWeaponIndex(int quickSlotIndex)
-    // {
-    //     ItemData item = GetSlotItem(quickSlotIndex);
-    //     if(item == null || item.itemType != ItemType.Equipment) return null;
-        
-    //     var slots = WeaponManager.Instance.GetWeaponSlots();
-    //     for(int i = 0; i < slots.Count; i++)
-    //     {
-    //         if(slots[i].ItemData == item)
-    //             return i;
-    //     }
-
-    //     return null;
-    // }
 }
