@@ -30,12 +30,22 @@ public class ItemManager : MonoBehaviour
     }
 
     // 아이템 사용
-    public void UseItem(ItemData itemData)
+    public void HandleItemAction(ItemData itemData)
     {
-        if(itemData.itemType == ItemType.Consumable)
+        if(itemData == null) return;
+        
+        switch(itemData.itemType)
         {
-            ApplyConsumableItemEffect(itemData);
-            InventoryManager.Instance.RemoveItem(itemData, 1);
+            case ItemType.Equipment:
+                WeaponManager.Instance.EquipWeaponByItem(itemData);
+                break;
+            case ItemType.Consumable:
+                ApplyConsumableItemEffect(itemData);
+                InventoryManager.Instance.RemoveItem(itemData, 1);
+                break;
+            default:
+                Debug.LogError($"아이템 효과 미지정: {itemData.itemName}");
+                break;
         }
     }
 

@@ -40,6 +40,18 @@ public class WeaponManager : MonoBehaviour
     {
         InputManager.Instance.OnWeaponSwitch -= OnWeaponSwitch;
     }
+
+    public void EquipWeaponByItem(ItemData item)
+    {
+        for(int i = 0; i < weaponSlots.Count; i++)
+        {
+            if(weaponSlots[i].ItemData == item)
+            {
+                EquipWeapon(i);
+                return;
+            }
+        }
+    }
     
     private void OnWeaponSwitch(int index)
     {
