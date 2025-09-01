@@ -31,18 +31,20 @@ public class WeaponManager : MonoBehaviour
 
     private void Start()
     {
-        InputManager.Instance.OnWeaponSwitch += OnWeaponSwitch;
+        // InputManager.Instance.OnWeaponSwitch += OnWeaponSwitch;
 
         playerController = PlayerManager.Instance.PlayerController;
     }
 
-    private void OnDestroy()
-    {
-        InputManager.Instance.OnWeaponSwitch -= OnWeaponSwitch;
-    }
+    // private void OnDestroy()
+    // {
+    //     InputManager.Instance.OnWeaponSwitch -= OnWeaponSwitch;
+    // }
 
     public void EquipWeaponByItem(ItemData item)
     {
+        if(!CanSwitchWeapon()) return;
+
         for(int i = 0; i < weaponSlots.Count; i++)
         {
             if(weaponSlots[i].ItemData == item)
@@ -53,21 +55,23 @@ public class WeaponManager : MonoBehaviour
         }
     }
     
-    private void OnWeaponSwitch(int index)
-    {
-        // 무기 전환 시도
-        bool weaponChanged = EquipWeapon(index);
+    // private void OnWeaponSwitch(int index)
+    // {
+    //     // 무기 전환 시도
+    //     bool weaponChanged = EquipWeapon(index);
         
-        // 무기 전환이 실제로 성공했을 때만 조준 취소
-        if (weaponChanged)
-        {
-            CameraController.Instance?.CancelAim();
-            CameraController.Instance?.UpdateRecoilRecoverySpeed();
-        }
-    }
+    //     // 무기 전환이 실제로 성공했을 때만 조준 취소
+    //     if (weaponChanged)
+    //     {
+    //         CameraController.Instance?.CancelAim();
+    //         CameraController.Instance?.UpdateRecoilRecoverySpeed();
+    //     }
+    // }
 
     private bool EquipWeapon(int index)
     {
+        if(!CanSwitchWeapon()) return false;
+
         if(index < 0 || index >= weaponSlots.Count) return false;
 
         var weapon = weaponSlots[index];
@@ -136,6 +140,30 @@ public class WeaponManager : MonoBehaviour
         UIManager.Instance?.SetCrosshairActive(false);
         UIManager.Instance?.ActiveWeaponPanel();
         UIManager.Instance?.ActiveAmmoPanel(false);
+
+        // 조준 상태 초기화 및 반동 복구 갱신
+        CameraController.Instance?.CancelAim();
+        CameraController.Instance?.UpdateRecoilRecoverySpeed();
+    }
+
+    private bool CanSwitchWeapon()
+    {
+        var playerManager = PlayerManager.Instance;
+        if(playerManager != null && playerManager.PlayerStateMachine != null)
+        {
+            var state = playerManager.PlayerStateMachine.CurrentState;
+            if(state != null && (state is PlayerAttackState || state is PlayerComboState))
+            {
+                return false;
+            }
+        }
+
+        if(currentWeapon != null && currentWeapon.IsAttacking)
+        {
+            return false;
+        }
+
+        return true;
     }
 
     public int GetCurrentWeaponIndex()

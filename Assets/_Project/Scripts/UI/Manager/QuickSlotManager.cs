@@ -42,8 +42,15 @@ public class QuickSlotManager : MonoBehaviour
             return;
         }
 
-        // 무기 장착 시도
-        WeaponManager.Instance.EquipWeaponByItem(item);
+        var currentWeapon = WeaponManager.Instance.CurrentWeapon;
+        if(item.itemType == ItemType.Equipment && currentWeapon?.ItemData == item)
+        {
+            WeaponManager.Instance.UnEquipWeapon();
+            HighlightSlot(-1);
+            return;
+        }
+
+        ItemManager.Instance.HandleItemAction(item);
 
         // UI 강조 표시
         HighlightSlot(slotIndex);
@@ -78,4 +85,49 @@ public class QuickSlotManager : MonoBehaviour
         if (slotIndex < 0 || slotIndex >= slotItems.Length) return null;
         return slotItems[slotIndex];
     }
+
+    public int GetCurrentWeaponSlotIndex()
+    {
+        var equippedWeapon = WeaponManager.Instance.CurrentWeapon;
+        if(equippedWeapon == null) return -1;
+
+        for(int i = 0; i < slotItems.Length; i++)
+        {
+            if(slotItems[i] == equippedWeapon.ItemData)
+                return i;
+        }
+
+        return -1;
+    }
+
+    public int GetNextWeaponSlotIndex(int currentIndex, int direction)
+    {
+        int count = slotItems.Length;
+        int index = currentIndex;
+
+        for(int i = 0; i < count; i++)
+        {
+            index = (index + direction + count) % count;
+
+            if(slotItems[index] != null && slotItems[index].itemType == ItemType.Equipment)
+                return index;
+        }
+
+        return currentIndex;
+    }
+
+    // public int? GetWeaponIndex(int quickSlotIndex)
+    // {
+    //     ItemData item = GetSlotItem(quickSlotIndex);
+    //     if(item == null || item.itemType != ItemType.Equipment) return null;
+        
+    //     var slots = WeaponManager.Instance.GetWeaponSlots();
+    //     for(int i = 0; i < slots.Count; i++)
+    //     {
+    //         if(slots[i].ItemData == item)
+    //             return i;
+    //     }
+
+    //     return null;
+    // }
 }

@@ -33,7 +33,7 @@ public class InputManager : MonoBehaviour
     public event Action OnReloadPressed;              // R
     public event Action OnAimStarted;                 // 마우스 오른쪽 클릭
     public event Action OnAimCanceled;                // 마우스 오른쪽 클릭 종료
-    public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
+    // public event Action<int> OnWeaponSwitch;          // 숫자 키 1~4
     public event Action OnInteract;                   // F
     public event Action OnPause;                      // Esc
     public event Action OnDashPressed;                // Left Alt
@@ -144,8 +144,9 @@ public class InputManager : MonoBehaviour
             OnBlockCanceled?.Invoke();
         }
 
-        // 무기 전환 입력
-        HandleWeaponSwitching();
+        // 퀵슬롯 입력
+        // HandleWeaponSwitching();
+        HandleQuickSlotActivation();
 
         // 상호작용(F키)
         if (Input.GetKeyDown(KeyCode.F))
@@ -196,103 +197,129 @@ public class InputManager : MonoBehaviour
         return false;
     }
 
-
-    private void HandleWeaponSwitching()
+    private void HandleQuickSlotActivation()
     {
-        int currentWeaponIndex = WeaponManager.Instance.GetCurrentWeaponIndex();
-        int maxWeaponCount = WeaponManager.Instance.GetMaxWeaponCount();
-        var weaponSlots = WeaponManager.Instance.GetWeaponSlots();
-
-        // 숫자 키로 직접 무기 선택
+        // 1~4번 퀵슬롯 키 입력 → 아이템 사용 또는 장착
         if (Input.GetKeyDown(KeyCode.Alpha1))
-        {
-            SwitchWeapon(0, currentWeaponIndex, maxWeaponCount);
-        }
+            QuickSlotManager.Instance.ActivateSlot(0);
         else if (Input.GetKeyDown(KeyCode.Alpha2))
-        {
-            SwitchWeapon(1, currentWeaponIndex, maxWeaponCount);
-        }
+            QuickSlotManager.Instance.ActivateSlot(1);
         else if (Input.GetKeyDown(KeyCode.Alpha3))
-        {
-            SwitchWeapon(2, currentWeaponIndex, maxWeaponCount);
-        }
+            QuickSlotManager.Instance.ActivateSlot(2);
         else if (Input.GetKeyDown(KeyCode.Alpha4))
-        {
-            SwitchWeapon(3, currentWeaponIndex, maxWeaponCount);
-        }
+            QuickSlotManager.Instance.ActivateSlot(3);
 
-        // 마우스 휠로 무기 전환
+        // 마우스 휠 → 퀵슬롯에 등록된 무기 중 다음/이전 무기로 전환
         float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
+        if (scrollWheel == 0f) return;
 
-        if(currentWeaponIndex < 0) return;
+        int currentIndex = QuickSlotManager.Instance.GetCurrentWeaponSlotIndex(); // 현재 장착 중인 무기의 퀵슬롯 인덱스
+        int direction = scrollWheel > 0f ? -1 : 1;
 
-        if (scrollWheel > 0f) // 휠 위로
+        int nextWeaponIndex = QuickSlotManager.Instance.GetNextWeaponSlotIndex(currentIndex, direction);
+        if (nextWeaponIndex != currentIndex)
         {
-            int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, -1, weaponSlots);
-            if(nextIndex != currentWeaponIndex)
-                SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
-        }
-        else if (scrollWheel < 0f) // 휠 아래로
-        {
-            int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, 1, weaponSlots);
-            if(nextIndex != currentWeaponIndex)
-                SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
+            QuickSlotManager.Instance.ActivateSlot(nextWeaponIndex);
         }
     }
 
-    private int GetNextObtainedWeaponIndex(int startIndex, int direction, List<WeaponController> slots)
-    {
-        int count = slots.Count;
-        int index = startIndex;
 
-        for(int i = 0; i < count; i++)
-        {
-            index = (index + direction + count) % count;
+    // private void HandleWeaponSwitching()
+    // {
+    //     int currentWeaponIndex = WeaponManager.Instance.GetCurrentWeaponIndex();
+    //     int maxWeaponCount = WeaponManager.Instance.GetMaxWeaponCount();
+    //     var weaponSlots = WeaponManager.Instance.GetWeaponSlots();
 
-            var data = slots[index].ItemData;
-            if (InventoryManager.Instance.IsWeaponObtained(data))
-            {
-                return index;
-            }
-        }
+    //     // 숫자 키로 직접 무기 선택
+    //     if (Input.GetKeyDown(KeyCode.Alpha1))
+    //     {
+    //         SwitchWeapon(0, currentWeaponIndex, maxWeaponCount);
+    //     }
+    //     else if (Input.GetKeyDown(KeyCode.Alpha2))
+    //     {
+    //         SwitchWeapon(1, currentWeaponIndex, maxWeaponCount);
+    //     }
+    //     else if (Input.GetKeyDown(KeyCode.Alpha3))
+    //     {
+    //         SwitchWeapon(2, currentWeaponIndex, maxWeaponCount);
+    //     }
+    //     else if (Input.GetKeyDown(KeyCode.Alpha4))
+    //     {
+    //         SwitchWeapon(3, currentWeaponIndex, maxWeaponCount);
+    //     }
 
-        return startIndex;
-    }
+    //     // 마우스 휠로 무기 전환
+    //     float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
 
-    private void SwitchWeapon(int weaponIndex, int currentIndex, int maxCount)
-    {
-        if (weaponIndex >= 0 && weaponIndex < maxCount)
-        {
-            // 공격/콤보 상태일 때 무기 교체 금지
-            var playerManager = PlayerManager.Instance;
-            if (playerManager != null && playerManager.PlayerStateMachine != null)
-            {
-                var state = playerManager.PlayerStateMachine.CurrentState;
-                if (state != null && (state is PlayerAttackState || state is PlayerComboState))
-                {
-                    Debug.Log("[InputManager] 공격/콤보 상태에서 무기 교체 시도 차단");
-                    return;
-                }
-            }
+    //     if(currentWeaponIndex < 0) return;
+
+    //     if (scrollWheel > 0f) // 휠 위로
+    //     {
+    //         int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, -1, weaponSlots);
+    //         if(nextIndex != currentWeaponIndex)
+    //             SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
+    //     }
+    //     else if (scrollWheel < 0f) // 휠 아래로
+    //     {
+    //         int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, 1, weaponSlots);
+    //         if(nextIndex != currentWeaponIndex)
+    //             SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
+    //     }
+    // }
+
+    // private int GetNextObtainedWeaponIndex(int startIndex, int direction, List<WeaponController> slots)
+    // {
+    //     int count = slots.Count;
+    //     int index = startIndex;
+
+    //     for(int i = 0; i < count; i++)
+    //     {
+    //         index = (index + direction + count) % count;
+
+    //         var data = slots[index].ItemData;
+    //         if (InventoryManager.Instance.IsWeaponObtained(data))
+    //         {
+    //             return index;
+    //         }
+    //     }
+
+    //     return startIndex;
+    // }
+
+    // private void SwitchWeapon(int weaponIndex, int currentIndex, int maxCount)
+    // {
+    //     if (weaponIndex >= 0 && weaponIndex < maxCount)
+    //     {
+    //         // 공격/콤보 상태일 때 무기 교체 금지
+    //         var playerManager = PlayerManager.Instance;
+    //         if (playerManager != null && playerManager.PlayerStateMachine != null)
+    //         {
+    //             var state = playerManager.PlayerStateMachine.CurrentState;
+    //             if (state != null && (state is PlayerAttackState || state is PlayerComboState))
+    //             {
+    //                 Debug.Log("[InputManager] 공격/콤보 상태에서 무기 교체 시도 차단");
+    //                 return;
+    //             }
+    //         }
             
-            // 현재 무기가 공격 중일 때 무기 교체 금지
-            var currentWeapon = WeaponManager.Instance.CurrentWeapon;
-            if (currentWeapon != null && currentWeapon.IsAttacking)
-            {
-                Debug.Log("[InputManager] 공격 중 무기 교체 시도 차단");
-                return;
-            }
+    //         // 현재 무기가 공격 중일 때 무기 교체 금지
+    //         var currentWeapon = WeaponManager.Instance.CurrentWeapon;
+    //         if (currentWeapon != null && currentWeapon.IsAttacking)
+    //         {
+    //             Debug.Log("[InputManager] 공격 중 무기 교체 시도 차단");
+    //             return;
+    //         }
 
-            if (weaponIndex == currentIndex)
-            {
-                // 이미 장착된 무기일 경우 장착 해제
-                WeaponManager.Instance.UnEquipWeapon();
-            }
-            else
-            {
-                // 다른 무기로 전환
-                OnWeaponSwitch?.Invoke(weaponIndex);
-            }
-        }
-    }
+    //         if (weaponIndex == currentIndex)
+    //         {
+    //             // 이미 장착된 무기일 경우 장착 해제
+    //             WeaponManager.Instance.UnEquipWeapon();
+    //         }
+    //         else
+    //         {
+    //             // 다른 무기로 전환
+    //             OnWeaponSwitch?.Invoke(weaponIndex);
+    //         }
+    //     }
+    // }
 }
