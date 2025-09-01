@@ -48,9 +48,15 @@ public class QuickSlotSlot : MonoBehaviour, IPointerClickHandler
 
     public void OnPointerClick(PointerEventData eventData)
     {
-        Debug.Log("OnPointerClick");
         var selectedItem = SelectedItemContext.SelectedItem;
-        if (selectedItem != null)
+
+        if (selectedItem == null) return;
+
+        if (item == selectedItem)
+        {
+            QuickSlotManager.Instance.ClearSlot(index);
+        }
+        else
         {
             QuickSlotManager.Instance.AssignItemToSlot(index, selectedItem);
         }

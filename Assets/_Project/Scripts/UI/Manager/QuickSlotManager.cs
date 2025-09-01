@@ -78,6 +78,14 @@ public class QuickSlotManager : MonoBehaviour
         quickSlots[index].SetItem(item);
     }
 
+    public void ClearSlot(int index)
+    {
+        if (index < 0 || index >= slotItems.Length) return;
+
+        slotItems[index] = null;
+        quickSlots[index].SetItem(null);
+    }
+
     private void HighlightSlot(int index)
     {
         for (int i = 0; i < quickSlots.Count; i++)
