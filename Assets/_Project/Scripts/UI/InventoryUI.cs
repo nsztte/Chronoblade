@@ -21,6 +21,8 @@ public class InventoryUI : MonoBehaviour
         GameManager.Instance.EnterPaused();
         UIManager.Instance.SetCursorLockState(CursorLockMode.None);
 
+        SelectedItemContext.OnSelectedItemChanged += OnSelectedChanged;
+
         slotParent.GetComponent<GridLayoutGroup>().padding.left = context == InventoryOpenContext.Standalone ? maxLeftPadding : minLeftPadding;
     }
 
@@ -28,6 +30,8 @@ public class InventoryUI : MonoBehaviour
     {
         InputManager.Instance.OnPause -= Close;
         UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
+
+        SelectedItemContext.OnSelectedItemChanged -= OnSelectedChanged;
 
         if(detailPanel.gameObject.activeSelf)
             detailPanel.gameObject.SetActive(false);
@@ -113,8 +117,23 @@ public class InventoryUI : MonoBehaviour
         {
             detail.Show(s.item);
             SetSelectedSlot(s);
+            SelectedItemContext.Set(s.item);
         };
 
         spawnedSlots.Add(slot);
+    }
+
+    private void OnSelectedChanged(ItemData item)
+    {
+        InventorySlot target = null;
+        foreach (var slot in spawnedSlots)
+        {
+            bool sel = slot.item == item;
+            slot.SetSelected(sel);
+            if(sel) target = slot;
+        }
+
+        if(item == null && detailPanel.gameObject.activeSelf)
+            detailPanel.Clear();
     }
 }

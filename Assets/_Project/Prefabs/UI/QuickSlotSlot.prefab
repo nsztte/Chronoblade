@@ -149,6 +149,7 @@ GameObject:
   - component: {fileID: 9017555404724217227}
   - component: {fileID: 8450774598862522013}
   - component: {fileID: 7003397731588583793}
+  - component: {fileID: -7827699630812499229}
   m_Layer: 5
   m_Name: QuickSlotSlot
   m_TagString: Untagged
@@ -216,6 +217,20 @@ MonoBehaviour:
   m_FillOrigin: 0
   m_UseSpriteMesh: 0
   m_PixelsPerUnitMultiplier: 1
+--- !u!114 &-7827699630812499229
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2677406453196895850}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7b6718b6ebe74f9b15c1f47c117cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  iconImage: {fileID: 2236202120342426735}
+  highlight: {fileID: 4192818729891473412}
 --- !u!1 &4192818729891473412
 GameObject:
   m_ObjectHideFlags: 0
