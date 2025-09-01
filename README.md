@@ -2395,3 +2395,52 @@ Enemy FSM(상태머신) 시스템 구현
 - 디테일 패널 override 구조 덕분에 재사용성과 기능 분리도가 올라감
 
 ---
+
+## 날짜: 2025.09.01 (월) 작업 기록
+
+### 주요 작업
+- **퀵슬롯 시스템 1차 구현 및 아이템 사용 통합 처리**
+  - `QuickSlotManager.cs`, `QuickSlotSlot.cs` 신규 제작
+  - 1~4번 슬롯에 무기/소비 아이템 등록 및 사용 가능
+  - 슬롯 아이콘 표시 및 선택 강조 처리
+  - 소비형 아이템 수량 0일 시 회색 처리 로직 적용
+
+- **무기 스위칭 시스템 퀵슬롯 기반 구조로 전환**
+  - 기존 `SwitchWeapon()` 방식 제거
+  - `InputManager.HandleQuickSlotActivation()` 신규 추가
+    - 1~4번 숫자키로 퀵슬롯 사용
+    - 마우스 휠로 퀵슬롯 내 무기만 순환
+  - `WeaponManager.CanSwitchWeapon()` 도입하여 전투 중 장착 제한 로직 이관
+
+- **UI 레이아웃 및 시각적 개선**
+  - `QuickSlotSlot` 프리팹 제작 (64x64, 아이콘/숫자 힌트/하이라이트 포함)
+  - `HUD_Canvas > BottomRight_Panel > QuickSlots_Panel` 구성
+    - `HorizontalLayoutGroup`, `ContentSizeFitter`로 자동 정렬
+    - 슬롯 간 Spacing 10px, Padding 8px 설정
+  - 숫자 힌트 위치/스타일 정리
+
+- **선택 아이템 동기화 시스템 구축**
+  - `SelectedItemContext.cs` 신규 생성
+    - 인벤토리/상점 간 선택된 아이템 정보 동기화
+    - `OnSelectedItemChanged` 이벤트 기반 구조로 통합 관리
+  - `InventoryUI`, `ShopUI` 모두 이벤트 등록 및 하이라이트 동기화 처리
+  - `InventoryUI.Close()` 시 선택 초기화 처리 (`SelectedItemContext.Clear()`)
+
+- **퀵슬롯 등록/해제 및 자동 갱신 처리**
+  - 이미 등록된 아이템을 다시 클릭하면 슬롯 해제
+  - `QuickSlotSlot.OnPointerClick()`에서 아이템 등록/해제 처리
+  - `QuickSlotManager.RefreshAllSlotVisuals()` 도입
+    - 소비형 아이템 수량 변화 시 색상 자동 반영
+    - `InventoryManager.AddItem()`, `RemoveItem()`에서 호출
+
+- **아이템 사용 로직 개선**
+  - `ItemManager.ApplyConsumableItemEffect()` 내 수량 0일 시 효과 중단
+  - 소비형 아이템은 사용 후에도 퀵슬롯에 남도록 유지
+
+### 메모
+- 퀵슬롯 시스템은 실질적 사용이 가능한 1차 완성 상태
+- 향후 툴팁 표시, 아이템 우클릭 등록 기능은 필요 시 후순위로 구현 예정
+- 전체 시스템은 무기/소비형 아이템 공용 구조로 설계되어 유연성 확보
+- UI는 가독성과 접근성을 우선으로 배치 완료 (중앙 하단 → 오른쪽 하단)
+
+---
