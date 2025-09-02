@@ -11,6 +11,7 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private TextMeshProUGUI CountText;
     [SerializeField] private GameObject selectionFrame;
     [SerializeField] private InfoTooltipTrigger infoTooltip;
+    [SerializeField] private GameObject equippedMarker;
     private Button button;
 
     [HideInInspector] public ItemData item;
@@ -44,6 +45,10 @@ public class InventorySlot : MonoBehaviour
             CountBadge.SetActive(true);
             CountText.text = $"X{InventoryManager.Instance.GetItemCount(itemData)}";
         }
+
+        if(isShopSlot) return;
+        bool IsEquipped = InventoryManager.Instance.IsEquipped(itemData);
+        equippedMarker.SetActive(IsEquipped);
     }
 
     public void Bind()

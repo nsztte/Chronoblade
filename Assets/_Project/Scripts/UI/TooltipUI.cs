@@ -36,8 +36,6 @@ public class TooltipUI : MonoBehaviour
 
         WeaponData weapon = item.weaponData;
 
-        // RectTransform tooltipRect = GetComponent<RectTransform>();
-
         // 위치 설정
         Vector3[] corners = new Vector3[4];
         slotRect.GetWorldCorners(corners);
