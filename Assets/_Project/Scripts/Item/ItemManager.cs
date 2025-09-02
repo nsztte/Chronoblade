@@ -37,7 +37,15 @@ public class ItemManager : MonoBehaviour
         switch(itemData.itemType)
         {
             case ItemType.Equipment:
-                WeaponManager.Instance.EquipWeaponByItem(itemData);
+                var current = WeaponManager.Instance.CurrentWeapon;
+                if (current != null && current.ItemData == itemData)
+                {
+                    WeaponManager.Instance.UnEquipWeapon();
+                }
+                else
+                {
+                    WeaponManager.Instance.EquipWeaponByItem(itemData);
+                }
                 break;
             case ItemType.Consumable:
                 ApplyConsumableItemEffect(itemData);
@@ -47,6 +55,21 @@ public class ItemManager : MonoBehaviour
                 Debug.LogError($"아이템 효과 미지정: {itemData.itemName}");
                 break;
         }
+    }
+
+    public bool DropItem(ItemData item)
+    {
+        if(item == null) return false;
+
+        if(item.itemType == ItemType.Equipment && InventoryManager.Instance.IsEquipped(item))
+            WeaponManager.Instance.UnEquipWeapon();
+
+        bool result = InventoryManager.Instance.TryRemoveItem(item, 1, out string fail);
+
+        if (!result)
+            Debug.LogWarning($"[ItemManager] {item.itemName} 버리기 실패: {fail}");
+
+        return result;
     }
 
     // 소비형 아이템 효과 적용

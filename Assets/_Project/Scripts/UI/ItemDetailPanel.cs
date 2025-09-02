@@ -38,6 +38,43 @@ public class ItemDetailPanel : MonoBehaviour
         firstButton.gameObject.SetActive(!string.IsNullOrEmpty(firstButtonText.text));
         secondButton.gameObject.SetActive(!string.IsNullOrEmpty(secondButtonText.text));
 
+        BindButtons(item);
+    }
+
+    private void BindButtons(ItemData item)
+    {
+        if(!isInventoryMode) return;
+
+        firstButton.onClick.RemoveAllListeners();
+        secondButton.onClick.RemoveAllListeners();
+
+        firstButton.onClick.AddListener(() =>
+        {
+            ItemManager.Instance.HandleItemAction(item);
+            RefreshUI(item);
+        });
+
+        secondButton.onClick.AddListener(() =>
+        {
+            bool dropped = ItemManager.Instance.DropItem(item);
+            if (dropped)
+                RefreshUI(item);
+        });
+    }
+
+    private void RefreshUI(ItemData item)
+    {
+        int count = InventoryManager.Instance.GetItemCount(item);
+        if (count <= 0)
+        {
+            Clear(); // 패널 닫기
+            UIManager.Instance.InventoryUI.UpdateOrAddSlot(item); // 슬롯 제거
+        }
+        else
+        {
+            SetButtonText(item); // 버튼 텍스트 업데이트
+            UIManager.Instance.InventoryUI.UpdateOrAddSlot(item); // 수량 갱신
+        }
     }
 
     public void Clear()

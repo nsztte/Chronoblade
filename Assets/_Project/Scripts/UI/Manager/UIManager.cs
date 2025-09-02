@@ -17,6 +17,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private GameObject overlayBackground;
     private int overlayCount = 0;
 
+    public InventoryUI InventoryUI => inventoryUI;
     public ShopUI ShopUI => shopUI;
     public TooltipUI TooltipUI => tooltipUI;
 
