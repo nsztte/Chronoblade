@@ -2444,3 +2444,32 @@ Enemy FSM(상태머신) 시스템 구현
 - UI는 가독성과 접근성을 우선으로 배치 완료 (중앙 하단 → 오른쪽 하단)
 
 ---
+
+## 날짜: 2025.09.02 (화) 작업 기록
+
+### 주요 작업
+- 인벤토리 장비 전용 툴팁 구현
+  - InfoTooltipTrigger 컴포넌트로 i 아이콘 호버 시 TooltipUI 표시
+  - TooltipUI는 장비형 아이템(ItemType.Equipment)에만 활성화
+  - 공통 정보(타입, 공격력) + 총기 타입 전용 정보(fireRate, range 등) 분기 표시
+  - 툴팁 위치는 슬롯 우측 중앙 기준으로 자동 배치되도록 RectTransform 기반 위치 계산
+
+- 아이템 상세 패널 버튼 기능 연동 (장착/해제/사용/버리기)
+  - ItemManager에서 HandleItemAction() 내부에 장착 중 자동 해제 로직 추가
+  - DropItem() 함수 추가 → 아이템 수량 차감 및 장착 중 장비 자동 해제 후 제거
+  - ItemDetailPanel에서 버튼 클릭 시 ItemManager 함수만 호출되도록 구조 단순화
+  - 버튼 리스너 중복 방지 (RemoveAllListeners 적용)
+  - 아이템 수량이 0이 되면 슬롯 제거 및 상세 패널 자동 닫힘 처리
+
+- 장착 마커 표시 기능 구현
+  - InventorySlot에 equippedMarker 오브젝트 연결
+  - InventoryManager.IsEquipped() 기준으로 장착 여부 판단
+  - 장착된 경우 슬롯 좌상단에 '장착중' 텍스트 마커 표시
+
+### 메모
+- 장착 마커는 ✔︎ 아이콘보다는 ‘장착중’ 텍스트가 더 직관적이라 판단되어 적용
+- i 아이콘, 장착 마커 크기가 작다는 피드백 반영 → 사이즈 확대 및 상단 정렬 통일
+- TooltipUI는 확장성이 좋아서 이후 방어구/액세서리 등의 정보도 자연스럽게 추가 가능
+- ItemDetailPanel은 각 버튼마다 별도 로직을 가지지 않고 ItemManager에 위임하는 방식으로 구조 단순화
+
+---
