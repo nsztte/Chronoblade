@@ -10,6 +10,7 @@ public class InventorySlot : MonoBehaviour
     [SerializeField] private GameObject CountBadge;
     [SerializeField] private TextMeshProUGUI CountText;
     [SerializeField] private GameObject selectionFrame;
+    [SerializeField] private InfoTooltipTrigger infoTooltip;
     private Button button;
 
     [HideInInspector] public ItemData item;
@@ -26,6 +27,15 @@ public class InventorySlot : MonoBehaviour
         iconImage.sprite = item.Icon;
         nameText.text = item.itemName;
         SetSelected(false);
+
+        if(itemData.itemType == ItemType.Equipment)
+        {
+            infoTooltip.gameObject.SetActive(true);
+            infoTooltip.SetItem(item);
+        }
+        else
+            infoTooltip.gameObject.SetActive(false);
+            
 
         if(isShopSlot)
             CountBadge.SetActive(false);

@@ -7,17 +7,18 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PlayerHUD playerHUD;
     [SerializeField] private BossHUD bossHUD;
     [SerializeField] private InventoryUI inventoryUI;
-    [SerializeField] private QuickSlotUI quickSlotUI;
     [SerializeField] private ShopUI shopUI;
     [SerializeField] private ToastUI toastUI;
     [SerializeField] private ConfirmModalUI confirmModal;
     [SerializeField] private PauseUI pauseUI;
+    [SerializeField] private TooltipUI tooltipUI;
 
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
     private int overlayCount = 0;
 
     public ShopUI ShopUI => shopUI;
+    public TooltipUI TooltipUI => tooltipUI;
 
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;
     public bool IsInventoryOpen => inventoryUI != null && inventoryUI.gameObject.activeSelf;
