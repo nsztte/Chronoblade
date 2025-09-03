@@ -2473,3 +2473,38 @@ Enemy FSM(상태머신) 시스템 구현
 - ItemDetailPanel은 각 버튼마다 별도 로직을 가지지 않고 ItemManager에 위임하는 방식으로 구조 단순화
 
 ---
+
+## 날짜: 2025.09.03 (수) 작업 기록
+
+### 주요 작업
+- Save 시스템 전반 구축 및 테스트
+  - ISaveable 인터페이스 설계
+    - CaptureStateJson() / RestoreStateJson(string json) 구조 정의
+  - SaveId 컴포넌트 구현
+    - GUID 자동 생성 및 수동 재설정 (ContextMenu)
+  - SaveableBehaviour 추상 클래스 도입
+    - SaveId 캐싱 및 ISaveable 기본 구현 포함
+- SaveManager 저장/로드 시스템 구현
+  - JSON 기반 단일 슬롯 저장
+  - 씬 이름 및 저장 시각 메타 정보 포함
+  - FindObjectsByType → ISaveable 필터링 → 중복 SaveId 검출 로그 처리
+  - 다른 씬 로딩 후 상태 복원 처리 구조 포함
+- PlayerSaveProxy 구현 및 PlayerManager 연동
+  - 위치, 회전(yaw), HP, MP 저장 및 복원 처리
+  - CharacterController 위치 강제 변경 시 비활성화 후 복원 → 튐 현상 방지
+  - PlayerManager에 SetHP / SetMP 추가로 복원 시 UI 동기화 포함
+- Core 프리팹 계층 구조 재정비 및 프리팹화
+  - Systems / Gameplay / Presentation / Player 오브젝트로 분리 정리
+  - UI 매니저는 별도로 UI 루트에서 관리
+- CoreBootstrap 도입 및 매니저 초기화 통일
+  - DontDestroyOnLoad 처리
+  - 각 매니저 Initialize() 함수 분리 및 중복 인스턴스 방지 구조 구축
+
+### 메모
+- 플레이어 위치 저장이 적용되지 않았던 문제는 CharacterController로 인해 발생했으며, `.enabled = false` 처리로 해결함
+- Player는 Core 하위에 있기 때문에 씬 전환 시에도 살아남으며, 위치 복원은 강제적으로 동작시켜야 함
+- UIManager는 씬마다 존재하므로 CoreBootstrap 초기화 대상에서 제외함
+- 초기화 순서를 명확히 정리해두어 다른 매니저 간 의존 관계로 인한 오류 방지에 용이함
+- 포트폴리오 문서화 시 SaveableBehaviour 기반 저장 구조 설계 이유(중복 제거, 일관성 확보, 확장성 우위 등)를 반드시 포함해야 함
+
+---
