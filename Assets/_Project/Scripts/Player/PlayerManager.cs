@@ -211,6 +211,19 @@ public class PlayerManager : MonoBehaviour, IDamageable
     #endregion
 
     #region 플레이어 자원 관리
+    //세이브 복원용
+    public void SetHP(float value, bool syncUI = true)
+    {
+        currentHP = Mathf.Clamp(value, 0, maxHP);
+        if (syncUI) UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
+    }
+
+    public void SetMP(float value, bool syncUI = true)
+    {
+        currentMP = Mathf.Clamp(value, 0, maxMP);
+        if (syncUI) UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
+    }
+
     public void HealHP(float amount)
     {
         currentHP += amount;
