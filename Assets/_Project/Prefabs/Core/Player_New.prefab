@@ -1323,6 +1323,8 @@ GameObject:
   - component: {fileID: 994387643113608629}
   - component: {fileID: 5841668309388760604}
   - component: {fileID: 1843441132556161920}
+  - component: {fileID: 2938922296967275247}
+  - component: {fileID: 4730842832835383070}
   m_Layer: 6
   m_Name: Player_New
   m_TagString: Player
@@ -1484,6 +1486,31 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   interactRadius: 2
   promptInterval: 0.2
+--- !u!114 &2938922296967275247
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3358034118070577990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 13b0ae789ab6477dab1c08ce04e82c53
+--- !u!114 &4730842832835383070
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3358034118070577990}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 663a66653baf5c64ebaeb879bdb51cde, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &3423826824287146893
 GameObject:
   m_ObjectHideFlags: 0
@@ -1743,7 +1770,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3584adec461c00c40ba69dc9042807a1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  weaponData: {fileID: 11400000, guid: 7ad2eab8f0f84644b9c2fddf4992f398, type: 2}
+  itemData: {fileID: 11400000, guid: 6beb5da11dc7b7941849993969293cac, type: 2}
   isAttacking: 0
   startPoint: {fileID: 3768398263171327406}
   endPoint: {fileID: 8860860428537723064}
@@ -3407,6 +3434,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 6369319848746265967}
     - target: {fileID: 1962568629482464446, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 4d569663473d1924ba283a349b2c6306, type: 2}
+    - target: {fileID: 1962568629482464446, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
       propertyPath: hitLayer.m_Bits
       value: 384
       objectReference: {fileID: 0}
@@ -3415,9 +3446,17 @@ PrefabInstance:
       value: Main Camera
       objectReference: {fileID: 0}
     - target: {fileID: 8067363351772988466, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 700d69de57e85ed429be20a12a1f962a, type: 2}
+    - target: {fileID: 8067363351772988466, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
       propertyPath: hitLayer.m_Bits
       value: 384
       objectReference: {fileID: 0}
+    - target: {fileID: 8429330037356695551, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
+      propertyPath: itemData
+      value: 
+      objectReference: {fileID: 11400000, guid: 75511cf7f5fb34e49a79169f69e0e0ac, type: 2}
     - target: {fileID: 8429330037356695551, guid: fc89f4a5cf670dd4cb84550aa54a7feb, type: 3}
       propertyPath: hitLayer.m_Bits
       value: 384
