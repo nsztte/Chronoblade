@@ -1,4 +1,3 @@
-using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -6,17 +5,14 @@ public class ComboEvaluator : MonoBehaviour
 {
     #region Singleton
     public static ComboEvaluator Instance { get; private set; }
-    private void Awake()
+    public void Initialize()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
     }
     #endregion
 

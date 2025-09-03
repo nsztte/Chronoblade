@@ -11,16 +11,14 @@ public class SaveManager : MonoBehaviour
     #region Singleton
     public static SaveManager Instance { get; private set; }
 
-    private void Awake()
+    public void Initialize()
     {
-        if(Instance != null)
+        if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
             return;
         }
-
         Instance = this;
-        DontDestroyOnLoad(gameObject);
     }
     #endregion
 

@@ -21,23 +21,24 @@ public class GameManager : MonoBehaviour
     public GameBaseState PreviousGameState { get; private set; }
 
 
-    #region 싱글톤, 초기화
+    #region 싱글톤
     public static GameManager Instance { get; private set; }
+
+    public void Initialize()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
+            return;
+        }
+        Instance = this;
+    }
+    #endregion
 
     private void Awake()
     {
-        if(Instance != null)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
-        DontDestroyOnLoad(gameObject);
-
         gameStateMachine = GetComponent<GameStateMachine>();
     }
-    #endregion
     private void Start()
     {
         // ChangeState(mainMenuState);

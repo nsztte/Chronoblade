@@ -3,19 +3,24 @@ using System.Collections.Generic;
 
 public class ItemManager : MonoBehaviour
 {
+    #region Singleton
     public static ItemManager Instance { get; private set; }
+
+    public void Initialize()
+    {
+        if (Instance != null && Instance != this)
+        {
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
+            return;
+        }
+        Instance = this;
+    }
+    #endregion
 
     [SerializeField] private ItemDatabase itemDatabase;
 
     private void Awake()
     {
-        if (Instance != null && Instance != this)
-        {
-            Destroy(gameObject);
-            return;
-        }
-
-        Instance = this;
         itemDatabase.Initialize(); // 데이터베이스 초기화
     }
 

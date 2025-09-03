@@ -91,23 +91,21 @@ public class PlayerManager : MonoBehaviour, IDamageable
     #region Singleton
     public static PlayerManager Instance { get; private set; }
 
-    private void Awake()
+    public void Initialize()
     {
-        // Singleton pattern implementation
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-
-            // 플레이어 애니메이터 참조
-            animator = GetComponent<Animator>();
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
     }
     #endregion
+
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     private void Start()
     {
@@ -207,7 +205,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
         bool isHolding = currentHeldObject != null;
         SetAnimatorBool("IsHeld", isHolding);
     }
-
     #endregion
 
     #region 플레이어 자원 관리

@@ -11,11 +11,11 @@ public class CutsceneCameraManager : MonoBehaviour
     #region Singleton
     public static CutsceneCameraManager Instance { get; private set; }
 
-    private void Awake()
+    public void Initialize()
     {
         if (Instance != null && Instance != this)
         {
-            Destroy(gameObject);
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
             return;
         }
         Instance = this;

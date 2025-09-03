@@ -5,16 +5,14 @@ public class ShopManager : MonoBehaviour
     #region Singleton
     public static ShopManager Instance { get; private set; }
 
-    private void Awake()
+    public void Initialize()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
     }
     #endregion
 
