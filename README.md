@@ -2508,3 +2508,53 @@ Enemy FSM(상태머신) 시스템 구현
 - 포트폴리오 문서화 시 SaveableBehaviour 기반 저장 구조 설계 이유(중복 제거, 일관성 확보, 확장성 우위 등)를 반드시 포함해야 함
 
 ---
+
+## 날짜 2025.09.04 (목) 작업 기록
+
+### 주요 작업
+- **플레이어 골드 저장/복원 연동**
+  - `PlayerSaveProxy`에 골드 필드 추가
+  - `PlayerManager.AddGold()` 호출 방식으로 상태 복원
+  - HUD(Gold 텍스트)는 자동 동기화됨
+
+- **인벤토리 저장/복원 구현**
+  - `InventoryManager`에 `DumpItemsAndAmmo()`, `RestoreItemsAndAmmo()` 함수 추가
+    - 아이템 및 탄약 상태를 `itemId`, `ammoType` 기준으로 직렬화
+    - `TryAddItem()`, `AddAmmo()` 경유로 HUD/퀵슬롯 자동 동기화
+  - `InventorySaveProxy` 신규 생성 및 SaveManager 연동
+
+- **무기 저장/복원 연동**
+  - `WeaponSaveProxy` 신규 생성
+    - 장착된 무기 슬롯 인덱스 저장 (`equippedIndex`)
+    - 각 무기 탄창 수 (`currentAmmo`) 저장
+    - 복원 시 `EquipWeapon()` → 탄약 수 복원 → `UpdateAmmoCount()` 호출
+  - `GunWeaponController`에 `SetCurrentAmmo()` 추가
+  - 무기 해제 시 UI(크로스헤어/탄약 패널 등) 비활성화 일관 처리
+
+- **무기 복원 안정성 개선**
+  - 무기 비장착 상태에서 저장한 경우, 로드 시 손에 무기 남는 문제 수정
+  - `WeaponManager.Start()`에서 `currentAmmo` 초기화 분리
+    - `Start()`에서 `CurrentAmmo < 0`일 때만 초기화
+    - 세이브 데이터가 덮어씌워지지 않도록 보완
+
+- **퀵슬롯 구조 개선 및 저장 시스템 연동**
+  - `QuickSlotManager`를 `CoreBootstrap` 하위로 이동
+    - 저장/복원 흐름에 맞게 구조 통합
+    - 슬롯 오브젝트 바인딩은 `UIManager.Start()`에서 처리
+  - `QuickSlotSaveProxy` 신규 생성
+    - 슬롯별 `itemId`, 선택 슬롯 인덱스 저장/복원
+    - `AssignItemToSlot()` 경유로 UI 자동 반영
+
+- **퀵슬롯 하이라이트 자동화**
+  - `QuickSlotManager.RefreshHighlight()` 함수 추가
+    - 현재 장착 무기를 기준으로 하이라이트 처리
+  - `EquipWeapon()`, `UnEquipWeapon()`, `AssignItemToSlot()`에서 자동 호출
+  - `ActivateSlot()` 중복 호출 제거로 구조 정리
+
+### 메모
+- 저장 시스템 구조가 거의 완성 단계에 도달했음
+- 무기/탄약 관련 초기화 순서에 주의 필요
+- 퀵슬롯 하이라이트는 이제 모든 흐름에서 자동으로 반영되므로 추가 호출 불필요
+- 다음은 저장 슬롯 UI 또는 자동 저장 로직을 설계해도 좋을 시점
+
+---
