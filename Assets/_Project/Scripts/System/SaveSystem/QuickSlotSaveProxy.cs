@@ -41,11 +41,5 @@ public class QuickSlotSaveProxy : SaveableBehaviour
             var item = string.IsNullOrEmpty(id) ? null : ItemManager.Instance.GetItemByID(id);
             QuickSlot.AssignItemToSlot(i, item); // 내부에서 RefreshUI/Visuals/Highlight 처리
         }
-
-        // 선택 슬롯 하이라이트(있을 때만)
-        if (d.selectedIndex >= 0)
-        {
-            QuickSlot.ActivateSlot(d.selectedIndex);
-        }
     }
 }
