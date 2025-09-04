@@ -119,6 +119,17 @@ NavMeshSettings:
     debug:
       m_Flags: 0
   m_NavMeshData: {fileID: 0}
+--- !u!114 &71508163 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 8453472770410802832, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+  m_PrefabInstance: {fileID: 4262020837351543946}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7b6718b6ebe74f9b15c1f47c117cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &114085766
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,6 +316,17 @@ MonoBehaviour:
   m_LightCookieSize: {x: 1, y: 1}
   m_LightCookieOffset: {x: 0, y: 0}
   m_SoftShadowQuality: 0
+--- !u!114 &388214052 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2630925304387675958, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+  m_PrefabInstance: {fileID: 4262020837351543946}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7b6718b6ebe74f9b15c1f47c117cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &560958989
 GameObject:
   m_ObjectHideFlags: 0
@@ -694,6 +716,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopData: {fileID: 11400000, guid: 44da398e064ed0949bd43c50d1b44ca2, type: 2}
+--- !u!114 &947046345 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 3801827716299289682, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+  m_PrefabInstance: {fileID: 4262020837351543946}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7b6718b6ebe74f9b15c1f47c117cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1109526488
 GameObject:
   m_ObjectHideFlags: 0
@@ -1186,36 +1219,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 114085767}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!1 &1251560191 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 2533941796046685648, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
-  m_PrefabInstance: {fileID: 3135466601096511268}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &1251560194
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1251560191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6ba1c882702c1214e8d624feac0f9782, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1251560195
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1251560191}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  guid: 2cddac8c48a949a8b6f7235d92e2f010
 --- !u!1 &1352848578
 GameObject:
   m_ObjectHideFlags: 0
@@ -1631,6 +1634,17 @@ Transform:
   m_Children: []
   m_Father: {fileID: 114085767}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2050543640 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 6345633054986813569, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+  m_PrefabInstance: {fileID: 4262020837351543946}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 20c7b6718b6ebe74f9b15c1f47c117cd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!33 &33325207968967379
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -2844,20 +2858,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 7906034393197527553, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
-      propertyPath: currentAmmo
-      value: -1
-      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2533941796046685648, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1251560195}
-    - targetCorrespondingSourceObject: {fileID: 2533941796046685648, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 1251560194}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
 --- !u!23 &3170292946102221451
 MeshRenderer:
@@ -4340,6 +4344,10 @@ PrefabInstance:
       propertyPath: m_SizeDelta.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 3207976475993791771, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: quickSlots.Array.size
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 3860442047467352733, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -4392,6 +4400,26 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: quickSlots.Array.size
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: 'quickSlots.Array.data[0]'
+      value: 
+      objectReference: {fileID: 2050543640}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: 'quickSlots.Array.data[1]'
+      value: 
+      objectReference: {fileID: 388214052}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: 'quickSlots.Array.data[2]'
+      value: 
+      objectReference: {fileID: 947046345}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: 'quickSlots.Array.data[3]'
+      value: 
+      objectReference: {fileID: 71508163}
     - target: {fileID: 5402150034782711902, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

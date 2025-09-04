@@ -9,24 +9,26 @@ public class QuickSlotManager : MonoBehaviour
     #region Singleton
     public static QuickSlotManager Instance { get; private set; }
 
-    private void Awake()
+    public void Initialize()
     {
-        if (Instance == null)
+        if (Instance != null && Instance != this)
         {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
+            Debug.LogWarning($"{GetType().Name} 인스턴스 감지됨, 초기화 스킵");
+            return;
         }
-        else
-        {
-            Destroy(gameObject);
-        }
+        Instance = this;
+    }
+    #endregion
+
+    public void BindQuickSlotSlot(List<QuickSlotSlot> slots)
+    {
+        quickSlots = slots;
 
         for(int i = 0; i < quickSlots.Count; i++)
         {
             quickSlots[i].SetIndex(i);
         }
     }
-    #endregion
 
     public void AssignItemToSlot(int index, ItemData item)
     {

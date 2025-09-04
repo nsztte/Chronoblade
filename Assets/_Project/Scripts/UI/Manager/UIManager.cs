@@ -1,6 +1,6 @@
 using System;
+using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 public class UIManager : MonoBehaviour
 {
@@ -16,6 +16,9 @@ public class UIManager : MonoBehaviour
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
     private int overlayCount = 0;
+
+    [Header("퀵슬롯")]
+    [SerializeField] private List<QuickSlotSlot> quickSlots;
 
     public InventoryUI InventoryUI => inventoryUI;
     public ShopUI ShopUI => shopUI;
@@ -47,6 +50,8 @@ public class UIManager : MonoBehaviour
     public void Start()
     {
         InputManager.Instance.OnInventoryChanged += ToggleInventoryUI;
+
+        QuickSlotManager.Instance.BindQuickSlotSlot(quickSlots);
     }
 
     public void OnDestroy()

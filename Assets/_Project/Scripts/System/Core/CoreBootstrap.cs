@@ -29,6 +29,7 @@ public class CoreBootstrap : MonoBehaviour
         GetComponentInChildren<ComboEvaluator>(true)?.Initialize();
 
         // 프레젠테이션
+        GetComponentInChildren<QuickSlotManager>(true)?.Initialize();
         GetComponentInChildren<CutsceneCameraManager>(true)?.Initialize();
 
         // 플레이어
