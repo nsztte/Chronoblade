@@ -9,7 +9,6 @@ public class WeaponManager : MonoBehaviour
     private int currentWeaponIndex = -1;
     [SerializeField] private WeaponController currentWeapon;
     public WeaponController CurrentWeapon => currentWeapon;
-    private PlayerController playerController;
 
 
     #region Singleton
@@ -28,9 +27,14 @@ public class WeaponManager : MonoBehaviour
 
     private void Start()
     {
-        // InputManager.Instance.OnWeaponSwitch += OnWeaponSwitch;
-
-        playerController = PlayerManager.Instance.PlayerController;
+        for (int i = 0; i < weaponSlots.Count; i++)
+        {
+            var gun = weaponSlots[i] as GunWeaponController;
+            if (gun != null && gun.CurrentAmmo < 0)
+            {
+                gun.SetCurrentAmmo(gun.weaponData.magazineSize);
+            }
+        }
     }
 
     public void EquipWeaponByItem(ItemData item)

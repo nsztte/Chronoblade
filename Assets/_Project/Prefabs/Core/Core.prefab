@@ -278,6 +278,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2908851533707756324}
   - component: {fileID: 1310202937724391281}
+  - component: {fileID: 5555290368396991512}
+  - component: {fileID: 6535887897362598847}
   m_Layer: 0
   m_Name: WeaponManager
   m_TagString: Untagged
@@ -318,6 +320,31 @@ MonoBehaviour:
   - {fileID: 8554613190721096140}
   - {fileID: 176043509353212224}
   currentWeapon: {fileID: 0}
+--- !u!114 &5555290368396991512
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2533941796046685648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 2cddac8c48a949a8b6f7235d92e2f010
+--- !u!114 &6535887897362598847
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2533941796046685648}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6ba1c882702c1214e8d624feac0f9782, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2763239284823695714
 GameObject:
   m_ObjectHideFlags: 0
@@ -784,6 +811,14 @@ PrefabInstance:
       propertyPath: m_Name
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 3841364266522208371, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: currentAmmo
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4721528940800297215, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: currentAmmo
+      value: -1
+      objectReference: {fileID: 0}
     - target: {fileID: 6369319848746265967, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0.12
@@ -823,6 +858,10 @@ PrefabInstance:
     - target: {fileID: 6369319848746265967, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6523968416953582386, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: currentAmmo
+      value: -1
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

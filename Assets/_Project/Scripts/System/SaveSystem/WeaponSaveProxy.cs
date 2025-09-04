@@ -14,7 +14,7 @@ public class WeaponSaveProxy : SaveableBehaviour
     [Serializable]
     private class Data
     {
-        public int equippedIndex;   //현재 장착 인덱스
+        public int equippedIndex = -1;   //현재 장착 인덱스
         public List<MagEntry> mags = new();
     }
 
@@ -50,7 +50,14 @@ public class WeaponSaveProxy : SaveableBehaviour
 
         if (d.equippedIndex >= 0)
         {
-            Weapon.EquipWeapon(d.equippedIndex);
+            if (!Weapon.EquipWeapon(d.equippedIndex))
+            {
+                Weapon.UnEquipWeapon(); // 장착 실패 시 확실히 비장착 상태로
+            }
+        }
+        else
+        {
+            Weapon.UnEquipWeapon();
         }
 
         var slots = Weapon.GetWeaponSlots();

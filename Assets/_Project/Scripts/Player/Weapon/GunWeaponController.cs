@@ -6,7 +6,8 @@ public class GunWeaponController : WeaponController
 {
     [SerializeField] private Transform firePoint;
     [SerializeField] private LayerMask hitLayer;
-    [SerializeField] private int currentAmmo;
+    [SerializeField] private int currentAmmo = -1;
+    public int CurrentAmmo => currentAmmo;
     [SerializeField] private float reloadDuration = 1f;
     private float nextFireTime = 0f;
     private bool isAiming = false;
@@ -30,7 +31,7 @@ public class GunWeaponController : WeaponController
 
     private void Start()
     {
-        currentAmmo = weaponData.magazineSize;
+        // currentAmmo = weaponData.magazineSize;
         originPosition = transform.localPosition;
         currentTargetPosition = originPosition;
 
