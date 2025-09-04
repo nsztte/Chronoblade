@@ -10,6 +10,7 @@ public class PlayerSaveProxy : SaveableBehaviour
         public float yaw;    // y축 회전
         public float hp;
         public float mp;
+        public int gold;
     }
 
     private PlayerManager Player => PlayerManager.Instance;
@@ -22,7 +23,8 @@ public class PlayerSaveProxy : SaveableBehaviour
             pos = new[] { Body.position.x, Body.position.y, Body.position.z },
             yaw = Body.eulerAngles.y,
             hp  = Player.CurrentHP,
-            mp  = Player.CurrentMP
+            mp  = Player.CurrentMP,
+            gold = Player.Gold
         };
         return JsonUtility.ToJson(d);
     }
@@ -44,5 +46,6 @@ public class PlayerSaveProxy : SaveableBehaviour
         // 2) HP/MP 복원 (UI 동기화 포함)
         Player.SetHP(d.hp, true);
         Player.SetMP(d.mp, true);
+        Player.AddGold(d.gold - Player.Gold);
     }
 }
