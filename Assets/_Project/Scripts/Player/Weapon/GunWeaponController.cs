@@ -75,6 +75,13 @@ public class GunWeaponController : WeaponController
         return currentAmmo;
     }
 
+    // 세이브/로드 연동용
+    public void SetCurrentAmmo(int value)
+    {
+        int max = weaponData.magazineSize;
+        currentAmmo = Mathf.Clamp(value, 0, max);
+    }
+
     public override void ExecuteWeaponAttack()
     {
         if(!gameObject.activeInHierarchy) return;

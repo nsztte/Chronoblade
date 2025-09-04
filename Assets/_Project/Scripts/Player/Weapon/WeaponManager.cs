@@ -33,11 +33,6 @@ public class WeaponManager : MonoBehaviour
         playerController = PlayerManager.Instance.PlayerController;
     }
 
-    // private void OnDestroy()
-    // {
-    //     InputManager.Instance.OnWeaponSwitch -= OnWeaponSwitch;
-    // }
-
     public void EquipWeaponByItem(ItemData item)
     {
         if(!CanSwitchWeapon()) return;
@@ -51,21 +46,8 @@ public class WeaponManager : MonoBehaviour
             }
         }
     }
-    
-    // private void OnWeaponSwitch(int index)
-    // {
-    //     // 무기 전환 시도
-    //     bool weaponChanged = EquipWeapon(index);
-        
-    //     // 무기 전환이 실제로 성공했을 때만 조준 취소
-    //     if (weaponChanged)
-    //     {
-    //         CameraController.Instance?.CancelAim();
-    //         CameraController.Instance?.UpdateRecoilRecoverySpeed();
-    //     }
-    // }
 
-    private bool EquipWeapon(int index)
+    public bool EquipWeapon(int index)
     {
         if(!CanSwitchWeapon()) return false;
 
