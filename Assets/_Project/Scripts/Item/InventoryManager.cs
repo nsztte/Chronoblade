@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using System.Collections.Generic;
 
@@ -21,11 +22,8 @@ public class InventoryManager : MonoBehaviour
     [SerializeField] private ItemData[] testWeaponData;   // 테스트 이후에는 모두 지울것
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
-    private HashSet<string> obtainedWeapons = new HashSet<string>();
     [SerializeField] private WeaponData equippedWeapon;
 
-    // 슬롯 기반 인벤토리 구조(확장용, 실제 슬롯 로직은 추후 구현)
-    // public List<InventorySlot> slots = new List<InventorySlot>();
 
     private void Start()
     {
@@ -105,6 +103,64 @@ public class InventoryManager : MonoBehaviour
             return success;
         }
     }
+
+    #region 세이브/로드 관리
+    [Serializable]
+    public struct ItemEntry { public string id; public int count; }
+
+    [Serializable]
+    public struct AmmoEntry { public AmmoType type; public int count; }
+
+    public (List<ItemEntry> items, List<AmmoEntry> ammos) DumpItemsAndAmmo()
+    {
+        // 아이템 덤프
+        var items = new List<ItemEntry>();
+        var all = GetAllItems();
+        foreach (var kv in all)
+        {
+            if (kv.Key != null && kv.Value > 0)
+                items.Add(new ItemEntry { id = kv.Key.itemID, count = kv.Value });
+        }
+
+        // 탄약 덤프
+        var ammos = new List<AmmoEntry>();
+        foreach (AmmoType t in Enum.GetValues(typeof(AmmoType)))
+        {
+            if (t == AmmoType.None) continue;
+            int c = GetAmmoCount(t);
+            if (c > 0) ammos.Add(new AmmoEntry { type = t, count = c });
+        }
+        return (items, ammos);
+    }
+
+    public void RestoreItemsAndAmmo(List<ItemEntry> items, List<AmmoEntry> ammos)
+    {
+        // 내부 상태 초기화
+        itemCounts.Clear();
+        ammoCounts.Clear();
+
+        // 아이템 복원
+        foreach (var e in items)
+        {
+            var item = ItemManager.Instance.GetItemByID(e.id);
+            if (item == null) continue;
+
+            int leftover = TryAddItem(item, e.count, out _);   // 내부에서 퀵슬롯 Refresh 호출
+            if (leftover > 0)
+                Debug.LogWarning($"[InventoryManager] '{e.id}' 일부 미반영: {leftover}");
+        }
+
+        // 탄약 복원
+        foreach (var a in ammos)
+        {
+            if (a.type == AmmoType.None || a.count <= 0) continue;
+
+            int leftover = AddAmmo(a.type, a.count);    // 내부에서 Ammo UI 업데이트 포함
+            if (leftover > 0)
+                Debug.LogWarning($"[InventoryManager] '{a.type}' 탄약 일부 미반영: {leftover}");
+        }
+    }
+    #endregion
 
     #region 일반아이템 관리
     private int AddItem(ItemData item, int amount)
@@ -207,7 +263,7 @@ public class InventoryManager : MonoBehaviour
             }
         }
 
-        // 기본값 반환 (해당 타입의 무기가 없거나 WeaponManager가 없는 경우)
+        // 기본값 반환
         switch (type)
         {
             case AmmoType.PistolAmmo: return 60;
