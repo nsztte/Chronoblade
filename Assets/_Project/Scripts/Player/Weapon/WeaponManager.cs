@@ -95,7 +95,9 @@ public class WeaponManager : MonoBehaviour
         UIManager.Instance?.ActiveWeaponPanel(currentWeapon.weaponData.iconSprite);
         UIManager.Instance?.ActiveAmmoPanel(isGun);
         
-        
+        // 퀵슬롯 연동
+        QuickSlotManager.Instance?.RefreshHighlight();
+
         return true;
     }
 
@@ -127,6 +129,9 @@ public class WeaponManager : MonoBehaviour
         // 조준 상태 초기화 및 반동 복구 갱신
         CameraController.Instance?.CancelAim();
         CameraController.Instance?.UpdateRecoilRecoverySpeed();
+
+        // 퀵슬롯 연동
+        QuickSlotManager.Instance?.RefreshHighlight();
     }
 
     private bool CanSwitchWeapon()

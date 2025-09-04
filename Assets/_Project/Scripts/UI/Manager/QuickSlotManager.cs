@@ -37,6 +37,7 @@ public class QuickSlotManager : MonoBehaviour
         slotItems[index] = item;
         RefreshUI();
         RefreshAllSlotVisuals();
+        RefreshHighlight();
     }
 
     public void ActivateSlot(int slotIndex)
@@ -54,14 +55,20 @@ public class QuickSlotManager : MonoBehaviour
         if(item.itemType == ItemType.Equipment && currentWeapon?.ItemData == item)
         {
             WeaponManager.Instance.UnEquipWeapon();
-            HighlightSlot(-1);
+            // HighlightSlot(-1);
             return;
         }
 
         ItemManager.Instance.HandleItemAction(item);
 
         // UI 강조 표시
-        HighlightSlot(slotIndex);
+        // HighlightSlot(slotIndex);
+    }
+
+    public void RefreshHighlight()
+    {
+        int slotIndex = GetCurrentWeaponSlotIndex();
+        HighlightSlot(slotIndex); // 장착된 무기 없으면 -1 → 하이라이트 해제됨
     }
 
     private void RefreshUI()
