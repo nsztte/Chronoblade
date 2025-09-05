@@ -2558,3 +2558,45 @@ Enemy FSM(상태머신) 시스템 구현
 - 다음은 저장 슬롯 UI 또는 자동 저장 로직을 설계해도 좋을 시점
 
 ---
+
+## 날짜: 2025.09.05 (금) 작업 기록
+
+### 주요 작업
+- 세이브 가드 시스템 도입
+  - SaveGuard.cs 구현: 태그 기반 저장 차단 구조
+  - SaveBlockTag enum 도입으로 퍼즐/컷씬/전투 등 독립 제어 가능
+  - 참조 카운트 기반 Block/Unblock 처리 및 이벤트 발생 구조 구축
+
+- 저장 함수 구조 개편 및 저장 의도 구분
+  - SaveIntent enum 도입 (Manual / Auto / Checkpoint)
+  - SaveManager.Save()에 intent 매개변수 추가
+  - Manual일 경우에만 SaveGuard로 차단하고, Auto는 항상 허용
+
+- 퍼즐 상태와 저장 정책 통합
+  - 퍼즐 진입 시 자동 저장 + 저장 차단 (PuzzleStateTrigger → PuzzleState로 책임 이전)
+  - 퍼즐 클리어 시 저장 가능 상태 복귀 및 자동 저장
+
+- 플레이어 위치 이동 로직 통합
+  - PlayerController.SetPositionAndRotation(pos, rot) 함수 추가
+  - 위치 이동 시 CharacterController 잠금 해제/재활성화 포함
+  - 기존 위치 설정 코드 통일 및 중복 제거
+
+- 퍼즐 로드시 상태 초기화 구현
+  - PuzzleRoomManager에 TransformSnapshot 구조체 도입
+    - 위치, 회전, 활성화 상태를 통합 저장 및 복원
+  - 퍼즐 입장 시 CacheInitialStates() 호출로 초기 상태 저장
+  - 퍼즐 미클리어 로드시 ResetToInitialIfUncleared()를 통해 상태 초기화 및 입구 리스폰
+
+- 로드 이벤트 시스템 도입 및 퍼즐 트리거 연동
+  - SaveManager에 OnAfterLoad 이벤트 추가
+  - RestoreState() 이후 퍼즐이 직접 초기화되도록 PuzzleStateTrigger에서 이벤트 구독
+  - 퍼즐 클리어 시 및 비활성화 시 구독 해제
+
+- 퍼즐 진입 흐름 안정화
+  - 퍼즐 오브젝트 활성화 → 스냅샷 저장 → 오토세이브 순서를 코루틴으로 명확하게 처리
+  - 퍼즐 클리어 후 isCleared 플래그 세팅 추가로 상태 일관성 보장
+
+### 메모
+- 퍼즐 저장/로드 정책이 확정적으로 안정화됨
+- 수동 저장 차단 → 클리어 후 오토세이브 → 로드시 자동 초기화 흐름이 자연스럽게 연결됨
+- 추후 다른 시스템(컷씬, 전투 등)에도 SaveGuard 태그 연동으로 확장 가능
