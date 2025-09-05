@@ -21,7 +21,7 @@ public abstract class PuzzleRoomManager : MonoBehaviour
 
         SaveGuard.Instance?.Unblock(SaveBlockTag.Puzzle);
 
-        SaveManager.Instance?.Save(SaveManager.Instance.NextAutoSlot());
+        SaveManager.Instance?.Save(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
     }
 
     public void ChangeState(bool isActive)
