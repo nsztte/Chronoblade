@@ -2,7 +2,7 @@ using UnityEngine;
 
 public class SaveDebug : MonoBehaviour
 {
-    [SerializeField] private int slot = 1;
+    [SerializeField] private int slot = 99;
 
     void Update()
     {
