@@ -67,6 +67,13 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         originalAnimSpeed = animator.speed;
     }
 
+    public void SetPositionAndRotaion(Vector3 position, Quaternion rotation)
+    {
+        controller.enabled = false;
+        transform.SetPositionAndRotation(position, rotation);
+        controller.enabled = true;
+    }
+
     #region FSM에서 호출할 메서드들
     public void SetMoveInput(Vector2 input)
     {

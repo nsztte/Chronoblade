@@ -34,14 +34,11 @@ public class PlayerSaveProxy : SaveableBehaviour
         if (string.IsNullOrEmpty(json)) return;
         var d = JsonUtility.FromJson<Data>(json);
 
-        var cc = GetComponent<CharacterController>();
-        if (cc != null) cc.enabled = false;
-
         // 1) 위치/회전 복원
-        Body.position = new Vector3(d.pos[0], d.pos[1], d.pos[2]);
-        Body.rotation = Quaternion.Euler(0f, d.yaw, 0f);
+        Vector3 position = new Vector3(d.pos[0], d.pos[1], d.pos[2]);
+        Quaternion rotation = Quaternion.Euler(0f, d.yaw, 0f);
 
-        if (cc != null) cc.enabled = true;
+        Player.PlayerController.SetPositionAndRotaion(position, rotation);
 
         // 2) HP/MP 복원 (UI 동기화 포함)
         Player.SetHP(d.hp, true);

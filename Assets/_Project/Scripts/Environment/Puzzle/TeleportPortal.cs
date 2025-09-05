@@ -17,15 +17,10 @@ public class TeleportPortal : MonoBehaviour
     {
         if(other.CompareTag("Player"))
         {
-           var controller = other.GetComponent<CharacterController>();
-            if (controller != null)
-                controller.enabled = false;
+            Vector3 position = teleportPosition.position;
+            Quaternion rotation = teleportPosition.rotation;
 
-            other.transform.position = teleportPosition.position;
-            other.transform.rotation = teleportPosition.rotation;
-
-            if (controller != null)
-                controller.enabled = true;
+            PlayerManager.Instance.PlayerController.SetPositionAndRotaion(position, rotation);
         }
     }
 }
