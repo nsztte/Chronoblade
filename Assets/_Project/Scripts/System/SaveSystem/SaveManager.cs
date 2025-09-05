@@ -6,6 +6,8 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
+public enum SaveIntent { Manual, Auto, Checkpoint }
+
 public class SaveManager : MonoBehaviour
 {
     #region Singleton
@@ -48,8 +50,15 @@ public class SaveManager : MonoBehaviour
 
     
     // 저장
-    public void Save(int slot)
+    public void Save(int slot, SaveIntent intent = SaveIntent.Manual)
     {
+        if (intent == SaveIntent.Manual &&
+            SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
+        {
+            UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
+            return;
+        }
+
         var saveFile = new SaveFile();
         saveFile.meta.scene = SceneManager.GetActiveScene().name;
         saveFile.meta.savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
