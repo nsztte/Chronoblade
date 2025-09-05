@@ -49,6 +49,8 @@ public class SaveManager : MonoBehaviour
         Path.Combine(Application.persistentDataPath, $"slot_{slot}.json");
 
     
+    public event Action OnAfterLoad;     // 공용 로드 이벤트
+
     private int autoSlots = 5;
     private const string Key = "Save_AutoIndex";
 
@@ -140,6 +142,8 @@ public class SaveManager : MonoBehaviour
             if (map.TryGetValue(s.SaveId, out var json))
                 s.RestoreStateJson(json);
         }
+
+        OnAfterLoad?.Invoke();
 
         Debug.Log("[SaveManager] 로드 완료");
     }

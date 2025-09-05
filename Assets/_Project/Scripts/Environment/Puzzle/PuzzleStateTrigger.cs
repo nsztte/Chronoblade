@@ -5,6 +5,8 @@ public class PuzzleStateTrigger : MonoBehaviour
     [SerializeField] private GameObject puzzleRoomDoor;
     [SerializeField] private GameObject puzzleObjects;
     [SerializeField] private PuzzleRoomManager puzzleRoomManager;
+
+    private bool subscribed = false;
     private bool isActive = false;
     private bool isCleared = false;
     public bool IsCleared { get => puzzleRoomManager ? puzzleRoomManager.IsCleared : isCleared; set => isCleared = value; }
@@ -17,6 +19,12 @@ public class PuzzleStateTrigger : MonoBehaviour
             if (puzzleRoomDoor) puzzleRoomDoor.SetActive(false);
             if (puzzleObjects) puzzleObjects.SetActive(false);
             gameObject.SetActive(false);
+
+            if(subscribed && SaveManager.Instance != null)
+            {
+                SaveManager.Instance.OnAfterLoad -= OnAfterLoadCommon;
+                subscribed = false;
+            }
         }
     }
 
@@ -30,9 +38,17 @@ public class PuzzleStateTrigger : MonoBehaviour
                 isActive = true;
                 puzzleRoomManager?.ChangeState(true);
 
+                // 로드 이벤트 구독: 미클리어 상태 동안만 유지
+                if (!subscribed && SaveManager.Instance != null)
+                {
+                    SaveManager.Instance.OnAfterLoad += OnAfterLoadCommon;
+                    subscribed = true;
+                }
+
+                Invoke(nameof(PushPlayerForward), 0.1f);
                 Invoke(nameof(ActivePuzzleRoomDoor), 0.5f);
                 Invoke(nameof(ActivePuzzleObjects), 0.5f);
-                Invoke(nameof(PushPlayerForward), 0.1f);
+                Invoke(nameof(AutoSave), 0.5f);
             }
             else if(GameManager.Instance.CurrentGameState is PuzzleState && isActive)
             {
@@ -43,10 +59,26 @@ public class PuzzleStateTrigger : MonoBehaviour
         }
     }
 
+    private void OnAfterLoadCommon()
+    {
+        // 퍼즐이 아직 미클리어면 방 초기화
+        if (!IsCleared)
+            puzzleRoomManager?.ResetToInitialIfUncleared();
+    }
+
+    private void AutoSave()
+    {
+        SaveManager.Instance?.Save(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
+        puzzleRoomManager?.CacheInitialStates();
+    }
+
     private void ActivePuzzleRoomDoor()
     {
         if(puzzleRoomDoor != null)
+        {
             puzzleRoomDoor.SetActive(true);
+            transform.GetComponent<Collider>().enabled = false;
+        }
     }
 
     private void ActivePuzzleObjects()

@@ -20710,7 +20710,7 @@ PrefabInstance:
     - target: {fileID: 6390562733089833852, guid: 3db45bd4fb5e57e4dac7c9f1260dea70, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 1018714200}
+      objectReference: {fileID: 1833788180}
     - target: {fileID: 6604404569682806426, guid: 3db45bd4fb5e57e4dac7c9f1260dea70, type: 3}
       propertyPath: m_Name
       value: DestructibleStatue (1)
@@ -31785,6 +31785,37 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &414174330
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 414174331}
+  m_Layer: 0
+  m_Name: Entrance
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &414174331
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 414174330}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: -1, z: 0, w: 0}
+  m_LocalPosition: {x: -0.704, y: -0.267, z: 5.47}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 470683485}
+  m_LocalEulerAnglesHint: {x: 0, y: -180, z: 0}
 --- !u!1 &423806143
 GameObject:
   m_ObjectHideFlags: 0
@@ -41653,6 +41684,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 470683485}
+  - component: {fileID: 470683486}
   m_Layer: 0
   m_Name: Puzzle_Room3
   m_TagString: Untagged
@@ -41669,11 +41701,11 @@ Transform:
   m_GameObject: {fileID: 470683484}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 18.875216, y: 13.361057, z: -9.841208}
+  m_LocalPosition: {x: 18.87522, y: 13.361057, z: -9.841208}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1156026361}
+  - {fileID: 414174331}
   - {fileID: 94356685}
   - {fileID: 1000912841}
   - {fileID: 543450652717376848}
@@ -41685,6 +41717,30 @@ Transform:
   - {fileID: 731662486}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &470683486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470683484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6bb993d8d9cd8a544b3b54d409cbfafb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomId: 3
+  clearedPortal: {fileID: 94356684}
+  clearedReward: {fileID: 1000912835}
+  forceEntranceOnLoad: 1
+  entrance: {fileID: 414174331}
+  isCleared: 0
+  isActivated: 0
+  clearPosition: {fileID: 1519897047}
+  detectRadius: 0.5
+  playerLayer:
+    serializedVersion: 2
+    m_Bits: 64
 --- !u!95 &474020737
 Animator:
   serializedVersion: 7
@@ -52386,7 +52442,7 @@ PrefabInstance:
     - target: {fileID: 9054690738797417494, guid: 4f9b3f5ed3fbbd64396dbdbe65be3f48, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 1651578634}
+      objectReference: {fileID: 1046868905}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -63760,7 +63816,7 @@ PrefabInstance:
     - target: {fileID: 9054690738797417494, guid: 4f9b3f5ed3fbbd64396dbdbe65be3f48, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 1063076768}
+      objectReference: {fileID: 1247172076}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -70196,54 +70252,6 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 0.66732997, y: 1.7987548, z: 0.5419009}
   m_Center: {x: -0.017159317, y: 0.8993774, z: 0.0037424276}
---- !u!1 &1018714198
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1018714199}
-  - component: {fileID: 1018714200}
-  m_Layer: 0
-  m_Name: PuzzleRoom5Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &1018714199
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1018714198}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1833788179}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1018714200
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1018714198}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 2e8986ac59bc4184aaf8054802263fc2, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomId: 5
-  clearedPortal: {fileID: 5607819271350505260}
-  clearedReward: {fileID: 933805244}
-  Pedestals: {fileID: 1053738916}
 --- !u!1 &1026277227
 GameObject:
   m_ObjectHideFlags: 0
@@ -70895,6 +70903,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1046868904}
+  - component: {fileID: 1046868905}
   m_Layer: 0
   m_Name: Puzzle_Room4
   m_TagString: Untagged
@@ -70915,7 +70924,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1651578635}
   - {fileID: 896735421}
   - {fileID: 622206673}
   - {fileID: 155924876}
@@ -70923,6 +70931,25 @@ Transform:
   - {fileID: 1859028723}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1046868905
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046868903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9307cc1bdd8aa06429bb52d57def4527, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomId: 4
+  clearedPortal: {fileID: 896735420}
+  clearedReward: {fileID: 5364921}
+  forceEntranceOnLoad: 1
+  entrance: {fileID: 0}
+  isCleared: 0
+  isActivated: 0
 --- !u!1 &1053738916
 GameObject:
   m_ObjectHideFlags: 0
@@ -71225,58 +71252,6 @@ MeshFilter:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1062656914}
   m_Mesh: {fileID: -5076798556035486163, guid: 3e84791e198282a4784a56da24094952, type: 3}
---- !u!1 &1063076767
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1063076769}
-  - component: {fileID: 1063076768}
-  m_Layer: 0
-  m_Name: PuzzleRoom6Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1063076768
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1063076767}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6853e5749fa5c494587f2dac30a9868d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomId: 6
-  clearedPortal: {fileID: 2129203948}
-  clearedReward: {fileID: 1043679853}
-  endPoint: {fileID: 1682708915}
-  detectRadius: 0.5
-  statueLayer:
-    serializedVersion: 2
-    m_Bits: 1
---- !u!4 &1063076769
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1063076767}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1247172075}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1067990949
 GameObject:
   m_ObjectHideFlags: 0
@@ -81390,58 +81365,6 @@ CapsuleCollider:
   m_Height: 1.9
   m_Direction: 1
   m_Center: {x: 0, y: 0, z: 0}
---- !u!1 &1156026359
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1156026361}
-  - component: {fileID: 1156026360}
-  m_Layer: 0
-  m_Name: PuzzleRoom3Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1156026360
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156026359}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6bb993d8d9cd8a544b3b54d409cbfafb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomId: 3
-  clearedPortal: {fileID: 94356684}
-  clearedReward: {fileID: 1000912835}
-  clearPosition: {fileID: 1519897047}
-  detectRadius: 0.5
-  playerLayer:
-    serializedVersion: 2
-    m_Bits: 64
---- !u!4 &1156026361
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1156026359}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 470683485}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1161720377
 GameObject:
   m_ObjectHideFlags: 0
@@ -91719,6 +91642,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1247172075}
+  - component: {fileID: 1247172076}
   m_Layer: 0
   m_Name: Puzzle_Room6
   m_TagString: Untagged
@@ -91739,7 +91663,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1063076769}
   - {fileID: 2129203953}
   - {fileID: 1043679857}
   - {fileID: 543450652513506005}
@@ -91750,6 +91673,30 @@ Transform:
   - {fileID: 1532960222}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1247172076
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247172074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6853e5749fa5c494587f2dac30a9868d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomId: 6
+  clearedPortal: {fileID: 2129203948}
+  clearedReward: {fileID: 1043679853}
+  forceEntranceOnLoad: 1
+  entrance: {fileID: 0}
+  isCleared: 0
+  isActivated: 0
+  endPoint: {fileID: 1682708915}
+  detectRadius: 0.5
+  statueLayer:
+    serializedVersion: 2
+    m_Bits: 1
 --- !u!4 &1261274341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6541588079325297701, guid: 14f16daa11f050f4eae3c147e683de6c, type: 3}
@@ -108192,53 +108139,6 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 6541588079325297701, guid: 14f16daa11f050f4eae3c147e683de6c, type: 3}
   m_PrefabInstance: {fileID: 3170654208883069061}
   m_PrefabAsset: {fileID: 0}
---- !u!1 &1651578633
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 1651578635}
-  - component: {fileID: 1651578634}
-  m_Layer: 0
-  m_Name: PuzzleRoom4Manager
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &1651578634
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651578633}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9307cc1bdd8aa06429bb52d57def4527, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  roomId: 4
-  clearedPortal: {fileID: 896735420}
-  clearedReward: {fileID: 5364921}
---- !u!4 &1651578635
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1651578633}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 1046868904}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1652199445
 GameObject:
   m_ObjectHideFlags: 0
@@ -118342,7 +118242,7 @@ PrefabInstance:
     - target: {fileID: 9054690738797417494, guid: 4f9b3f5ed3fbbd64396dbdbe65be3f48, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 1156026360}
+      objectReference: {fileID: 470683486}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -125010,6 +124910,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1833788179}
+  - component: {fileID: 1833788180}
   m_Layer: 0
   m_Name: Puzzle_Room5
   m_TagString: Untagged
@@ -125030,7 +124931,6 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
-  - {fileID: 1018714199}
   - {fileID: 933805250}
   - {fileID: 5516487407436062361}
   - {fileID: 543450652575846842}
@@ -125040,6 +124940,26 @@ Transform:
   - {fileID: 659762150}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1833788180
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833788178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 2e8986ac59bc4184aaf8054802263fc2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  roomId: 5
+  clearedPortal: {fileID: 5607819271350505260}
+  clearedReward: {fileID: 933805244}
+  forceEntranceOnLoad: 1
+  entrance: {fileID: 0}
+  isCleared: 0
+  isActivated: 0
+  Pedestals: {fileID: 1053738916}
 --- !u!1 &1837538992
 GameObject:
   m_ObjectHideFlags: 0
@@ -140456,7 +140376,7 @@ PrefabInstance:
     - target: {fileID: 9054690738797417494, guid: 4f9b3f5ed3fbbd64396dbdbe65be3f48, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 1018714200}
+      objectReference: {fileID: 1833788180}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -140488,6 +140408,51 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3044578155514180920, guid: 14f16daa11f050f4eae3c147e683de6c, type: 3}
   m_PrefabInstance: {fileID: 623783311}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &2024801043
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2024801045}
+  - component: {fileID: 2024801044}
+  m_Layer: 0
+  m_Name: tester
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &2024801044
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024801043}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51ea7a6dccd173b4a8997e17a0a3e0cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slot: 4
+--- !u!4 &2024801045
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2024801043}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 29.540188, y: 2.1263883, z: -6.171785}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &2027541044
 GameObject:
   m_ObjectHideFlags: 0
@@ -185310,7 +185275,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 631d65dfb8dee2344bc207d29ad5c358, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  puzzleManager: {fileID: 1651578634}
+  puzzleManager: {fileID: 0}
   wateringCan: {fileID: 919132148225500858}
   fastforwardMultiplier: 10
 --- !u!135 &919132148911216079
@@ -328456,7 +328421,7 @@ PrefabInstance:
     - target: {fileID: 6390562733089833852, guid: 3db45bd4fb5e57e4dac7c9f1260dea70, type: 3}
       propertyPath: puzzleRoomManager
       value: 
-      objectReference: {fileID: 1018714200}
+      objectReference: {fileID: 1833788180}
     - target: {fileID: 6604404569682806426, guid: 3db45bd4fb5e57e4dac7c9f1260dea70, type: 3}
       propertyPath: m_Name
       value: DestructibleStatue
@@ -492063,3 +492028,4 @@ SceneRoots:
   - {fileID: 3460956286742364511}
   - {fileID: 983953296}
   - {fileID: 1015428827}
+  - {fileID: 2024801045}
