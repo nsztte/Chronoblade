@@ -16,6 +16,7 @@ public class CoreBootstrap : MonoBehaviour
         GetComponentInChildren<TimeManager>(true)?.Initialize();
         GetComponentInChildren<TimeInputHandler>(true)?.Initialize();
         GetComponentInChildren<InputManager>(true)?.Initialize();
+        GetComponentInChildren<SaveGuard>(true)?.Initialize();
         GetComponentInChildren<SaveManager>(true)?.Initialize();
         // GetComponentInChildren<AudioManager>(true)?.Initialize();
 
