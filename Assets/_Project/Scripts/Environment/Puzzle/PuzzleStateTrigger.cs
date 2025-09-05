@@ -30,9 +30,11 @@ public class PuzzleStateTrigger : MonoBehaviour
                 isActive = true;
                 puzzleRoomManager?.ChangeState(true);
 
+                // 퍼즐 입장 시 저장 차단
+                SaveGuard.Instance?.Block(SaveBlockTag.Puzzle);
+
                 Invoke(nameof(ActivePuzzleRoomDoor), 0.5f);
                 Invoke(nameof(ActivePuzzleObjects), 0.5f);
-
                 Invoke(nameof(PushPlayerForward), 0.1f);
             }
             else if(GameManager.Instance.CurrentGameState is PuzzleState && isActive)
@@ -40,6 +42,9 @@ public class PuzzleStateTrigger : MonoBehaviour
                 GameManager.Instance.EnterExploration();
                 isActive = false;
                 puzzleRoomManager?.ChangeState(false);
+
+                // 퍼즐 상태에서 이탈할 경우, 저장 복구
+                SaveGuard.Instance?.ClearTag(SaveBlockTag.Puzzle);
             }
         }
     }

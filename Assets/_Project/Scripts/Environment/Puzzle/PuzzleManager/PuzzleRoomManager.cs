@@ -11,12 +11,17 @@ public abstract class PuzzleRoomManager : MonoBehaviour
     public bool IsActivated => isActivated;
 
     protected abstract void CheckPuzzle();
+
     protected void OnPuzzleSolved()
     {
         if (clearedPortal) clearedPortal.SetActive(true);
         if (clearedReward) clearedReward.SetActive(true);
         
         PuzzleProgressManager.Instance.MarkCleared(roomId);
+
+        SaveGuard.Instance?.Unblock(SaveBlockTag.Puzzle);
+
+        SaveManager.Instance?.Save(SaveManager.Instance.NextAutoSlot());
     }
 
     public void ChangeState(bool isActive)

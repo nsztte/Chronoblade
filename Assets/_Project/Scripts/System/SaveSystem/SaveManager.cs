@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-public enum SaveIntent { Manual, Auto, Checkpoint }
+public enum SaveIntent { Manual, Auto }
 
 public class SaveManager : MonoBehaviour
 {
@@ -48,6 +48,20 @@ public class SaveManager : MonoBehaviour
     private string GetPath(int slot) =>
         Path.Combine(Application.persistentDataPath, $"slot_{slot}.json");
 
+    
+    private int autoSlots = 5;
+    private const string Key = "Save_AutoIndex";
+
+    // 자동저장 슬롯 인덱스
+    public int NextAutoSlot()
+    {
+        int i = PlayerPrefs.GetInt(Key, 0);
+        i = (i + 1) % autoSlots;
+        PlayerPrefs.SetInt(Key, i);
+        PlayerPrefs.Save();
+        
+        return i + 1;   // 퍼즐 슬롯은 1부터 시작
+    }
     
     // 저장
     public void Save(int slot, SaveIntent intent = SaveIntent.Manual)
