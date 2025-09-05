@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class PuzzleStateTrigger : MonoBehaviour
@@ -28,6 +29,15 @@ public class PuzzleStateTrigger : MonoBehaviour
         }
     }
 
+    private void OnDisable()
+    {
+        if (subscribed && SaveManager.Instance != null)
+        {
+            SaveManager.Instance.OnAfterLoad -= OnAfterLoadCommon;
+            subscribed = false;
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if(other.CompareTag("Player"))
@@ -45,10 +55,7 @@ public class PuzzleStateTrigger : MonoBehaviour
                     subscribed = true;
                 }
 
-                Invoke(nameof(PushPlayerForward), 0.1f);
-                Invoke(nameof(ActivePuzzleRoomDoor), 0.5f);
-                Invoke(nameof(ActivePuzzleObjects), 0.5f);
-                Invoke(nameof(AutoSave), 0.5f);
+                StartCoroutine(EnterPuzzleRoutine());
             }
             else if(GameManager.Instance.CurrentGameState is PuzzleState && isActive)
             {
@@ -64,6 +71,23 @@ public class PuzzleStateTrigger : MonoBehaviour
         // 퍼즐이 아직 미클리어면 방 초기화
         if (!IsCleared)
             puzzleRoomManager?.ResetToInitialIfUncleared();
+    }
+
+    private IEnumerator EnterPuzzleRoutine()
+    {
+        yield return new WaitForSeconds(0.1f);
+        PushPlayerForward();
+
+        yield return new WaitForSeconds(0.4f);
+        ActivePuzzleRoomDoor();
+        ActivePuzzleObjects();
+
+        // 활성화가 끝난 다음 프레임에 스냅샷
+        yield return null;
+        puzzleRoomManager?.CacheInitialStates();
+
+        // 입장 스냅샷 확보용 오토세이브
+        SaveManager.Instance?.Save(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
     }
 
     private void AutoSave()

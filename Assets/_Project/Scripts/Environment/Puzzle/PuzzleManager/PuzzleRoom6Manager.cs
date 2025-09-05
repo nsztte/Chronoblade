@@ -20,7 +20,6 @@ public class PuzzleRoom6Manager : PuzzleRoomManager
         {
             if (hit.TryGetComponent(out PlayerMazeController controller) && controller.IsPossessed)
             {
-                isCleared = true;
                 controller.SetPossessed(false);
                 OnPuzzleSolved();
                 break;

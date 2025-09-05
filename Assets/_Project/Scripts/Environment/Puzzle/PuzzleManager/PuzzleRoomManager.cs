@@ -49,9 +49,9 @@ public abstract class PuzzleRoomManager : MonoBehaviour
         if (clearedReward) clearedReward.SetActive(true);
         
         PuzzleProgressManager.Instance.MarkCleared(roomId);
+        isCleared = true;
 
         SaveGuard.Instance?.Unblock(SaveBlockTag.Puzzle);
-
         SaveManager.Instance?.Save(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
     }
 

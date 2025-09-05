@@ -28,7 +28,6 @@ public class PuzzleRoom3Manager : PuzzleRoomManager
         {
             if (hit.CompareTag("Player"))
             {
-                isCleared = true;
                 OnPuzzleSolved();
                 break;
             }

@@ -31,8 +31,6 @@ public class PuzzleRoom5Manager : PuzzleRoomManager
                 return;
         }
 
-        isCleared = true;
-
         OnPuzzleSolved();
     }
 }
