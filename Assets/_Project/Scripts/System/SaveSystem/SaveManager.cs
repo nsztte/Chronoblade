@@ -71,6 +71,7 @@ public class SaveManager : MonoBehaviour
     }
 
     public void DefaultSave(int slot, SaveIntent intent = SaveIntent.Manual) => StartCoroutine(BackgroundSaveRoutine(slot, intent));
+    public void DefaultLoad(int slot) => StartCoroutine(LoadRoutineWithUX(slot));
 
     private IEnumerator BackgroundSaveRoutine(int slot, SaveIntent intent)
     {
@@ -120,6 +121,19 @@ public class SaveManager : MonoBehaviour
         }
     }
 
+    private IEnumerator LoadRoutineWithUX(int slot)
+    {
+        // 인풋 방지
+        yield return UIManager.Instance?.FadeUI.Show(0.25f);
+
+        Load(slot);
+        yield return null;
+
+        yield return UIManager.Instance?.FadeUI.Hide(0.25f);
+        
+        // 인풋 시작
+    }
+
     // 자동저장 슬롯 인덱스
     private int NextAutoSlot()
     {
@@ -163,7 +177,7 @@ public class SaveManager : MonoBehaviour
     }
 
     // 로드
-    public void Load(int slot)
+    private void Load(int slot)
     {
         var path = GetPath(slot);
         if (!File.Exists(path))

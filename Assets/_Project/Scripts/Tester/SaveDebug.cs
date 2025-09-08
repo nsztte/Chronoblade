@@ -13,7 +13,7 @@ public class SaveDebug : MonoBehaviour
 
         if (Input.GetKeyDown(KeyCode.F9))
         {
-            SaveManager.Instance.Load(slot);
+            SaveManager.Instance.DefaultLoad(slot);
         }
     }
 }
