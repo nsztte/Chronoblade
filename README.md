@@ -2600,3 +2600,43 @@ Enemy FSM(상태머신) 시스템 구현
 - 퍼즐 저장/로드 정책이 확정적으로 안정화됨
 - 수동 저장 차단 → 클리어 후 오토세이브 → 로드시 자동 초기화 흐름이 자연스럽게 연결됨
 - 추후 다른 시스템(컷씬, 전투 등)에도 SaveGuard 태그 연동으로 확장 가능
+
+---
+
+## 날짜: 2025.09.08 (월) 작업 기록
+
+### 주요 작업
+- 저장 시스템 안정화 및 경량 저장 루틴 구축
+  - `DefaultSave(slot)` 함수로 저장 구조 통일
+  - `AutoSave(reason)`으로 자동저장 트리거 구성
+  - `isSaving` 플래그로 중복 저장 방지
+  - `SaveGuard.Block()`/`Unblock()` 구조 정립
+  - 저장 완료/실패 시 토스트 메시지 출력
+  - `WriteAtomic()`으로 저장 중 파일 깨짐 방지
+  - `JsonUtility.ToJson(..., false)`로 용량 최적화
+
+- 외부 저장 호출부 정비 및 통일
+  - `PuzzleRoomManager`, `PuzzleStateTrigger`, `SaveDebug`의 저장 호출 `DefaultSave()`로 통일
+  - 저장 흐름을 일관되게 `BackgroundSaveRoutine()` 기반으로 전환
+
+- 보스 페이즈 진입 시 자동 저장 연동
+  - `BossPhaseManager.SetPhase()`에 자동 저장 트리거 삽입
+  - `BossIntroState`, `PuzzlePhase1State`, `FinalPuzzleState`에서 호출
+  - 보스 시작 시 저장 차단(Block), 종료 시 해제(Unblock)
+
+- 블랙페이드 연출용 `FadeUI` 컴포넌트 구현
+  - `Show(duration)`, `Hide(duration)` 코루틴 제공
+  - `CanvasGroup` 기반 페이드 + 입력 차단 처리
+  - `UIManager`에 `FadeUI` 참조 연결
+
+- 입력 차단 기능 도입
+  - `InputManager.SetInputEnabled(bool)` 함수 추가
+  - `isInputEnabled` 체크로 `Update()` 내 전체 입력 차단 가능
+  - 저장/로드 중 오작동 방지용으로 설계
+
+### 메모
+- 저장 중 시각 연출 및 입력 차단 구조 정비 완료
+- 세이브/로드 공통 래퍼(SaveFlow)는 필요 시점에 도입 예정
+- 현재 구조는 페이드/입력잠금/저장 안정성 모두 확보된 상태
+
+---
