@@ -22,26 +22,16 @@ public class CutsceneCameraManager : MonoBehaviour
     }
     #endregion
 
-    // public void StartPuzzle()
-    // {
-    //     playerCinemachineCamera.SetActive(true);
-    //     StartCoroutine(EnableClockCamNextFrame());
-    // }
-
-    // public void EndPuzzle(Action onComplete)
-    // {
-    //     clockPuzzleCinemachineCamera.SetActive(false);
-    //     StartCoroutine(DisablePlayerCameraAfterBlend(onComplete));
-    // }
-
-    // private IEnumerator EnableClockCamNextFrame()
-    // {
-    //     yield return null;
-    //     clockPuzzleCinemachineCamera.SetActive(true);
-    // }
+    private void OnDisable()
+    {
+        SaveGuard.Instance?.ClearTag(SaveBlockTag.Cutscene);
+    }
 
     public void StartCutscene(GameObject targetCamera)
     {
+        // 컷씬 시작: 저장 차단
+        SaveGuard.Instance?.Block(SaveBlockTag.Cutscene);
+
         playerCinemachineCamera.SetActive(true);
         StartCoroutine(EnableCamNextFrame(targetCamera));
     }
@@ -49,7 +39,16 @@ public class CutsceneCameraManager : MonoBehaviour
     public void EndCutscene(GameObject targetCamera, Action onComplete = null)
     {
         targetCamera.SetActive(false);
-        StartCoroutine(DisablePlayerCameraAfterBlend(onComplete));
+        StartCoroutine(DisablePlayerCameraAfterBlend(() =>
+        {
+            // 컷씬 종료: 저장 해제
+            SaveGuard.Instance?.Unblock(SaveBlockTag.Cutscene);
+
+            onComplete?.Invoke();
+
+            // 자동 저장
+            SaveManager.Instance?.AutoSave("컷씬 시작");
+        }));
     }
 
     private IEnumerator EnableCamNextFrame(GameObject cam)

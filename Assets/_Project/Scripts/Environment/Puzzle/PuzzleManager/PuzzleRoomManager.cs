@@ -52,7 +52,7 @@ public abstract class PuzzleRoomManager : MonoBehaviour
         isCleared = true;
 
         SaveGuard.Instance?.Unblock(SaveBlockTag.Puzzle);
-        SaveManager.Instance?.DefaultSave(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
+        SaveManager.Instance?.AutoSave("퍼즐 성공");
     }
 
     public void ChangeState(bool isActive)

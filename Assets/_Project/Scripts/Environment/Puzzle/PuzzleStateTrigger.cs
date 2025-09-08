@@ -87,13 +87,7 @@ public class PuzzleStateTrigger : MonoBehaviour
         puzzleRoomManager?.CacheInitialStates();
 
         // 입장 스냅샷 확보용 오토세이브
-        SaveManager.Instance?.DefaultSave(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
-    }
-
-    private void AutoSave()
-    {
-        SaveManager.Instance?.DefaultSave(SaveManager.Instance.NextAutoSlot(), SaveIntent.Auto);
-        puzzleRoomManager?.CacheInitialStates();
+        SaveManager.Instance?.AutoSave("퍼즐 시작");
     }
 
     private void ActivePuzzleRoomDoor()
