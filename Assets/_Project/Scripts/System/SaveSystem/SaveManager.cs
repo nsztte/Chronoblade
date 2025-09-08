@@ -74,17 +74,18 @@ public class SaveManager : MonoBehaviour
     private IEnumerator BackgroundSaveRoutine(int slot, SaveIntent intent)
     {
         if(isSaving) yield break;
-        isSaving = true;
 
+        if (intent == SaveIntent.Manual &&
+                SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
+        {
+            UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
+            yield break;
+        }
+
+        isSaving = true;
+        
         try
         {
-            if (intent == SaveIntent.Manual &&
-                SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
-            {
-                UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
-                yield break;
-            }
-
             SaveGuard.Instance?.Block();
             OnBeforeSave?.Invoke();
             yield return new WaitForEndOfFrame();   // 프레임 경계에서 캡쳐
