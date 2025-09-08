@@ -48,18 +48,49 @@ public class BossPhaseManager : MonoBehaviour
         }
     }
 
+    // public void SetPhase(BossPhase phase)
+    // {
+    //     currentPhase = phase;
+    //     if(phase == BossPhase.Phase2)
+    //     {
+    //         isPuzzle1Cleared = true;
+    //     }
+    //     else if(phase == BossPhase.Ending)
+    //     {
+    //         isFinalPuzzleCleared = true;
+    //     }
+
+    //     Debug.Log($"BossPhaseManager: 페이즈 변경 - {phase}");
+    // }
+
     public void SetPhase(BossPhase phase)
     {
         currentPhase = phase;
-        if(phase == BossPhase.Phase2)
+        switch (phase)
         {
-            isPuzzle1Cleared = true;
-        }
-        else if(phase == BossPhase.Ending)
-        {
-            isFinalPuzzleCleared = true;
+            case BossPhase.Phase1:
+                // 보스전 시작: 수동 저장 전면 차단
+                SaveGuard.Instance?.Block(SaveBlockTag.Boss);
+                SaveManager.Instance?.AutoSave("Boss Phase1");
+                break;
+                
+            case BossPhase.Phase2:
+                isPuzzle1Cleared = true;
+                SaveManager.Instance?.AutoSave("Boss Phase2");
+                break;
+
+            case BossPhase.Ending:
+                isFinalPuzzleCleared = true;
+                SaveManager.Instance?.AutoSave("Boss Ending");
+                break;
         }
 
         Debug.Log($"BossPhaseManager: 페이즈 변경 - {phase}");
+    }
+
+    // 엔딩 연출 이후 호출
+    public void FinishBossSequence()
+    {
+        SaveGuard.Instance?.Unblock(SaveBlockTag.Boss);
     }
 }

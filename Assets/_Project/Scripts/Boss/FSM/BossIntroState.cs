@@ -18,6 +18,7 @@ public class BossIntroState : BaseBossState
 
     public override void Exit()
     {
+        boss.PhaseManager.SetPhase(BossPhase.Phase1);
         boss.ShowBossHUD();
     }
 }

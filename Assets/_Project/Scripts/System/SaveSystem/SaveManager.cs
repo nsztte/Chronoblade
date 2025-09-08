@@ -58,15 +58,16 @@ public class SaveManager : MonoBehaviour
     private int autoSlots = 5;
     private const string Key = "Save_AutoIndex";
 
-    // 자동저장 슬롯 인덱스
-    public int NextAutoSlot()
+    // 자동저장
+    public void AutoSave(string reason = null)
     {
-        int i = PlayerPrefs.GetInt(Key, 0);
-        i = (i + 1) % autoSlots;
-        PlayerPrefs.SetInt(Key, i);
-        PlayerPrefs.Save();
-        
-        return i + 1;   // 퍼즐 슬롯은 1부터 시작
+        // 자동저장 슬롯 순환
+        int slot = NextAutoSlot();
+        DefaultSave(slot, SaveIntent.Auto);
+
+        // 자동저장 사유 디버그
+        if (!string.IsNullOrEmpty(reason))
+            Debug.Log($"[SaveManager] 자동저장: {reason} → 슬롯 {slot}");
     }
 
     public void DefaultSave(int slot, SaveIntent intent = SaveIntent.Manual) => StartCoroutine(BackgroundSaveRoutine(slot, intent));
@@ -83,7 +84,7 @@ public class SaveManager : MonoBehaviour
         }
 
         isSaving = true;
-        
+
         try
         {
             SaveGuard.Instance?.Block();
@@ -118,16 +119,21 @@ public class SaveManager : MonoBehaviour
             isSaving = false;   
         }
     }
+
+    // 자동저장 슬롯 인덱스
+    private int NextAutoSlot()
+    {
+        int i = PlayerPrefs.GetInt(Key, 0);
+        i = (i + 1) % autoSlots;
+        PlayerPrefs.SetInt(Key, i);
+        PlayerPrefs.Save();
+        
+        return i + 1;   // 퍼즐 슬롯은 1부터 시작
+    }
     
     // 저장
     private void Save(int slot, SaveIntent intent = SaveIntent.Manual)
     {
-        // if (intent == SaveIntent.Manual &&
-        //     SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
-        // {
-        //     UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
-        //     return;
-        // }
         var saveFile = new SaveFile();
         saveFile.meta.scene = SceneManager.GetActiveScene().name;
         saveFile.meta.savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");

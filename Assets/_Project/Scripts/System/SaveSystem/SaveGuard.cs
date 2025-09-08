@@ -7,8 +7,7 @@ public enum SaveBlockTag
     Default,
     Puzzle,
     Cutscene,
-    Combat,
-    Menu
+    Boss
 }
 
 public class SaveGuard : MonoBehaviour
