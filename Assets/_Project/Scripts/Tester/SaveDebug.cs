@@ -8,7 +8,7 @@ public class SaveDebug : MonoBehaviour
     {
         if (Input.GetKeyDown(KeyCode.F5))
         {
-            SaveManager.Instance.Save(slot);
+            SaveManager.Instance.DefaultSave(slot);
         }
 
         if (Input.GetKeyDown(KeyCode.F9))
