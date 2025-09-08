@@ -48,8 +48,12 @@ public class SaveManager : MonoBehaviour
     private string GetPath(int slot) =>
         Path.Combine(Application.persistentDataPath, $"slot_{slot}.json");
 
-    
-    public event Action OnAfterLoad;     // 공용 로드 이벤트
+    // 이벤트 훅
+    public event Action OnBeforeSave;   // 잠깐 멈춤
+    public event Action OnSaved;        // 재개
+    public event Action OnAfterLoad;    // 공용 로드 이벤트
+
+    private bool isSaving = false;
 
     private int autoSlots = 5;
     private const string Key = "Save_AutoIndex";
@@ -64,17 +68,65 @@ public class SaveManager : MonoBehaviour
         
         return i + 1;   // 퍼즐 슬롯은 1부터 시작
     }
+
+    public void DefaultSave(int slot, SaveIntent intent = SaveIntent.Manual) => StartCoroutine(BackgroundSaveRoutine(slot, intent));
+
+    private IEnumerator BackgroundSaveRoutine(int slot, SaveIntent intent)
+    {
+        if(isSaving) yield break;
+        isSaving = true;
+
+        try
+        {
+            if (intent == SaveIntent.Manual &&
+                SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
+            {
+                UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
+                yield break;
+            }
+
+            SaveGuard.Instance?.Block();
+            OnBeforeSave?.Invoke();
+            yield return new WaitForEndOfFrame();   // 프레임 경계에서 캡쳐
+
+            bool success = true;
+
+            try
+            {
+                Save(slot, intent);
+            }
+            catch (Exception e)
+            {
+                success = false;
+                Debug.LogException(e);
+            }
+
+            yield return null;
+
+            if(success)
+            {
+                OnSaved?.Invoke();
+                UIManager.Instance?.ShowToast("저장 완료");
+            }
+            else
+                UIManager.Instance?.ShowToast("저장 실패");
+        }
+        finally
+        {
+            SaveGuard.Instance?.Unblock();
+            isSaving = false;   
+        }
+    }
     
     // 저장
-    public void Save(int slot, SaveIntent intent = SaveIntent.Manual)
+    private void Save(int slot, SaveIntent intent = SaveIntent.Manual)
     {
-        if (intent == SaveIntent.Manual &&
-            SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
-        {
-            UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
-            return;
-        }
-
+        // if (intent == SaveIntent.Manual &&
+        //     SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
+        // {
+        //     UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
+        //     return;
+        // }
         var saveFile = new SaveFile();
         saveFile.meta.scene = SceneManager.GetActiveScene().name;
         saveFile.meta.savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
@@ -98,9 +150,9 @@ public class SaveManager : MonoBehaviour
             }   
         }
 
-        var jsonText = JsonUtility.ToJson(saveFile, true);
-        File.WriteAllText(GetPath(slot), jsonText);
-        Debug.Log($"[SaveManager] 저장 완료: {GetPath(slot)}");
+        var jsonText = JsonUtility.ToJson(saveFile, false);
+        WriteAtomic(GetPath(slot), jsonText);
+        // Debug.Log($"[SaveManager] 저장 완료: {GetPath(slot)}");
     }
 
     // 로드
@@ -130,6 +182,7 @@ public class SaveManager : MonoBehaviour
     {
         var op = SceneManager.LoadSceneAsync(file.meta.scene);
         while (!op.isDone) yield return null;
+        yield return null; // 초기화 1프레임 대기
         RestoreState(file);
     }
 
@@ -146,5 +199,14 @@ public class SaveManager : MonoBehaviour
         OnAfterLoad?.Invoke();
 
         Debug.Log("[SaveManager] 로드 완료");
+    }
+
+    // 저장 중 파일 깨짐 대비
+    private void WriteAtomic(string path, string content)
+    {
+        var tmp = path + ".tmp";
+        File.WriteAllText(tmp, content);
+        if (File.Exists(path)) File.Replace(tmp, path, null);
+        else File.Move(tmp, path);
     }
 }
