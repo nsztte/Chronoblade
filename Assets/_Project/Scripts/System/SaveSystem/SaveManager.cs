@@ -41,6 +41,7 @@ public class SaveManager : MonoBehaviour
     [Serializable]
     private class SaveFile
     {
+        public int version = 1;
         public SaveMeta meta = new();
         public List<SaveEntry> entries = new();
     }
@@ -57,6 +58,9 @@ public class SaveManager : MonoBehaviour
 
     private int autoSlots = 5;
     private const string Key = "Save_AutoIndex";
+
+    private const int CURRENT_VERSION = 1;  // 현재 저장 버전
+
 
     // 자동저장
     public void AutoSave(string reason = null)
@@ -131,6 +135,7 @@ public class SaveManager : MonoBehaviour
 
         yield return UIManager.Instance?.FadeUI.Hide(0.25f);
         InputManager.Instance?.SetInputEnabled(true);
+        UIManager.Instance?.ShowToast("로드 완료");
     }
 
     // 자동저장 슬롯 인덱스
@@ -148,6 +153,7 @@ public class SaveManager : MonoBehaviour
     private void Save(int slot, SaveIntent intent = SaveIntent.Manual)
     {
         var saveFile = new SaveFile();
+        saveFile.version = CURRENT_VERSION;
         saveFile.meta.scene = SceneManager.GetActiveScene().name;
         saveFile.meta.savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
 
@@ -172,7 +178,6 @@ public class SaveManager : MonoBehaviour
 
         var jsonText = JsonUtility.ToJson(saveFile, false);
         WriteAtomic(GetPath(slot), jsonText);
-        // Debug.Log($"[SaveManager] 저장 완료: {GetPath(slot)}");
     }
 
     // 로드
@@ -187,6 +192,17 @@ public class SaveManager : MonoBehaviour
 
         var jsonText = File.ReadAllText(path);
         var saveFile = JsonUtility.FromJson<SaveFile>(jsonText);
+
+        // 버전 다르면 마이그레이션 시도
+        if (saveFile.version != CURRENT_VERSION)
+        {
+            if (!TryMigrate(ref saveFile, saveFile.version, CURRENT_VERSION))
+            {
+                Debug.LogError($"[SaveManager] 세이브 버전 불일치: {saveFile.version} → {CURRENT_VERSION} 마이그레이션 실패");
+                UIManager.Instance?.ShowToast("세이브 파일 버전 호환 실패");
+                return;
+            }
+        }
 
         if (saveFile.meta.scene != SceneManager.GetActiveScene().name)
         {
@@ -217,8 +233,6 @@ public class SaveManager : MonoBehaviour
         }
 
         OnAfterLoad?.Invoke();
-
-        Debug.Log("[SaveManager] 로드 완료");
     }
 
     // 저장 중 파일 깨짐 대비
@@ -228,5 +242,32 @@ public class SaveManager : MonoBehaviour
         File.WriteAllText(tmp, content);
         if (File.Exists(path)) File.Replace(tmp, path, null);
         else File.Move(tmp, path);
+    }
+
+    /// <summary>
+    /// 구조가 바뀌면 구버전 세이브 로드가 실패할 수 있으므로, 버전 업그레이드시 마이그레이션으로 구출 가능
+    /// </summary>
+    private bool TryMigrate(ref SaveFile file, int fromVersion, int toVersion)
+    {
+        // TODO: 앞으로 스키마가 바뀔 때마다 단계적으로 올려주기
+        if (file.meta == null) file.meta = new SaveMeta();
+        int v = Mathf.Max(1, fromVersion);
+
+        while (v < toVersion)
+        {
+            switch (v)
+            {
+                case 1:
+                    v = 2;
+                    break;
+                default:
+                    // 알 수 없는/스킵 불가 단계 → 실패 처리
+                    Debug.LogWarning($"[SaveManager] 알 수 없는 마이그레이션 단계: v{v} → v{v+1}");
+                    return false;
+            }
+        }
+
+        file.version = toVersion;
+        return true;
     }
 }
