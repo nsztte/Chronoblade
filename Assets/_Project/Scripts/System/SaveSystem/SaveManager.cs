@@ -123,15 +123,14 @@ public class SaveManager : MonoBehaviour
 
     private IEnumerator LoadRoutineWithUX(int slot)
     {
-        // 인풋 방지
+        InputManager.Instance?.SetInputEnabled(false);
         yield return UIManager.Instance?.FadeUI.Show(0.25f);
 
         Load(slot);
         yield return null;
 
         yield return UIManager.Instance?.FadeUI.Hide(0.25f);
-        
-        // 인풋 시작
+        InputManager.Instance?.SetInputEnabled(true);
     }
 
     // 자동저장 슬롯 인덱스

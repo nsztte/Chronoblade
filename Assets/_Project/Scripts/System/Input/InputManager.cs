@@ -45,8 +45,13 @@ public class InputManager : MonoBehaviour
     private float attackKeyDownTime;
     private const float LIGHT_ATTACK_THRESHOLD = 0.2f;
 
+    private bool isInputEnabled = true;
+
     void Update()
     {
+        if (!isInputEnabled)
+            return;
+
         // 1) UI 열려 있으면 허용 키만 처리하고 종료
         if (HandleUIBlockingInput())
             return;
@@ -155,6 +160,11 @@ public class InputManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.I))
             OnInventoryChanged?.Invoke();
+    }
+
+    public void SetInputEnabled(bool enabled)
+    {
+        isInputEnabled = enabled;
     }
 
     public void TriggerPause()
