@@ -49,6 +49,8 @@ public class SaveManager : MonoBehaviour
     private string GetPath(int slot) =>
         Path.Combine(Application.persistentDataPath, $"slot_{slot}.json");
 
+    private string GetBackupPath(string path) => path + ".bak";
+
     // 이벤트 훅
     public event Action OnBeforeSave;   // 잠깐 멈춤
     public event Action OnSaved;        // 재개
@@ -180,38 +182,99 @@ public class SaveManager : MonoBehaviour
         WriteAtomic(GetPath(slot), jsonText);
     }
 
-    // 로드
     private void Load(int slot)
     {
         var path = GetPath(slot);
+        var bak  = GetBackupPath(path);
+
+        // 1) 메인 파일이 없으면 .bak만 시도
         if (!File.Exists(path))
         {
+            if (File.Exists(bak))
+            {
+                var bakJson = File.ReadAllText(bak);
+                TryLoadFromJson(bakJson, isBackup: true);
+                return;
+            }
             Debug.LogWarning($"[SaveManager] 저장 파일 없음: {path}");
             return;
         }
 
+        // 2) 메인 읽고 파싱 시도 → 실패하면 .bak 한 번만 재시도
         var jsonText = File.ReadAllText(path);
+        try
+        {
+            TryLoadFromJson(jsonText, isBackup: false);
+        }
+        catch (Exception e)
+        {
+            if (File.Exists(bak))
+            {
+                Debug.LogWarning($"[SaveManager] 메인 파싱 실패 → 백업 시도: {path}\n{e}");
+                var bakJson = File.ReadAllText(bak);
+                TryLoadFromJson(bakJson, isBackup: true);
+                return;
+            }
+            Debug.LogError($"[SaveManager] 세이브 파싱 실패: {path}\n{e}");
+            UIManager.Instance?.ShowToast("세이브 파일이 손상되었습니다");
+        }
+    }
+
+    // 로드
+    // private void Load(int slot)
+    // {
+    //     var path = GetPath(slot);
+    //     if (!File.Exists(path))
+    //     {
+    //         Debug.LogWarning($"[SaveManager] 저장 파일 없음: {path}");
+    //         return;
+    //     }
+
+    //     var jsonText = File.ReadAllText(path);
+    //     var saveFile = JsonUtility.FromJson<SaveFile>(jsonText);
+
+    //     // 버전 다르면 마이그레이션 시도
+    //     if (saveFile.version != CURRENT_VERSION)
+    //     {
+    //         if (!TryMigrate(ref saveFile, saveFile.version, CURRENT_VERSION))
+    //         {
+    //             Debug.LogError($"[SaveManager] 세이브 버전 불일치: {saveFile.version} → {CURRENT_VERSION} 마이그레이션 실패");
+    //             UIManager.Instance?.ShowToast("세이브 파일 버전 호환 실패");
+    //             return;
+    //         }
+    //     }
+
+    //     if (saveFile.meta.scene != SceneManager.GetActiveScene().name)
+    //     {
+    //         StartCoroutine(LoadSceneAndRestore(saveFile));
+    //     }
+    //     else
+    //     {
+    //         RestoreState(saveFile);
+    //     }
+    // }
+
+    private void TryLoadFromJson(string jsonText, bool isBackup)
+    {
         var saveFile = JsonUtility.FromJson<SaveFile>(jsonText);
 
-        // 버전 다르면 마이그레이션 시도
+        // 버전 다르면 마이그레이션 (이미 만든 함수 사용)
         if (saveFile.version != CURRENT_VERSION)
         {
             if (!TryMigrate(ref saveFile, saveFile.version, CURRENT_VERSION))
             {
-                Debug.LogError($"[SaveManager] 세이브 버전 불일치: {saveFile.version} → {CURRENT_VERSION} 마이그레이션 실패");
                 UIManager.Instance?.ShowToast("세이브 파일 버전 호환 실패");
-                return;
+                throw new Exception("MigrationFailed");
             }
         }
 
+        if (isBackup)
+            UIManager.Instance?.ShowToast("백업 세이브로 복구했습니다");
+
         if (saveFile.meta.scene != SceneManager.GetActiveScene().name)
-        {
             StartCoroutine(LoadSceneAndRestore(saveFile));
-        }
         else
-        {
             RestoreState(saveFile);
-        }
     }
 
     private IEnumerator LoadSceneAndRestore(SaveFile file)
@@ -240,7 +303,10 @@ public class SaveManager : MonoBehaviour
     {
         var tmp = path + ".tmp";
         File.WriteAllText(tmp, content);
-        if (File.Exists(path)) File.Replace(tmp, path, null);
+
+        var bak = GetBackupPath(path);
+
+        if (File.Exists(path)) File.Replace(tmp, path, bak);
         else File.Move(tmp, path);
     }
 
