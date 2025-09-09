@@ -11,6 +11,7 @@ public class PlayerSaveProxy : SaveableBehaviour
         public float hp;
         public float mp;
         public int gold;
+        public string heldObject;
     }
 
     private PlayerManager Player => PlayerManager.Instance;
@@ -24,7 +25,8 @@ public class PlayerSaveProxy : SaveableBehaviour
             yaw = Body.eulerAngles.y,
             hp  = Player.CurrentHP,
             mp  = Player.CurrentMP,
-            gold = Player.Gold
+            gold = Player.Gold,
+            heldObject = Player.CurrentHeldObject ? Player.CurrentHeldObject.name : "None"
         };
         return JsonUtility.ToJson(d);
     }
@@ -44,5 +46,13 @@ public class PlayerSaveProxy : SaveableBehaviour
         Player.SetHP(d.hp, true);
         Player.SetMP(d.mp, true);
         Player.AddGold(d.gold - Player.Gold);
+
+        // 3) heldObject 복원
+        if (d.heldObject != "None")
+        {
+            var obj = GameObject.Find(d.heldObject);
+            if (obj != null)
+                Player.SetHeldObject(obj);
+        }
     }
 }
