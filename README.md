@@ -2655,3 +2655,47 @@ Enemy FSM(상태머신) 시스템 구현
 - `TryMigrate()`는 앞으로 구조 변경이 생겼을 때 `case` 단위로 단계별 보정 처리를 넣을 수 있는 확장 포인트다
 
 ---
+
+## 2025.09.09 (화) 작업 기록
+
+### 주요 작업
+- **보스 상태 저장 프록시 도입**
+  - `BossControllerSaveProxy` 작성: `phase`, `hpPercent` 저장/복원
+  - 복원 순서: `SetHPWithPercent()` → `SetPhaseFromSave()`로 안전 처리
+  - `BossController`, `BossPhaseManager`에 복원 전용 메서드 추가
+  - 정책: 보스전 수동 저장 차단 (`Phase1` 진입 시 Block, 엔딩 후 Unblock 유지)
+
+- **세이브 가드 UX 개선 및 토스트 메시지 공통화**
+  - `SaveGuard`: `GetCurrentMainBlock()` 추가 (우선순위: Boss > Puzzle > Cutscene)
+  - `SaveManager`: 차단 사유에 따라 수동 저장 시 토스트 출력
+  - 세이브 중 중복 실행 방지 및 페이드/토스트 UX 정비
+  - `SaveBlockTag` 메시지 Dictionary로 관리, `static readonly`로 GC 최적화
+
+- **GenericInteractionSaveProxy 및 IInteractableSavable 설계**
+  - 인터페이스: `isActivated`, `isHeld`, `TryGetWorldPose()` 제공
+  - 프록시: `activated`, `held`, `hasPose` 저장 및 조건부 복원 처리
+  - 위치/회전은 필요 시만 복원되도록 설계
+  - 기존 `InteractionHandler`, `IInteractable`와 충돌 없이 연동 가능
+
+- **상호작용 오브젝트에 상태 저장 적용**
+  - `BossKeyPickup`, `WateringCan`:
+    - `IInteractableSavable` 직접 구현
+    - `held` 및 `pose` 저장/복원 적용
+    - 삽입(소모)은 `SetActive(false)` 방식으로 변경
+  - `KeycardDoor`:
+    - 열림 여부(activated)만 저장
+    - 복원 시 Animator 상태 이름 기반 스냅 처리
+
+- **플레이어 손 오브젝트 저장 구조 도입**
+  - `PlayerSaveProxy`에 `heldObject(string)` 필드 추가
+  - `CaptureStateJson`: `CurrentHeldObject.name` 저장
+  - `RestoreStateJson`: 해당 이름으로 `Find → SetHeldObject()` 복원
+  - 상체 애니메이션(`Empty`, `Held`, `Sword`, `Gun`) 정확히 연동
+
+### 메모
+- 보스전 수동 저장 차단 정책 확정: Phase1 진입 시 차단, 엔딩 종료 후 해제
+- `GameObject` 저장이 안되는 문제로 이름 기반(`string`) 저장 방식 도입
+- `GenericInteractionSaveProxy` 구조는 재사용성 높고 퍼즐/오브젝트 확장 용이
+- 내일은 저장 슬롯 메타 정보 확장 및 테스트 매트릭스 실행 예정
+
+---
