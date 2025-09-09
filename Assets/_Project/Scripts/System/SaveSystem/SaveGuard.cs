@@ -73,4 +73,23 @@ public class SaveGuard : MonoBehaviour
         if (wasBlocked)
             OnCanSaveChanged?.Invoke(true);
     }
+
+    public SaveBlockTag GetCurrentMainBlock()
+    {
+        if (totalBlocks == 0) return SaveBlockTag.Default;
+
+        var priority = new[]
+        {
+            SaveBlockTag.Boss,
+            SaveBlockTag.Puzzle,
+            SaveBlockTag.Cutscene,
+            SaveBlockTag.Default,
+        };
+
+        foreach (var tag in priority)
+        if (counts.ContainsKey(tag))
+            return tag;
+
+        return SaveBlockTag.Default;
+    }
 }

@@ -111,7 +111,7 @@ public class QuickSlotManager : MonoBehaviour
 
     public void RefreshAllSlotVisuals()
     {
-        for (int i = 0; i < slotItems.Length; i++)
+        for (int i = 0; i < quickSlots.Count; i++)
         {
             if (quickSlots[i] != null)
                 quickSlots[i].UpdateVisual();

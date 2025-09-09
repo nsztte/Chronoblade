@@ -86,7 +86,16 @@ public class SaveManager : MonoBehaviour
         if (intent == SaveIntent.Manual &&
                 SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
         {
-            UIManager.Instance?.ShowToast("퍼즐 진행 중 저장 불가");
+            var tag = SaveGuard.Instance.GetCurrentMainBlock();
+            string msg = tag switch
+            {
+                SaveBlockTag.Boss     => "보스전 진행 중에는 저장할 수 없습니다",
+                SaveBlockTag.Puzzle   => "퍼즐 진행 중에는 저장할 수 없습니다",
+                SaveBlockTag.Cutscene => "연출 중에는 저장할 수 없습니다",
+                _                     => "지금은 저장할 수 없습니다"
+            };
+            
+            UIManager.Instance?.ShowToast(msg);
             yield break;
         }
 
