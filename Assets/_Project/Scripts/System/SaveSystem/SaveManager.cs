@@ -46,6 +46,7 @@ public class SaveManager : MonoBehaviour
         public List<SaveEntry> entries = new();
     }
 
+    // 게터
     private string GetPath(int slot) =>
         Path.Combine(Application.persistentDataPath, $"slot_{slot}.json");
 
@@ -56,8 +57,17 @@ public class SaveManager : MonoBehaviour
     public event Action OnSaved;        // 재개
     public event Action OnAfterLoad;    // 공용 로드 이벤트
 
-    private bool isSaving = false;
+    // 저장 토스트 메세지
+    private static readonly Dictionary<SaveBlockTag, string> BlockMessages = new()
+    {
+        { SaveBlockTag.Boss,     "보스전 진행 중에는 저장할 수 없습니다" },
+        { SaveBlockTag.Puzzle,   "퍼즐 진행 중에는 저장할 수 없습니다" },
+        { SaveBlockTag.Cutscene, "연출 중에는 저장할 수 없습니다" },
+        { SaveBlockTag.Default,  "지금은 저장할 수 없습니다" }
+    };
 
+    // 저장 관련
+    private bool isSaving = false;
     private int autoSlots = 5;
     private const string Key = "Save_AutoIndex";
 
@@ -87,14 +97,7 @@ public class SaveManager : MonoBehaviour
                 SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
         {
             var tag = SaveGuard.Instance.GetCurrentMainBlock();
-            string msg = tag switch
-            {
-                SaveBlockTag.Boss     => "보스전 진행 중에는 저장할 수 없습니다",
-                SaveBlockTag.Puzzle   => "퍼즐 진행 중에는 저장할 수 없습니다",
-                SaveBlockTag.Cutscene => "연출 중에는 저장할 수 없습니다",
-                _                     => "지금은 저장할 수 없습니다"
-            };
-            
+            string msg = BlockMessages.TryGetValue(tag, out var result) ? result : "저장할 수 없습니다";
             UIManager.Instance?.ShowToast(msg);
             yield break;
         }

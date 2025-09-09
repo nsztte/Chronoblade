@@ -33,6 +33,11 @@ public class SaveGuard : MonoBehaviour
     private Dictionary<SaveBlockTag, int> counts = new Dictionary<SaveBlockTag, int>();
     private int totalBlocks = 0;
 
+    // 블락 태그 우선순위
+    private static readonly SaveBlockTag[] Priority = {
+    SaveBlockTag.Boss, SaveBlockTag.Puzzle, SaveBlockTag.Cutscene, SaveBlockTag.Default
+    };
+
     public void Block(SaveBlockTag tag = SaveBlockTag.Default)
     {
         if (counts.TryGetValue(tag, out var c)) counts[tag] = c + 1;
@@ -78,17 +83,7 @@ public class SaveGuard : MonoBehaviour
     {
         if (totalBlocks == 0) return SaveBlockTag.Default;
 
-        var priority = new[]
-        {
-            SaveBlockTag.Boss,
-            SaveBlockTag.Puzzle,
-            SaveBlockTag.Cutscene,
-            SaveBlockTag.Default,
-        };
-
-        foreach (var tag in priority)
-        if (counts.ContainsKey(tag))
-            return tag;
+        foreach (var tag in Priority) if (counts.ContainsKey(tag)) return tag;
 
         return SaveBlockTag.Default;
     }
