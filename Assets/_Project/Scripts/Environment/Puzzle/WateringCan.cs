@@ -2,7 +2,7 @@ using System;
 using System.Collections;
 using UnityEngine;
 
-public class WateringCan : MonoBehaviour, IInteractable
+public class WateringCan : MonoBehaviour, IInteractable, IInteractableSavable
 {
     [Header("워터 메쉬 설정")]
     [SerializeField] Transform waterMesh;
@@ -15,16 +15,20 @@ public class WateringCan : MonoBehaviour, IInteractable
     [SerializeField] private float pouringDuration = 5f;
 
     private bool isPouring = false;
+    private bool isHeld = false;
     [SerializeField] private float currentFill = 0f; // 디버그용
 
     public Action OnPlaced;
     public Action OnWatered;
-    public bool IsHeld { get; private set; } = false;
+    // public bool IsHeld { get; private set; } = false;
     public bool IsPlaced { get; private set; } = false;
     public bool IsNearFaucet { get; set; } = false;
     public bool IsNearPlant { get; set; } = false;
     public bool IsEmpty => currentFill <= 0f;
     public bool IsFull => currentFill >= 1f;
+
+    public bool IsActivated() => true; // 의미 없으니 상수
+    public bool IsHeld() => isHeld;
 
     private Rigidbody rb;
 
@@ -36,12 +40,12 @@ public class WateringCan : MonoBehaviour, IInteractable
 
     public void PlaceTo(Transform socket, bool IsHeld)
     {
-        this.IsHeld = IsHeld;
+        isHeld = IsHeld;
         IsPlaced = !IsHeld;
         rb.isKinematic = true;
         transform.SetParent(socket);
 
-        if(IsHeld)
+        if(isHeld)
         {
             PlayerManager.Instance.SetHeldObject(gameObject);
             transform.localPosition = heldOffset;
@@ -66,7 +70,7 @@ public class WateringCan : MonoBehaviour, IInteractable
 
     private void TryPickUp()
     {
-        if(IsHeld) return;
+        if(isHeld) return;
 
         PlaceTo(PlayerManager.Instance.HeldPosition, true);
     }
@@ -81,7 +85,7 @@ public class WateringCan : MonoBehaviour, IInteractable
 
     private void DropToStart()
     {
-        IsHeld = false;
+        isHeld = false;
         IsPlaced = false;
         IsNearFaucet = false;
 
@@ -137,7 +141,7 @@ public class WateringCan : MonoBehaviour, IInteractable
 
     public void Interact()
     {
-        if(!IsHeld)
+        if(!isHeld)
             TryPickUp();
         else if(IsNearFaucet)
             OnPlaced?.Invoke();
@@ -154,9 +158,28 @@ public class WateringCan : MonoBehaviour, IInteractable
 
     public string GetPrompt()
     {
-        if (!IsHeld) return "들기";
+        if (!isHeld) return "들기";
         if (IsNearFaucet) return "채우기";
         if (IsNearPlant) return "물 주기";
         return "내려놓기";
+    }
+
+    public bool TryGetWorldPose(out Vector3 pos, out Quaternion rot)
+    {
+        pos = transform.position; rot = transform.rotation;
+        return !isHeld;
+    }
+
+    public void ApplyActivated(bool activated) {}
+
+    public void ApplyHeld(bool held)
+    {
+        if (held) PlaceTo(PlayerManager.Instance.HeldPosition, true);
+        else DropToStart();
+    }
+
+    public void ApplyWorldPose(Vector3 p, Quaternion r)
+    {
+        if (!isHeld) transform.SetPositionAndRotation(p, r);
     }
 }

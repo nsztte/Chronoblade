@@ -43,7 +43,7 @@ public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.CompareTag("Player") && wateringCan.IsHeld)
+        if(other.CompareTag("Player") && wateringCan.IsHeld())
         {
             wateringCan.IsNearFaucet = true;
         }
@@ -51,7 +51,7 @@ public class WaterFaucet : MonoBehaviour, ITimeControllable, IRewindable
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("Player") && wateringCan.IsHeld)
+        if(other.CompareTag("Player") && wateringCan.IsHeld())
         {
             wateringCan.IsNearFaucet = false;
         }

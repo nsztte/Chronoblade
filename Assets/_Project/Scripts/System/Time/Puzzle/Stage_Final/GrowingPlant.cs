@@ -41,7 +41,7 @@ public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
 
     private void OnTriggerStay(Collider other)
     {
-        if(other.CompareTag("Player") && wateringCan.IsHeld)
+        if(other.CompareTag("Player") && wateringCan.IsHeld())
         {
             wateringCan.IsNearPlant = true;
         }
@@ -49,7 +49,7 @@ public class GrowingPlant : MonoBehaviour, ITimeControllable, IRewindable
 
     private void OnTriggerExit(Collider other)
     {
-        if(other.CompareTag("Player") && wateringCan.IsHeld)
+        if(other.CompareTag("Player") && wateringCan.IsHeld())
         {
             wateringCan.IsNearPlant = false;
         }

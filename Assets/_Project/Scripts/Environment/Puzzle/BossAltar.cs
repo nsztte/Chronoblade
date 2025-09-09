@@ -31,7 +31,7 @@ public class BossAltar : MonoBehaviour
         var held = PlayerManager.Instance?.CurrentHeldObject;
         if (held == null) return;
 
-        if(held.TryGetComponent(out BossKeyPickup key) && !key.IsActivated)
+        if(held.TryGetComponent(out BossKeyPickup key) && ((!key.IsActivated())))
         {
             key.CanActive = true;
             key.insert = () => InsertKey(key);
@@ -54,7 +54,7 @@ public class BossAltar : MonoBehaviour
         int i = Mathf.Clamp(key.SlotIndex, 0, keySockets.Length - 1);
         var socket = keySockets[i];
 
-        if (key.IsActivated) return;
+        if (key.IsActivated()) return;
         if (socket.gameObject.activeSelf) return;
 
         key.ActivateSocket(socket);
