@@ -815,15 +815,15 @@ PrefabInstance:
     - target: {fileID: 1814439384031099855, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: 'weaponSlots.Array.data[1]'
       value: 
-      objectReference: {fileID: 1081187849}
+      objectReference: {fileID: 0}
     - target: {fileID: 1814439384031099855, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: 'weaponSlots.Array.data[2]'
       value: 
-      objectReference: {fileID: 1129254522}
+      objectReference: {fileID: 0}
     - target: {fileID: 1814439384031099855, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: 'weaponSlots.Array.data[3]'
       value: 
-      objectReference: {fileID: 1393868430}
+      objectReference: {fileID: 0}
     - target: {fileID: 4182334992462411445, guid: d1efd4422c0ddbc49a8bc151906dfcdd, type: 3}
       propertyPath: m_LocalPosition.x
       value: 1.578464
@@ -1323,28 +1323,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 9c936b89c5e3ff54491aeaa4e9ff6ca3, type: 3}
---- !u!114 &1081187849 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5423431937564240788, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
-  m_PrefabInstance: {fileID: 27333255}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fbcdf5c80bbc04fb46391bd448287c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
---- !u!114 &1129254522 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3677294264323289970, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
-  m_PrefabInstance: {fileID: 27333255}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fbcdf5c80bbc04fb46391bd448287c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1291268801
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,17 +1356,6 @@ Transform:
   - {fileID: 122104956}
   m_Father: {fileID: 1537940931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1393868430 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 3403306607016198121, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
-  m_PrefabInstance: {fileID: 27333255}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 86fbcdf5c80bbc04fb46391bd448287c, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &1446901985
 GameObject:
   m_ObjectHideFlags: 0
@@ -1785,6 +1752,8 @@ GameObject:
   - component: {fileID: 1997368820}
   - component: {fileID: 1997368824}
   - component: {fileID: 1997368819}
+  - component: {fileID: 1997368826}
+  - component: {fileID: 1997368825}
   m_Layer: 0
   m_Name: KeyCardDoor_Blue
   m_TagString: Untagged
@@ -1805,6 +1774,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   requiredKeycard: {fileID: 11400000, guid: e2e343bee6391f045b13ed9119dfd3fe, type: 2}
+  openStateName: OpenState
+  closedStateName: ClosedState
 --- !u!65 &1997368820
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1865,6 +1836,32 @@ Animator:
   m_AllowConstantClipSamplingOptimization: 1
   m_KeepAnimatorStateOnDisable: 0
   m_WriteDefaultValuesOnDisable: 0
+--- !u!114 &1997368825
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997368818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 82f8b9edb3f414a49aeb6ebd261a73f4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  target: {fileID: 1997368819}
+--- !u!114 &1997368826
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1997368818}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 1873fb457e01472bad5ac64249311316
 --- !u!1 &2015011050
 GameObject:
   m_ObjectHideFlags: 0
