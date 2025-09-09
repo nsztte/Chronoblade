@@ -76,7 +76,7 @@ public class BossPhaseManager : MonoBehaviour
                 
             case BossPhase.Phase2:
                 isPuzzle1Cleared = true;
-                SaveManager.Instance?.AutoSave("Boss Phase2");
+                // SaveManager.Instance?.AutoSave("Boss Phase2");
                 break;
 
             case BossPhase.Ending:
@@ -92,5 +92,14 @@ public class BossPhaseManager : MonoBehaviour
     public void FinishBossSequence()
     {
         SaveGuard.Instance?.Unblock(SaveBlockTag.Boss);
+    }
+
+    // 오토세이브/세이브가드 등 부수효과 없음(복원 전용)
+    public void SetPhaseFromSave(BossPhase phase)
+    {
+        currentPhase = phase;
+
+        isPuzzle1Cleared = (phase == BossPhase.Phase2 || phase == BossPhase.FinalPuzzle || phase == BossPhase.Ending);
+        isFinalPuzzleCleared = (phase == BossPhase.Ending);
     }
 }

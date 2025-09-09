@@ -47,6 +47,15 @@ public class BossController : MonoBehaviour, IDamageable
     public Transform Player => player;
     public GameObject ClockPuzzleCamera => clockPuzzleCamera;
 
+    public int CurrentHpPercentInt
+    {
+        get
+        {
+            if (Mathf.Approximately(maxHP, 0f)) return 0;
+            return Mathf.RoundToInt((currentHP / maxHP) * 100f);
+        }
+    }
+
     private void Awake()
     {
         stateMachine = new BossStateMachine();
