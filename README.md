@@ -2699,3 +2699,47 @@ Enemy FSM(상태머신) 시스템 구현
 - 내일은 저장 슬롯 메타 정보 확장 및 테스트 매트릭스 실행 예정
 
 ---
+
+## 2025.09.10 (수) 작업 기록
+
+### 주요 작업
+- 세션 기반 누적 플레이타임 저장 시스템 구현
+  - SaveMeta.playtimeSeconds 필드 추가 (누적 시간 초 단위 저장)
+  - 저장 시점에 prevPlaytime + 세션 경과 시간으로 누적 플레이타임 자동 계산
+  - 로드 시 저장파일의 누적값을 세션 시작점으로 반영
+  - SaveMeta.FormatPlaytime()으로 UI 표기용 hh:mm:ss 변환 지원
+
+- 저장 타입 필드(saveType) 도입 및 저장 구조 개선
+  - "Quick", "Auto", "Manual" 타입을 SaveIntent.ToString()으로 자동 기록
+  - 저장 타입 기반으로 UI 필터링 및 정렬 가능
+  - 기존 세이브 파일과의 호환성 유지
+
+- 퀵세이브 / 자동저장 슬롯 구조 정리
+  - FirstSlotIndex = 1, LastSlotIndex = 9로 슬롯 범위 상수화
+  - 퀵세이브: 슬롯 1번 고정  
+  - 자동저장: 슬롯 2~4번 순환  
+  - 수동 저장: 슬롯 5~9 (UI에서 선택)
+
+- SaveSlot 프리팹 및 바인딩 구조 구현
+  - 루트에 Button 적용하여 전체 클릭 가능 영역 처리
+  - Init(index, meta)로 슬롯 초기화
+  - SetMeta(), SetSelected(), SetInteractable() 함수로 상태 제어
+  - 저장/로드 시 슬롯 클릭 이벤트로 SaveUI에 위임 처리
+
+- 세이브 메타 읽기 전용 클래스(MetaWrapper) 및 파싱 함수 구현
+  - 저장 전체 파일 순회 → 메타 정보만 로딩
+  - SaveManager.GetAllMeta() 헬퍼 함수로 외부 사용 가능
+
+- SaveUI.cs 구현 및 슬롯 동작 구조 정립
+  - SaveUIMode 열거형(SaveOnly / LoadOnly)으로 모드 분리
+  - 저장 모드: 수동 슬롯(5~9)만 표시, 빈 슬롯 저장 가능
+  - 불러오기 모드: Quick + 최신 4개만 정렬 표시
+  - RefreshSlots(), GetManualSlotsOnly(), GetDisplaySlots()로 구조 분리
+
+### 메모
+- 레이아웃 구조는 아직 확정 전 → 내일 Slot 리스트 UI 레이아웃 구성 및 시각 스타일링 예정
+- 현재 구조 기준으로 저장 정책/입력 흐름은 잘 정리되어 있음
+  - QuickSave(), AutoSave()는 코드에서 직접 호출
+  - 수동 저장은 UI에서 슬롯 클릭 기반으로 진행
+
+---
