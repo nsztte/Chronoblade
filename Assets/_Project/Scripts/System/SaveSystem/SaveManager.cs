@@ -10,7 +10,7 @@ public enum SaveIntent { Manual, Auto }
 
 public class SaveManager : MonoBehaviour
 {
-    #region Singleton
+    #region 싱글톤 및 초기화
     public static SaveManager Instance { get; private set; }
 
     public void Initialize()
@@ -21,14 +21,23 @@ public class SaveManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        OnAfterLoad += StartSession;
     }
     #endregion
 
     [Serializable]
     public class SaveMeta
     {
-        public string scene;
-        public string savedAt;
+        public string scene;            // 저장 씬
+        public string savedAt;          // 저장 시점
+        public long playtimeSeconds;    // 누적 플레이타임(초)
+
+        public static string FormatPlaytime(long seconds)
+        {
+            var ts = TimeSpan.FromSeconds(seconds);
+            return $"{(int)ts.TotalHours:D2}:{ts.Minutes:D2}:{ts.Seconds:D2}";
+        }
     }
 
     [Serializable]
@@ -66,13 +75,23 @@ public class SaveManager : MonoBehaviour
         { SaveBlockTag.Default,  "지금은 저장할 수 없습니다" }
     };
 
-    // 저장 관련
+    private float sessionStartTime;     // 게임 켜진 시간 (초)
+    private long prevPlaytimeAtSessionStart; // 세션 시작 시점의 누적 플레이타임(초)
+
+    // 저장 관련 필드
     private bool isSaving = false;
     private int autoSlots = 5;
     private const string Key = "Save_AutoIndex";
 
     private const int CURRENT_VERSION = 1;  // 현재 저장 버전
 
+
+    // 새 게임 시작 버튼 누를때 호출 (로드는 이미 Initialize에서 이벤트 등록하여 처리 중)
+    // 새 게임 시작 시 prevPlaytimeAtSessionStart = 0으로 초기화 필수
+    public void StartSession()
+    {
+        sessionStartTime = Time.realtimeSinceStartup;
+    }
 
     // 자동저장
     public void AutoSave(string reason = null)
@@ -170,6 +189,10 @@ public class SaveManager : MonoBehaviour
         saveFile.version = CURRENT_VERSION;
         saveFile.meta.scene = SceneManager.GetActiveScene().name;
         saveFile.meta.savedAt = DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss");
+
+        // 누적 플레이타임 계산
+        long sessionElapsed = (long)(Time.realtimeSinceStartup - sessionStartTime);
+        saveFile.meta.playtimeSeconds = prevPlaytimeAtSessionStart + sessionElapsed;
 
         var saveables = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None).OfType<ISaveable>();
         
@@ -282,6 +305,8 @@ public class SaveManager : MonoBehaviour
 
         if (isBackup)
             UIManager.Instance?.ShowToast("백업 세이브로 복구했습니다");
+
+        prevPlaytimeAtSessionStart = saveFile.meta.playtimeSeconds;
 
         if (saveFile.meta.scene != SceneManager.GetActiveScene().name)
             StartCoroutine(LoadSceneAndRestore(saveFile));
