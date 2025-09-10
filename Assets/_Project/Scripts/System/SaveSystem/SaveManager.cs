@@ -93,12 +93,22 @@ public class SaveManager : MonoBehaviour
 
     private const int CURRENT_VERSION = 1;  // 현재 저장 버전
 
+    private const int FirstSlotIndex = 1;
+    private const int LastSlotIndex = 9;
+
 
     // 새 게임 시작 버튼 누를때 호출 (로드는 이미 Initialize에서 이벤트 등록하여 처리 중)
     // 새 게임 시작 시 prevPlaytimeAtSessionStart = 0으로 초기화 필수
     public void StartSession()
     {
         sessionStartTime = Time.realtimeSinceStartup;
+    }
+
+    // 퀵 세이브
+    public void QuickSave()
+    {
+        DefaultSave(FirstSlotIndex, SaveIntent.Quick);
+        Debug.Log("[SaveManager] 퀵세이브 → 슬롯 1");
     }
 
     // 자동저장
@@ -120,7 +130,7 @@ public class SaveManager : MonoBehaviour
     {
         var list = new List<(int, SaveMeta)>();
 
-        for (int i = 1; i <= 7; i++)
+        for (int i = FirstSlotIndex; i <= LastSlotIndex; i++)
         {
             string path = GetPath(i);
             if (!File.Exists(path)) continue;
@@ -209,7 +219,7 @@ public class SaveManager : MonoBehaviour
         PlayerPrefs.SetInt(Key, i);
         PlayerPrefs.Save();
         
-        return i + 1;   // 퍼즐 슬롯은 1부터 시작
+        return i + FirstSlotIndex + 1;   // 퍼즐 슬롯은 2부터 시작
     }
     
     // 저장
