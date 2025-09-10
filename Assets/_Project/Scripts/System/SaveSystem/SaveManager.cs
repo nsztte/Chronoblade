@@ -56,6 +56,13 @@ public class SaveManager : MonoBehaviour
         public List<SaveEntry> entries = new();
     }
 
+    [Serializable]
+    private class MetaWrapper
+    {
+        public int version;
+        public SaveMeta meta;
+    }
+
     // 게터
     private string GetPath(int slot) =>
         Path.Combine(Application.persistentDataPath, $"slot_{slot}.json");
@@ -108,6 +115,28 @@ public class SaveManager : MonoBehaviour
 
     public void DefaultSave(int slot, SaveIntent intent = SaveIntent.Manual) => StartCoroutine(BackgroundSaveRoutine(slot, intent));
     public void DefaultLoad(int slot) => StartCoroutine(LoadRoutineWithUX(slot));
+
+    public List<(int slotIndex, SaveMeta meta)> GetAllMeta()
+    {
+        var list = new List<(int, SaveMeta)>();
+
+        for (int i = 1; i <= 7; i++)
+        {
+            string path = GetPath(i);
+            if (!File.Exists(path)) continue;
+
+            try
+            {
+                string json = File.ReadAllText(path);
+                var wrapper = JsonUtility.FromJson<MetaWrapper>(json);
+                if (wrapper.meta != null)
+                    list.Add((i, wrapper.meta));
+            }
+            catch { continue; }
+        }
+
+        return list;
+    }
 
     private IEnumerator BackgroundSaveRoutine(int slot, SaveIntent intent)
     {
