@@ -6,7 +6,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 
-public enum SaveIntent { Manual, Auto }
+public enum SaveIntent { Quick, Auto, Manual }
 
 public class SaveManager : MonoBehaviour
 {
@@ -32,6 +32,7 @@ public class SaveManager : MonoBehaviour
         public string scene;            // 저장 씬
         public string savedAt;          // 저장 시점
         public long playtimeSeconds;    // 누적 플레이타임(초)
+        public string saveType;         // Quick, Auto, Manual
 
         public static string FormatPlaytime(long seconds)
         {
@@ -80,7 +81,7 @@ public class SaveManager : MonoBehaviour
 
     // 저장 관련 필드
     private bool isSaving = false;
-    private int autoSlots = 5;
+    private int autoSlots = 3;
     private const string Key = "Save_AutoIndex";
 
     private const int CURRENT_VERSION = 1;  // 현재 저장 버전
@@ -193,6 +194,9 @@ public class SaveManager : MonoBehaviour
         // 누적 플레이타임 계산
         long sessionElapsed = (long)(Time.realtimeSinceStartup - sessionStartTime);
         saveFile.meta.playtimeSeconds = prevPlaytimeAtSessionStart + sessionElapsed;
+
+        // 세이브 타입
+        saveFile.meta.saveType = intent.ToString();
 
         var saveables = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None).OfType<ISaveable>();
         
