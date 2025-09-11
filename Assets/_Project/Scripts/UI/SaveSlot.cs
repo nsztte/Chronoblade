@@ -64,11 +64,6 @@ public class SaveSlot : MonoBehaviour
         SetInteractable(false);
         OnClicked = null;
     }
-    
-    public void SetSlotIndex(int index)
-    {
-        slotIndex = index;
-    }
 
     public void SetSelected(bool selected)
     {
