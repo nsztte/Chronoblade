@@ -774,6 +774,7 @@ GameObject:
   - component: {fileID: 8443270448020588179}
   - component: {fileID: 3812132841969468966}
   - component: {fileID: 6602465867989174464}
+  - component: {fileID: 4753533421367220929}
   m_Layer: 0
   m_Name: SaveSlot
   m_TagString: Untagged
@@ -904,6 +905,25 @@ MonoBehaviour:
   m_FlexibleWidth: 1
   m_FlexibleHeight: -1
   m_LayoutPriority: 1
+--- !u!114 &4753533421367220929
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4606734286143744869}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 779c3b833820fea439779817ecb16c6f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  slotIndex: 0
+  frameRoot: {fileID: 3467488219410665466}
+  questAndTypeText: {fileID: 4221639777438484180}
+  playtimeText: {fileID: 9097137388550592056}
+  sceneNameText: {fileID: 2251805338146710412}
+  savedAtText: {fileID: 4740865160995831951}
+  selectedHighlight: {fileID: 3713935138048792658}
 --- !u!1 &7753280929150795089
 GameObject:
   m_ObjectHideFlags: 0

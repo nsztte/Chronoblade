@@ -187,6 +187,7 @@ public class SaveManager : MonoBehaviour
             {
                 OnSaved?.Invoke();
                 UIManager.Instance?.ShowToast("저장 완료");
+                Debug.Log(Application.persistentDataPath);
             }
             else
                 UIManager.Instance?.ShowToast("저장 실패");
