@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
+using System.Globalization;
 
 public class SaveUI : MonoBehaviour
 {
@@ -12,13 +13,11 @@ public class SaveUI : MonoBehaviour
     [SerializeField] private List<SaveSlot> slotList = new();
     [SerializeField] private SaveUIMode currentMode;
 
-    private const int QuickSlotIndex  = 1;
     private const int ManualSlotStart = 5;
-    private const int ManualSlotCount = 5;
 
     private void OnEnable()
     {
-        for(int i = 0; i < ManualSlotCount; i++)
+        for(int i = 0; i < slotList.Count; i++)
         {
             if(slotList[i].SlotIndex == 0)
                 slotList[i].SetSlotIndex(i + ManualSlotStart);
@@ -57,20 +56,18 @@ public class SaveUI : MonoBehaviour
     {
         // 정렬된 데이터 가져오기
         var slotData = (currentMode == SaveUIMode.SaveOnly)
-            ? GetManualSlotsOnly()
+            ? GetManualSlotsOnly().ToList()
             : GetDisplaySlots();
 
-        foreach (var (slotIndex, meta) in slotData)
+        for (int i = 0; i < slotList.Count; i++)
         {
-            var slot = slotList.FirstOrDefault(s => s.SlotIndex == slotIndex);
-            if (slot == null)
-            {
-                Debug.LogWarning($"SlotIndex {slotIndex}에 대응하는 슬롯이 slotList에 없습니다.");
-                continue;
-            }
+            var slot = slotList[i];
+            var meta = slotData[i];
+            int slotIndex = slot.SlotIndex;
+
             slot.Init(slotIndex, meta);
 
-            // 모드에 따른 동작 결정
+            // 3. 클릭 이벤트 설정
             slot.OnClicked += (i, m) =>
             {
                 if (currentMode == SaveUIMode.LoadOnly)
@@ -88,69 +85,59 @@ public class SaveUI : MonoBehaviour
                     }
                     else
                     {
-                        // 빈 슬롯 또는 다른 타입 (Manual이 아닌 경우) → 바로 저장
                         SaveManager.Instance.DefaultSave(i, SaveIntent.Manual);
                     }
                 }
             };
 
-            // 로드 전용에서는 빈 슬롯 비활성화
-            slot.SetInteractable(currentMode == SaveUIMode.SaveOnly || meta != null);
+            // 4. 활성화 조건 설정 (로드 시 빈 슬롯 비활성)
+            bool isActive = (currentMode == SaveUIMode.SaveOnly || meta != null);
+            slot.SetInteractable(isActive);
         }
     }
 
-    private List<(int, SaveManager.SaveMeta)> GetDisplaySlots()
+    private List<SaveManager.SaveMeta> GetDisplaySlots()
     {
         var all = SaveManager.Instance.GetAllMeta(); // List<(slotIndex, meta)>
-        var result = new List<(int slotIndex, SaveManager.SaveMeta meta)>();
+        var result = new List<SaveManager.SaveMeta>();
 
-        // 1) 퀵 슬롯 검사
         var quick = all.FirstOrDefault(p => p.meta != null && p.meta.saveType == "Quick");
-        bool hasQuick = quick.meta != null;
+        if (quick.meta != null)
+            result.Add(quick.meta);
 
-        if (hasQuick)
-            result.Add(quick);
+        int need = slotList.Count - result.Count;
 
-        // 2) 나머지 최신 정렬 (자동/수동 혼합)
-        int need = hasQuick ? slotList.Count - 1 : slotList.Count ;
         var others = all
             .Where(p => p.meta != null && p.meta.saveType != "Quick")
-            .OrderByDescending(p =>
+            .OrderByDescending(p => 
             {
-                // savedAt 파싱 안전 처리
                 DateTime dt;
                 return DateTime.TryParse(p.meta.savedAt, out dt) ? dt : DateTime.MinValue;
             })
             .Take(need)
+            .Select(p => p.meta)
             .ToList();
 
         result.AddRange(others);
 
-        // 3) 부족하면 (5~9)로 null 패딩
-        var manualIndices = Enumerable.Range(ManualSlotStart, ManualSlotCount); // 5..9
-        foreach (var idx in manualIndices)
-        {
-            if (result.Count >= 5) break;
-            if (!result.Any(r => r.slotIndex == idx))
-                result.Add((idx, null));
-        }
+        // 부족분 null 패딩
+        while (result.Count < slotList.Count)
+            result.Add(null);
 
         return result;
     }
 
-    private List<(int, SaveManager.SaveMeta)> GetManualSlotsOnly()
+    private List<SaveManager.SaveMeta> GetManualSlotsOnly()
     {
         var all = SaveManager.Instance.GetAllMeta();
+        var result = new List<SaveManager.SaveMeta>();
 
-        var manualIndices = Enumerable.Range(ManualSlotStart, ManualSlotCount);     // 슬롯 5부터 5개
+        var manualIndices = Enumerable.Range(ManualSlotStart, slotList.Count); // 5 ~ 9
 
-        var result = new List<(int, SaveManager.SaveMeta)>();
         foreach (var idx in manualIndices)
         {
             var pair = all.FirstOrDefault(p => p.slotIndex == idx);
-            // 해당 슬롯에 파일이 없으면 meta=null로 채움
-            if (pair.slotIndex == 0) result.Add((idx, null));
-            else result.Add(pair);
+            result.Add(pair.meta); // 파일 없으면 meta == null
         }
 
         return result;
