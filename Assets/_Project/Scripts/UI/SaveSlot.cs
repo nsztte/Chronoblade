@@ -44,7 +44,7 @@ public class SaveSlot : MonoBehaviour
 
         if (meta != null)
         {
-            if (questAndTypeText) questAndTypeText.text = "퀘스트 이름" + (string.IsNullOrEmpty(meta.savedAt) ? "-" : "-" + meta.saveType);  // 퀘스트 도입 후 교체
+            if (questAndTypeText) questAndTypeText.text = "퀘스트 이름" + (string.IsNullOrEmpty(meta.savedAt) ? "-" : " - " + meta.saveType);  // 퀘스트 도입 후 교체
             if (playtimeText) playtimeText.text = SaveManager.SaveMeta.FormatPlaytime(meta.playtimeSeconds);
             if (sceneNameText) sceneNameText.text = string.IsNullOrEmpty(meta.scene) ? "-" : meta.scene;
             if (savedAtText)  savedAtText.text  = string.IsNullOrEmpty(meta.savedAt) ? "-" : meta.savedAt;
