@@ -17,14 +17,6 @@ public class SaveUI : MonoBehaviour
 
     private void OnEnable()
     {
-        for(int i = 0; i < slotList.Count; i++)
-        {
-            if(slotList[i].SlotIndex == 0)
-                slotList[i].SetSlotIndex(i + ManualSlotStart);
-        }
-
-        RefreshSlots();
-
         SaveManager.Instance.OnSaved += RefreshSlots;
     }
 
