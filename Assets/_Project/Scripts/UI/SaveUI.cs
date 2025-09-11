@@ -54,90 +54,95 @@ public class SaveUI : MonoBehaviour
 
     private void RefreshSlots()
     {
-        // 정렬된 데이터 가져오기
+        // 정렬된 데이터 가져오기 — 이제 (slotIndex, meta) 쌍을 받는다.
         var slotData = (currentMode == SaveUIMode.SaveOnly)
-            ? GetManualSlotsOnly().ToList()
+            ? GetManualSlotsOnly()
             : GetDisplaySlots();
 
         for (int i = 0; i < slotList.Count; i++)
         {
             var slot = slotList[i];
-            var meta = slotData[i];
-            int slotIndex = slot.SlotIndex;
+            var pair = slotData[i];                 // (int slotIndex, SaveMeta meta)
+            int realSlotIndex = pair.slotIndex;
+            var meta = pair.meta;
 
-            slot.Init(slotIndex, meta);
+            // 실제 인덱스를 넣어서 초기화 — SaveSlot.Init(index, meta)가 slotIndex를 설정한다.
+            slot.Init(realSlotIndex, meta);
 
-            // 3. 클릭 이벤트 설정
-            slot.OnClicked += (i, m) =>
+            // 클릭 이벤트 설정 — OnClicked의 첫 파라미터는 SaveSlot이 전달하는 실제 슬롯 인덱스임.
+            slot.OnClicked += (clickedSlotIndex, m) =>
             {
                 if (currentMode == SaveUIMode.LoadOnly)
                 {
                     if (m != null)
-                        SaveManager.Instance.DefaultLoad(i); // confirm 없이 바로
+                        SaveManager.Instance.DefaultLoad(clickedSlotIndex); // 실제 슬롯으로 로드
                 }
                 else if (currentMode == SaveUIMode.SaveOnly)
                 {
                     if (m != null && m.saveType == "Manual")
                     {
                         UIManager.Instance.ShowConfirm("저장하기", "이 슬롯에 덮어쓰시겠습니까?",
-                            onConfirm: () => SaveManager.Instance.DefaultSave(i, SaveIntent.Manual),
+                            onConfirm: () => SaveManager.Instance.DefaultSave(clickedSlotIndex, SaveIntent.Manual),
                             onCancel: () => { });
                     }
                     else
                     {
-                        SaveManager.Instance.DefaultSave(i, SaveIntent.Manual);
+                        SaveManager.Instance.DefaultSave(clickedSlotIndex, SaveIntent.Manual);
                     }
                 }
             };
 
-            // 4. 활성화 조건 설정 (로드 시 빈 슬롯 비활성)
+            // 빈 칸이면 비활성 (로드 모드에서 meta == null이면 비활성)
             bool isActive = (currentMode == SaveUIMode.SaveOnly || meta != null);
             slot.SetInteractable(isActive);
         }
     }
 
-    private List<SaveManager.SaveMeta> GetDisplaySlots()
+    private List<(int slotIndex, SaveManager.SaveMeta meta)> GetDisplaySlots()
     {
         var all = SaveManager.Instance.GetAllMeta(); // List<(slotIndex, meta)>
-        var result = new List<SaveManager.SaveMeta>();
+        var result = new List<(int, SaveManager.SaveMeta)>();
 
+        // Quick은 있으면 맨 앞에
         var quick = all.FirstOrDefault(p => p.meta != null && p.meta.saveType == "Quick");
         if (quick.meta != null)
-            result.Add(quick.meta);
+            result.Add((quick.slotIndex, quick.meta));
 
         int need = slotList.Count - result.Count;
 
         var others = all
             .Where(p => p.meta != null && p.meta.saveType != "Quick")
-            .OrderByDescending(p => 
+            .OrderByDescending(p =>
             {
                 DateTime dt;
                 return DateTime.TryParse(p.meta.savedAt, out dt) ? dt : DateTime.MinValue;
             })
             .Take(need)
-            .Select(p => p.meta)
+            .Select(p => (p.slotIndex, p.meta))
             .ToList();
 
         result.AddRange(others);
 
-        // 부족분 null 패딩
+        // 부족분 null 패딩: 실제 슬롯 인덱스는 -1로 표시 (버튼 비활성화 됨)
         while (result.Count < slotList.Count)
-            result.Add(null);
+            result.Add((-1, null));
 
         return result;
     }
 
-    private List<SaveManager.SaveMeta> GetManualSlotsOnly()
+    private List<(int slotIndex, SaveManager.SaveMeta meta)> GetManualSlotsOnly()
     {
         var all = SaveManager.Instance.GetAllMeta();
-        var result = new List<SaveManager.SaveMeta>();
+        var result = new List<(int, SaveManager.SaveMeta)>();
 
+        // Manual 슬롯 고정 인덱스(예: 5~9)
         var manualIndices = Enumerable.Range(ManualSlotStart, slotList.Count); // 5 ~ 9
 
         foreach (var idx in manualIndices)
         {
+            // 파일이 없으면 pair.meta == null. 그래도 실제 인덱스는 idx로 전달
             var pair = all.FirstOrDefault(p => p.slotIndex == idx);
-            result.Add(pair.meta); // 파일 없으면 meta == null
+            result.Add((idx, pair.meta));
         }
 
         return result;

@@ -8,7 +8,7 @@ public class OptionUI : MonoBehaviour
     [SerializeField] Button saveButton;
     [SerializeField] Button loadButton;
 
-    private void Awake()
+    private void OnEnable()
     {
         saveButton.onClick.AddListener(() => Open(SaveUI.SaveUIMode.SaveOnly));
         loadButton.onClick.AddListener(() => Open(SaveUI.SaveUIMode.LoadOnly));
