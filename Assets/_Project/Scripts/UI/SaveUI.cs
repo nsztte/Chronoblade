@@ -3,17 +3,16 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
-using Unity.VisualScripting;
 
 public class SaveUI : MonoBehaviour
 {
     public enum SaveUIMode { LoadOnly, SaveOnly }
 
-    [SerializeField] private int slotsCount = 4;
     [SerializeField] private TMP_Text modeTitleText;
     [SerializeField] private List<SaveSlot> slotList = new();
     [SerializeField] private SaveUIMode currentMode;
 
+    private const int QuickSlotIndex  = 1;
     private const int ManualSlotStart = 5;
     private const int ManualSlotCount = 5;
 
@@ -37,6 +36,8 @@ public class SaveUI : MonoBehaviour
 
     public void Open(SaveUIMode mode)
     {
+        gameObject.SetActive(true);
+
         currentMode = mode;
         modeTitleText.text = mode switch {
             SaveUIMode.LoadOnly => "불러오기",
@@ -45,7 +46,6 @@ public class SaveUI : MonoBehaviour
         };
 
         RefreshSlots();
-        gameObject.SetActive(true);
     }
 
     public void Close()
@@ -101,18 +101,40 @@ public class SaveUI : MonoBehaviour
 
     private List<(int, SaveManager.SaveMeta)> GetDisplaySlots()
     {
-        var allSlots = SaveManager.Instance.GetAllMeta();
+        var all = SaveManager.Instance.GetAllMeta(); // List<(slotIndex, meta)>
+        var result = new List<(int slotIndex, SaveManager.SaveMeta meta)>();
 
-        var quick = allSlots.FirstOrDefault(s => s.Item2.saveType == "Quick");
-        var others = allSlots
-            .Where(s => s.Item2.saveType != "Quick")                    // 퀵 제외한
-            .OrderByDescending(s => DateTime.Parse(s.Item2.savedAt))    // 저장시점 내림차순으로
-            .Take(slotsCount)                                           // 앞에서부터 n개까지만
+        // 1) 퀵 슬롯 검사
+        var quick = all.FirstOrDefault(p => p.meta != null && p.meta.saveType == "Quick");
+        bool hasQuick = quick.meta != null;
+
+        if (hasQuick)
+            result.Add(quick);
+
+        // 2) 나머지 최신 정렬 (자동/수동 혼합)
+        int need = hasQuick ? slotList.Count - 1 : slotList.Count ;
+        var others = all
+            .Where(p => p.meta != null && p.meta.saveType != "Quick")
+            .OrderByDescending(p =>
+            {
+                // savedAt 파싱 안전 처리
+                DateTime dt;
+                return DateTime.TryParse(p.meta.savedAt, out dt) ? dt : DateTime.MinValue;
+            })
+            .Take(need)
             .ToList();
 
-        var result = new List<(int, SaveManager.SaveMeta)>();
-        if (!quick.Equals(default)) result.Add(quick);
         result.AddRange(others);
+
+        // 3) 부족하면 (5~9)로 null 패딩
+        var manualIndices = Enumerable.Range(ManualSlotStart, ManualSlotCount); // 5..9
+        foreach (var idx in manualIndices)
+        {
+            if (result.Count >= 5) break;
+            if (!result.Any(r => r.slotIndex == idx))
+                result.Add((idx, null));
+        }
+
         return result;
     }
 
