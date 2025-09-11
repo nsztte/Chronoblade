@@ -384,11 +384,30 @@ public class SaveManager : MonoBehaviour
     {
         var tmp = path + ".tmp";
         File.WriteAllText(tmp, content);
+        Debug.Log($"[SaveManager] 임시파일 생성 완료: {tmp}");
 
         var bak = GetBackupPath(path);
 
-        if (File.Exists(path)) File.Replace(tmp, path, bak);
-        else File.Move(tmp, path);
+        // if (File.Exists(path)) File.Replace(tmp, path, bak);
+        // else File.Move(tmp, path);
+
+        try
+        {
+            if (File.Exists(path))
+            {
+                File.Replace(tmp, path, bak);
+                Debug.Log($"[SaveManager] 기존 파일 덮어쓰기 성공: {path} → .bak: {bak}");
+            }
+            else
+            {
+                File.Move(tmp, path);
+                Debug.Log($"[SaveManager] 신규 저장 파일 생성 완료: {path}");
+            }
+        }
+        catch (Exception e)
+        {
+            Debug.LogError($"[SaveManager] WriteAtomic 실패: {e.Message}\n{e.StackTrace}");
+        }
     }
 
     /// <summary>

@@ -36,7 +36,7 @@ public class ToastUI : MonoBehaviour
         }
 
         cg.alpha = 1f;
-        yield return new WaitForSeconds(displayTime);
+        yield return new WaitForSecondsRealtime(displayTime);
 
         // Fade Out
         t = 0f;
