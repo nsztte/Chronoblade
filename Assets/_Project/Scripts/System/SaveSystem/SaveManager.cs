@@ -33,6 +33,7 @@ public class SaveManager : MonoBehaviour
         public string savedAt;          // 저장 시점
         public long playtimeSeconds;    // 누적 플레이타임(초)
         public string saveType;         // Quick, Auto, Manual
+        public string thumbnail;        // 썸네일
 
         public static string FormatPlaytime(long seconds)
         {
@@ -82,6 +83,8 @@ public class SaveManager : MonoBehaviour
         { SaveBlockTag.Cutscene, "연출 중에는 저장할 수 없습니다" },
         { SaveBlockTag.Default,  "지금은 저장할 수 없습니다" }
     };
+
+    [SerializeField] private ThumbnailCapture thumbnailCapture;     // 썸네일 캡쳐용 카메라
 
     private float sessionStartTime;     // 게임 켜진 시간 (초)
     private long prevPlaytimeAtSessionStart; // 세션 시작 시점의 누적 플레이타임(초)
@@ -166,14 +169,25 @@ public class SaveManager : MonoBehaviour
         try
         {
             SaveGuard.Instance?.Block();
-            OnBeforeSave?.Invoke();
+            OnBeforeSave?.Invoke();                 // UI 숨기기
             yield return new WaitForEndOfFrame();   // 프레임 경계에서 캡쳐
+
+            // --- 썸네일 캡처 시도 ---
+            string thumbnailRel = null;
+            if (thumbnailCapture != null)
+            {
+                string previewFullPath = GetPreviewPath(slot);
+                bool captured = thumbnailCapture.CaptureToFile(previewFullPath);
+                if (captured)
+                    thumbnailRel = ToRelativePreviewPath(previewFullPath);
+            }
+            // ------------------------
 
             bool success = true;
 
             try
             {
-                Save(slot, intent);
+                Save(slot, intent, thumbnailRel);
             }
             catch (Exception e)
             {
@@ -185,7 +199,7 @@ public class SaveManager : MonoBehaviour
 
             if(success)
             {
-                OnSaved?.Invoke();
+                OnSaved?.Invoke();      // UI 표시, 슬롯 업데이트
                 UIManager.Instance?.ShowToast("저장 완료");
                 Debug.Log(Application.persistentDataPath);
             }
@@ -224,7 +238,7 @@ public class SaveManager : MonoBehaviour
     }
     
     // 저장
-    private void Save(int slot, SaveIntent intent = SaveIntent.Manual)
+    private void Save(int slot, SaveIntent intent = SaveIntent.Manual, string thumbnailRelPath = null)
     {
         var saveFile = new SaveFile();
         saveFile.version = CURRENT_VERSION;
@@ -237,6 +251,9 @@ public class SaveManager : MonoBehaviour
 
         // 세이브 타입
         saveFile.meta.saveType = intent.ToString();
+
+        // 썸네일 메타 기록
+        saveFile.meta.thumbnail = thumbnailRelPath;
 
         var saveables = FindObjectsByType<MonoBehaviour>(FindObjectsInactive.Include, FindObjectsSortMode.None).OfType<ISaveable>();
         
@@ -261,6 +278,7 @@ public class SaveManager : MonoBehaviour
         WriteAtomic(GetPath(slot), jsonText);
     }
 
+    // 로드
     private void Load(int slot)
     {
         var path = GetPath(slot);
@@ -300,40 +318,7 @@ public class SaveManager : MonoBehaviour
         }
     }
 
-    // 로드
-    // private void Load(int slot)
-    // {
-    //     var path = GetPath(slot);
-    //     if (!File.Exists(path))
-    //     {
-    //         Debug.LogWarning($"[SaveManager] 저장 파일 없음: {path}");
-    //         return;
-    //     }
-
-    //     var jsonText = File.ReadAllText(path);
-    //     var saveFile = JsonUtility.FromJson<SaveFile>(jsonText);
-
-    //     // 버전 다르면 마이그레이션 시도
-    //     if (saveFile.version != CURRENT_VERSION)
-    //     {
-    //         if (!TryMigrate(ref saveFile, saveFile.version, CURRENT_VERSION))
-    //         {
-    //             Debug.LogError($"[SaveManager] 세이브 버전 불일치: {saveFile.version} → {CURRENT_VERSION} 마이그레이션 실패");
-    //             UIManager.Instance?.ShowToast("세이브 파일 버전 호환 실패");
-    //             return;
-    //         }
-    //     }
-
-    //     if (saveFile.meta.scene != SceneManager.GetActiveScene().name)
-    //     {
-    //         StartCoroutine(LoadSceneAndRestore(saveFile));
-    //     }
-    //     else
-    //     {
-    //         RestoreState(saveFile);
-    //     }
-    // }
-
+    // 제이슨 파일 읽고 로드
     private void TryLoadFromJson(string jsonText, bool isBackup)
     {
         var saveFile = JsonUtility.FromJson<SaveFile>(jsonText);
@@ -359,6 +344,7 @@ public class SaveManager : MonoBehaviour
             RestoreState(saveFile);
     }
 
+    // 씬 로드 후 복구
     private IEnumerator LoadSceneAndRestore(SaveFile file)
     {
         var op = SceneManager.LoadSceneAsync(file.meta.scene);
@@ -367,6 +353,7 @@ public class SaveManager : MonoBehaviour
         RestoreState(file);
     }
 
+    // 같은 씬에서 복구
     private void RestoreState(SaveFile file)
     {
         var map = file.entries.ToDictionary(e => e.id, e => e.json);
@@ -436,5 +423,19 @@ public class SaveManager : MonoBehaviour
 
         file.version = toVersion;
         return true;
+    }
+
+    // 썸네일 파일 경로 유틸
+    private string GetPreviewPath(int slot)
+    {
+        string dir = Path.Combine(Application.persistentDataPath, "Previews");
+        if (!Directory.Exists(dir)) Directory.CreateDirectory(dir);
+        return Path.Combine(dir, $"slot_{slot}.png");
+    }
+
+    // 저장 파일 안에는 상대경로만 기록
+    private string ToRelativePreviewPath(string fullPath)
+    {
+        return $"Previews/{Path.GetFileName(fullPath)}";
     }
 }
