@@ -99,6 +99,17 @@ public class SaveManager : MonoBehaviour
     private const int FirstSlotIndex = 1;
     private const int LastSlotIndex = 9;
 
+    void OnEnable()
+    {
+        if (InputManager.Instance != null)
+            InputManager.Instance.OnQuickSave += QuickSave;
+    }
+
+    void OnDisable()
+    {
+        if (InputManager.Instance != null)
+            InputManager.Instance.OnQuickSave -= QuickSave;
+    }   
 
     // 새 게임 시작 버튼 누를때 호출 (로드는 이미 Initialize에서 이벤트 등록하여 처리 중)
     // 새 게임 시작 시 prevPlaytimeAtSessionStart = 0으로 초기화 필수

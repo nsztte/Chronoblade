@@ -40,6 +40,7 @@ public class InputManager : MonoBehaviour
     public event Action OnHeavyAttackPressed;
 
     public event Action OnInventoryChanged;          // I
+    public event Action OnQuickSave;                  // F5
     #endregion
 
     private float attackKeyDownTime;
@@ -160,6 +161,9 @@ public class InputManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.I))
             OnInventoryChanged?.Invoke();
+
+        if(Input.GetKeyDown(KeyCode.F5))
+            OnQuickSave?.Invoke();
     }
 
     public void SetInputEnabled(bool enabled)
