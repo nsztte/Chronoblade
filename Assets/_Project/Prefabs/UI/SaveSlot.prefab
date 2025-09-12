@@ -218,7 +218,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 1}
+  m_Color: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 0.78431374}
   m_RaycastTarget: 0
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -919,11 +919,14 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   slotIndex: 0
   frameRoot: {fileID: 3467488219410665466}
+  preview: {fileID: 4736104623588947872}
   questAndTypeText: {fileID: 4221639777438484180}
   playtimeText: {fileID: 9097137388550592056}
   sceneNameText: {fileID: 2251805338146710412}
   savedAtText: {fileID: 4740865160995831951}
   selectedHighlight: {fileID: 3713935138048792658}
+  deactivatePreview: {r: 0.22745098, g: 0.22745098, b: 0.22745098, a: 0.78431374}
+  activatePreview: {r: 1, g: 1, b: 1, a: 1}
 --- !u!1 &7753280929150795089
 GameObject:
   m_ObjectHideFlags: 0
