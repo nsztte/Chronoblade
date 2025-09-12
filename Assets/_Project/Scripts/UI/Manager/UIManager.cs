@@ -61,6 +61,12 @@ public class UIManager : MonoBehaviour
         InputManager.Instance.OnInventoryChanged -= ToggleInventoryUI;
     }
 
+    public void UpdateUI(bool value)
+    {
+        if(gameObject.activeSelf != value)
+            gameObject.SetActive(value);
+    }
+
     private void ToggleInventoryUI()
     {
         if (IsShopOpen) return;

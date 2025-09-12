@@ -63,7 +63,8 @@ public class PlayerHUD : MonoBehaviour
 
     public void SetPlayerHud(bool isActive)
     {
-        gameObject.SetActive(isActive);
+        if(gameObject.activeSelf != isActive)
+            gameObject.SetActive(isActive);
     }
 
     #region 플레이어 상태 관련

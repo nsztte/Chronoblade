@@ -5,8 +5,11 @@ public class LoadingState : GameBaseState
     public override void Enter()
     {
         Debug.Log("[GameState] LoadingState Enter");
-        UIManager.Instance.ShowLoadingScreen();
+        UIManager.Instance.UpdateUI(false);
+        // UIManager.Instance.ShowLoadingScreen();
         TimeManager.Instance.SetTimeScale(0f);
+
+        SaveGuard.Instance?.Block(SaveBlockTag.UI);
 
         // TODO: 실제 로딩 처리
         // TODO: 씬 매니저 연동
@@ -15,9 +18,11 @@ public class LoadingState : GameBaseState
 
     public override void Exit()
     {
-        UIManager.Instance.HideLoadingScreen();
+        // UIManager.Instance.HideLoadingScreen();
+        UIManager.Instance.UpdateUI(false);
 
-        // 게임 저장시에 EnterExploration에서만 저장 가능하도록 구현
+        SaveGuard.Instance?.Unblock(SaveBlockTag.UI);
+
         GameManager.Instance.EnterExploration();
     }
 }

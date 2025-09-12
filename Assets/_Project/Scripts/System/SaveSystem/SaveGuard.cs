@@ -9,7 +9,9 @@ public enum SaveBlockTag
     Cutscene,
     Combat,
     Boss,
-    Pause
+    Pause,
+    UI,
+    GameOver
 }
 
 public class SaveGuard : MonoBehaviour
@@ -37,7 +39,14 @@ public class SaveGuard : MonoBehaviour
 
     // 블락 태그 우선순위
     private static readonly SaveBlockTag[] Priority = {
-    SaveBlockTag.Pause, SaveBlockTag.Boss, SaveBlockTag.Combat, SaveBlockTag.Puzzle, SaveBlockTag.Cutscene, SaveBlockTag.Default
+        SaveBlockTag.Boss,     // 최우선 — 보스전은 가장 민감
+        SaveBlockTag.Combat,   // 일반 전투
+        SaveBlockTag.Puzzle,   // 퍼즐: 진행 불가 유발 가능
+        SaveBlockTag.Cutscene, // 컷씬: 연출 중이라서 매우 민감
+        SaveBlockTag.Pause,    // 일시정지: 대부분은 허용
+        SaveBlockTag.GameOver, // 게임오버: 메시지 중요도
+        SaveBlockTag.UI,       // 메뉴/타이틀/로딩 등
+        SaveBlockTag.Default   // 기본
     };
 
     public void Block(SaveBlockTag tag = SaveBlockTag.Default)

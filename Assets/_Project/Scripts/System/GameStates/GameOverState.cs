@@ -8,7 +8,9 @@ public class GameOverState : GameBaseState
         Debug.Log("[GameState] GameOverState Enter");
         UIManager.Instance.ShowGameOverScreen();
         TimeManager.Instance.SetTimeScale(0f);
-        
+
+        SaveGuard.Instance?.Block(SaveBlockTag.GameOver);
+
         // 페이드아웃과 사망 연출 시작
         gameManager.StartCoroutine(DeathSequence());
     }
@@ -16,6 +18,8 @@ public class GameOverState : GameBaseState
     public override void Exit()
     {
         UIManager.Instance.HideGameOverScreen();
+
+        SaveGuard.Instance?.ClearTag(SaveBlockTag.GameOver);
     }
 
     private IEnumerator DeathSequence()
