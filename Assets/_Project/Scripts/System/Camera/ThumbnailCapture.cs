@@ -31,7 +31,7 @@ public class ThumbnailCapture : MonoBehaviour
         if (uiLayer >= 0) previewCamera.cullingMask = baseMask & ~(1 << uiLayer);
         else previewCamera.cullingMask = baseMask;
 
-        rt = new RenderTexture(width, height, 0, RenderTextureFormat.ARGB32)
+        rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32)
         {
             useMipMap = false,
             autoGenerateMips = false
@@ -56,6 +56,7 @@ public class ThumbnailCapture : MonoBehaviour
     {
         if (previewCamera == null || rt == null) return false;
 
+        Texture2D tex = null;
         RenderTexture prev = RenderTexture.active;
         try
         {
@@ -63,7 +64,7 @@ public class ThumbnailCapture : MonoBehaviour
             RenderTexture.active = rt;
             previewCamera.Render();
 
-            Texture2D tex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
+            tex = new Texture2D(rt.width, rt.height, TextureFormat.RGB24, false);
             tex.ReadPixels(new Rect(0, 0, rt.width, rt.height), 0, 0);
             tex.Apply();
             byte[] png = tex.EncodeToPNG();
@@ -82,6 +83,7 @@ public class ThumbnailCapture : MonoBehaviour
         }
         finally
         {
+            if (tex != null) Destroy(tex);
             RenderTexture.active = prev;
             previewCamera.targetTexture = null;
         }
