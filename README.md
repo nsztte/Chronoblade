@@ -2793,3 +2793,94 @@ Enemy FSM(상태머신) 시스템 구현
 - 퀘스트 시스템 미구현 상태라 퀘스트 타이틀은 당분간 메타 텍스트로 대체 표시함.
 
 ---
+
+## 날짜: 2025.09.12 (금) 작업 기록
+
+### 주요 작업
+- 썸네일 캡처 시스템 추가 (ThumbnailCapture)
+  - `ThumbnailCapture.cs` 구현
+    - `Awake()`에서 `previewCamera` 초기화, 메인 카메라 설정 복사(UI 레이어 제외), `RenderTexture(rt)` 생성 및 `rt.Create()` 호출
+    - `CaptureToFile(string fullPath)`에서 수동 렌더링: `previewCamera.targetTexture = rt` → `previewCamera.Render()` → `RenderTexture.active`로 `ReadPixels` → `Texture2D`로 인코딩(`EncodeToPNG`) → 파일 쓰기 → `finally`에서 `RenderTexture.active` 및 `previewCamera.targetTexture` 복구
+    - `OnDisable()`에서 `rt.Release()` 및 `Destroy(rt)` 처리
+  - 인스펙터/설정
+    - `previewCamera`는 메인 카메라의 자식으로 배치(Transform 동기화), `enabled=false`로 수동 렌더링 제어
+    - 캡처 해상도: `width/height` 필드(기본값 512×288)
+
+- SaveManager 연동 (썸네일 생성/메타 기록)
+  - `SaveManager`에 `ThumbnailCapture thumbnailCapture` 필드 추가 (인스펙터 할당)
+  - `GetPreviewPath(int slot)` 추가: 슬롯에 대응하는 전체 썸네일 경로 반환 (예: `<persistentDataPath>/Previews/slot_5.png`)
+  - `ToRelativePreviewPath(string fullPath)` 추가: 메타에 저장할 상대경로 형태로 변환(예: `Previews/slot_5.png`)
+  - `Save(int slot, SaveIntent intent = ..., string thumbnailRelPath = null)` 오버로드: `SaveFile.meta.thumbnail`에 상대경로 기록 지원
+  - `BackgroundSaveRoutine(int slot, SaveIntent intent)` 수정
+    - `WaitForEndOfFrame()` 후 `thumbnailCapture` 유효 시 `GetPreviewPath(slot)`로 전체 경로 생성 → `thumbnailCapture.CaptureToFile(previewFullPath)` 호출
+    - 캡처 성공 시 `ToRelativePreviewPath(previewFullPath)` 값을 `Save()` 호출에 전달해 메타에 기록
+
+- ThumbnailCapture 안정성 개선 (depth / 텍스처 정리)
+  - `Awake()`에서 `rt = new RenderTexture(width, height, 24, RenderTextureFormat.ARGB32)`로 depth 24 반영
+  - `CaptureToFile()`에서 `Texture2D tex = null`을 try/catch 외부에 선언하고 `finally`에서 `if (tex != null) Destroy(tex);`로 정리 보장
+  - `finally`에서 `RenderTexture.active` 및 `previewCamera.targetTexture` 복구 유지
+
+- SaveSlot 썸네일 로드/표시 기능 추가
+  - `SaveSlot.cs`에 `RawImage preview`, `Color deactivatePreview`, `Color activatePreview` 등 SerializedField 추가
+  - `previewTexture` 필드로 로드된 텍스처 참조 보관
+  - `SetMeta(SaveManager.SaveMeta)` 변경: 메타 존재 시 `LoadPreview(meta.thumbnail)` 호출, 미존재 시 `UnloadPreview()` 호출
+  - `LoadPreview(string relativePath)` 구현: `Application.persistentDataPath`와 결합한 전체 경로에서 PNG 읽어 `Texture2D.LoadImage()`로 디코드 → `preview.texture`에 할당. 실패 시 `preview.texture = null` 처리
+  - `UnloadPreview()` 구현: 기존 `previewTexture` `Destroy()` 후 `preview.texture = null`, `preview.color`를 비활성 색으로 리셋
+
+- QuickSave 입력 추가 및 연동
+  - `InputManager.cs`에 `public event Action OnQuickSave;` 추가
+  - `Update()`에 `if (Input.GetKeyDown(KeyCode.F5)) OnQuickSave?.Invoke();` 추가
+  - `SaveManager`에서 `OnEnable()`에 `InputManager.Instance.OnQuickSave += QuickSave;` 구독 및 `OnDisable()`에서 해제
+
+- 게임 상태 ↔ SaveGuard ↔ UI 연동 및 EnterPreviousState 안정화
+  - `GameManager.cs`
+    - `EnterPreviousState()` 구현: 이전 상태 유효성 검사 → 탐색 상태 보정 → 중복 전환 방지 → `ChangeState` 호출
+    - `OnPausePressed()`에서 일시정지 복귀 흐름에 `EnterPreviousState()` 사용
+  - `CutsceneCameraManager.cs`
+    - `StartCutscene()`/`EndCutscene()` 수정: SaveGuard 직접 블락/언블락 로직 제거
+    - 컷씬 시작 시 `GameManager.EnterCutscene()` 호출, 종료 시 `GameManager.EnterPreviousState()` 호출
+  - `SaveGuard.cs`
+    - `SaveBlockTag` enum에 `Combat`, `Pause`, `UI`, `GameOver` 등 추가
+    - 블락 우선순위(예: Boss, Combat, Puzzle, Cutscene, Pause, GameOver, UI, Default) 기반 대표 태그 선택 로직 제공
+  - `UIManager`, `PlayerHUD`
+    - `PlayerHUD.SetPlayerHud(bool enabled)` 추가
+    - `UIManager.UpdatePlayerHud(bool enabled)` 래퍼 추가
+  - 상태들(CutsceneState, CombatState, PausedState 등)에서 HUD/SaveGuard 블락/해제 호출 일관성 확보
+    - `Exit()`에서 `GameManager.EnterPreviousState()` 호출 제거(상태 전환 책임 분리)
+
+- UI / SaveGuard 연동 및 상태별 UI 토글
+  - `UIManager.UpdateUI(bool)` 추가 (전체 UI 토글)
+  - `SaveGuard` 우선순위 기반 대표 태그 선택 및 블락 로직 유지
+  - `MainMenuState`, `LoadingState`, `GameOverState`, `ExplorationState` 등 각 state의 `Enter/Exit`에 `UIManager` 및 `SaveGuard` 호출 반영
+
+- 초기화 순서 및 이벤트 등록 안정화 (CoreBootstrap)
+  - 초기화 순서 명시: `InputManager` → `SaveManager` → `GameManager`
+  - `GameManager.Initialize()`에서 `OnAfterLoad` 이벤트 등록
+  - `SaveManager.Initialize()`에서 `OnQuickSave` 이벤트 등록
+  - `OnEnable()`에서 즉시 등록하는 방식으로 인한 NRE 위험 제거
+
+- 카메라 및 UI 상태 복원 흐름 구현
+  - `CameraController.ResetToPlayer()` 구현: 위치/회전/FOV/줌/커서 상태 초기화
+  - `CutsceneCameraManager.EndCutscene()`에서 `CameraController.ResetToPlayer()` 호출
+  - `GameManager.PostLoadRoutine()` 구현: 로드 후 카메라 복원, `InputManager.SetInputEnabled(true)`, `UIManager.UpdatePlayerHud(true)`, 커서 잠금 복원
+
+- 저장 중 입력 차단 및 복원
+  - `SaveManager.BackgroundSaveRoutine()` 시작 직전에 `InputManager.SetInputEnabled(false)` 호출
+  - 저장 완료(`finally`)에서 `InputManager.SetInputEnabled(true)` 호출 보장 (예외 상황 포함)
+  - 의도: 저장 중 상태 꼬임, 무기 스위칭, HUD 중복 입력 방지 및 로드 시 입력 잠금 흐름과의 일관성 확보
+
+### 메모
+- 썸네일 파이프라인
+  - 캡처는 `WaitForEndOfFrame()` 이후에 수행하되, 캡처 실패(파일 쓰기/IO 문제 등) 시에는 로그만 남기고 저장은 메타 없이 진행하도록 처리(사용자 UX를 저해하지 않기 위함).
+  - 썸네일은 `SaveMeta.thumbnail`에 상대경로(`Previews/slot_N.png`)로 기록하며, 로드 시 `SaveSlot`이 해당 파일을 읽어 UI에 표시.
+  - 썸네일 파일 관리는 저장/삭제 시 일관되게 처리 필요(예: 슬롯 덮어쓰기 시 기존 프리뷰 파일 삭제 또는 덮어쓰기).
+
+- SaveGuard / 상태 전이
+  - SaveGuard 우선순위가 낮은 태그가 남아 있더라도 우선순위가 높은 태그가 블락 중이면 저장이 차단됨 — 대표 태그 정책으로 일관성 유지.
+  - 일부 상태에서 `EnterPreviousState()` 호출 흐름을 정리하여 중복 전환/무한 루프 가능성 제거.
+
+- 입력/초기화 안정성
+  - Input → Save → Game 순 초기화 보장으로 런타임 NullReference 위험을 최대한 제거.
+  - QuickSave(F5)는 게임플레이 중 빠른 저장을 허용하되, SaveGuard에 의해 차단될 수 있음.
+
+---
