@@ -30,7 +30,8 @@ public class CutsceneCameraManager : MonoBehaviour
     public void StartCutscene(GameObject targetCamera)
     {
         // 컷씬 시작: 저장 차단
-        SaveGuard.Instance?.Block(SaveBlockTag.Cutscene);
+        // SaveGuard.Instance?.Block(SaveBlockTag.Cutscene);
+        GameManager.Instance.EnterCutscene();
 
         playerCinemachineCamera.SetActive(true);
         StartCoroutine(EnableCamNextFrame(targetCamera));
@@ -42,7 +43,8 @@ public class CutsceneCameraManager : MonoBehaviour
         StartCoroutine(DisablePlayerCameraAfterBlend(() =>
         {
             // 컷씬 종료: 저장 해제
-            SaveGuard.Instance?.Unblock(SaveBlockTag.Cutscene);
+            // SaveGuard.Instance?.Unblock(SaveBlockTag.Cutscene);
+            GameManager.Instance.EnterPreviousState();
 
             onComplete?.Invoke();
 

@@ -108,6 +108,21 @@ public class GameManager : MonoBehaviour
         ChangeState(gameOverState);
     }
 
+    public void EnterPreviousState()
+    {
+        var prev = PreviousGameState;
+
+        // 유효성 검사: null 이거나 복귀하기 부적합한 상태면 탐색 상태로 대체
+        if (prev == null || prev is MainMenuState || prev is LoadingState || prev is GameOverState || prev is PausedState)
+            prev = explorationState;
+
+        // 만약 이미 현재 상태와 동일하면 무시
+        if (CurrentGameState == prev)
+            return;
+
+        ChangeState(prev);
+    }
+
     private void OnCombatDetected()
     {
         if(CurrentGameState is ExplorationState || CurrentGameState is PuzzleState)
@@ -122,7 +137,8 @@ public class GameManager : MonoBehaviour
 
         if(CurrentGameState is PausedState)
         {
-            ChangeState(PreviousGameState);
+            // ChangeState(PreviousGameState);
+            EnterPreviousState();
         }
         else
         {            

@@ -61,6 +61,11 @@ public class PlayerHUD : MonoBehaviour
             staminaFillImage = staminaBar.fillRect.GetComponent<Image>();
     }
 
+    public void SetPlayerHud(bool isActive)
+    {
+        gameObject.SetActive(isActive);
+    }
+
     #region 플레이어 상태 관련
     public void UpdateHP(int current, int max)
     {

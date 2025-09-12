@@ -7,7 +7,9 @@ public enum SaveBlockTag
     Default,
     Puzzle,
     Cutscene,
-    Boss
+    Combat,
+    Boss,
+    Pause
 }
 
 public class SaveGuard : MonoBehaviour
@@ -35,7 +37,7 @@ public class SaveGuard : MonoBehaviour
 
     // 블락 태그 우선순위
     private static readonly SaveBlockTag[] Priority = {
-    SaveBlockTag.Boss, SaveBlockTag.Puzzle, SaveBlockTag.Cutscene, SaveBlockTag.Default
+    SaveBlockTag.Pause, SaveBlockTag.Boss, SaveBlockTag.Combat, SaveBlockTag.Puzzle, SaveBlockTag.Cutscene, SaveBlockTag.Default
     };
 
     public void Block(SaveBlockTag tag = SaveBlockTag.Default)

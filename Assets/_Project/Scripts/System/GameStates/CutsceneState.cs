@@ -5,17 +5,21 @@ public class CutsceneState : GameBaseState
     public override void Enter()
     {
         Debug.Log("[GameState] CutsceneState Enter");
-        UIManager.Instance.ShowCutsceneOverlay();
+        // UIManager.Instance.ShowCutsceneOverlay();
+        UIManager.Instance.UpdatePlayerHud(false);
         TimeManager.Instance.SetTimeScale(0f);
 
-        // TODO: 실제 컷씬 재생
-        // TODO: 컷씬 매니저 연동
+        SaveGuard.Instance?.Block(SaveBlockTag.Cutscene);
     }
 
     public override void Exit()
     {
-        UIManager.Instance.HideCutsceneOverlay();
+        // UIManager.Instance.HideCutsceneOverlay();
+        UIManager.Instance.UpdatePlayerHud(true);
         TimeManager.Instance.InitializeTimeState();
-        GameManager.Instance.ChangeState(GameManager.Instance.PreviousGameState);
+
+        SaveGuard.Instance?.ClearTag(SaveBlockTag.Cutscene);
+        
+        // Exploration 전환은 컷씬Manager 쪽에서 일어나므로 여기선 명시하지 않음
     }
 }

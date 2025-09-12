@@ -87,6 +87,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region 플레이어 상태 업데이트
+    public void UpdatePlayerHud(bool value) => playerHUD?.SetPlayerHud(value);
     // === 체력, MP, 스태미나 ===
     public void UpdateHP(int current, int max) => playerHUD?.UpdateHP(current, max);
 
