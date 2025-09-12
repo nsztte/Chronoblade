@@ -181,7 +181,9 @@ public class SaveManager : MonoBehaviour
         try
         {
             SaveGuard.Instance?.Block();
-            OnBeforeSave?.Invoke();                 // UI 숨기기
+
+            InputManager.Instance?.SetInputEnabled(false);  // 입력 잠금
+            OnBeforeSave?.Invoke();
             yield return new WaitForEndOfFrame();   // 프레임 경계에서 캡쳐
 
             // --- 썸네일 캡처 시도 ---
@@ -209,9 +211,10 @@ public class SaveManager : MonoBehaviour
 
             yield return null;
 
+            InputManager.Instance?.SetInputEnabled(true);
             if(success)
             {
-                OnSaved?.Invoke();      // UI 표시, 슬롯 업데이트
+                OnSaved?.Invoke();      // 슬롯 업데이트
                 UIManager.Instance?.ShowToast("저장 완료");
                 Debug.Log(Application.persistentDataPath);
             }
@@ -221,7 +224,8 @@ public class SaveManager : MonoBehaviour
         finally
         {
             SaveGuard.Instance?.Unblock();
-            isSaving = false;   
+            isSaving = false;
+            InputManager.Instance?.SetInputEnabled(true);
         }
     }
 
