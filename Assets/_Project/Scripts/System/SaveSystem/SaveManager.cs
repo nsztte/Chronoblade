@@ -22,6 +22,7 @@ public class SaveManager : MonoBehaviour
         }
         Instance = this;
 
+        InputManager.Instance.OnQuickSave += QuickSave;
         OnAfterLoad += StartSession;
     }
     #endregion

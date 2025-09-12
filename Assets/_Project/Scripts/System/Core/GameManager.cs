@@ -21,7 +21,7 @@ public class GameManager : MonoBehaviour
     public GameBaseState PreviousGameState { get; private set; }
 
 
-    #region 싱글톤
+    #region 싱글톤 및 초기화
     public static GameManager Instance { get; private set; }
 
     public void Initialize()
@@ -32,6 +32,9 @@ public class GameManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        InputManager.Instance.OnPause += OnPausePressed;
+        SaveManager.Instance.OnAfterLoad += HandleAfterLoad;
     }
     #endregion
 
@@ -39,23 +42,35 @@ public class GameManager : MonoBehaviour
     {
         gameStateMachine = GetComponent<GameStateMachine>();
     }
+
     private void Start()
     {
-        // ChangeState(mainMenuState);
-        
         if(isTimeTest)
             EnterPuzzle();
         else
             EnterExploration();  // 메인메뉴 구현 이후에는 수정할것
-
-        Enemy.OnCombatStarted += OnCombatDetected;
-        InputManager.Instance.OnPause += OnPausePressed;
     }
 
-    private void OnDestroy()
+    private void OnEnable()
+    {
+        Enemy.OnCombatStarted += OnCombatDetected;
+
+        if(InputManager.Instance != null)
+            InputManager.Instance.OnPause += OnPausePressed;
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnAfterLoad += HandleAfterLoad;
+    }
+
+    private void OnDisable()
     {
         Enemy.OnCombatStarted -= OnCombatDetected;
-        InputManager.Instance.OnPause -= OnPausePressed;
+
+        if(InputManager.Instance != null)
+            InputManager.Instance.OnPause -= OnPausePressed;
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnAfterLoad -= HandleAfterLoad;
     }
 
     public void ChangeState(GameBaseState newState)
@@ -144,5 +159,15 @@ public class GameManager : MonoBehaviour
         {            
             EnterPaused();
         }
+    }
+
+    private void HandleAfterLoad()
+    {
+        StartCoroutine(PostLoadRoutine());
+    }
+
+    private System.Collections.IEnumerator PostLoadRoutine()
+    {
+        yield return null;
     }
 }

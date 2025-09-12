@@ -11,13 +11,17 @@ public class CoreBootstrap : MonoBehaviour
 
         DontDestroyOnLoad(gameObject);
 
-        // 시스템
+        // 인풋 시스템
+        GetComponentInChildren<InputManager>(true)?.Initialize();
+
+        // 저장 시스템
+        GetComponentInChildren<SaveManager>(true)?.Initialize();
+        GetComponentInChildren<SaveGuard>(true)?.Initialize();
+
+        // 게임시스템
         GetComponentInChildren<GameManager>(true)?.Initialize();
         GetComponentInChildren<TimeManager>(true)?.Initialize();
         GetComponentInChildren<TimeInputHandler>(true)?.Initialize();
-        GetComponentInChildren<InputManager>(true)?.Initialize();
-        GetComponentInChildren<SaveGuard>(true)?.Initialize();
-        GetComponentInChildren<SaveManager>(true)?.Initialize();
         // GetComponentInChildren<AudioManager>(true)?.Initialize();
 
         // 게임플레이
