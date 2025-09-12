@@ -45,6 +45,7 @@ public class CutsceneCameraManager : MonoBehaviour
             // 컷씬 종료: 저장 해제
             // SaveGuard.Instance?.Unblock(SaveBlockTag.Cutscene);
             GameManager.Instance.EnterPreviousState();
+            CameraController.Instance?.ResetToPlayer();
 
             onComplete?.Invoke();
 

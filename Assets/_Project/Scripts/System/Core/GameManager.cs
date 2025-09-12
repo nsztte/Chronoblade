@@ -169,5 +169,15 @@ public class GameManager : MonoBehaviour
     private System.Collections.IEnumerator PostLoadRoutine()
     {
         yield return null;
+
+        // 1. 입력 잠금 해제
+        InputManager.Instance?.SetInputEnabled(true);
+
+        // 2. HUD 및 UI 복구
+        UIManager.Instance?.UpdatePlayerHud(true);
+        UIManager.Instance?.SetCursorLockState(CursorLockMode.Locked);
+
+        // 3. 카메라 위치 초기화
+        CameraController.Instance?.ResetToPlayer();
     }
 }

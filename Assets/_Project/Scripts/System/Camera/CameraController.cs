@@ -202,15 +202,25 @@ public class CameraController : MonoBehaviour
 
     public float GetDefaultCameraLocalY() => defaultLocalY;
 
-    // public void SetCameraMeleeAttackOffset(float forwardOffset, float lerpSpeed = 15f)
-    // {
-    //     cameraLerpSpeed = lerpSpeed;
-    //     targetLocalPosition = defaultLocalPosition + new Vector3(0, 0, forwardOffset);
-    // }
+    public void ResetToPlayer()
+    {
+        // 위치 초기화
+        transform.localPosition = new Vector3(0, defaultLocalY, 0); // 기본 Y 높이 복구
+        targetLocalY = defaultLocalY;
 
-    // public void ResetCameraPosition(float lerpSpeed = 10f)
-    // {
-    //     cameraLerpSpeed = lerpSpeed;
-    //     targetLocalPosition = defaultLocalPosition;
-    // }
+        // 회전 초기화
+        rotX = 0f;
+        transform.localRotation = Quaternion.identity;
+
+        // FOV 복구
+        targetFOV = normalFOV;
+        playerCamera.fieldOfView = normalFOV;
+
+        // 줌 상태 초기화
+        isZoomed = false;
+
+        // 커서 락 상태 복구
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
+    }
 }
