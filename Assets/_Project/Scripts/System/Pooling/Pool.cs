@@ -6,6 +6,7 @@ public class Pool<T> : PoolBase where T : Component
 {
     private readonly Queue<T> pool = new Queue<T>();
     private readonly HashSet<T> activeSet = new HashSet<T>();
+    private readonly Dictionary<T, Coroutine> scheduledRelease = new Dictionary<T, Coroutine>();
     private int createdCount = 0;
     protected bool CanCreateMore => (maxSize == 0) || (createdCount < maxSize);
     
@@ -62,7 +63,7 @@ public class Pool<T> : PoolBase where T : Component
             return null;
         }
 
-        if(item = null) return null;
+        if(item == null) return null;
 
         activeSet.Add(item);
         item.gameObject.SetActive(true);
@@ -72,17 +73,26 @@ public class Pool<T> : PoolBase where T : Component
     /// <summary>항목 반환</summary>
     public virtual void Release(T item)
     {
-        if(item = null) return;
+        if(item == null) return;
+
+        // 만약 자동 반환 코루틴이 예약되어 있다면 취소
+        if (scheduledRelease.TryGetValue(item, out var coro))
+        {
+            if (coro != null) StopCoroutine(coro);
+            scheduledRelease.Remove(item);
+        }
 
         // 제거할 수 없으면 (이미 반환되었거나 해당 소속이 아님) -> 비활성화 후 큐에 넣음
         if(!activeSet.Remove(item))
         {
+            OnBeforeRelease(item);
             item.gameObject.SetActive(false);
             if (!pool.Contains(item)) pool.Enqueue(item);
             return;
         }
 
         // 기본 정리: 비활성화 + 부모 재설정 후 큐에 넣음
+        OnBeforeRelease(item);
         item.gameObject.SetActive(false);
         item.transform.SetParent(poolParent, true);
         pool.Enqueue(item);
@@ -92,14 +102,27 @@ public class Pool<T> : PoolBase where T : Component
     public Coroutine ReleaseAfter(T item, float seconds)
     {
         if (item == null) return null;
-        return StartCoroutine(ReleaseAfterCoroutine(item, seconds));
+        // 만약 이미 예약이 있다면 취소 후 재예약
+        if (scheduledRelease.TryGetValue(item, out var existing))
+        {
+            if (existing != null) StopCoroutine(existing);
+            scheduledRelease.Remove(item);
+        }
+
+        var c = StartCoroutine(ReleaseAfterCoroutine(item, seconds));
+        scheduledRelease[item] = c;
+        return c;
     }
 
     private IEnumerator ReleaseAfterCoroutine(T item, float seconds)
     {
         yield return new WaitForSeconds(seconds);
         if (item != null) Release(item);
+        if (scheduledRelease.ContainsKey(item)) scheduledRelease.Remove(item);
     }
+
+    /// <summary>파생 클래스가 항목 반환 전에 실행할 정리 로직</summary>
+    protected virtual void OnBeforeRelease(T item){}
 
     public override void ReturnAll()
     {
