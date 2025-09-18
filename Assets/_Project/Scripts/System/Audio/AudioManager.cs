@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -8,7 +7,7 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 public class AudioManager : MonoBehaviour
 {
-    #region Singleton
+    #region 싱글톤 및 초기화
     public static AudioManager Instance { get; private set; }
 
     public void Initialize()
@@ -19,6 +18,8 @@ public class AudioManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        sfxPool.InitPool();
     }
     #endregion
 
@@ -43,7 +44,7 @@ public class AudioManager : MonoBehaviour
 
     // 내부 상태
     private AudioSource currentBgmSource;       // 현재 소스(A 또는 B)
-    private AudioSource fadingBgmSource;        // 이전 소스(페이드 아웃)
+    // private AudioSource fadingBgmSource;        // 이전 소스(페이드 아웃)
     private readonly Dictionary<string, AudioClip> clipCache = new(); // name -> clip
     private readonly Dictionary<string, AsyncOperationHandle<AudioClip>> clipHandles = new();
     private readonly Dictionary<string, AsyncOperationHandle<IList<AudioClip>>> groupHandles = new();
@@ -58,7 +59,7 @@ public class AudioManager : MonoBehaviour
     {
         // 기본 currentBgmSource 설정
         currentBgmSource = bgmSourceA != null ? bgmSourceA : bgmSourceB;
-        fadingBgmSource = null;
+        // fadingBgmSource = null;
     }
 
     private void Start()
@@ -214,7 +215,6 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region 3D SFX 플레이 (SfxPool)
-
     /// <summary>
     /// Addressable 주소로부터 AudioClip을 로드하여 SfxPool로 재생
     /// 로드 핸들은 clipHandles[address]에 보관 (자주 사용하면 캐시로 유지)

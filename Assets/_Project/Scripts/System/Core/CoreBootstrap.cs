@@ -22,7 +22,7 @@ public class CoreBootstrap : MonoBehaviour
         GetComponentInChildren<GameManager>(true)?.Initialize();
         GetComponentInChildren<TimeManager>(true)?.Initialize();
         GetComponentInChildren<TimeInputHandler>(true)?.Initialize();
-        // GetComponentInChildren<AudioManager>(true)?.Initialize();
+        GetComponentInChildren<AudioManager>(true)?.Initialize();
 
         // 게임플레이
         GetComponentInChildren<ItemManager>(true)?.Initialize();
