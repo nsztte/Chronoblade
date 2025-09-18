@@ -2884,3 +2884,39 @@ Enemy FSM(상태머신) 시스템 구현
   - QuickSave(F5)는 게임플레이 중 빠른 저장을 허용하되, SaveGuard에 의해 차단될 수 있음.
 
 ---
+
+## 날짜: 2025.09.18 (목) 작업 기록
+
+### 주요 작업
+- 오디오 시스템 전반 구현 (풀링 + 매니저 + 믹서 + 캐시)
+  - AudioMixer 에셋 구성 (Master/BGM/SFX 그룹 및 파라미터 설정)
+  - AudioManager.cs 전체 구현 (UI, 3D, BGM 사운드 관리 및 믹서 연동)
+  - Master/BGM/SFX 볼륨 PlayerPrefs 저장/불러오기 및 dB 변환 적용
+  - 마스터 뮤트 기능 구현 (슬라이더 조정과 무관하게 음소거 처리)
+
+- 범용 풀 시스템 (PoolBase<T> / Pool<T>) 구현
+  - AudioSource 풀링을 포함한 인스턴스 재사용 구조 마련
+  - 자동 반환 / 수동 반환 / 루프용 재생 분리 및 충돌 방지 설계
+
+- SfxPool 도입 및 3D/루프/수동 사운드 지원
+  - PlayAt, PlayLoop, StopLoop, ReleaseAfter 등 재생 API 구성
+  - 어드레서블 Address 기반 프리팹 로드 및 재생 기능 구축
+  - 자동 반환 예약 중복 방지 및 루프 충돌 안전 해제 구현
+
+- AudioManager의 전반적 구조 설계 및 최적화
+  - AudioClip 캐시(clipCache), 핸들 관리(handle/label별) 설계
+  - UI용 SFX는 사전 Preload 방식, 3D 사운드는 OnDemand 비동기 로드
+  - bgmSourceA/B 듀얼 오디오소스를 통한 크로스페이드 구현
+
+- Audio 관련 프리팹/오브젝트 인스펙터 설정 완료
+  - SfxPool용 AudioSource 프리팹 (3D, Output=SFX) 구성
+  - uiSfxSource / bgmSourceA / bgmSourceB 설정 및 연결
+
+### 메모
+- Addressables 로드/해제 구조를 AudioManager에서 통합 관리하도록 설계
+- 오디오 믹서 그룹을 통해 전체 볼륨 제어 및 뮤트 연동 가능
+- SfxPool은 향후 이펙트 풀 등으로도 확장 가능한 범용 풀 시스템 기반으로 구현
+- UI 및 옵션 패널 연동은 내일 진행 예정 (옵션 UI 탭 구조는 이미 완성된 상태)
+
+---
+
