@@ -19,7 +19,7 @@ public class AudioManager : MonoBehaviour
         }
         Instance = this;
 
-        sfxPool.InitPool();
+        sfxPool.InitPool(); // 나중에 위치 옮길 수도 있음
     }
     #endregion
 
@@ -55,6 +55,11 @@ public class AudioManager : MonoBehaviour
     private float bgmLinear = 1f;
     private float sfxLinear = 1f;
 
+    // 뮤트
+    private const string PREF_MASTER_MUTED = "opt_master_muted";
+    private bool masterMuted = false;
+    private const float MUTE_DB = -80f;
+
     private void Awake()
     {
         // 기본 currentBgmSource 설정
@@ -69,7 +74,6 @@ public class AudioManager : MonoBehaviour
     }
 
     #region 믹서 볼륨 API
-
     /// <summary>선형(0~1) 값 -> dB 변환 후 Mixer에 설정</summary>
     private void SetMixerVolume(string paramName, float linear)
     {
@@ -80,7 +84,8 @@ public class AudioManager : MonoBehaviour
     public void SetMaster(float linear)
     {
         masterLinear = Mathf.Clamp01(linear);
-        SetMixerVolume(masterParam, masterLinear);
+        if (!masterMuted)
+            SetMixerVolume(masterParam, masterLinear);
         PlayerPrefs.SetFloat(PREF_MASTER, masterLinear);
     }
 
@@ -107,14 +112,38 @@ public class AudioManager : MonoBehaviour
         masterLinear = PlayerPrefs.GetFloat(PREF_MASTER, 1f);
         bgmLinear = PlayerPrefs.GetFloat(PREF_BGM, 1f);
         sfxLinear = PlayerPrefs.GetFloat(PREF_SFX, 1f);
+        masterMuted = PlayerPrefs.GetInt(PREF_MASTER_MUTED, 0) == 1;
     }
 
     private void ApplyMixerVolumes()
     {
-        SetMixerVolume(masterParam, masterLinear);
-        SetMixerVolume(bgmParam, bgmLinear);
-        SetMixerVolume(sfxParam, sfxLinear);
+        if (mixer != null)
+        {
+            float masterDb = masterMuted
+                ? MUTE_DB
+                : (masterLinear <= 0f ? MUTE_DB : Mathf.Log10(Mathf.Clamp01(masterLinear)) * 20f);
+
+            mixer.SetFloat(masterParam, masterDb);
+            
+            SetMixerVolume(bgmParam, bgmLinear);
+            SetMixerVolume(sfxParam, sfxLinear);
+        }
     }
+    #endregion
+
+    #region 뮤트
+    public void SetMasterMuted(bool mute)
+    {
+        masterMuted = mute;
+        PlayerPrefs.SetInt(PREF_MASTER_MUTED, mute ? 1 : 0);
+        // 즉시 적용
+        if (mixer != null)
+        {
+            mixer.SetFloat(masterParam, masterMuted ? MUTE_DB : (masterLinear <= 0f ? -80f : Mathf.Log10(Mathf.Clamp01(masterLinear)) * 20f));
+        }
+    }
+
+    public bool IsMasterMuted() => masterMuted;
     #endregion
 
     #region UI SFX 프리로드, 플레이
@@ -194,7 +223,7 @@ public class AudioManager : MonoBehaviour
         var handle = Addressables.LoadAssetAsync<AudioClip>(key);
         clipHandles[key] = handle; // 먼저 등록해 중복 호출 방지
 
-        Addressables.LoadAssetAsync<AudioClip>(key).Completed += (op) =>
+        handle.Completed += op =>
         {
             if (op.Status == AsyncOperationStatus.Succeeded)
             {
