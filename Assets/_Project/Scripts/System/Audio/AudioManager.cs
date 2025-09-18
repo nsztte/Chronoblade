@@ -213,6 +213,72 @@ public class AudioManager : MonoBehaviour
     }
     #endregion
 
+    #region 3D SFX 플레이 (SfxPool)
+
+    /// <summary>
+    /// Addressable 주소로부터 AudioClip을 로드하여 SfxPool로 재생
+    /// 로드 핸들은 clipHandles[address]에 보관 (자주 사용하면 캐시로 유지)
+    /// </summary>
+    public void Play3dSfxByAddress(string address, Vector3 pos, float volume = 1f, float pitch = 1f, bool cacheClip = true)
+    {
+        if (string.IsNullOrEmpty(address) || sfxPool == null) return;
+
+        // 이미 캐시된 경우 즉시 재생
+        if (clipCache.TryGetValue(address, out var cached) && cached != null)
+        {
+            sfxPool.PlayAt(cached, pos, volume, pitch);
+            return;
+        }
+
+        // 로드 후 재생
+        var h = Addressables.LoadAssetAsync<AudioClip>(address);
+        h.Completed += op =>
+        {
+            if (op.Status == AsyncOperationStatus.Succeeded && op.Result != null)
+            {
+                var clip = op.Result;
+                sfxPool.PlayAt(clip, pos, volume, pitch);
+                if (cacheClip)
+                {
+                    clipCache[address] = clip;
+                    clipHandles[address] = op;
+                }
+            }
+            else
+            {
+                Debug.LogWarning($"AudioManager: 3D SFX 로드 실패: {address}");
+            }
+        };
+    }
+
+    /// <summary>
+    /// 캐시된 AudioClip으로 재생 (Addressables 로드 없이)
+    /// </summary>
+    public void Play3dSfxFromCache(string key, Vector3 pos, float volume = 1f, float pitch = 1f)
+    {
+        if (sfxPool == null) return;
+        if (string.IsNullOrEmpty(key)) return;
+        if (clipCache.TryGetValue(key, out var clip) && clip != null)
+        {
+            sfxPool.PlayAt(clip, pos, volume, pitch);
+        }
+    }
+
+    /// <summary>
+    /// 캐시된 개별 클립(주소) 언로드 (사용자 호출로 메모리 관리)
+    /// </summary>
+    public void ReleaseClip(string address)
+    {
+        if (string.IsNullOrEmpty(address)) return;
+        if (clipHandles.TryGetValue(address, out var h))
+        {
+            if (h.IsValid()) Addressables.Release(h);
+            clipHandles.Remove(address);
+        }
+        if (clipCache.ContainsKey(address)) clipCache.Remove(address);
+    }
+    #endregion
+
     #region BGM (Addressables + Crossfade)
     /// <summary>
     /// BGM 주소를 비동기 로드해서 재생(크로스페이드)
