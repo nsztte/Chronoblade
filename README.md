@@ -2920,3 +2920,54 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 날짜 (예: 2025.09.19 (금)) 작업 기록
+
+### 주요 작업
+- OptionUI 전체 구현 및 탭 구조 정비
+  - OptionOpenMode(Title, InGame) 분기처리로 저장 탭 조건부 표시
+  - 탭 구조: 저장 / 스크린 / 오디오 / 컨트롤
+  - 각 탭은 IOptionsTab 인터페이스 기반으로 독립 동작
+  - 닫기 버튼 액션 델리게이트 처리(SetCloseButtonAction)로 상황에 따라 핸들링 전환
+
+- 저장 탭(SaveTabController) 리팩토링
+  - 기존 SaveUI → SaveTabController로 스크립트명 변경
+  - 저장/불러오기 버튼 → 패널 오픈 연결
+  - 닫기 버튼 → 패널 닫힘과 OptionUI 닫힘 사이 핸들링 분리
+  - IOptionsTab 구현 및 그룹/패널 분리 구조 반영
+
+- 스크린 탭(ScreenTabController) 구현
+  - 해상도 / 화면모드 / 주사율 / VSync 드롭다운 자동 설정
+  - 선택한 옵션 PlayerPrefs 저장 및 적용
+  - 주사율 필터링 및 드롭다운 연동 로직 포함
+
+- 오디오 탭(AudioTabController) 구현
+  - 마스터 / BGM / SFX 볼륨 슬라이더 구현
+  - 음소거 토글 추가
+  - AudioManager에 볼륨 연동 및 저장 처리
+
+- 컨트롤 탭(ControlTabController) 구현
+  - 마우스 감도 X/Y 슬라이더 + 실시간 값 표시
+  - Y축 반전 / 달리기 토글 / 웅크리기 토글 설정 구현
+  - PlayerPrefs 저장 및 InputManager 연동
+
+- InputManager 확장
+  - 감도/반전/토글 설정 로드 및 저장 함수 추가
+  - Toggle 방식 웅크리기/달리기 처리 방식 분리 구현
+  - 입력 처리 로직 정리 및 감도 반영
+
+- UIManager 오버레이 시스템 개선
+  - ShowOverlayBackground / HideOverlayBackground 내에서 GameManager 상태 변경 통합
+  - 일시정지 / 상점 / 인벤토리 / 옵션 UI의 일관된 흐름 정리
+
+- PauseUI 연동
+  - PauseUI → OptionUI 열기 동작 처리(OpenOption)
+  - 옵션 진입 시 PauseUI 비활성화, 종료 시 복귀
+
+### 메모
+- 각 탭은 추후에도 독립적으로 확장 가능하도록 IOptionsTab 구조를 도입함
+- 오버레이 UI 진입 시 일시정지 상태로 자동 전환되도록 흐름을 단일화하여 PauseUI/OptionUI/ShopUI 간 충돌 최소화
+- 마우스 감도는 0.1 ~ 2.0 범위로 제한하며 슬라이더 step 및 숫자 표시 추가
+- 향후 사운드도 슬라이더 step 및 숫자 표시 추가 고려
+- 저장탭 내 세이브/로드 패널 오픈 시 닫기 버튼 핸들링 전환 구조 확정 (패널 → 그룹 → 옵션 UI 계층적 닫힘 처리)
+
+---
