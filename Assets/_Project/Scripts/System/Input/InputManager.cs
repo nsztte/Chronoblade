@@ -3,7 +3,7 @@ using System;
 
 public class InputManager : MonoBehaviour
 {
-    #region Singleton
+    #region 싱글톤 및 초기화
     public static InputManager Instance { get; private set; }
 
     public void Initialize()
@@ -14,6 +14,8 @@ public class InputManager : MonoBehaviour
             return;
         }
         Instance = this;
+
+        LoadControlSettings();
     }
     #endregion
 
@@ -42,6 +44,25 @@ public class InputManager : MonoBehaviour
     public event Action OnQuickSave;                  // F5
     #endregion
 
+    #region 옵션 무브 값
+    private bool toggleSprint;
+    private bool toggleCrouch;
+    private bool invertMouseY;
+    private float mouseSensitivityX = 1f;
+    private float mouseSensitivityY = 1f;
+    private bool sprintState;
+    private bool crouchState;
+    #endregion
+    
+    #region playerprefs 전용 상수
+    private const string PREF_TOGGLE_SPRINT = "Controls_Toggle_Sprint";
+    private const string PREF_TOGGLE_AIM = "Controls_Toggle_Aim";
+    private const string PREF_TOGGLE_CROUCH = "Controls_Toggle_Crouch";
+    private const string PREF_INVERT_Y = "Controls_Invert_Y";
+    private const string PREF_INVERT_SCROLL = "Controls_Invert_Scroll";
+    private const string PREF_SENS_X = "Controls_Mouse_SensX";
+    private const string PREF_SENS_Y = "Controls_Mouse_SensY";
+    #endregion
     private float attackKeyDownTime;
     private const float LIGHT_ATTACK_THRESHOLD = 0.2f;
 
@@ -80,8 +101,12 @@ public class InputManager : MonoBehaviour
         if(PlayerManager.Instance.IsFrozen) return; 
 
         // 시점 회전 입력 (마우스)
-        Vector2 lookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
-        OnLookInput?.Invoke(lookInput);
+        Vector2 rawLookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
+        Vector2 adjustedLook = new Vector2(
+            rawLookInput.x * mouseSensitivityX,
+            (invertMouseY ? -1 : 1) * rawLookInput.y * mouseSensitivityY
+        );
+        OnLookInput?.Invoke(adjustedLook);
 
         // 마비 상태에서는 시점 회전만 적용, 나머지 조작 차단
         if(PlayerManager.Instance.IsParalyzed) return;
@@ -93,16 +118,44 @@ public class InputManager : MonoBehaviour
         // 점프 입력
         if (Input.GetKeyDown(KeyCode.Space))
             OnJumpPressed?.Invoke();
-
+            
         // 달리기 입력
         if (Input.GetKeyDown(KeyCode.LeftShift))
-            OnRunStarted?.Invoke();
-        if (Input.GetKeyUp(KeyCode.LeftShift))
+        {
+            if (toggleSprint)
+            {
+                sprintState = !sprintState;
+                if (sprintState) OnRunStarted?.Invoke();
+                else OnRunCanceled?.Invoke();
+            }
+            else
+            {
+                OnRunStarted?.Invoke();
+            }
+        }
+        if (!toggleSprint && Input.GetKeyUp(KeyCode.LeftShift))
+        {
             OnRunCanceled?.Invoke();
+        }
 
         // 웅크리기 입력
         if (Input.GetKeyDown(KeyCode.LeftControl))
+        {
+            if (toggleCrouch)
+            {
+                crouchState = !crouchState;
+                if (crouchState) OnCrouchPressed?.Invoke(); // 토글 ON
+                else OnCrouchPressed?.Invoke();
+            }
+            else
+            {
+                OnCrouchPressed?.Invoke();
+            }
+        }
+        if (!toggleCrouch && Input.GetKeyUp(KeyCode.LeftControl))
+        {
             OnCrouchPressed?.Invoke();
+        }
 
         // 총기류 공격 입력 (좌클릭)
         if (Input.GetMouseButtonDown(0))
@@ -147,7 +200,6 @@ public class InputManager : MonoBehaviour
         }
 
         // 퀵슬롯 입력
-        // HandleWeaponSwitching();
         HandleQuickSlotActivation();
 
         // 상호작용(F키)
@@ -163,6 +215,16 @@ public class InputManager : MonoBehaviour
 
         if(Input.GetKeyDown(KeyCode.F5))
             OnQuickSave?.Invoke();
+    }
+
+    private void LoadControlSettings()
+    {
+        toggleSprint = PlayerPrefs.GetInt(PREF_TOGGLE_SPRINT, 0) == 1;
+        toggleCrouch = PlayerPrefs.GetInt(PREF_TOGGLE_CROUCH, 0) == 1;
+        invertMouseY = PlayerPrefs.GetInt(PREF_INVERT_Y, 0) == 1;
+
+        mouseSensitivityX = PlayerPrefs.GetFloat(PREF_SENS_X, 1f);
+        mouseSensitivityY = PlayerPrefs.GetFloat(PREF_SENS_Y, 1f);
     }
 
     public void SetInputEnabled(bool enabled)
