@@ -3,12 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using TMPro;
 using System.Linq;
-using System.Globalization;
 
-public class SaveUI : MonoBehaviour
+public class SaveTabController : MonoBehaviour
 {
     public enum SaveUIMode { LoadOnly, SaveOnly }
 
+    [SerializeField] private GameObject saveLoadPanel;
     [SerializeField] private TMP_Text modeTitleText;
     [SerializeField] private List<SaveSlot> slotList = new();
     [SerializeField] private SaveUIMode currentMode;
@@ -27,7 +27,7 @@ public class SaveUI : MonoBehaviour
 
     public void Open(SaveUIMode mode)
     {
-        gameObject.SetActive(true);
+        saveLoadPanel.SetActive(true);
 
         currentMode = mode;
         modeTitleText.text = mode switch {
@@ -41,7 +41,7 @@ public class SaveUI : MonoBehaviour
 
     public void Close()
     {
-        gameObject.SetActive(false);
+        saveLoadPanel.SetActive(false);
     }
 
     private void RefreshSlots()

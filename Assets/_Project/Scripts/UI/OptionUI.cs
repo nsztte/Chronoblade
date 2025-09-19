@@ -26,7 +26,7 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private GameObject controlGroup;
 
     [Header("탭 컨트롤러")]
-    [SerializeField] private SaveUI saveUI;
+    [SerializeField] private SaveTabController saveTabController;
     [SerializeField] private MonoBehaviour screenTabController;
     [SerializeField] private MonoBehaviour audioTabController;
     [SerializeField] private MonoBehaviour controlTabController;
@@ -50,7 +50,7 @@ public class OptionUI : MonoBehaviour
         tabGroups = new[] { saveGroup, screenGroup, audioGroup, controlGroup };
         tabControllers = new IOptionsTab[4];
 
-        AssignTabController(TAB_SAVE, saveUI);
+        AssignTabController(TAB_SAVE, saveTabController);
         AssignTabController(TAB_SCREEN, screenTabController);
         AssignTabController(TAB_AUDIO, audioTabController);
         AssignTabController(TAB_CONTROL, controlTabController);
