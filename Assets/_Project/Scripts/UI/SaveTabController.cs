@@ -1,20 +1,39 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
+using UnityEngine.Events;
 using TMPro;
 using System.Linq;
 
-public class SaveTabController : MonoBehaviour
+public class SaveTabController : MonoBehaviour, IOptionsTab
 {
     public enum SaveUIMode { LoadOnly, SaveOnly }
 
+    [Header("패널")]
+    [SerializeField] private GameObject saveLoadGroup;
     [SerializeField] private GameObject saveLoadPanel;
+
+    [Header("버튼")]
+    [SerializeField] private Button saveButton;
+    [SerializeField] private Button loadButton;
+    [SerializeField] private Button closeButton;
+
+    [Header("설정")]
     [SerializeField] private TMP_Text modeTitleText;
     [SerializeField] private List<SaveSlot> slotList = new();
-    [SerializeField] private SaveUIMode currentMode;
+    [Tooltip("디버그용")] [SerializeField] private SaveUIMode currentMode;
 
     private const int ManualSlotStart = 5;
+    private UnityAction defaultCloseAction;
 
+    private void Start()
+    {
+        saveButton.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
+        loadButton.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
+
+        defaultCloseAction = UIManager.Instance.OptionUI.Close;
+    }
     private void OnEnable()
     {
         SaveManager.Instance.OnSaved += RefreshSlots;
@@ -25,9 +44,26 @@ public class SaveTabController : MonoBehaviour
         SaveManager.Instance.OnSaved -= RefreshSlots;
     }
 
-    public void Open(SaveUIMode mode)
+    public void OnOpen(OptionOpenMode from)
     {
+        saveLoadGroup.SetActive(true);
+        saveLoadPanel.SetActive(false);
+    }
+
+    public void OnClose()
+    {
+        saveLoadGroup.SetActive(false);
+        saveLoadPanel.SetActive(false);
+    }
+
+    public void Refresh() {}
+
+    public void OpenPanel(SaveUIMode mode)
+    {
+        saveLoadGroup.SetActive(false);
         saveLoadPanel.SetActive(true);
+
+        UIManager.Instance.OptionUI.SetCloseButtonAction(ClosePanel);
 
         currentMode = mode;
         modeTitleText.text = mode switch {
@@ -39,9 +75,12 @@ public class SaveTabController : MonoBehaviour
         RefreshSlots();
     }
 
-    public void Close()
+    public void ClosePanel()
     {
         saveLoadPanel.SetActive(false);
+        saveLoadGroup.SetActive(true);
+
+        UIManager.Instance.OptionUI.SetCloseButtonAction(defaultCloseAction);
     }
 
     private void RefreshSlots()

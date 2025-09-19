@@ -13,6 +13,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private PauseUI pauseUI;
     [SerializeField] private TooltipUI tooltipUI;
     [SerializeField] private FadeUI fadeUI;
+    [SerializeField] private OptionUI optionUI;
 
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
@@ -25,6 +26,7 @@ public class UIManager : MonoBehaviour
     public ShopUI ShopUI => shopUI;
     public TooltipUI TooltipUI => tooltipUI;
     public FadeUI FadeUI => fadeUI;
+    public OptionUI OptionUI => optionUI;
 
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;
     public bool IsInventoryOpen => inventoryUI != null && inventoryUI.gameObject.activeSelf;

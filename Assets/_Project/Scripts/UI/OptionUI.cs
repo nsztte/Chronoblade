@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
+using UnityEngine.Events;
 
 public enum OptionOpenMode { Title, InGame }
 
@@ -31,6 +32,9 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private MonoBehaviour audioTabController;
     [SerializeField] private MonoBehaviour controlTabController;
 
+    [Header("닫기 버튼")]
+    [SerializeField] private Button closeButton;
+
     private IOptionsTab[] tabControllers;
     private GameObject[] tabGroups;
     private Button[] tabButtons;
@@ -60,6 +64,8 @@ public class OptionUI : MonoBehaviour
         audioTabButton.onClick.AddListener(() => ShowTab(TAB_AUDIO));
         controlTabButton.onClick.AddListener(() => ShowTab(TAB_CONTROL));
 
+        closeButton.onClick.AddListener(() => Close());
+
         gameObject.SetActive(false);
     }
 
@@ -82,6 +88,12 @@ public class OptionUI : MonoBehaviour
 
         if (currentTab >= 0 && currentTab < tabControllers.Length)
             tabControllers[currentTab]?.OnClose();
+    }
+
+    public void SetCloseButtonAction(UnityAction action)
+    {
+        closeButton.onClick.RemoveAllListeners();
+        closeButton.onClick.AddListener(action);
     }
 
     private void ShowTab(int index)
