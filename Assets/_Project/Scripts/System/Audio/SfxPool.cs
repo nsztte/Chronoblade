@@ -11,8 +11,8 @@ public class SfxPool : Pool<AudioSource>
     [SerializeField] private float returnMargin = 0.05f; // 재생 종료 후 추가 여유시간
 
     // Addressables로 로드했을 경우의 핸들(있으면 Release 필요)
-    private AsyncOperationHandle<GameObject>? prefabHandle = null;
-    private bool prefabFromAddressables = false;
+    // private AsyncOperationHandle<GameObject>? prefabHandle = null;
+    // private bool prefabFromAddressables = false;
 
     // 루프 관리: key -> AudioSource (같은 key로 PlayLoop 호출 시 이전 루프 자동 종료)
     private readonly Dictionary<string, AudioSource> activeLoopByKey = new Dictionary<string, AudioSource>();
@@ -28,32 +28,32 @@ public class SfxPool : Pool<AudioSource>
     /// <summary>
     /// Addressables 주소로 prefab을 로드해서 풀 초기화
     /// </summary>
-    public IEnumerator InitFromAddressableAsync(string prefabAddress, int preloadCount = -1)
-    {
-        if (prefabFromAddressables && prefab != null)
-        {
-            if (preloadCount > 0) initialSize = preloadCount;
-            InitPool();
-            yield break;
-        }
+    // public IEnumerator InitFromAddressableAsync(string prefabAddress, int preloadCount = -1)
+    // {
+    //     if (prefabFromAddressables && prefab != null)
+    //     {
+    //         if (preloadCount > 0) initialSize = preloadCount;
+    //         InitPool();
+    //         yield break;
+    //     }
 
-        var handle = Addressables.LoadAssetAsync<GameObject>(prefabAddress);
-        yield return handle;
+    //     var handle = Addressables.LoadAssetAsync<GameObject>(prefabAddress);
+    //     yield return handle;
 
-        if (handle.Status == AsyncOperationStatus.Succeeded)
-        {
-            prefab = handle.Result;
-            prefabHandle = handle;
-            prefabFromAddressables = true;
+    //     if (handle.Status == AsyncOperationStatus.Succeeded)
+    //     {
+    //         prefab = handle.Result;
+    //         prefabHandle = handle;
+    //         prefabFromAddressables = true;
 
-            if (preloadCount > 0) initialSize = preloadCount;
-            InitPool();
-        }
-        else
-        {
-            Debug.LogWarning($"[SfxPool] Addressables 로드 실패: {prefabAddress}");
-        }
-    }
+    //         if (preloadCount > 0) initialSize = preloadCount;
+    //         InitPool();
+    //     }
+    //     else
+    //     {
+    //         Debug.LogWarning($"[SfxPool] Addressables 로드 실패: {prefabAddress}");
+    //     }
+    // }
 
     /// <summary>
     /// AudioClip으로 위치 기반 3D 재생. 자동 반환.
@@ -161,14 +161,14 @@ public class SfxPool : Pool<AudioSource>
         foreach (var k in keys) activeLoopByKey.Remove(k);
     }
 
-    protected virtual void OnDestroy()
-    {
-        // Addressables로 로드한 prefab 핸들 해제
-        if (prefabFromAddressables && prefabHandle.HasValue)
-        {
-            if (prefabHandle.Value.IsValid())
-                Addressables.Release(prefabHandle.Value);
-            prefabHandle = null;
-        }
-    }
+    // protected virtual void OnDestroy()
+    // {
+    //     // Addressables로 로드한 prefab 핸들 해제
+    //     if (prefabFromAddressables && prefabHandle.HasValue)
+    //     {
+    //         if (prefabHandle.Value.IsValid())
+    //             Addressables.Release(prefabHandle.Value);
+    //         prefabHandle = null;
+    //     }
+    // }
 }

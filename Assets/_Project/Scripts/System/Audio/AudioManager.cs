@@ -83,6 +83,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetMaster(float linear)
     {
+        // Debug.Log("SetMaster 호출");
         masterLinear = Mathf.Clamp01(linear);
         if (!masterMuted)
             SetMixerVolume(masterParam, masterLinear);
@@ -91,6 +92,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetBGM(float linear)
     {
+        // Debug.Log("SetBGM 호출");
         bgmLinear = Mathf.Clamp01(linear);
         SetMixerVolume(bgmParam, bgmLinear);
         PlayerPrefs.SetFloat(PREF_BGM, bgmLinear);
@@ -98,6 +100,7 @@ public class AudioManager : MonoBehaviour
 
     public void SetSFX(float linear)
     {
+        // Debug.Log("SetSFX 호출");
         sfxLinear = Mathf.Clamp01(linear);
         SetMixerVolume(sfxParam, sfxLinear);
         PlayerPrefs.SetFloat(PREF_SFX, sfxLinear);
@@ -134,6 +137,7 @@ public class AudioManager : MonoBehaviour
     #region 뮤트
     public void SetMasterMuted(bool mute)
     {
+        // Debug.Log("SetMasterMuted 호출");
         masterMuted = mute;
         PlayerPrefs.SetInt(PREF_MASTER_MUTED, mute ? 1 : 0);
         // 즉시 적용
@@ -147,7 +151,6 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region UI SFX 프리로드, 플레이
-
     /// <summary>
     /// 라벨(label)에 해당하는 AudioClip들을 전부 로드해서 clipCache에 저장.
     /// 로드 핸들은 groupHandles[label]에 보관 -> ReleaseGroup으로 일괄 해제 가능.
@@ -279,7 +282,7 @@ public class AudioManager : MonoBehaviour
             }
         };
     }
-
+    
     /// <summary>
     /// 캐시된 AudioClip으로 재생 (Addressables 로드 없이)
     /// </summary>
