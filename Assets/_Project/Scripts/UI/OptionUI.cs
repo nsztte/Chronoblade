@@ -1,22 +1,120 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.EventSystems;
+
+public enum OptionOpenMode { Title, InGame }
+
+public interface IOptionsTab
+{
+    void OnOpen(OptionOpenMode from);
+    void OnClose();
+    void Refresh();
+}
 
 public class OptionUI : MonoBehaviour
 {
-    [SerializeField] GameObject SaveLoadGroup;
-    [SerializeField] SaveUI saveUI;
-    [SerializeField] Button saveButton;
-    [SerializeField] Button loadButton;
+    [Header("탭 버튼")]
+    [SerializeField] private Button saveTabButton;
+    [SerializeField] private Button screenTabButton;
+    [SerializeField] private Button audioTabButton;
+    [SerializeField] private Button controlTabButton;
 
-    private void OnEnable()
+    [Header("탭 그룹")]
+    [SerializeField] private GameObject saveGroup;
+    [SerializeField] private GameObject screenGroup;
+    [SerializeField] private GameObject audioGroup;
+    [SerializeField] private GameObject controlGroup;
+
+    [Header("탭 컨트롤러")]
+    [SerializeField] private SaveUI saveUI;
+    [SerializeField] private MonoBehaviour screenTabController;
+    [SerializeField] private MonoBehaviour audioTabController;
+    [SerializeField] private MonoBehaviour controlTabController;
+
+    private IOptionsTab[] tabControllers;
+    private GameObject[] tabGroups;
+    private Button[] tabButtons;
+
+    private int currentTab = -1;
+    private OptionOpenMode currentMode;
+
+    // 탭 우선순위
+    private const int TAB_SAVE = 0;
+    private const int TAB_SCREEN = 1;
+    private const int TAB_AUDIO = 2;
+    private const int TAB_CONTROL = 3;
+
+    private void Awake()
     {
-        saveButton.onClick.AddListener(() => Open(SaveUI.SaveUIMode.SaveOnly));
-        loadButton.onClick.AddListener(() => Open(SaveUI.SaveUIMode.LoadOnly));
+        tabButtons = new[] { saveTabButton, screenTabButton, audioTabButton, controlTabButton };
+        tabGroups = new[] { saveGroup, screenGroup, audioGroup, controlGroup };
+        tabControllers = new IOptionsTab[4];
+
+        AssignTabController(TAB_SAVE, saveUI);
+        AssignTabController(TAB_SCREEN, screenTabController);
+        AssignTabController(TAB_AUDIO, audioTabController);
+        AssignTabController(TAB_CONTROL, controlTabController);
+
+        saveTabButton.onClick.AddListener(() => ShowTab(TAB_SAVE));
+        screenTabButton.onClick.AddListener(() => ShowTab(TAB_SCREEN));
+        audioTabButton.onClick.AddListener(() => ShowTab(TAB_AUDIO));
+        controlTabButton.onClick.AddListener(() => ShowTab(TAB_CONTROL));
+
+        gameObject.SetActive(false);
     }
 
-    private void Open(SaveUI.SaveUIMode mode)
+    public void Open(OptionOpenMode mode)
     {
-        SaveLoadGroup.SetActive(false);
-        saveUI.Open(mode);
+        currentMode = mode;
+        gameObject.SetActive(true);
+
+        bool isInGame = mode == OptionOpenMode.InGame;
+        saveTabButton.gameObject.SetActive(isInGame);
+        saveGroup.SetActive(false);
+
+        int firstTab = isInGame ? TAB_SAVE : TAB_SCREEN;
+        ShowTab(firstTab);
+    }
+
+    public void Close()
+    {
+        gameObject.SetActive(false);
+
+        if (currentTab >= 0 && currentTab < tabControllers.Length)
+            tabControllers[currentTab]?.OnClose();
+    }
+
+    private void ShowTab(int index)
+    {
+        if (index == currentTab || index < 0 || index >= tabGroups.Length)
+            return;
+
+        if (currentTab >= 0)
+        {
+            tabGroups[currentTab].SetActive(false);
+            tabControllers[currentTab]?.OnClose();
+        }
+
+        currentTab = index;
+        tabGroups[index].SetActive(true);
+        tabControllers[index]?.Refresh();
+        tabControllers[index]?.OnOpen(currentMode);
+
+        SetInitialFocus(tabGroups[index]);
+    }
+
+    private void AssignTabController(int index, MonoBehaviour mb)
+    {
+        if (mb is IOptionsTab tab)
+            tabControllers[index] = tab;
+        else
+            tabControllers[index] = null;
+    }
+
+    private void SetInitialFocus(GameObject group)
+    {
+        var first = group.GetComponentInChildren<Selectable>();
+        if (first != null)
+            EventSystem.current.SetSelectedGameObject(first.gameObject);
     }
 }
