@@ -30,7 +30,7 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
     private void Start()
     {
         saveButton.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
-        loadButton.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
+        loadButton.onClick.AddListener(() => OpenPanel(SaveUIMode.LoadOnly));
 
         defaultCloseAction = UIManager.Instance.OptionUI.Close;
     }
@@ -55,8 +55,6 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
         saveLoadGroup.SetActive(false);
         saveLoadPanel.SetActive(false);
     }
-
-    public void Refresh() {}
 
     public void OpenPanel(SaveUIMode mode)
     {

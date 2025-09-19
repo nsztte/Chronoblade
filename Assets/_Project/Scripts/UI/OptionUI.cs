@@ -9,7 +9,7 @@ public interface IOptionsTab
 {
     void OnOpen(OptionOpenMode from);
     void OnClose();
-    void Refresh();
+    // void Refresh();
 }
 
 public class OptionUI : MonoBehaviour
@@ -28,7 +28,7 @@ public class OptionUI : MonoBehaviour
 
     [Header("탭 컨트롤러")]
     [SerializeField] private SaveTabController saveTabController;
-    [SerializeField] private MonoBehaviour screenTabController;
+    [SerializeField] private ScreenTabController screenTabController;
     [SerializeField] private MonoBehaviour audioTabController;
     [SerializeField] private MonoBehaviour controlTabController;
 
@@ -109,7 +109,7 @@ public class OptionUI : MonoBehaviour
 
         currentTab = index;
         tabGroups[index].SetActive(true);
-        tabControllers[index]?.Refresh();
+        // tabControllers[index]?.Refresh();
         tabControllers[index]?.OnOpen(currentMode);
 
         SetInitialFocus(tabGroups[index]);

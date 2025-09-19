@@ -17,7 +17,7 @@ public class PauseUI : MonoBehaviour
     private void Start()
     {
         resumeButton.onClick.AddListener(() => InputManager.Instance.TriggerPause());
-        // optionsButton.onClick.AddListener(() => UIManager.Instance.ShowOptionsPlaceholder());
+        optionsButton.onClick.AddListener(() => UIManager.Instance.OptionUI.Open(OptionOpenMode.InGame));
         // quitButton.onClick.AddListener(() => UIManager.Instance.QuitToTitle());
     }
 
