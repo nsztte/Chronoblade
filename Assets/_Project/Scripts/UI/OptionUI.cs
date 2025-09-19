@@ -30,7 +30,7 @@ public class OptionUI : MonoBehaviour
     [SerializeField] private SaveTabController saveTabController;
     [SerializeField] private ScreenTabController screenTabController;
     [SerializeField] private AudioTabController audioTabController;
-    [SerializeField] private MonoBehaviour controlTabController;
+    [SerializeField] private ControlTabController controlTabController;
 
     [Header("닫기 버튼")]
     [SerializeField] private Button closeButton;

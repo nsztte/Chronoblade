@@ -44,25 +44,27 @@ public class InputManager : MonoBehaviour
     public event Action OnQuickSave;                  // F5
     #endregion
 
-    #region 옵션 무브 값
-    private bool toggleSprint;
-    private bool toggleCrouch;
-    private bool invertMouseY;
-    private float mouseSensitivityX = 1f;
-    private float mouseSensitivityY = 1f;
+    #region 옵션 설정값
+    // playerprefs 키값
+    public static class Prefs
+    {
+        public const string MOUSE_SENS_X = "Controls_Mouse_SensX";
+        public const string MOUSE_SENS_Y = "Controls_Mouse_SensY";
+        public const string INVERT_Y = "Controls_Invert_Y";
+        public const string TOGGLE_SPRINT = "Controls_Toggle_Sprint";
+        public const string TOGGLE_CROUCH = "Controls_Toggle_Crouch";
+    }
+
+    public float MouseSensitivityX { get; private set; } = 1f;
+    public float MouseSensitivityY { get; private set; } = 1f;
+    public bool InvertMouseY { get; private set; } = false;
+    public bool ToggleSprint { get; private set; } = false;
+    public bool ToggleCrouch { get; private set; } = false;
+
     private bool sprintState;
     private bool crouchState;
     #endregion
     
-    #region playerprefs 전용 상수
-    private const string PREF_TOGGLE_SPRINT = "Controls_Toggle_Sprint";
-    private const string PREF_TOGGLE_AIM = "Controls_Toggle_Aim";
-    private const string PREF_TOGGLE_CROUCH = "Controls_Toggle_Crouch";
-    private const string PREF_INVERT_Y = "Controls_Invert_Y";
-    private const string PREF_INVERT_SCROLL = "Controls_Invert_Scroll";
-    private const string PREF_SENS_X = "Controls_Mouse_SensX";
-    private const string PREF_SENS_Y = "Controls_Mouse_SensY";
-    #endregion
     private float attackKeyDownTime;
     private const float LIGHT_ATTACK_THRESHOLD = 0.2f;
 
@@ -103,8 +105,8 @@ public class InputManager : MonoBehaviour
         // 시점 회전 입력 (마우스)
         Vector2 rawLookInput = new Vector2(Input.GetAxis("Mouse X"), Input.GetAxis("Mouse Y"));
         Vector2 adjustedLook = new Vector2(
-            rawLookInput.x * mouseSensitivityX,
-            (invertMouseY ? -1 : 1) * rawLookInput.y * mouseSensitivityY
+            rawLookInput.x * MouseSensitivityX,
+            (InvertMouseY ? -1 : 1) * rawLookInput.y * MouseSensitivityY
         );
         OnLookInput?.Invoke(adjustedLook);
 
@@ -122,7 +124,7 @@ public class InputManager : MonoBehaviour
         // 달리기 입력
         if (Input.GetKeyDown(KeyCode.LeftShift))
         {
-            if (toggleSprint)
+            if (ToggleSprint)
             {
                 sprintState = !sprintState;
                 if (sprintState) OnRunStarted?.Invoke();
@@ -133,7 +135,7 @@ public class InputManager : MonoBehaviour
                 OnRunStarted?.Invoke();
             }
         }
-        if (!toggleSprint && Input.GetKeyUp(KeyCode.LeftShift))
+        if (!ToggleSprint && Input.GetKeyUp(KeyCode.LeftShift))
         {
             OnRunCanceled?.Invoke();
         }
@@ -141,7 +143,7 @@ public class InputManager : MonoBehaviour
         // 웅크리기 입력
         if (Input.GetKeyDown(KeyCode.LeftControl))
         {
-            if (toggleCrouch)
+            if (ToggleCrouch)
             {
                 crouchState = !crouchState;
                 if (crouchState) OnCrouchPressed?.Invoke(); // 토글 ON
@@ -152,7 +154,7 @@ public class InputManager : MonoBehaviour
                 OnCrouchPressed?.Invoke();
             }
         }
-        if (!toggleCrouch && Input.GetKeyUp(KeyCode.LeftControl))
+        if (!ToggleCrouch && Input.GetKeyUp(KeyCode.LeftControl))
         {
             OnCrouchPressed?.Invoke();
         }
@@ -219,12 +221,11 @@ public class InputManager : MonoBehaviour
 
     private void LoadControlSettings()
     {
-        toggleSprint = PlayerPrefs.GetInt(PREF_TOGGLE_SPRINT, 0) == 1;
-        toggleCrouch = PlayerPrefs.GetInt(PREF_TOGGLE_CROUCH, 0) == 1;
-        invertMouseY = PlayerPrefs.GetInt(PREF_INVERT_Y, 0) == 1;
-
-        mouseSensitivityX = PlayerPrefs.GetFloat(PREF_SENS_X, 1f);
-        mouseSensitivityY = PlayerPrefs.GetFloat(PREF_SENS_Y, 1f);
+        MouseSensitivityX = PlayerPrefs.GetFloat(Prefs.MOUSE_SENS_X, 1f);
+        MouseSensitivityY = PlayerPrefs.GetFloat(Prefs.MOUSE_SENS_Y, 1f);
+        InvertMouseY = PlayerPrefs.GetInt(Prefs.INVERT_Y, 0) == 1;
+        ToggleSprint = PlayerPrefs.GetInt(Prefs.TOGGLE_SPRINT, 0) == 1;
+        ToggleCrouch = PlayerPrefs.GetInt(Prefs.TOGGLE_CROUCH, 0) == 1;
     }
 
     public void SetInputEnabled(bool enabled)
@@ -295,103 +296,35 @@ public class InputManager : MonoBehaviour
         }
     }
 
+    #region 옵션용 Setter
+    public void SetMouseSensitivity(float x, float y)
+    {
+        MouseSensitivityX = x;
+        MouseSensitivityY = y;
+        PlayerPrefs.SetFloat(Prefs.MOUSE_SENS_X, x);
+        PlayerPrefs.SetFloat(Prefs.MOUSE_SENS_Y, y);
+        PlayerPrefs.Save();
+    }
 
-    // private void HandleWeaponSwitching()
-    // {
-    //     int currentWeaponIndex = WeaponManager.Instance.GetCurrentWeaponIndex();
-    //     int maxWeaponCount = WeaponManager.Instance.GetMaxWeaponCount();
-    //     var weaponSlots = WeaponManager.Instance.GetWeaponSlots();
+    public void SetInvertMouseY(bool invert)
+    {
+        InvertMouseY = invert;
+        PlayerPrefs.SetInt(Prefs.INVERT_Y, invert ? 1 : 0);
+        PlayerPrefs.Save();
+    }
 
-    //     // 숫자 키로 직접 무기 선택
-    //     if (Input.GetKeyDown(KeyCode.Alpha1))
-    //     {
-    //         SwitchWeapon(0, currentWeaponIndex, maxWeaponCount);
-    //     }
-    //     else if (Input.GetKeyDown(KeyCode.Alpha2))
-    //     {
-    //         SwitchWeapon(1, currentWeaponIndex, maxWeaponCount);
-    //     }
-    //     else if (Input.GetKeyDown(KeyCode.Alpha3))
-    //     {
-    //         SwitchWeapon(2, currentWeaponIndex, maxWeaponCount);
-    //     }
-    //     else if (Input.GetKeyDown(KeyCode.Alpha4))
-    //     {
-    //         SwitchWeapon(3, currentWeaponIndex, maxWeaponCount);
-    //     }
+    public void SetToggleSprint(bool v)
+    {
+        ToggleSprint = v;
+        PlayerPrefs.SetInt(Prefs.TOGGLE_SPRINT, v ? 1 : 0);
+        PlayerPrefs.Save();
+    }
 
-    //     // 마우스 휠로 무기 전환
-    //     float scrollWheel = Input.GetAxis("Mouse ScrollWheel");
-
-    //     if(currentWeaponIndex < 0) return;
-
-    //     if (scrollWheel > 0f) // 휠 위로
-    //     {
-    //         int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, -1, weaponSlots);
-    //         if(nextIndex != currentWeaponIndex)
-    //             SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
-    //     }
-    //     else if (scrollWheel < 0f) // 휠 아래로
-    //     {
-    //         int nextIndex = GetNextObtainedWeaponIndex(currentWeaponIndex, 1, weaponSlots);
-    //         if(nextIndex != currentWeaponIndex)
-    //             SwitchWeapon(nextIndex, currentWeaponIndex, maxWeaponCount);
-    //     }
-    // }
-
-    // private int GetNextObtainedWeaponIndex(int startIndex, int direction, List<WeaponController> slots)
-    // {
-    //     int count = slots.Count;
-    //     int index = startIndex;
-
-    //     for(int i = 0; i < count; i++)
-    //     {
-    //         index = (index + direction + count) % count;
-
-    //         var data = slots[index].ItemData;
-    //         if (InventoryManager.Instance.IsWeaponObtained(data))
-    //         {
-    //             return index;
-    //         }
-    //     }
-
-    //     return startIndex;
-    // }
-
-    // private void SwitchWeapon(int weaponIndex, int currentIndex, int maxCount)
-    // {
-    //     if (weaponIndex >= 0 && weaponIndex < maxCount)
-    //     {
-    //         // 공격/콤보 상태일 때 무기 교체 금지
-    //         var playerManager = PlayerManager.Instance;
-    //         if (playerManager != null && playerManager.PlayerStateMachine != null)
-    //         {
-    //             var state = playerManager.PlayerStateMachine.CurrentState;
-    //             if (state != null && (state is PlayerAttackState || state is PlayerComboState))
-    //             {
-    //                 Debug.Log("[InputManager] 공격/콤보 상태에서 무기 교체 시도 차단");
-    //                 return;
-    //             }
-    //         }
-            
-    //         // 현재 무기가 공격 중일 때 무기 교체 금지
-    //         var currentWeapon = WeaponManager.Instance.CurrentWeapon;
-    //         if (currentWeapon != null && currentWeapon.IsAttacking)
-    //         {
-    //             Debug.Log("[InputManager] 공격 중 무기 교체 시도 차단");
-    //             return;
-    //         }
-
-    //         if (weaponIndex == currentIndex)
-    //         {
-    //             // 이미 장착된 무기일 경우 장착 해제
-    //             WeaponManager.Instance.UnEquipWeapon();
-    //         }
-    //         else
-    //         {
-    //             // 다른 무기로 전환
-    //             OnWeaponSwitch?.Invoke(weaponIndex);
-    //         }
-    //     }
-    // }
+    public void SetToggleCrouch(bool v)
+    {
+        ToggleCrouch = v;
+        PlayerPrefs.SetInt(Prefs.TOGGLE_CROUCH, v ? 1 : 0);
+        PlayerPrefs.Save();
+    }
+    #endregion
 }
