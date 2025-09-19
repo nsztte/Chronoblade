@@ -31,7 +31,8 @@ public class UIManager : MonoBehaviour
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;
     public bool IsInventoryOpen => inventoryUI != null && inventoryUI.gameObject.activeSelf;
     public bool IsShopOpen => shopUI != null && shopUI.gameObject.activeSelf;
-    public bool IsAnyUIOpen => IsPauseOpen || IsInventoryOpen || IsShopOpen;
+    public bool IsOptionOpen => optionUI != null && optionUI.gameObject.activeSelf;
+    public bool IsAnyUIOpen => IsPauseOpen || IsInventoryOpen || IsShopOpen || IsOptionOpen;
 
 
     #region Singleton

@@ -17,7 +17,7 @@ public class PauseUI : MonoBehaviour
     private void Start()
     {
         resumeButton.onClick.AddListener(() => InputManager.Instance.TriggerPause());
-        optionsButton.onClick.AddListener(() => UIManager.Instance.OptionUI.Open(OptionOpenMode.InGame));
+        optionsButton.onClick.AddListener(() => OpenOption());
         // quitButton.onClick.AddListener(() => UIManager.Instance.QuitToTitle());
     }
 
@@ -45,5 +45,11 @@ public class PauseUI : MonoBehaviour
         gameObject.SetActive(false);
 
         UIManager.Instance.HideOverlayBackground();
+    }
+
+    public void OpenOption()
+    {
+        Hide();
+        UIManager.Instance.OptionUI.Open(OptionOpenMode.InGame);
     }
 }

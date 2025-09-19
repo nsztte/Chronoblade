@@ -80,10 +80,14 @@ public class OptionUI : MonoBehaviour
 
         int firstTab = isInGame ? TAB_SAVE : TAB_SCREEN;
         ShowTab(firstTab);
+
+        UIManager.Instance.ShowOverlayBackground();
     }
 
     public void Close()
     {
+        UIManager.Instance.HideOverlayBackground();
+
         gameObject.SetActive(false);
 
         if (currentTab >= 0 && currentTab < tabControllers.Length)
