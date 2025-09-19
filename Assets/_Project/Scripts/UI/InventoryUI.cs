@@ -18,8 +18,10 @@ public class InventoryUI : MonoBehaviour
     private void OnEnable()
     {
         InputManager.Instance.OnPause += Close;
-        GameManager.Instance.EnterPaused();
-        UIManager.Instance.SetCursorLockState(CursorLockMode.None);
+        // GameManager.Instance.EnterPaused();
+        // UIManager.Instance.SetCursorLockState(CursorLockMode.None);
+
+        UIManager.Instance.ShowOverlayBackground();
 
         SelectedItemContext.OnSelectedItemChanged += OnSelectedChanged;
 
@@ -29,7 +31,9 @@ public class InventoryUI : MonoBehaviour
     private void OnDisable()
     {
         InputManager.Instance.OnPause -= Close;
-        UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
+        // UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
+
+        UIManager.Instance.HideOverlayBackground();
 
         SelectedItemContext.OnSelectedItemChanged -= OnSelectedChanged;
 

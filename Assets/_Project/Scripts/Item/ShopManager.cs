@@ -24,7 +24,9 @@ public class ShopManager : MonoBehaviour
 
         UIManager.Instance.ShopUI.OpenShopUI(shop.shopData);
 
-        UIManager.Instance.SetCursorLockState(CursorLockMode.None);
+        // UIManager.Instance.SetCursorLockState(CursorLockMode.None);
+
+        UIManager.Instance.ShowOverlayBackground();
     }
 
     public void SellItem(ItemData item)
@@ -87,6 +89,8 @@ public class ShopManager : MonoBehaviour
 
         UIManager.Instance.ShopUI.CloseShopUI();
 
-        UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
+        // UIManager.Instance.SetCursorLockState(CursorLockMode.Locked);
+
+        UIManager.Instance.HideOverlayBackground();
     }
 }

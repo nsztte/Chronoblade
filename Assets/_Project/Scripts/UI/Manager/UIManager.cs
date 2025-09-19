@@ -76,7 +76,7 @@ public class UIManager : MonoBehaviour
         if (isActive)
         {
             inventoryUI.gameObject.SetActive(false);
-            InputManager.Instance.TriggerPause();
+            // InputManager.Instance.TriggerPause();
         }
         else
         {
@@ -159,6 +159,7 @@ public class UIManager : MonoBehaviour
         {
             overlayBackground?.SetActive(true);
             SetCursorLockState(CursorLockMode.None);
+            GameManager.Instance.EnterPaused();
         }
     }
 
@@ -169,6 +170,7 @@ public class UIManager : MonoBehaviour
         {
             overlayBackground?.SetActive(false);
             SetCursorLockState(CursorLockMode.Locked);
+            GameManager.Instance.EnterPreviousState();
         }
     }
 
