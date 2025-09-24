@@ -105,8 +105,10 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
             {
                 if (currentMode == SaveUIMode.LoadOnly)
                 {
-                    if (m != null)
-                        SaveManager.Instance.DefaultLoad(clickedSlotIndex); // 실제 슬롯으로 로드
+                    if (m == null) return;
+                    // SaveManager.Instance.DefaultLoad(clickedSlotIndex); // 실제 슬롯으로 로드
+                    LoadingState.NextSlotToLoad = clickedSlotIndex;
+                    GameManager.Instance.EnterLoading();
                 }
                 else if (currentMode == SaveUIMode.SaveOnly)
                 {
