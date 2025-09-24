@@ -9,7 +9,7 @@ public enum SaveBlockTag
     Cutscene,
     Combat,
     Boss,
-    Pause,
+    // Pause,
     UI,
     GameOver
 }
@@ -35,7 +35,7 @@ public class SaveGuard : MonoBehaviour
     public event Action<bool> OnCanSaveChanged; // true = 저장 가능, false = 불가
 
     private Dictionary<SaveBlockTag, int> counts = new Dictionary<SaveBlockTag, int>();
-    private int totalBlocks = 0;
+    [SerializeField] private int totalBlocks = 0;
 
     // 블락 태그 우선순위
     private static readonly SaveBlockTag[] Priority = {
@@ -43,7 +43,7 @@ public class SaveGuard : MonoBehaviour
         SaveBlockTag.Combat,   // 일반 전투
         SaveBlockTag.Puzzle,   // 퍼즐: 진행 불가 유발 가능
         SaveBlockTag.Cutscene, // 컷씬: 연출 중이라서 매우 민감
-        SaveBlockTag.Pause,    // 일시정지: 대부분은 허용
+        // SaveBlockTag.Pause,    // 일시정지: 대부분은 허용
         SaveBlockTag.GameOver, // 게임오버: 메시지 중요도
         SaveBlockTag.UI,       // 메뉴/타이틀/로딩 등
         SaveBlockTag.Default   // 기본

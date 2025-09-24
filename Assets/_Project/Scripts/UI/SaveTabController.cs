@@ -27,6 +27,13 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
     private const int ManualSlotStart = 5;
     private UnityAction defaultCloseAction;
 
+    private void Awake()
+    {
+        // 저장 완료 시 슬롯 갱신 이벤트를 수명 주기 전체로 유지
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnSaved += RefreshSlots;
+    }
+
     private void Start()
     {
         saveButton?.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
@@ -36,14 +43,10 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
             defaultCloseAction = UIManager.Instance.OptionUI.Close;
     }
 
-    private void OnEnable()
+    private void OnDestroy()
     {
-        SaveManager.Instance.OnSaved += RefreshSlots;
-    }
-
-    private void OnDisable()
-    {
-        SaveManager.Instance.OnSaved -= RefreshSlots;
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnSaved -= RefreshSlots;
     }
 
     public void OnOpen(OptionOpenMode from)
@@ -109,6 +112,7 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
                     // SaveManager.Instance.DefaultLoad(clickedSlotIndex); // 실제 슬롯으로 로드
                     LoadingState.NextSlotToLoad = clickedSlotIndex;
                     GameManager.Instance.EnterLoading();
+                    UIManager.Instance.OptionUI.Close();
                 }
                 else if (currentMode == SaveUIMode.SaveOnly)
                 {

@@ -9,7 +9,7 @@ public class LoadingState : GameBaseState
     {
         Debug.Log("[GameState] LoadingState Enter");
         // UIManager.Instance.ShowLoadingScreen();
-        UIManager.Instance?.UpdateUI(false);
+        // UIManager.Instance?.UpdateUI(false);
         InputManager.Instance?.SetInputEnabled(false);
         TimeManager.Instance.SetTimeScale(0f);
 
@@ -36,7 +36,7 @@ public class LoadingState : GameBaseState
     {
         Debug.Log("[GameState] LoadingState Exit");
         // UIManager.Instance.HideLoadingScreen();
-        UIManager.Instance?.UpdateUI(true);
+        // UIManager.Instance?.UpdateUI(true);
         InputManager.Instance?.SetInputEnabled(true);
         TimeManager.Instance.SetTimeScale(1f);
 

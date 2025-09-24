@@ -12,7 +12,7 @@ public class PausedState : GameBaseState
 
         TimeManager.Instance.SetTimeScale(0f);
 
-        SaveGuard.Instance?.Block(SaveBlockTag.Pause);
+        // SaveGuard.Instance?.Block(SaveBlockTag.Pause);
     }
 
     public override void Exit()
@@ -20,7 +20,7 @@ public class PausedState : GameBaseState
         TimeManager.Instance.SetTimeScale(1f);
         // GameManager.Instance.ChangeState(GameManager.Instance.PreviousGameState);
 
-        SaveGuard.Instance?.ClearTag(SaveBlockTag.Pause);
+        // SaveGuard.Instance?.ClearTag(SaveBlockTag.Pause);
 
         // GameManager.Instance.EnterPreviousState();
     }
