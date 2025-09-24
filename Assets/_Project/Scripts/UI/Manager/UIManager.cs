@@ -4,6 +4,9 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    [SerializeField] private GameObject titleUI;
+    [SerializeField] private GameObject mainMenuUI;
+
     [SerializeField] private PlayerHUD playerHUD;
     [SerializeField] private BossHUD bossHUD;
     [SerializeField] private InventoryUI inventoryUI;
@@ -70,6 +73,10 @@ public class UIManager : MonoBehaviour
             gameObject.SetActive(value);
     }
 
+    public void ShowTitle() => titleUI.SetActive(true);
+    public void HideTitle() => titleUI.SetActive(false);
+    public void HideMainMenu() => mainMenuUI.SetActive(false);
+
     private void ToggleInventoryUI()
     {
         if (IsShopOpen) return;
@@ -86,6 +93,7 @@ public class UIManager : MonoBehaviour
             inventoryUI.Open();
         }
     }
+
 
     #region 마우스 커서 업데이트
     public void SetCursorLockState(CursorLockMode mode)
@@ -187,8 +195,6 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region 게임스테이트 디버그용 (추후 UI로 대체)
-    public void ShowMainMenu() => Debug.Log("[UI] Show Main Menu");
-    public void HideMainMenu() => Debug.Log("[UI] Hide Main Menu");
 
     public void ShowLoadingScreen() => Debug.Log("[UI] Show Loading Screen");
     public void HideLoadingScreen() => Debug.Log("[UI] Hide Loading Screen");

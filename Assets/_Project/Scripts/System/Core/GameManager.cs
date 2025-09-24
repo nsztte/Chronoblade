@@ -3,7 +3,7 @@ using UnityEngine;
 [RequireComponent(typeof(GameStateMachine))]
 public class GameManager : MonoBehaviour
 {
-    [SerializeField] private bool isTimeTest = false;
+    // [SerializeField] private bool isTimeTest = false;
 
     [Header("스테이트 프리팹")]
     public GameBaseState mainMenuState;
@@ -45,10 +45,7 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        if(isTimeTest)
-            EnterPuzzle();
-        else
-            EnterExploration();  // 메인메뉴 구현 이후에는 수정할것
+        EnterMainMenu();
     }
 
     private void OnEnable()

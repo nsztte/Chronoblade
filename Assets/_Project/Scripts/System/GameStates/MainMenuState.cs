@@ -6,7 +6,7 @@ public class MainMenuState : GameBaseState
     {
         Debug.Log("[GameState] MainMenuState Enter");
         UIManager.Instance.UpdateUI(true);
-        UIManager.Instance.ShowMainMenu();
+        UIManager.Instance.ShowTitle();
         TimeManager.Instance.SetTimeScale(0f);
 
         SaveGuard.Instance?.Block(SaveBlockTag.UI);
@@ -14,6 +14,7 @@ public class MainMenuState : GameBaseState
 
     public override void Exit()
     {
+        UIManager.Instance.HideTitle();
         UIManager.Instance.HideMainMenu();
         UIManager.Instance.UpdateUI(false);
 
