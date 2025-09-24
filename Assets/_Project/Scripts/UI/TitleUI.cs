@@ -50,7 +50,7 @@ public class TitleUI : MonoBehaviour
     private void Update()
     {
         if (!started && pressAnyKeyGroup != null)
-            pressAnyKeyGroup.alpha = (Mathf.Sin(Time.time * blinkSpeed) + 1f) * 0.5f;
+            pressAnyKeyGroup.alpha = (Mathf.Sin(Time.unscaledTime * blinkSpeed) + 1f) * 0.5f;
     }
 
     private void OnStartPressed()
