@@ -41,7 +41,8 @@ public class InputManager : MonoBehaviour
     public event Action OnHeavyAttackPressed;
 
     public event Action OnInventoryChanged;          // I
-    public event Action OnQuickSave;                  // F5
+    public event Action OnQuickSave;                 // F5
+    public event Action OnPressAnyKey;
     #endregion
 
     #region 옵션 설정값
@@ -72,6 +73,9 @@ public class InputManager : MonoBehaviour
 
     void Update()
     {
+        if(Input.anyKeyDown)
+            OnPressAnyKey?.Invoke();
+            
         if (!isInputEnabled)
             return;
 
