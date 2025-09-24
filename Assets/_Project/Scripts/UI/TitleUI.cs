@@ -3,6 +3,7 @@ using System.Collections;
 
 public class TitleUI : MonoBehaviour
 {
+    [SerializeField] private GameObject background;
     [SerializeField] private GameObject mainMenuUI;
     [SerializeField] private CanvasGroup titleCanvasGroup;
     [SerializeField] private CanvasGroup pressAnyKeyGroup;
@@ -19,6 +20,8 @@ public class TitleUI : MonoBehaviour
 
     private void OnEnable()
     {
+        background.SetActive(true);
+
         // 입력 비활성화
         InputManager.Instance?.SetInputEnabled(false);
 
@@ -70,27 +73,30 @@ public class TitleUI : MonoBehaviour
         // 타이틀은 곧바로 입력 차단
         titleCanvasGroup.interactable = false;
         titleCanvasGroup.blocksRaycasts = false;
-
-        // 타이틀 페이드아웃
-        yield return FadeTo(titleCanvasGroup, 0f, changeDuration, setActiveFalse:true);
-
+        
         // 메인메뉴 활성화 & 알파 0
-        mainMenuUI.SetActive(true);
         var mainMenuCanvasGroup = mainMenuUI.GetComponent<CanvasGroup>();
-        mainMenuCanvasGroup.alpha = 0f;
+        mainMenuCanvasGroup.alpha = 1f;
         mainMenuCanvasGroup.interactable = false;
         mainMenuCanvasGroup.blocksRaycasts = false;
 
+        // 타이틀 페이드아웃
+        yield return FadeTo(titleCanvasGroup, 0f, changeDuration);
+
         // 메인메뉴 페이드인
-        yield return FadeTo(mainMenuCanvasGroup, 1f, changeDuration, setActiveFalse:false);
+        mainMenuUI.SetActive(true);
+        yield return FadeTo(mainMenuCanvasGroup, 1f, changeDuration);
 
         // 메인메뉴 입력 허용
         mainMenuCanvasGroup.interactable = true;
         mainMenuCanvasGroup.blocksRaycasts = true;
+
+        titleCanvasGroup.gameObject.SetActive(false);
     }
 
-    private IEnumerator FadeTo(CanvasGroup canvasGroup, float targetAlpha, float duration, bool setActiveFalse)
+    private IEnumerator FadeTo(CanvasGroup canvasGroup, float targetAlpha, float duration)
     {
+        Debug.Log(canvasGroup.gameObject.name);
         float start = canvasGroup.alpha;
         float t = 0f;
 
@@ -102,8 +108,5 @@ public class TitleUI : MonoBehaviour
         }
 
         canvasGroup.alpha = targetAlpha;
-
-        if (Mathf.Approximately(targetAlpha, 0f) && setActiveFalse)
-            canvasGroup.gameObject.SetActive(false);
     }
 }
