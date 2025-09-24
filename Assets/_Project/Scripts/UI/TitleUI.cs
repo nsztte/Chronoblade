@@ -22,13 +22,6 @@ public class TitleUI : MonoBehaviour
     {
         background.SetActive(true);
 
-        // 입력 비활성화
-        InputManager.Instance?.SetInputEnabled(false);
-
-        // 타이틀 진입 상태
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
-
         // 메인메뉴 비활성 + 알파 0 초기화
         if (mainMenuUI)
         {
@@ -96,7 +89,6 @@ public class TitleUI : MonoBehaviour
 
     private IEnumerator FadeTo(CanvasGroup canvasGroup, float targetAlpha, float duration)
     {
-        Debug.Log(canvasGroup.gameObject.name);
         float start = canvasGroup.alpha;
         float t = 0f;
 

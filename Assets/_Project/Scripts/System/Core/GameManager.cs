@@ -1,10 +1,9 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(GameStateMachine))]
 public class GameManager : MonoBehaviour
 {
-    // [SerializeField] private bool isTimeTest = false;
-
     [Header("스테이트 프리팹")]
     public GameBaseState mainMenuState;
     public GameBaseState loadingState;
@@ -19,6 +18,8 @@ public class GameManager : MonoBehaviour
     
     public GameBaseState CurrentGameState { get; private set; }
     public GameBaseState PreviousGameState { get; private set; }
+
+    private const string TITLESCENE = "Title";
 
 
     #region 싱글톤 및 초기화
@@ -45,7 +46,16 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
-        EnterMainMenu();
+        var sceneName = SceneManager.GetActiveScene().name;
+
+        if (sceneName == TITLESCENE)
+        {
+            EnterMainMenu();
+        }
+        else
+        {
+            EnterExploration();
+        }
     }
 
     private void OnEnable()

@@ -29,11 +29,13 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
 
     private void Start()
     {
-        saveButton.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
-        loadButton.onClick.AddListener(() => OpenPanel(SaveUIMode.LoadOnly));
+        saveButton?.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
+        loadButton?.onClick.AddListener(() => OpenPanel(SaveUIMode.LoadOnly));
 
-        defaultCloseAction = UIManager.Instance.OptionUI.Close;
+        if(UIManager.Instance != null)
+            defaultCloseAction = UIManager.Instance.OptionUI.Close;
     }
+
     private void OnEnable()
     {
         SaveManager.Instance.OnSaved += RefreshSlots;
@@ -56,15 +58,15 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
         saveLoadPanel.SetActive(false);
     }
 
-    public void OpenPanel(SaveUIMode mode)
+    public virtual void OpenPanel(SaveUIMode mode)
     {
-        saveLoadGroup.SetActive(false);
-        saveLoadPanel.SetActive(true);
+        if(saveLoadGroup != null) saveLoadGroup.SetActive(false);
+        if(saveLoadPanel != null) saveLoadPanel.SetActive(true);
 
-        UIManager.Instance.OptionUI.SetCloseButtonAction(ClosePanel);
+        UIManager.Instance?.OptionUI.SetCloseButtonAction(ClosePanel);
 
         currentMode = mode;
-        modeTitleText.text = mode switch {
+        if(modeTitleText != null) modeTitleText.text = mode switch {
             SaveUIMode.LoadOnly => "불러오기",
             SaveUIMode.SaveOnly => "저장하기",
             _ => "저장"

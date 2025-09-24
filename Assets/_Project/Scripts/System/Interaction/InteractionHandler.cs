@@ -62,13 +62,13 @@ public class InteractionHandler : MonoBehaviour
         {
             string prompt = currentTarget.GetPrompt();
             if (string.IsNullOrEmpty(prompt))
-                UIManager.Instance.HidePrompt();
+                UIManager.Instance?.HidePrompt();
             else
-                UIManager.Instance.ShowPrompt($"[F] {prompt}");
+                UIManager.Instance?.ShowPrompt($"[F] {prompt}");
         }
         else
         {
-            UIManager.Instance.HidePrompt();
+            UIManager.Instance?.HidePrompt();
         }
     }
 
