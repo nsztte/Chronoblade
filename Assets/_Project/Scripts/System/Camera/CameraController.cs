@@ -3,6 +3,7 @@ using UnityEngine;
 public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform player;
+    [SerializeField] private Transform cameraPosition;
     [SerializeField] private float mouseSensitivity = 100f;
     [SerializeField] private float clampAngle = 80f;
     [SerializeField] private float normalFOV = 60f;
@@ -23,8 +24,8 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float weaponClampAngle = 30f;
     [SerializeField] private float zoomedClampAngle = 10f;
 
-    private float defaultLocalY;
-    private float targetLocalY;
+    [SerializeField] private float defaultLocalY;
+    [SerializeField] private float targetLocalY;
     private float cameraLerpSpeed = 10f;
 
     // private Vector3 defaultLocalPosition;
@@ -205,12 +206,12 @@ public class CameraController : MonoBehaviour
     public void ResetToPlayer()
     {
         // 위치 초기화
-        transform.localPosition = new Vector3(0, defaultLocalY, 0); // 기본 Y 높이 복구
+        transform.localPosition = cameraPosition.localPosition;
+        defaultLocalY = transform.localPosition.y;
         targetLocalY = defaultLocalY;
 
         // 회전 초기화
-        rotX = 0f;
-        transform.localRotation = Quaternion.identity;
+        transform.localRotation = cameraPosition.localRotation;
 
         // FOV 복구
         targetFOV = normalFOV;

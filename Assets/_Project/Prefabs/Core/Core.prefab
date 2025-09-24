@@ -1407,6 +1407,10 @@ PrefabInstance:
       propertyPath: currentAmmo
       value: -1
       objectReference: {fileID: 0}
+    - target: {fileID: 4125520339077056992, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+      propertyPath: cameraPosition
+      value: 
+      objectReference: {fileID: 8830645781716144999}
     - target: {fileID: 4721528940800297215, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
       propertyPath: currentAmmo
       value: -1
@@ -1522,3 +1526,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 86fbcdf5c80bbc04fb46391bd448287c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!4 &8830645781716144999 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5598796067321909844, guid: f2477677884f7e942a7a5b7b1678b3c8, type: 3}
+  m_PrefabInstance: {fileID: 3980666198700163379}
+  m_PrefabAsset: {fileID: 0}

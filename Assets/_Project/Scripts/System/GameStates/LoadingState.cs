@@ -34,8 +34,9 @@ public class LoadingState : GameBaseState
 
     public override void Exit()
     {
+        Debug.Log("[GameState] LoadingState Exit");
         // UIManager.Instance.HideLoadingScreen();
-        UIManager.Instance?.UpdateUI(false);
+        UIManager.Instance?.UpdateUI(true);
         InputManager.Instance?.SetInputEnabled(true);
         TimeManager.Instance.SetTimeScale(1f);
 
