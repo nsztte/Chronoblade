@@ -1,12 +1,15 @@
 using UnityEngine;
 
-public abstract class GameBaseState : MonoBehaviour
+public abstract class GameBaseState : ScriptableObject
 {
     protected GameManager gameManager;
+    private bool initialized;
 
-    public virtual void Init(GameManager gameManager)
+    public virtual void Init(GameManager gm)
     {
-        this.gameManager = gameManager;
+        if (initialized && gameManager == gm) return;
+        gameManager = gm;
+        initialized = true;
     }
 
     public abstract void Enter();

@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName="GameState/Puzzle")]
 public class PuzzleState : GameBaseState
 {
     public override void Enter()

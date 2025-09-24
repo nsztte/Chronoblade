@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName="GameState/MainMenu")]
 public class MainMenuState : GameBaseState
 {
     public override void Enter()

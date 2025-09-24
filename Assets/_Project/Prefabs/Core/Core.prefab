@@ -719,15 +719,14 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255906bd268e27346b087f4ac50e1580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isTimeTest: 0
-  mainMenuState: {fileID: 2619704260623107056, guid: 2b08dcb064fdf7f4b974d887277cc602, type: 3}
-  loadingState: {fileID: 9020382652373752339, guid: 091e843e84b09ff4d93e971b027cbd99, type: 3}
-  explorationState: {fileID: 375632794893911895, guid: d8b663cbdf1af064c87b0360efce7347, type: 3}
-  combatState: {fileID: 3237188857678692374, guid: 40ffff1416ef2074b93e052e1909a857, type: 3}
-  puzzleState: {fileID: 2691420941938858796, guid: 57d8b8b83d16bf541bbcc1edf65160f8, type: 3}
-  cutsceneState: {fileID: 2536771049493102800, guid: 5245a096ae5de234faabcffd61e9d8cc, type: 3}
-  pausedState: {fileID: 160331775298883918, guid: 16f31380d5764fb4593231d3d37236b7, type: 3}
-  gameOverState: {fileID: 7470111904546979605, guid: 4f972fd65edf16f479263d7d0e85a0eb, type: 3}
+  mainMenuState: {fileID: 11400000, guid: c2282990e49e56a40ba186df5f56e1d4, type: 2}
+  loadingState: {fileID: 11400000, guid: add15f0406a567149b12b7fe308db0dc, type: 2}
+  explorationState: {fileID: 11400000, guid: 42c732350cbdacd46b00a502ea06011d, type: 2}
+  combatState: {fileID: 11400000, guid: 02374f15a9bc4504ba1e11b83e36c76d, type: 2}
+  puzzleState: {fileID: 11400000, guid: 71533d8d887995a4cb7890983fe98d0c, type: 2}
+  cutsceneState: {fileID: 11400000, guid: 469a365f3abdeb64f806bfe6498fcf40, type: 2}
+  pausedState: {fileID: 11400000, guid: a2f1e35c4c5ffa3458022f018d0bfbd4, type: 2}
+  gameOverState: {fileID: 11400000, guid: fa219f17c98de2c49a3f2500e0ceee67, type: 2}
 --- !u!1 &2855905225824398542
 GameObject:
   m_ObjectHideFlags: 0

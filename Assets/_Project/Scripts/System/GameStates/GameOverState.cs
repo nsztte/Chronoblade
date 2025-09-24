@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 
+[CreateAssetMenu(menuName="GameState/GameOver")]
 public class GameOverState : GameBaseState
 {
     public override void Enter()
@@ -25,7 +26,7 @@ public class GameOverState : GameBaseState
     private IEnumerator DeathSequence()
     {
         // 1. 화면 페이드아웃 (1초)
-        yield return StartCoroutine(FadeOutScreen());
+        yield return gameManager.StartCoroutine(FadeOutScreen());
         
         // 2. "You are dead" 메시지 표시 (2초)
         // TODO: UIManager.Instance.ShowDeathMessage("You are dead");

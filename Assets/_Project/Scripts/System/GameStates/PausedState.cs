@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName="GameState/Paused")]
 public class PausedState : GameBaseState
 {
     public override void Enter()

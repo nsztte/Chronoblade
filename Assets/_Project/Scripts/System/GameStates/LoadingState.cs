@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName="GameState/Loading")]
 public class LoadingState : GameBaseState
 {
     public override void Enter()

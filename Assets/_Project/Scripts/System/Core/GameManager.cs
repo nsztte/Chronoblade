@@ -4,7 +4,7 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(GameStateMachine))]
 public class GameManager : MonoBehaviour
 {
-    [Header("스테이트 프리팹")]
+    [Header("스테이트 스크립터블오브젝트")]
     public GameBaseState mainMenuState;
     public GameBaseState loadingState;
     public GameBaseState explorationState;

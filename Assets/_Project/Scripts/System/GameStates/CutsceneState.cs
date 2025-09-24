@@ -1,5 +1,6 @@
 using UnityEngine;
 
+[CreateAssetMenu(menuName="GameState/Cutscene")]
 public class CutsceneState : GameBaseState
 {
     public override void Enter()
