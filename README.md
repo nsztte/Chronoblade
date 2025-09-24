@@ -2971,3 +2971,54 @@ Enemy FSM(상태머신) 시스템 구현
 - 저장탭 내 세이브/로드 패널 오픈 시 닫기 버튼 핸들링 전환 구조 확정 (패널 → 그룹 → 옵션 UI 계층적 닫힘 처리)
 
 ---
+
+## 2025.09.24 (수) 작업 기록
+
+### 주요 작업
+- **타이틀 UI 레이아웃 최종 구성**
+  - CHRONOBLADE 타이틀 및 태그라인(시간을 베다) 중앙 배치
+  - Press Any Key 텍스트를 하단으로 이동, 크기 축소 및 여백 조정
+  - 시네마틱한 구도를 위해 분리선으로 상·하 구역 구분
+  - 룬, 이펙트 등 추가 디자인 요소는 폴리싱 단계에서 반영 예정
+
+- **타이틀 → 메인메뉴 전환 로직 안정화**
+  - TitleUI: 아무 키 입력 시 페이드아웃/페이드인 전환
+  - InputManager: OnPressAnyKey 이벤트 기반 트리거 연동
+  - CanvasGroup 제어(interactable / blocksRaycasts)로 충돌 방지
+  - Time.unscaledTime 기반으로 깜빡임 구현 (TimeScale=0에서도 동작)
+
+- **MainMenuState 및 UI 리팩토링**
+  - 메인메뉴 UI 기본 구조 배치 (텍스트 버튼, 좌측 패널)
+  - New Game / Continue / Options / Exit 버튼 코드 및 이벤트 연결
+  - Continue 시 로드 패널, Options 시 옵션 패널 토글 처리
+  - Exit 시 빌드 환경/에디터 환경 대응 종료 처리
+  - MainMenuState에서 입력/커서/TimeScale/SaveGuard 제어를 상태 진입/이탈 시점으로 이동
+
+- **씬 구조 정리**
+  - Title 씬 분리 및 빌드 세팅에 등록
+  - Core 및 UI 프리팹을 타이틀 씬에 배치
+  - TitleUIManager를 별도 구성해 타이틀/메인메뉴 전용으로 경량화
+
+- **FSM 리팩토링 (ScriptableObject 기반)**
+  - GameBaseState: MonoBehaviour → ScriptableObject로 전환
+  - 상태별 Enter/Exit 로직 그대로 유지하되 GameManager 주입 방식 Init 도입
+  - MainMenu, Loading, Exploration, Combat, Cutscene, Puzzle, Paused, GameOver 전부 SO 자산화
+  - GameManager만 DontDestroyOnLoad 유지 → 상태 전환 안정성 확보
+
+- **로드 플로우 개선**
+  - SaveTabController: 슬롯 클릭 시 SaveManager.Load 직접 호출 제거
+  - LoadingState를 통해 슬롯 인덱스를 받아 DefaultLoad 실행
+  - OnAfterLoad 이벤트 수신 후 ExplorationState 전환
+  - LoadingState.Enter/Exit에서 UI, 입력, TimeScale 제어로 일관성 확보
+
+- **카메라 위치 초기화 버그 수정**
+  - 씬 로드시 MainCamera 위치가 틀어지는 문제 수정
+  - CameraController ResetToPlayer에서 cameraPosition에 따라 위치 및 회전 초기화
+
+### 메모
+- 씬 전환 흐름은 이제 FSM 규칙에 맞게 **MainMenu → Loading → Exploration**으로 일관되게 동작  
+- CameraController 보정으로 로드시 “카메라 지 맘대로” 현상 해결  
+- 타이틀/메인메뉴 UI는 레이아웃 안정화 단계까지 마무리, 폴리싱은 추후  
+- ScriptableObject 기반 전환으로 상태 생명주기/전환 안정성이 크게 향상됨
+
+---
