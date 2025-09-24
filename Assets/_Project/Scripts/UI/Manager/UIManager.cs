@@ -4,9 +4,6 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
-    [SerializeField] private GameObject titleUI;
-    [SerializeField] private GameObject mainMenuUI;
-
     [SerializeField] private PlayerHUD playerHUD;
     [SerializeField] private BossHUD bossHUD;
     [SerializeField] private InventoryUI inventoryUI;
@@ -72,10 +69,6 @@ public class UIManager : MonoBehaviour
         if(gameObject.activeSelf != value)
             gameObject.SetActive(value);
     }
-
-    public void ShowTitle() => titleUI.SetActive(true);
-    public void HideTitle() => titleUI.SetActive(false);
-    public void HideMainMenu() => mainMenuUI.SetActive(false);
 
     private void ToggleInventoryUI()
     {
