@@ -141,6 +141,9 @@ public class SaveManager : MonoBehaviour
     public void DefaultSave(int slot, SaveIntent intent = SaveIntent.Manual) => StartCoroutine(BackgroundSaveRoutine(slot, intent));
     public void DefaultLoad(int slot) => StartCoroutine(LoadRoutineWithUX(slot));
 
+    // 세이브파일 존재 여부확인 헬퍼 (ui용)
+    public bool HasAnySave() => GetAllMeta()?.Any(p => p.meta != null) ?? false;
+
     public List<(int slotIndex, SaveMeta meta)> GetAllMeta()
     {
         var list = new List<(int, SaveMeta)>();

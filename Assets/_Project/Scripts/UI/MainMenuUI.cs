@@ -34,6 +34,11 @@ public class MainMenuUI : MonoBehaviour
         // 패널은 처음에 꺼둠
         if (loadPanel != null) loadPanel.gameObject.SetActive(false);
         if (optionUI != null) optionUI.gameObject.SetActive(false);
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnSaved += UpdateContinueButton;
+
+        UpdateContinueButton();
     }
 
     private void OnDestroy()
@@ -50,10 +55,14 @@ public class MainMenuUI : MonoBehaviour
 
         if (exitButton != null)
             exitButton.onClick.RemoveListener(OnExit);
+
+        if (SaveManager.Instance != null)
+            SaveManager.Instance.OnSaved -= UpdateContinueButton;
     }
 
     private void OnNewGame()
     {
+        GameManager.Instance.EnterExploration();
         SceneManager.LoadScene(STARTSCENE);
     }
 
@@ -89,5 +98,10 @@ public class MainMenuUI : MonoBehaviour
 #else
         Application.Quit();
 #endif
+    }
+
+    private void UpdateContinueButton()
+    {
+        continueButton.interactable = SaveManager.Instance?.HasAnySave() ?? false;
     }
 }

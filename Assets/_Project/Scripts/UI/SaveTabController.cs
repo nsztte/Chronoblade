@@ -31,7 +31,10 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
     {
         // 저장 완료 시 슬롯 갱신 이벤트를 수명 주기 전체로 유지
         if (SaveManager.Instance != null)
+        {
             SaveManager.Instance.OnSaved += RefreshSlots;
+            SaveManager.Instance.OnSaved += UpdateLoadButtonState;
+        }
     }
 
     private void Start()
@@ -39,14 +42,21 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
         saveButton?.onClick.AddListener(() => OpenPanel(SaveUIMode.SaveOnly));
         loadButton?.onClick.AddListener(() => OpenPanel(SaveUIMode.LoadOnly));
 
+
         if(UIManager.Instance != null)
             defaultCloseAction = UIManager.Instance.OptionUI.Close;
+
+        // 초기 버튼 상태 반영
+        UpdateLoadButtonState();
     }
 
     private void OnDestroy()
     {
         if (SaveManager.Instance != null)
+        {
             SaveManager.Instance.OnSaved -= RefreshSlots;
+            SaveManager.Instance.OnSaved -= UpdateLoadButtonState;
+        }
     }
 
     public void OnOpen(OptionOpenMode from)
@@ -183,5 +193,16 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
         }
 
         return result;
+    }
+
+    private void UpdateLoadButtonState()
+    {
+        if (loadButton == null) return;
+
+        // SaveManager이 없으면 안전하게 false
+        bool hasAny = SaveManager.Instance?.HasAnySave() ?? false;
+
+        // 로드 모드로 열 수 있는 저장이 없으면 버튼 비활성화
+        loadButton.interactable = hasAny;
     }
 }
