@@ -6,7 +6,7 @@ public class MainMenuUI : MonoBehaviour
 {
     [Header("패널")]
     [SerializeField] private MainMenuLoadPanel loadPanel;
-    [SerializeField] private GameObject optionPanel;
+    [SerializeField] private OptionUI optionUI;
 
     [Header("버튼")]
     [SerializeField] private Button newGameButton;
@@ -33,12 +33,12 @@ public class MainMenuUI : MonoBehaviour
 
         // 패널은 처음에 꺼둠
         if (loadPanel != null) loadPanel.gameObject.SetActive(false);
-        if (optionPanel != null) optionPanel.SetActive(false);
+        if (optionUI != null) optionUI.gameObject.SetActive(false);
     }
 
     private void OnDestroy()
     {
-        // 이벤트 정리 (메모리릭 방지)
+        // 이벤트 정리
         if (newGameButton != null)
             newGameButton.onClick.RemoveListener(OnNewGame);
 
@@ -54,13 +54,11 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnNewGame()
     {
-        Debug.Log("New Game 시작");
         SceneManager.LoadScene(STARTSCENE);
     }
 
     private void OnContinue()
     {
-        Debug.Log("Continue 실행");
         if (loadPanel != null)
         {
             loadPanel.gameObject.SetActive(!loadPanel.gameObject.activeSelf);
@@ -70,16 +68,16 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnOptions()
     {
-        Debug.Log("Options 실행");
-        if (optionPanel != null)
-        {
-            optionPanel.SetActive(!optionPanel.activeSelf);
-        }
+        if (optionUI == null) return;
+
+        if (!optionUI.gameObject.activeSelf)
+            optionUI.Open(OptionOpenMode.Title);
+        else
+            optionUI.Close();
     }
 
     private void OnExit()
     {
-        Debug.Log("게임 종료");
 #if UNITY_EDITOR
         UnityEditor.EditorApplication.isPlaying = false;
 #else

@@ -64,9 +64,9 @@ public class OptionUI : MonoBehaviour
         audioTabButton.onClick.AddListener(() => ShowTab(TAB_AUDIO));
         controlTabButton.onClick.AddListener(() => ShowTab(TAB_CONTROL));
 
-        closeButton.onClick.AddListener(() => Close());
+        closeButton?.onClick.AddListener(() => Close());
 
-        gameObject.SetActive(false);
+        // gameObject.SetActive(false);
     }
 
     public void Open(OptionOpenMode mode)
@@ -82,12 +82,12 @@ public class OptionUI : MonoBehaviour
         int firstTab = isInGame ? TAB_SAVE : TAB_SCREEN;
         ShowTab(firstTab);
 
-        UIManager.Instance.ShowOverlayBackground();
+        UIManager.Instance?.ShowOverlayBackground();
     }
 
     public void Close()
     {
-        UIManager.Instance.HideOverlayBackground();
+        UIManager.Instance?.HideOverlayBackground();
 
         gameObject.SetActive(false);
 
@@ -97,8 +97,8 @@ public class OptionUI : MonoBehaviour
 
     public void SetCloseButtonAction(UnityAction action)
     {
-        closeButton.onClick.RemoveAllListeners();
-        closeButton.onClick.AddListener(action);
+        closeButton.onClick?.RemoveAllListeners();
+        closeButton.onClick?.AddListener(action);
     }
 
     private void ShowTab(int index)

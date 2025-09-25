@@ -14133,7 +14133,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!222 &4284420495750831464
 CanvasRenderer:
   m_ObjectHideFlags: 0
@@ -19190,14 +19190,14 @@ RectTransform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1765936675814675813}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
   m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 6362797139059984302}
   - {fileID: 1323855051747117571}
-  m_Father: {fileID: 5871782754274460525}
+  m_Father: {fileID: 8256469619380683068}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
@@ -19369,7 +19369,6 @@ RectTransform:
   - {fileID: 4133573639726392038}
   - {fileID: 2855575829524092860}
   - {fileID: 8256469619380683068}
-  - {fileID: 5754968251663918524}
   m_Father: {fileID: 7130748485197927590}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0, y: 0}
@@ -25266,7 +25265,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 565095549048422586}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 59f8146938fff824cb5fd77236b75775, type: 3}
   m_Name: 
@@ -26820,6 +26819,7 @@ RectTransform:
   m_Children:
   - {fileID: 50409920328671441}
   - {fileID: 3883474091301842872}
+  - {fileID: 5754968251663918524}
   m_Father: {fileID: 5871782754274460525}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
@@ -26840,7 +26840,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   loadPanel: {fileID: 8783774774283542829}
-  optionPanel: {fileID: 5478215183110653482}
+  optionUI: {fileID: 3292020138361450834}
   newGameButton: {fileID: 2383985228860044243}
   continueButton: {fileID: 7746771728143240864}
   optionsButton: {fileID: 8873794283132412351}
