@@ -75,9 +75,7 @@ public class OptionUI : MonoBehaviour
         gameObject.SetActive(true);
 
         bool isInGame = mode == OptionOpenMode.InGame;
-        Debug.Log("isInGame : " + isInGame);
         saveTabButton.gameObject.SetActive(isInGame);
-        saveGroup.SetActive(isInGame);
 
         int firstTab = isInGame ? TAB_SAVE : TAB_SCREEN;
         ShowTab(firstTab);
@@ -103,7 +101,7 @@ public class OptionUI : MonoBehaviour
 
     private void ShowTab(int index)
     {
-        if (index == currentTab || index < 0 || index >= tabGroups.Length)
+        if (index < 0 || index >= tabGroups.Length)
             return;
 
         if (currentTab >= 0)
