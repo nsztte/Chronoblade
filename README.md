@@ -3022,3 +3022,41 @@ Enemy FSM(상태머신) 시스템 구현
 - ScriptableObject 기반 전환으로 상태 생명주기/전환 안정성이 크게 향상됨
 
 ---
+
+## 2025.09.25 (목) 작업 기록
+
+### 주요 작업
+- **메인메뉴 버튼 연결 및 초기화**
+  - MainMenuUI: New Game / Continue / Options / Exit 버튼 이벤트 연결
+  - OnDestroy에서 이벤트 해제 처리로 메모리 누수 방지
+  - NewGame → 지정된 STARTSCENE 로드
+  - Continue → LoadPanel 토글 및 OpenPanel 호출
+  - Options → OptionUI.Open/Close 토글
+  - Exit → 에디터/빌드 환경 분기하여 종료 처리
+  - 초기화 시 LoadPanel, OptionUI는 비활성화 상태로 시작되도록 구성
+  - OptionUI.Awake()의 중복 SetActive(false) 제거 → 첫 클릭 시 정상 Open 호출 가능
+
+- **Continue / Options 패널 토글 개선**
+  - Continue 클릭 시 열린 Option 패널 자동 닫기
+  - Continue는 LoadPanel 토글, 활성화 시에만 OpenPanel 호출
+  - Options 클릭 시 열린 LoadPanel 자동 닫기
+  - Options는 현재 상태에 따라 Open/Close 동작
+  - 결과: 서로 다른 서브패널 동시 오픈 방지, 같은 버튼 재클릭 시 닫히는 직관적 토글 동작 보장
+
+- **OptionUI 탭 우선순위 반영 버그 수정**
+  - ShowTab 조건 수정: `index == currentTab` 조건 제거
+  - 같은 탭이라도 초기화/우선순위 로직이 정상 반영되도록 개선
+  - 결과: 옵션 UI 진입 시 기본 우선 탭(Screen/Save)이 정상적으로 표시됨
+
+- **저장 데이터 유무 기반 Continue/Load 버튼 활성화**
+  - SaveManager: HasAnySave() 함수 추가
+  - MainMenuUI: UpdateContinueButton() 도입, OnSaved 이벤트 연동으로 자동 상태 갱신
+  - SaveTabController: UpdateLoadButtonState() 추가, Start/RefreshSlots/OnSaved 이벤트 기반으로 Load 버튼 상태 자동 갱신
+  - 결과: 저장 데이터가 없을 때 Continue/Load 버튼이 비활성화되어 UX 혼란 감소
+
+### 메모
+- 메인메뉴 전반의 동작 플로우(타이틀 → 메인메뉴, 버튼 이벤트, 옵션/로드 패널 토글)가 안정화됨  
+- Continue/Load 버튼이 저장 데이터 존재 여부에 따라 동적으로 활성/비활성 처리되어 사용자 경험 개선  
+- OptionUI 탭 우선순위가 정상적으로 반영되어 인게임/타이틀 모드에 맞는 기본 탭이 열림  
+
+---
