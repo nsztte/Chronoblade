@@ -59,6 +59,9 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnContinue()
     {
+        if (optionUI != null && optionUI.gameObject.activeSelf)
+            optionUI.Close();
+
         if (loadPanel != null)
         {
             loadPanel.gameObject.SetActive(!loadPanel.gameObject.activeSelf);
@@ -68,6 +71,9 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnOptions()
     {
+        if (loadPanel != null && loadPanel.gameObject.activeSelf)
+            loadPanel.gameObject.SetActive(false);
+
         if (optionUI == null) return;
 
         if (!optionUI.gameObject.activeSelf)
