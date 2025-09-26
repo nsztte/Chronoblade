@@ -100,7 +100,7 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
-    private void Close()
+    public void Close()
     {
         gameObject.SetActive(false);
         SelectedItemContext.Clear();

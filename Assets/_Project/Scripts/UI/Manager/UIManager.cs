@@ -4,6 +4,23 @@ using UnityEngine;
 
 public class UIManager : MonoBehaviour
 {
+    #region Singleton
+    public static UIManager Instance { get; private set; }
+
+    private void Awake()
+    {
+        if (Instance == null)
+        {
+            Instance = this;
+            DontDestroyOnLoad(gameObject);
+        }
+        else
+        {
+            Destroy(gameObject);
+        }
+    }
+    #endregion
+
     [SerializeField] private PlayerHUD playerHUD;
     [SerializeField] private BossHUD bossHUD;
     [SerializeField] private InventoryUI inventoryUI;
@@ -22,34 +39,20 @@ public class UIManager : MonoBehaviour
     [Header("퀵슬롯")]
     [SerializeField] private List<QuickSlotSlot> quickSlots;
 
+    #region UI 참조 & 스테이트
+    public ConfirmModalUI ConfirmModalUI => confirmModal;
     public InventoryUI InventoryUI => inventoryUI;
     public ShopUI ShopUI => shopUI;
     public TooltipUI TooltipUI => tooltipUI;
     public FadeUI FadeUI => fadeUI;
     public OptionUI OptionUI => optionUI;
 
+    public bool IsConfirmModalOpen => ConfirmModalUI != null && confirmModal.gameObject.activeSelf;
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;
     public bool IsInventoryOpen => inventoryUI != null && inventoryUI.gameObject.activeSelf;
     public bool IsShopOpen => shopUI != null && shopUI.gameObject.activeSelf;
     public bool IsOptionOpen => optionUI != null && optionUI.gameObject.activeSelf;
-    public bool IsAnyUIOpen => IsPauseOpen || IsInventoryOpen || IsShopOpen || IsOptionOpen;
-
-
-    #region Singleton
-    public static UIManager Instance { get; private set; }
-
-    private void Awake()
-    {
-        if (Instance == null)
-        {
-            Instance = this;
-            DontDestroyOnLoad(gameObject);
-        }
-        else
-        {
-            Destroy(gameObject);
-        }
-    }
+    public bool IsAnyUIOpen => IsConfirmModalOpen || IsPauseOpen || IsInventoryOpen || IsShopOpen || IsOptionOpen;
     #endregion
 
     public void Start()

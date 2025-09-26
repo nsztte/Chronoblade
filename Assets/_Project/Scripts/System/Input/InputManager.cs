@@ -66,9 +66,10 @@ public class InputManager : MonoBehaviour
     private bool crouchState;
     #endregion
     
+    // 공격 입력 쿨타임
     private float attackKeyDownTime;
     private const float LIGHT_ATTACK_THRESHOLD = 0.2f;
-
+    
     private bool isInputEnabled = true;
 
     void Update()
@@ -79,18 +80,16 @@ public class InputManager : MonoBehaviour
         if (!isInputEnabled)
             return;
 
-        // 1) UI 열려 있으면 허용 키만 처리하고 종료
-        if (HandleUIBlockingInput())
-            return;
-
-        // 2) 아무 UI도 안 열렸을 때 전역 핫키(ESC/I)는 항상 처리
         if (Input.GetKeyDown(KeyCode.Escape))
-            OnPause?.Invoke();
+        {
+            if (!TryCloseTopUI()) // UI 아무것도 안 닫히면 일시정지로 진입
+                OnPause?.Invoke();
+        }
 
         if (Input.GetKeyDown(KeyCode.I))
             OnInventoryChanged?.Invoke();
 
-        // 3) 커서 잠금 해제면 게임플레이 입력 차단
+        // 커서 잠금 해제면 게임플레이 입력 차단
         if (Cursor.lockState != CursorLockMode.Locked)
             return;
           
@@ -242,33 +241,43 @@ public class InputManager : MonoBehaviour
         OnPause?.Invoke();
     }
 
-    private bool HandleUIBlockingInput()
+    private bool TryCloseTopUI()
     {
         var ui = UIManager.Instance;
-        if (ui != null)
+
+        // 1. ConfirmModal이 열려 있으면 닫기 (최우선)
+        if (ui.IsConfirmModalOpen)
         {
-            if (ui.IsPauseOpen)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                    OnPause?.Invoke();
-                return true;
-            }
+            ui.ConfirmModalUI.Hide();
+            return true;
+        }
 
-            if (ui.IsInventoryOpen)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                    OnPause?.Invoke();
-                if (Input.GetKeyDown(KeyCode.I))
-                    OnInventoryChanged?.Invoke();
-                return true;
-            }
+        // 2. 옵션 UI
+        if (ui.IsOptionOpen)
+        {
+            ui.OptionUI.Close();
+            return true;
+        }
 
-            if (ui.IsShopOpen)
-            {
-                if (Input.GetKeyDown(KeyCode.Escape))
-                    OnPause?.Invoke();
-                return true;
-            }
+        // 3. 일시정지 UI
+        if (ui.IsPauseOpen)
+        {
+            ui.ClosePause();
+            return true;
+        }
+
+        // 4. 상점 UI
+        if (ui.IsShopOpen)
+        {
+            ShopManager.Instance.CloseShop();
+            return true;
+        }
+
+        // 5. 인벤토리 UI
+        if (ui.IsInventoryOpen)
+        {
+            ui.InventoryUI.Close();
+            return true;
         }
 
         return false;
