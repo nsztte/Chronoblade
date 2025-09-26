@@ -31,7 +31,7 @@ public class CutsceneCameraManager : MonoBehaviour
     {
         // 컷씬 시작: 저장 차단
         // SaveGuard.Instance?.Block(SaveBlockTag.Cutscene);
-        GameManager.Instance.EnterCutscene();
+        // GameManager.Instance.EnterCutscene();
 
         playerCinemachineCamera.SetActive(true);
         StartCoroutine(EnableCamNextFrame(targetCamera));

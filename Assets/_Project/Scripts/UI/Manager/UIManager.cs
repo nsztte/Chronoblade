@@ -21,6 +21,7 @@ public class UIManager : MonoBehaviour
     }
     #endregion
 
+    [Header("참조")]
     [SerializeField] private PlayerHUD playerHUD;
     [SerializeField] private BossHUD bossHUD;
     [SerializeField] private InventoryUI inventoryUI;
@@ -31,6 +32,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private TooltipUI tooltipUI;
     [SerializeField] private FadeUI fadeUI;
     [SerializeField] private OptionUI optionUI;
+    [SerializeField] private StatusIconUI statusIconUI;
 
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
@@ -46,6 +48,7 @@ public class UIManager : MonoBehaviour
     public TooltipUI TooltipUI => tooltipUI;
     public FadeUI FadeUI => fadeUI;
     public OptionUI OptionUI => optionUI;
+    public StatusIconUI StatusIconUI => statusIconUI;
 
     public bool IsConfirmModalOpen => ConfirmModalUI != null && confirmModal.gameObject.activeSelf;
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;

@@ -235,6 +235,8 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     moveSpeed = originalMoveSpeed * slowedMultiplier;
                     animator.speed = originalAnimSpeed * slowedMultiplier;
 
+                    UIManager.Instance?.StatusIconUI.Show(StatusEffectType.Slow, duration);
+
                     if(statusCoroutine != null)
                         StopCoroutine(statusCoroutine);
                     statusCoroutine = StartCoroutine(RemoveStatusAfter(StatusEffectType.Slow, duration));
@@ -247,6 +249,8 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     isFrozen = true;
                     animator.speed = 0f;
 
+                    UIManager.Instance?.StatusIconUI.Show(StatusEffectType.Freeze, duration);
+
                     if(statusCoroutine != null)
                         StopCoroutine(statusCoroutine);
                     statusCoroutine = StartCoroutine(RemoveStatusAfter(StatusEffectType.Freeze, duration));
@@ -257,6 +261,8 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 {
                     Debug.Log("PlayerController: ApplyStatus Paralysis");
                     isParalyzed = true;
+
+                    UIManager.Instance?.StatusIconUI.Show(StatusEffectType.Paralysis, duration);
 
                     // TODO: 전기 파티클, 카메라 흔들림 등 연출 삽입 위치
                     if(statusCoroutine != null)
@@ -277,6 +283,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                     isSlowed = false;
                     moveSpeed = originalMoveSpeed;
                     animator.speed = originalAnimSpeed;
+                    UIManager.Instance?.StatusIconUI.Hide();
                 }
                 break;
             case StatusEffectType.Freeze:
@@ -284,12 +291,14 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 {
                     isFrozen = false;
                     animator.speed = originalAnimSpeed;
+                    UIManager.Instance?.StatusIconUI.Hide();
                 }
                 break;
             case StatusEffectType.Paralysis:
                 if(isParalyzed)
                 {
                     isParalyzed = false;
+                    UIManager.Instance?.StatusIconUI.Hide();
                 }
                 break;
         }
@@ -304,8 +313,6 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         statusCoroutine = null;
     }
 
-    public void ApplyStatus(ComboAttackData attackData)
-    {
-    }
+    public void ApplyStatus(ComboAttackData attackData){}
     #endregion
 }
