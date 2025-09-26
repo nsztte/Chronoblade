@@ -17,14 +17,14 @@ public class ShopUI : MonoBehaviour
 
     private void OnEnable()
     {
-        InputManager.Instance.OnPause += ShopManager.Instance.CloseShop;
+        // InputManager.Instance.OnPause += ShopManager.Instance.CloseShop;
         GameManager.Instance.EnterPaused();
         SelectedItemContext.OnSelectedItemChanged += OnSelectedChanged;
     }
 
     private void OnDisable()
     {
-        InputManager.Instance.OnPause -= ShopManager.Instance.CloseShop;
+        // InputManager.Instance.OnPause -= ShopManager.Instance.CloseShop;
         SelectedItemContext.OnSelectedItemChanged -= OnSelectedChanged;
     }
 
