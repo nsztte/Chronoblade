@@ -3060,3 +3060,41 @@ Enemy FSM(상태머신) 시스템 구현
 - OptionUI 탭 우선순위가 정상적으로 반영되어 인게임/타이틀 모드에 맞는 기본 탭이 열림  
 
 ---
+
+## 2025.09.26 (금) 작업 기록
+
+### 주요 작업
+- **State**
+  - `LoadingState` 구조 확장 및 `NewGame/Load` 흐름 통합
+    - `LoadingMode enum { None, NewGame, LoadSave, SceneTransition }` 추가
+    - 각 모드에 따른 씬 로딩 분기 처리
+    - `MainMenuUI`에서 NewGame 클릭 시 `NextLoadingMode` 지정 후 `GameManager.EnterLoading()` 호출
+    - `SaveTabController`에서 Load 슬롯 클릭 시 `LoadingMode.LoadSave` 설정 및 슬롯 인덱스 지정 후 로딩 진입
+    - 모든 씬 전환 흐름을 `LoadingState`로 일관되게 관리 (로딩 연출, 입력 차단, 상태 복원 포함)
+
+- **Input**
+  - ESC 입력 우선순위 기반 UI 정리 로직 구현
+    - 우선순위: ConfirmModal → OptionUI → PauseUI → ShopUI → InventoryUI
+    - `InputManager.TryCloseTopUI()` 함수로 ESC 입력 흐름 통합
+    - UI 열림 상태에 따라 해당 UI만 닫고, 없으면 `OnPause()`로 Pause 상태 진입
+    - 기존 `HandleUIBlockingInput()` 구조 제거
+
+- **UI**
+  - 상태이상 아이콘 UI(`StatusIconUI`) 구현 및 PlayerController 연동
+    - `StatusIconUI.cs` 신규 구현: 상태 타입별 아이콘 표시 및 지속시간 연출
+    - 지속시간 1초 전 알파 깜빡임, 무기한 지속 상태 처리
+    - `PlayerController.ApplyStatus()` → `StatusIconUI.Show()`
+    - `PlayerController.RemoveStatus()` → `StatusIconUI.Hide()`
+    - HUD와 `UIManager.Instance.StatusIconUI`로 연결
+
+  - Heartbeat UI 레이아웃 및 기본 스크립트 구현
+    - `CenterPos`, `HearbeatImages` 부모 오브젝트 구성
+    - `HeartbeatLineImage`: `PulseOriginPos` 및 RectTransform 접근자 정의
+    - `HeartbeatLinePool`: `Pool<RectTransform>` 상속 및 `OnBeforeRelease()` 오버라이드
+    - `HeartbeatScroller`: 기본 스크롤러 구조 정의 및 UI 연동 준비
+
+### 메모
+- 로딩/씬 전환, ESC 입력 우선순위, HUD 연동까지 UI/State/Input 흐름이 하나의 구조로 정리됨  
+- Heartbeat UI는 기본 구조와 풀링까지 구현 완료, 세부 이동 로직은 다음 주에 다시 진행 예정
+
+---
