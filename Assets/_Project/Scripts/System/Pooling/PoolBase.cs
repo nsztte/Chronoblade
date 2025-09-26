@@ -18,6 +18,8 @@ public abstract class PoolBase : MonoBehaviour
     [Tooltip("풀 인스턴스의 부모 (디폴트: 이 오브젝트)")]
     [SerializeField] protected Transform poolParent;
 
+    public GameObject Prefab => prefab;
+
     protected virtual void Reset()
     {
         poolParent = this.transform;

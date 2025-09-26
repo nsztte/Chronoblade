@@ -38,19 +38,6 @@ public class TimingComboManager : MonoBehaviour
 
     public enum TimingResult { Perfect, Good, Miss, None }
     
-    // [System.Serializable]
-    // public struct TimingJudgement
-    // {
-    //     public TimingResult result;
-    //     public float damageMultiplier;
-        
-    //     public TimingJudgement(TimingResult result, float multiplier)
-    //     {
-    //         this.result = result;
-    //         this.damageMultiplier = multiplier;
-    //     }
-    // }
-    
     // 심장박동 UI, 사운드에 사용
     public event Action OnBeat; // 비트마다 콤보 시스템에 알림
     private float startTime;    // 비트 루프 시작 시점 (코루틴 시작 시점)
@@ -74,6 +61,7 @@ public class TimingComboManager : MonoBehaviour
             beatStarted = true;
             startTime = Time.time; // 비트 루프 시작 시점 초기화
             beatRoutineCoroutine = StartCoroutine(BeatRoutine());
+            UIManager.Instance?.HeartbeatScroller.Show();
         }
     }
 
@@ -83,6 +71,7 @@ public class TimingComboManager : MonoBehaviour
         {
             StopCoroutine(beatRoutineCoroutine);
             beatRoutineCoroutine = null;
+            UIManager.Instance?.HeartbeatScroller.Hide();
         }
         beatStarted = false;
     }
@@ -92,6 +81,7 @@ public class TimingComboManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(beatInterval);
+            Debug.Log("지금!!!!!!!!!!!!!!!");
             OnBeat?.Invoke(); // 비트마다 알림 (UI, 사운드 호출 용도)
         }
     }
