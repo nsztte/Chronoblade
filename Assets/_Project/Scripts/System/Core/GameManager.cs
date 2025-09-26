@@ -49,13 +49,7 @@ public class GameManager : MonoBehaviour
         var sceneName = SceneManager.GetActiveScene().name;
 
         if (sceneName == TITLESCENE)
-        {
             EnterMainMenu();
-        }
-        else
-        {
-            EnterExploration();
-        }
     }
 
     private void OnEnable()

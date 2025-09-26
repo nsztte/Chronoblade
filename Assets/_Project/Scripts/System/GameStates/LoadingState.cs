@@ -1,29 +1,52 @@
 using UnityEngine;
+using UnityEngine.SceneManagement;
+
+public enum LoadingMode { None, NewGame, LoadSave, SceneTransition }
 
 [CreateAssetMenu(menuName="GameState/Loading")]
 public class LoadingState : GameBaseState
 {
+    public static LoadingMode NextLoadingMode = LoadingMode.None;
     public static int NextSlotToLoad = -1;
+    public static string NextSceneName = "";   // 테스트 이후 수정
+    private const string STARTSCENE = "TestScene01";    // 테스트 이후 수정
 
     public override void Enter()
     {
         Debug.Log("[GameState] LoadingState Enter");
+
         // UIManager.Instance.ShowLoadingScreen();
         // UIManager.Instance?.UpdateUI(false);
+
         InputManager.Instance?.SetInputEnabled(false);
         TimeManager.Instance.SetTimeScale(0f);
-
         SaveGuard.Instance?.Block(SaveBlockTag.UI);
 
         // TODO: 실제 로딩 처리
         // TODO: 씬 매니저 연동
         // TODO: 세이브/로드 시스템 연동
 
-        SaveManager.Instance.OnAfterLoad += HandleAfterLoad;
+        switch (NextLoadingMode)
+        {
+            case LoadingMode.NewGame:
+                // 직접 씬 로드 후 Exploration으로 진입
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                SceneManager.LoadScene(STARTSCENE);
+                break;
 
-        // 실제 로드 시작
-        if (NextSlotToLoad >= 0)
-            SaveManager.Instance.DefaultLoad(NextSlotToLoad);
+            case LoadingMode.LoadSave:
+                if (NextSlotToLoad >= 0)
+                {
+                    SaveManager.Instance.OnAfterLoad += HandleAfterLoad;
+                    SaveManager.Instance.DefaultLoad(NextSlotToLoad);
+                }
+                break;
+
+            case LoadingMode.SceneTransition:
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                SceneManager.LoadScene(NextSceneName);
+                break;
+        }
     }
 
     private void HandleAfterLoad()
@@ -32,16 +55,25 @@ public class LoadingState : GameBaseState
         GameManager.Instance.EnterExploration();
     }
 
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        SceneManager.sceneLoaded -= OnSceneLoaded;
+        GameManager.Instance.EnterExploration(); // 탐색 상태 진입
+    }
+
     public override void Exit()
     {
         Debug.Log("[GameState] LoadingState Exit");
+
         // UIManager.Instance.HideLoadingScreen();
         // UIManager.Instance?.UpdateUI(true);
+
         InputManager.Instance?.SetInputEnabled(true);
         TimeManager.Instance.SetTimeScale(1f);
-
         SaveGuard.Instance?.Unblock(SaveBlockTag.UI);
 
-        // GameManager.Instance.EnterExploration();
+        NextLoadingMode = LoadingMode.None;
+        NextSlotToLoad = -1;
+        NextSceneName = "";
     }
 }

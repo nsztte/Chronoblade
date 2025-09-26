@@ -120,6 +120,7 @@ public class SaveTabController : MonoBehaviour, IOptionsTab
                 {
                     if (m == null) return;
                     // SaveManager.Instance.DefaultLoad(clickedSlotIndex); // 실제 슬롯으로 로드
+                    LoadingState.NextLoadingMode = LoadingMode.LoadSave;
                     LoadingState.NextSlotToLoad = clickedSlotIndex;
                     GameManager.Instance.EnterLoading();
                     UIManager.Instance.OptionUI.Close();

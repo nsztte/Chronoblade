@@ -1,5 +1,4 @@
 using UnityEngine;
-using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class MainMenuUI : MonoBehaviour
@@ -13,8 +12,6 @@ public class MainMenuUI : MonoBehaviour
     [SerializeField] private Button continueButton;
     [SerializeField] private Button optionsButton;
     [SerializeField] private Button exitButton;
-
-    private const string STARTSCENE = "TestScene01";    // 테스트 이후 수정
 
     private void Awake()
     {
@@ -62,8 +59,8 @@ public class MainMenuUI : MonoBehaviour
 
     private void OnNewGame()
     {
-        GameManager.Instance.EnterExploration();
-        SceneManager.LoadScene(STARTSCENE);
+        LoadingState.NextLoadingMode = LoadingMode.NewGame;
+        GameManager.Instance.EnterLoading();
     }
 
     private void OnContinue()
