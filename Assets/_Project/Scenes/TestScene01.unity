@@ -448,7 +448,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!224 &434302924
 RectTransform:
   m_ObjectHideFlags: 0
@@ -3018,6 +3018,10 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 402779271642424177, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
+      propertyPath: beatInterval
+      value: 0.7
+      objectReference: {fileID: 0}
     - target: {fileID: 776187226173572032, guid: 9b4c19a137f6f5e42945eacd85b1e063, type: 3}
       propertyPath: m_Name
       value: Core
