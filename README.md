@@ -3098,3 +3098,43 @@ Enemy FSM(상태머신) 시스템 구현
 - Heartbeat UI는 기본 구조와 풀링까지 구현 완료, 세부 이동 로직은 다음 주에 다시 진행 예정
 
 ---
+
+## 2025.09.29 (월) 작업 기록
+
+### 주요 작업
+- 하트비트 라인 스크롤러 구현 (HeartbeatScroller)
+  - 일정 간격으로 배치된 이미지가 오른쪽으로 스크롤되며 순환되도록 구성
+  - 이미지 중심이 패널 중앙을 정확히 beatInterval 주기로 통과하도록 scrollSpeed 계산
+  - 가장 오른쪽으로 벗어난 이미지는 가장 왼쪽으로 이동시켜 재사용
+  - OnBeat 이벤트 발생 시, 중앙에 가장 가까운 이미지에 깜빡임 연출 적용
+
+- 하트비트 이미지 깜빡임 연출 (HeartbeatLineImage)
+  - CanvasGroup을 활용해 alpha 페이드 방식으로 연출
+  - Flash(): alpha = 1 → 지정된 targetAlpha까지 자연스럽게 감소하는 코루틴 실행
+
+- HeartbeatScroller 구조 리팩토링
+  - Start() → OnEnable() 구조로 전환
+    - 하트비트 이미지 초기화 및 초기 위치 배치를 OnEnable()에서 처리
+  - OnDisable()에서 리스트 및 리스너 정리
+  - Show()/Hide()로 스크롤링 상태만 제어하고, GameObject 활성화는 Unity에서 직접 제어하도록 변경
+
+- 하트비트 UI 마스크 및 배경 적용
+  - Mask 오브젝트
+    - Chamfered Rectangle 형태의 마스크 이미지 적용
+    - 하트비트 라인(HeartbeatImages)이 마스크 영역 내에서만 렌더링되도록 처리
+  - Background 오브젝트
+    - 어두운 톤의 HUD 스타일 배경 + 사이버틱한 그리드 이미지 적용
+    - 시각적 몰입감 및 전체 UI 일체감 강화
+
+- 전체 UI 계층 구조 정리
+  - `HeartbeatUI_Panel`
+    - `Background` (배경 이미지)
+    - `Mask` (Chamfered Rectangle)
+      - `HeartbeatImages` (스크롤되는 이미지들)
+
+### 메모
+- 스크롤러의 중심 통과 위치 보정을 위해 이미지 크기 및 RectTransform 기준 위치 신경써야 함
+- Flash 타이밍은 OnBeat 트리거 타이밍과 일치시켜야 자연스러운 연출 가능
+- 마스크 처리 이후 UI 몰입도 향상됨. HUD 내 일체감 유지하도록 추후 다른 UI도 동일한 배경/마스크 구조 적용 고려
+
+---
