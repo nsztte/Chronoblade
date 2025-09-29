@@ -15,5 +15,10 @@ public class TimingComboTester : MonoBehaviour
         {
             TimingComboManager.Instance.StartBeatRoutine();
         }
+
+        if(Input.GetKeyDown(KeyCode.Y))
+        {
+            TimingComboManager.Instance.StopBeatRoutine();
+        }
     }
 }

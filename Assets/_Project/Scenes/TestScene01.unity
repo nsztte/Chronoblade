@@ -483,11 +483,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 212f93498ebb91441aced9516b1c7c75, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  centerPos: {fileID: 1277777016}
-  imagesParent: {fileID: 297315292}
-  pool: {fileID: 297315293}
-  imageCount: 3
-  spacing: 0
+  panel: {fileID: 434302924}
+  heartbeatImagesParent: {fileID: 297315292}
+  linePool: {fileID: 297315293}
+  lineCount: 3
 --- !u!1 &560958989
 GameObject:
   m_ObjectHideFlags: 0
