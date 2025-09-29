@@ -17,7 +17,7 @@ public class HeartbeatScroller : MonoBehaviour
     private float imageWidth;
     private bool isScrolling = false;
 
-    private void Start()
+    private void OnEnable()
     {
         panelWidth = panel.rect.width;
         panelCenterX = panelWidth * 0.5f;
@@ -43,8 +43,22 @@ public class HeartbeatScroller : MonoBehaviour
 
             activeLines.Add(line);
         }
+        
+        if (TimingComboManager.Instance != null)
+            TimingComboManager.Instance.OnBeat += OnBeat;
+    }
 
-        TimingComboManager.Instance.OnBeat += OnBeat;
+    private void OnDisable()
+    {
+        foreach (var line in activeLines)
+        {
+            if (line != null)
+                linePool.Release(line.RectTransform);
+        }
+        activeLines.Clear();
+
+        if (TimingComboManager.Instance != null)
+            TimingComboManager.Instance.OnBeat -= OnBeat;
     }
 
     private void Update()
