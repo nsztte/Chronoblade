@@ -137,7 +137,8 @@ public class PlayerLocomotionState : PlayerBaseState
         // 타이밍 판정
         var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
         
-        if (result != TimingComboManager.TimingResult.Miss)
+        // 비트 루틴이 시작되었고 타이밍이 맞으면 콤보 시도
+        if (result != TimingComboManager.TimingResult.Unavailable && result != TimingComboManager.TimingResult.Miss)
         {
             // 첫 입력에 맞는 모든 콤보 후보군을 가져옴
             var candidates = ComboEvaluator.Instance.GetMatchingCombos(new List<AttackType> { AttackType.Light });
@@ -176,7 +177,8 @@ public class PlayerLocomotionState : PlayerBaseState
         // 타이밍 판정
         var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
         
-        if (result != TimingComboManager.TimingResult.Miss)
+        // 비트 루틴이 시작되었고 타이밍이 맞으면 콤보 시도
+        if (result != TimingComboManager.TimingResult.Unavailable && result != TimingComboManager.TimingResult.Miss)
         {
             // 첫 입력에 맞는 모든 콤보 후보군을 가져옴
             var candidates = ComboEvaluator.Instance.GetMatchingCombos(new List<AttackType> { AttackType.Heavy });

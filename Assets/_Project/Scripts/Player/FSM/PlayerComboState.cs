@@ -134,6 +134,12 @@ public class PlayerComboState : PlayerBaseState
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
+        else if (result == TimingComboManager.TimingResult.Unavailable)
+        {
+            Debug.Log($"[{currentAttackIndex+1}타] 판정: Unavailable, 콤보 종료");
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
+        }
 
         // 콤보 성공 시 무적 시간 부여
         PlayerManager.Instance.OnComboAttackSuccess(result);

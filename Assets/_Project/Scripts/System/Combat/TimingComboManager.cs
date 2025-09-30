@@ -36,7 +36,7 @@ public class TimingComboManager : MonoBehaviour
     [Header("입력 유효 시간")]
     [SerializeField] private float inputValidTime = 1.0f; // 입력 유효 시간(초)
 
-    public enum TimingResult { Perfect, Good, Miss, None }
+    public enum TimingResult { Perfect, Good, Miss, Unavailable, None }
     
     // 심장박동 UI, 사운드에 사용
     public event Action OnBeat; // 비트마다 콤보 시스템에 알림
@@ -44,6 +44,7 @@ public class TimingComboManager : MonoBehaviour
     private Coroutine beatRoutineCoroutine;
     private bool beatStarted = false;
     public float StartTime => startTime; // 외부에서 접근 가능한 프로퍼티
+    public bool IsBeatStarted => beatStarted; // 비트 루틴 시작 상태 확인
 
     // UI 등 피드백용 프로퍼티, 이벤트
     public bool IsMissed { get; private set; }
@@ -101,6 +102,13 @@ public class TimingComboManager : MonoBehaviour
 
     public (TimingResult result, float damageMultiplier, float absOffset) JudgeTiming(float inputTime)
     {
+        // 비트 루틴이 시작되지 않았으면 Unavailable 판정
+        if (!beatStarted)
+        {
+            IsPerfect = false; IsGood = false; IsMissed = false;
+            return (TimingResult.Unavailable, 1.0f, 0f);
+        }
+
         float beatsPassed = Mathf.Round((inputTime - StartTime) / BeatInterval);
         float nearestBeatTime = StartTime + beatsPassed * BeatInterval;
         float offset = inputTime - nearestBeatTime;
