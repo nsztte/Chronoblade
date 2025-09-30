@@ -134,8 +134,8 @@ public class PlayerLocomotionState : PlayerBaseState
             return;
         }
         
-        // 타이밍 판정
-        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        // 타이밍 판정 (UI/EVENT 미발생 사전 판정)
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time, emitEvents: false);
         
         // 비트 루틴이 시작되었고 타이밍이 맞으면 콤보 시도
         if (result != TimingComboManager.TimingResult.Unavailable && result != TimingComboManager.TimingResult.Miss)
@@ -174,8 +174,8 @@ public class PlayerLocomotionState : PlayerBaseState
             return;
         }
         
-        // 타이밍 판정
-        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time);
+        // 타이밍 판정 (UI/EVENT 미발생 사전 판정)
+        var (result, damageMultiplier, absOffset) = TimingComboManager.Instance.JudgeTiming(Time.time, emitEvents: false);
         
         // 비트 루틴이 시작되었고 타이밍이 맞으면 콤보 시도
         if (result != TimingComboManager.TimingResult.Unavailable && result != TimingComboManager.TimingResult.Miss)

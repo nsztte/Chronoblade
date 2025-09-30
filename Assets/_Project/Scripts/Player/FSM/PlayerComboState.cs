@@ -75,8 +75,9 @@ public class PlayerComboState : PlayerBaseState
         }
         else if (isWaitingForInput && Time.time - comboStartTime > TimingComboManager.Instance.GetComboWindow())
         {
-            Debug.Log("[PlayerComboState] 콤보 실패 - 입력 시간 초과");
-            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+			Debug.Log("[PlayerComboState] 콤보 실패 - 입력 시간 초과");
+			TimingComboManager.Instance.MissFeedback();
+			stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
         playerController.LocomotionUpdate();
@@ -100,6 +101,7 @@ public class PlayerComboState : PlayerBaseState
         if (newCandidates.Count == 0)
         {
             Debug.Log($"[PlayerComboState] 콤보 실패 - 후보군 없음");
+            TimingComboManager.Instance.MissFeedback();
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
@@ -136,6 +138,7 @@ public class PlayerComboState : PlayerBaseState
         if (!PlayerManager.Instance.UseStaminaIfAvailable(staminaCost))
         {
             Debug.Log("[콤보] 스태미너 부족으로 공격 실패");
+            TimingComboManager.Instance.MissFeedback();
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }

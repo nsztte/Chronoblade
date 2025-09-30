@@ -909,7 +909,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   prefab: {fileID: 2654466958603856291, guid: 0da649928effd6f4ebc6f39c2d4c7e9d, type: 3}
-  initialSize: 3
+  initialSize: 5
   maxSize: 6
   expandIfEmpty: 1
   poolParent: {fileID: 1207965885}
@@ -3715,6 +3715,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: comboResultUIController
+      value: 
+      objectReference: {fileID: 1648587449}
     - target: {fileID: 5402150034782711902, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0

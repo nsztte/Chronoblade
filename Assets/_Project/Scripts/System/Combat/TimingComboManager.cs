@@ -55,6 +55,34 @@ public class TimingComboManager : MonoBehaviour
     public event Action OnPerfect;
     public event Action OnGood;
 
+    private Action onPerfectHandler;
+    private Action onGoodHandler;
+    private Action onMissedHandler;
+
+    private void Start()
+    {
+        onPerfectHandler = () => UIManager.Instance.ComboResultUIController.ShowResult("PERFECT", Color.yellow);
+        onGoodHandler    = () => UIManager.Instance.ComboResultUIController.ShowResult("Good", Color.green);
+        onMissedHandler  = () => UIManager.Instance.ComboResultUIController.ShowResult("Miss", Color.red);
+
+        OnPerfect += onPerfectHandler;
+        OnGood    += onGoodHandler;
+        OnMissed  += onMissedHandler;
+    }
+
+    private void OnDestroy()
+    {
+        OnPerfect -= onPerfectHandler;
+        OnGood    -= onGoodHandler;
+        OnMissed  -= onMissedHandler;
+    }
+
+    // 외부에서 Miss 피드백만 명시적으로 요청해야 하는 경우 사용
+    public void MissFeedback()
+    {
+        OnMissed?.Invoke();
+    }
+
     public void StartBeatRoutine()
     {
         if (!beatStarted)
@@ -100,7 +128,7 @@ public class TimingComboManager : MonoBehaviour
         return inputValidTime; // 콤보 입력 유효 시간 반환
     }
 
-    public (TimingResult result, float damageMultiplier, float absOffset) JudgeTiming(float inputTime)
+    public (TimingResult result, float damageMultiplier, float absOffset) JudgeTiming(float inputTime, bool emitEvents = true)
     {
         // 비트 루틴이 시작되지 않았으면 Unavailable 판정
         if (!beatStarted)
@@ -121,21 +149,21 @@ public class TimingComboManager : MonoBehaviour
             result = TimingResult.Perfect;
             damageMultiplier = PerfectBonusMultiplier;
             IsPerfect = true; IsGood = false; IsMissed = false;
-            OnPerfect?.Invoke();
+            if (emitEvents) OnPerfect?.Invoke();
         }
         else if (absOffset <= GoodWindow)
         {
             result = TimingResult.Good;
             damageMultiplier = GoodBonusMultiplier;
             IsPerfect = false; IsGood = true; IsMissed = false;
-            OnGood?.Invoke();
+            if (emitEvents) OnGood?.Invoke();
         }
         else
         {
             result = TimingResult.Miss;
             damageMultiplier = missPenaltyMultiplier;
             IsPerfect = false; IsGood = false; IsMissed = true;
-            OnMissed?.Invoke();
+            if (emitEvents) OnMissed?.Invoke();
         }
         return (result, damageMultiplier, absOffset);
     }
