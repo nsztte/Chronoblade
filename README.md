@@ -3138,3 +3138,39 @@ Enemy FSM(상태머신) 시스템 구현
 - 마스크 처리 이후 UI 몰입도 향상됨. HUD 내 일체감 유지하도록 추후 다른 UI도 동일한 배경/마스크 구조 적용 고려
 
 ---
+
+## 2025.09.30 (화) 작업 기록
+
+### 주요 작업
+- **TimingComboManager 리팩토링**
+  - 판정 수치 현실적 기준으로 조정 (Perfect ±60ms / Good ±120ms)
+  - `emitEvents` 매개변수 추가로 UI 출력 제어 가능
+  - `Unavailable` 판정 도입 → 비트 루틴 미시작 시 일반 공격 처리
+
+- **PlayerLocomotionState & PlayerComboState 연동**
+  - 콤보 진입 여부 판단 시 `emitEvents: false` 적용하여 UI 중복 출력 방지
+  - 파이널 콤보 종료 시점까지 애니메이션 끝나도록 처리
+    - `AnimatorStateInfo.normalizedTime`로 마지막 타이밍 감지
+    - `EndComboAfterDelay()` 제거하고 실시간 모니터링 방식으로 전환
+
+- **ComboResult UI 시스템 구현**
+  - `ComboResult_Area` → `ComboStack` → `ComboResultEntry` 구조로 HUD 상단에 표시되는 판정 텍스트 UI 구성
+  - `ComboResultUIController`를 통해 스택처럼 위로 떠오르는 애니메이션 연출
+  - `ComboResultEntry`: TextMeshPro + CanvasGroup 기반 / DOTween 연동
+  - `ComboResultPool`: Pool<ComboResultEntry> 구조로 풀링 최적화 (초기 5개, 최대 6개)
+
+- **UIManager → TimingComboManager 이벤트 연동**
+  - OnPerfect / OnGood / OnMissed 이벤트 발생 시 `ComboResultUIController.ShowResult()` 호출
+  - 람다 대신 명시적 핸들러 방식으로 이벤트 연결/해제 처리
+
+- **외부 플러그인 적용**
+  - **DOTween** 설치 및 Setup 완료 (Tools > Demigiant > DOTween Utility Panel)
+  - 콤보 UI 연출 전반에 DOTween 사용
+
+### 메모
+- 콤보 결과 텍스트는 일반 타격마다 float-up 방식으로 최대 2~3개 정도 쌓여도 문제없도록 설계됨
+- 파이널 콤보 연출은 ComboResultUI와 분리 예정 → 별도 Finish UI 구조 필요
+- Miss 판정은 ComboState 내에서만 UI 출력되도록 구조 통제함
+- DOTween 연출 구조는 앞으로 다른 UI 연출에도 재활용 가능 (ex. 토스트, 퀵슬롯, 피니시 등)
+
+---
