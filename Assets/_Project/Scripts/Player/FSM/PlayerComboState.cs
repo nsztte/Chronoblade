@@ -13,6 +13,7 @@ public class PlayerComboState : PlayerBaseState
     private float beatInterval;
     private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
     private bool isWaitingForInput = false;
+    private bool isLastAttackPlaying = false; // 마지막 공격 애니메이션 재생 중인지 확인
 
 
     public PlayerComboState(PlayerStateMachine stateMachine, ComboSequence initialCombo) : base(stateMachine)
@@ -59,11 +60,20 @@ public class PlayerComboState : PlayerBaseState
         }
         stateMachine.Animator.CrossFadeInFixedTime("SwordIdle", 0.25f, upperBodyLayerIndex);
         stateMachine.Animator.ResetTrigger("IsAttacking");
+        
+        // 상태 초기화
+        isLastAttackPlaying = false;
+        isWaitingForInput = false;
     }
 
     public override void Update()
     {
-        if (isWaitingForInput && Time.time - comboStartTime > TimingComboManager.Instance.GetComboWindow())
+        // 마지막 공격 애니메이션이 재생 중이면 완료 확인
+        if (isLastAttackPlaying)
+        {
+            CheckLastAttackAnimationComplete();
+        }
+        else if (isWaitingForInput && Time.time - comboStartTime > TimingComboManager.Instance.GetComboWindow())
         {
             Debug.Log("[PlayerComboState] 콤보 실패 - 입력 시간 초과");
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
@@ -102,10 +112,18 @@ public class PlayerComboState : PlayerBaseState
         ExecuteCurrentAttack();
     }
 
-    private IEnumerator EndComboAfterDelay(float waitTime)
+    private void CheckLastAttackAnimationComplete()
     {
-        yield return new WaitForSeconds(waitTime);
-        stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        // 현재 재생 중인 애니메이션 상태 정보 가져오기
+        AnimatorStateInfo stateInfo = stateMachine.Animator.GetCurrentAnimatorStateInfo(upperBodyLayerIndex);
+        
+        // 애니메이션이 완료되었는지 확인 (normalizedTime >= 1.0f)
+        if (stateInfo.normalizedTime >= 1.0f)
+        {
+            Debug.Log("[PlayerComboState] 마지막 공격 애니메이션 완료, 상태 전환");
+            isLastAttackPlaying = false;
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        }
     }
 
     private void ExecuteCurrentAttack()
@@ -175,9 +193,9 @@ public class PlayerComboState : PlayerBaseState
 
         if(isLastAttack)
         {
-            float actualPlayTime = animLength / speed;
-            Debug.Log($"[PlayerComboState] 막타 애니메이션 실제 재생 시간: {actualPlayTime}");
-            stateMachine.StartCoroutine(EndComboAfterDelay(actualPlayTime));
+            Debug.Log($"[PlayerComboState] 막타 애니메이션 시작 - 애니메이션 완료까지 대기");
+            isLastAttackPlaying = true; // 마지막 공격 애니메이션 재생 시작
+            isWaitingForInput = false; // 입력 대기 상태 해제
         }
         else
         {
