@@ -83,6 +83,9 @@ public class EnemyManager : MonoBehaviour
         }
 
         enemy.transform.SetPositionAndRotation(position, rotation);
+        enemy.enabled = true;
+        enemy.ResetState();
+        
         return enemy;
     }
 

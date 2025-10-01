@@ -57,18 +57,13 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
-    }
-    
-    private void Start()
-    {
-        // EnemyManager.Instance?.RegisterEnemy(this);
+
         SetupHPUI();
     }
-
+    
     private void OnEnable()
     {
         EnemyManager.Instance?.RegisterEnemy(this);
-        ResetState();
     }
 
     private void OnDisable()
@@ -79,7 +74,6 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public virtual void ResetState()
     {
         currentHP = behaviorData.maxHP;
-        enabled = true;
 
         fsm.ResetToIdle();
 
@@ -190,7 +184,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         Collider collider = GetComponent<Collider>();
         if(collider != null) collider.enabled = false;
         
-        this.enabled = false;
+        enabled = false;
         
         // 시간 조절을 반영한 파괴 지연
         StartCoroutine(ReleaseWithTimeScale(destroyTime));
