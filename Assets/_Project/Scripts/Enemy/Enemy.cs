@@ -59,22 +59,39 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         agent = GetComponent<NavMeshAgent>();
     }
     
-    // 향후 플레이어 거리기반 활성화 도입시 OnEnable으로 변경, OnDisable 추가
     private void Start()
     {
-        EnemyManager.Instance?.RegisterEnemy(this);
+        // EnemyManager.Instance?.RegisterEnemy(this);
         SetupHPUI();
     }
 
-    // private void OnEnable()
-    // {
-    //     EnemyManager.Instance?.RegisterEnemy(this);
-    // }
+    private void OnEnable()
+    {
+        EnemyManager.Instance?.RegisterEnemy(this);
+        ResetState();
+    }
 
-    // private void OnDisable()
-    // {
-    //     EnemyManager.Instance?.UnregisterEnemy(this);
-    // }
+    private void OnDisable()
+    {
+        EnemyManager.Instance?.UnregisterEnemy(this);
+    }
+
+    public virtual void ResetState()
+    {
+        currentHP = behaviorData.maxHP;
+        enabled = true;
+
+        fsm.ResetToIdle();
+
+        if (hpUI != null)
+        {
+            hpUI.SetHP(currentHP, MaxHP);
+            hpUI.gameObject.SetActive(true);
+        }
+
+        var collider = GetComponent<Collider>();
+        if (collider != null) collider.enabled = true;
+    }
 
     // 데미지 처리
     public virtual void TakeDamage(int damage)
@@ -176,11 +193,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         this.enabled = false;
         
         // 시간 조절을 반영한 파괴 지연
-        StartCoroutine(DestroyWithTimeScale(destroyTime));
+        StartCoroutine(ReleaseWithTimeScale(destroyTime));
     }
 
     // 파괴 지연 처리
-    private IEnumerator DestroyWithTimeScale(float delay)
+    private IEnumerator ReleaseWithTimeScale(float delay)
     {
         float elapsed = 0f;
         while (elapsed < delay)
@@ -188,7 +205,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             elapsed += GetAdjustedDeltaTime();
             yield return null;
         }
-        Destroy(this.gameObject);
+        // Destroy(this.gameObject);
+        EnemyPool.Instance?.Release(this);
     }
 
     // 시간 조절 처리

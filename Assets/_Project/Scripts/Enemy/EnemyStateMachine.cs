@@ -96,4 +96,9 @@ public class EnemyStateMachine : MonoBehaviour
         // Dictionary를 사용한 상태 타입 매핑
         currentStateType = stateTypeMap.GetValueOrDefault(newState.GetType(), currentStateType);
     }
+
+    public void ResetToIdle()
+    {
+        TransitionToState(idleState);
+    }
 }
