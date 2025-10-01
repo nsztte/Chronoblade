@@ -206,7 +206,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             yield return null;
         }
         // Destroy(this.gameObject);
-        EnemyPool.Instance?.Release(this);
+        EnemyManager.Instance?.ReleaseEnemy(this);
     }
 
     // 시간 조절 처리
