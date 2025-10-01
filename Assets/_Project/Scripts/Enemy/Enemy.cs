@@ -12,6 +12,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected FinalComboController finalComboController;
     [SerializeField] protected int currentHP;
     [SerializeField] protected float destroyTime = 5f;
+    [SerializeField] private Vector3 hpUIOffset = new Vector3(0, 0.3f, 0);
+    [SerializeField] private GameObject hpUIPrefab;
 
     [Header("공격 판정")]
     [SerializeField] protected LayerMask playerLayer;
@@ -20,6 +22,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     private Animator animator;
     private NavMeshAgent agent;
+    private EnemyHPUI hpUI;
 
     #region 전투 감지 이벤트
     // 전투 감지 이벤트
@@ -60,6 +63,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     private void Start()
     {
         EnemyManager.Instance?.RegisterEnemy(this);
+        SetupHPUI();
     }
 
     // private void OnEnable()
@@ -77,6 +81,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         currentHP -= damage;
         Debug.Log($"Enemy HP: {currentHP}");
+
+        hpUI.SetHP(currentHP, MaxHP);
 
         // 플레이어가 적을 공격하면 전투 시작
         if (GameManager.Instance.CurrentGameState is ExplorationState || GameManager.Instance.CurrentGameState is PuzzleState)
@@ -271,5 +277,48 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         fsm.enabled = true;
         agent.isStopped = false;
         animator.SetBool("IsStunned", false);
+    }
+
+    private void SetupHPUI()
+    {
+        if (hpUIPrefab == null)
+        {
+            hpUIPrefab = Resources.Load<GameObject>("UI/EnemyHPUI");
+        }
+
+        if (hpUIPrefab == null)
+        {
+            Debug.LogError("[Enemy] EnemyHPUI 프리팹 로드 실패: Resources/UI/EnemyHPUI");
+            return;
+        }
+
+        Transform followTarget = transform;
+
+        if (TryGetComponent(out Animator animator) && animator.isHuman && animator.avatar != null)
+        {
+            // 휴머노이드면 Head 본 사용
+            var head = animator.GetBoneTransform(HumanBodyBones.Head);
+            if (head != null)
+                followTarget = head;
+        }
+        else
+        {
+            // 휴머노이드가 아닐 경우 이름에 "head"가 포함된 자식 찾기
+            Transform found = TransformUtils.FindChildRecursive(transform, t => t.name.ToLower().Contains("head"));
+            if (found != null)
+            {
+                followTarget = found;
+            }
+            else
+            {
+                Debug.LogWarning($"Enemy {name}: 'Head' 트랜스폼을 찾을 수 없어 기본 transform 사용");
+            }
+        }
+
+        GameObject uiObj = Instantiate(hpUIPrefab, transform);
+        hpUI = uiObj.GetComponent<EnemyHPUI>();
+        hpUI.SetFollowTarget(followTarget);
+        hpUI.SetOffset(hpUIOffset);
+        hpUI.SetHP(currentHP, MaxHP);
     }
 }

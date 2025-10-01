@@ -218,11 +218,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146515025ea4d4842ab87bebd9b37432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beatInterval: 0.5
-  perfectWindow: 1
-  goodWindow: 1
-  perfectBonusMultiplier: 1.2
-  goodBonusMultiplier: 1
+  beatInterval: 0.7
+  perfectWindow: 0.2
+  goodWindow: 0.4
+  perfectBonusMultiplier: 1.3
+  goodBonusMultiplier: 1.1
   missPenaltyMultiplier: 0.5
   inputValidTime: 0.6
 --- !u!114 &63346300075625202
@@ -1034,6 +1034,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: a3347e78403cdd34a8ce67c7b6142432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  totalBlocks: 0
 --- !u!114 &8576378634712583454
 MonoBehaviour:
   m_ObjectHideFlags: 0

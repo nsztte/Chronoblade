@@ -6,15 +6,14 @@ public class EnemyHPUI : MonoBehaviour
     [Header("UI 참조")]
     [SerializeField] private Slider hpSlider;
 
-    [Header("타겟 설정")]
-    [SerializeField] private Transform followTarget;
+    [Header("위치")]
     [SerializeField] private Vector3 offset;
 
     [Header("거리 알파 설정")]
     [SerializeField] private float fadeStartDistance = 12f;
     [SerializeField] private float fadeEndDistance = 20f;
 
-
+    [SerializeField] private Transform followTarget;
     private CanvasGroup canvasGroup;
     private Camera mainCam;
 
@@ -57,5 +56,10 @@ public class EnemyHPUI : MonoBehaviour
     public void SetFollowTarget(Transform target)
     {
         followTarget = target;
+    }
+
+    public void SetOffset(Vector3 newOffset)
+    {
+        offset = newOffset;
     }
 }
