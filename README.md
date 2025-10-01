@@ -3174,3 +3174,50 @@ Enemy FSM(상태머신) 시스템 구현
 - DOTween 연출 구조는 앞으로 다른 UI 연출에도 재활용 가능 (ex. 토스트, 퀵슬롯, 피니시 등)
 
 ---
+
+## 2025.10.01 (수) 작업 기록
+
+### 주요 작업
+- **EnemyHPUI UI 구성 및 연동**
+  - World Space Canvas 기반 Slider UI 구성
+  - 카메라 빌보딩 + 거리 기반 알파 적용
+  - `SetHP()`, `SetFollowTarget()`, `SetOffset()` 기능 구현
+
+- **Enemy.cs 내 HP UI 자동 연결 로직 구현**
+  - 휴머노이드 본 또는 `"head"` 이름 포함 자식 트랜스폼 자동 탐색
+  - `Resources.Load` 방식으로 프리팹 로드하여 연결
+
+- **Transform 하위 조건 탐색 유틸 함수 작성**
+  - `TransformUtils.FindChildRecursive()` 정적 함수 구현
+
+- **Enemy 풀링 시스템 도입**
+  - `Pool<Enemy>` 상속 구조 및 `EnemyPool.cs` 생성
+  - `Enemy.ResetState()`, `Die()` → `Release()` 변경
+  - FSM 상태 초기화용 `ResetToIdle()` 함수 도입
+
+- **EnemyType 기반 다중 풀링 구조로 개선**
+  - `EnemyPool` Singleton 제거
+  - `EnemyManager`에서 `EnemyType` → `Pool` 매핑 Dictionary 구성
+  - `SpawnEnemy()`, `ReleaseEnemy()` 함수로 스폰/반환 일원화
+
+- **EnemySpawnPoint 스크립트 기본 구현**
+  - `enemyType`, `spawnOnStart` 기반 적 스폰
+  - `EnemyManager` 연동으로 타입 기반 적 생성
+
+- **EnemySpawnPoint 기능 확장**
+  - `spawnRadius`, `min/max count` 기반 랜덤 다중 스폰
+  - `NavMesh.SamplePosition()` 기반 유효 위치 보정
+  - 에디터 시각화(`OnDrawGizmosSelected`) 및 `UNITY_EDITOR` 전처리 처리
+
+- **스폰 초기화 흐름 개선**
+  - `EnemyManager.SpawnEnemy()`에서 `enemy.enabled = true → ResetState()` 순서로 초기화 흐름 명시
+  - `Enemy.cs`의 `ResetState()` 내부에서는 `enabled = true` 호출 제거
+  - 스크립트 활성화는 외부(EnemyManager)에서만 제어하도록 책임 분리
+
+### 메모
+- `Enemy.cs` → `SetupHPUI()`는 `Start()`에서 한 번만 호출하도록 유지
+- `Enemy.cs` → `Release()`는 `EnemyManager`를 통해 수행 (직접 참조 제거)
+- `EnemySpawnPoint`는 한 타입 고정 구조 유지 → 범위 겹치기로 혼합 연출 가능
+- 웨이브 구조 확장 시 `SpawnGroup`, `WaveSpawner` 스크립트로 분리 예정
+
+---
