@@ -382,7 +382,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 327aa5212ed1ad042baff2d4e0f97489, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  enemyType: 0
+  enemyType: 2
   spawnOnStart: 1
   spawnRadius: 5
   minSpawnCount: 1
@@ -9727,6 +9727,10 @@ PrefabInstance:
     - target: {fileID: 6785313998283858962, guid: e9c483dd513726245b9276b703b75119, type: 3}
       propertyPath: m_IsActive
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 8309973177347169179, guid: e9c483dd513726245b9276b703b75119, type: 3}
+      propertyPath: moveSpeed
+      value: 10
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
