@@ -5,11 +5,13 @@ public class MirrorAttackState : EnemyAttackState
 {
     public bool isAttacking = false;
     public bool isSpawned = false;
+    private float lastCloneSpawnTime = -999f;
+    private float cloneCooldown = 12f;
 
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        SpawnClones(enemy);
+        // SpawnClones(enemy);
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -24,7 +26,12 @@ public class MirrorAttackState : EnemyAttackState
             return;
         }
 
-        if(Time.time - lastAttackTime > enemy.Enemy.AttackCooldown && !isSpawned)
+        // 스폰 우선
+        if(!isSpawned)
+            SpawnClones(enemy);
+
+        // 그 외에는 일반 공격 쿨타임
+        if (Time.time - lastAttackTime > enemy.Enemy.AttackCooldown && !isAttacking)
         {
             Attack(enemy);
         }
@@ -38,8 +45,30 @@ public class MirrorAttackState : EnemyAttackState
 
     private void SpawnClones(EnemyStateMachine enemy)
     {
+        var duelist = enemy.Enemy as MirrorDuelist;
+        if (duelist == null)
+        {
+            Debug.LogWarning("MirrorDuelist로 캐스팅 실패");
+            return;
+        }
+
+        // 쿨타임 체크
+        if (Time.time - lastCloneSpawnTime < cloneCooldown)
+        {
+            Debug.Log("클론 소환 쿨타임 미충족 - 생성 생략");
+            return;
+        }
+
+        // 기존 클론 존재 시 스킵
+        if (duelist.HasActiveClones())
+        {
+            Debug.Log("기존 클론 존재 - 재소환 생략");
+            return;
+        }
+        
         enemy.Animator.SetTrigger("IsSpawnClones");
         isSpawned = true;
+        lastCloneSpawnTime = Time.time;
     }
 
     public override void Exit(EnemyStateMachine enemy)

@@ -1,4 +1,5 @@
 using UnityEngine;
+using System.Collections.Generic;
 
 public class MirrorDuelist : Enemy
 {
@@ -6,14 +7,40 @@ public class MirrorDuelist : Enemy
     [SerializeField] private Transform attackCenter;
     [SerializeField] private float attackRadius = 1f;
 
+    private List<FakeClone> activeClones = new();
+
     // Mirror Duelist 전용 프로퍼티
     public GameObject FakeClonePrefab => behaviorData.fakeClonePrefab;
     public int NumberOfClones => behaviorData.numberOfClones;
     public float CloneLifetime => behaviorData.cloneLifeTime;
     public float CloneSpawnRadius => behaviorData.cloneSpawnRadius;
 
+    public void RegisterClone(FakeClone clone)
+    {
+        if (!activeClones.Contains(clone))
+            activeClones.Add(clone);
+    }
+
+    public void UnregisterClone(FakeClone clone)
+    {
+        activeClones.Remove(clone);
+    }
+
+    public bool HasActiveClones()
+    {
+        // null 정리 포함
+        activeClones.RemoveAll(c => c == null);
+        return activeClones.Count > 0;
+    }
+
     public override void TakeDamage(int damage)
     {
+        if (HasActiveClones())
+        {
+            Debug.Log("Mirror Duelist 클론 존재 중 - 무적 상태");
+            return;
+        }
+
         currentHP -= damage;
         Debug.Log($"Mirror Duelist HP: {currentHP}");
 
@@ -89,6 +116,7 @@ public class MirrorDuelist : Enemy
             }
         }
     }
+    
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
