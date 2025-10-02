@@ -11,7 +11,6 @@ public class MirrorAttackState : EnemyAttackState
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
-        // SpawnClones(enemy);
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -31,10 +30,8 @@ public class MirrorAttackState : EnemyAttackState
             SpawnClones(enemy);
 
         // 그 외에는 일반 공격 쿨타임
-        if (Time.time - lastAttackTime > enemy.Enemy.AttackCooldown && !isAttacking)
-        {
+        if(Time.time - lastAttackTime > enemy.Enemy.AttackCooldown && !isSpawned)
             Attack(enemy);
-        }
     }
 
     protected override void Attack(EnemyStateMachine enemy)

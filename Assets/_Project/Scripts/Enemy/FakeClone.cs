@@ -5,11 +5,14 @@ public class FakeClone : MonoBehaviour, IDamageable
     private MirrorDuelist enemy;
     private float spawnTime;
     private bool isHit = false;
+    private bool isReleased = false;
     
     public void Initialize(MirrorDuelist enemy)
     {
         this.enemy = enemy;
-        this.spawnTime = Time.time;
+        spawnTime = Time.time;
+        isHit = false;
+        isReleased = false;
     }
 
     private void Update()
@@ -18,7 +21,7 @@ public class FakeClone : MonoBehaviour, IDamageable
 
         if(Time.time - spawnTime > enemy.CloneLifetime)
         {
-            DestroyClone();
+            ReleaseClone();
             return;
         }
     }
@@ -26,16 +29,18 @@ public class FakeClone : MonoBehaviour, IDamageable
     public void TakeDamage(int damage)
     {
         isHit = true;
-        DestroyClone();
+        ReleaseClone();
     }
 
-    private void DestroyClone()
+    private void ReleaseClone()
     {
+        if (isReleased) return;
+        isReleased = true;
+
         //TODO: 클론 파괴 효과 추가
-        Destroy(gameObject);
+        enemy.UnregisterClone(this);
+        FakeClonePool.Instance?.Release(this);
     }
 
-    public void ApplyKnockback(float force)
-    {
-    }
+    public void ApplyKnockback(float force) {}
 }

@@ -106,12 +106,17 @@ public class MirrorDuelist : Enemy
             // NavMesh 위의 유효한 위치 찾기
             if(UnityEngine.AI.NavMesh.SamplePosition(spawnPosition, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
             {
-                GameObject clone = Instantiate(FakeClonePrefab, hit.position, Quaternion.identity);
-                
-                if(clone.TryGetComponent(out FakeClone fakeClone))
+                FakeClone clone = FakeClonePool.Instance?.Get();
+                if (clone != null)
                 {
-                    fakeClone.Initialize(this);
-                    Debug.Log($"클론 {i+1} 생성 완료: {hit.position}");
+                    clone.transform.SetPositionAndRotation(hit.position, Quaternion.identity);
+                    clone.Initialize(this);
+                    RegisterClone(clone);
+                    Debug.Log($"클론 {i + 1} 생성 완료: {hit.position}");
+                }
+                else
+                {
+                    Debug.LogWarning("FakeClonePool에서 클론 가져오기 실패");
                 }
             }
         }
