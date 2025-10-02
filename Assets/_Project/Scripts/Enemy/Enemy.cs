@@ -37,6 +37,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     #region Getter
     public EnemyBehaviorData BehaviorData => behaviorData;
+    public EnemyStateMachine Fsm => fsm;
     public EnemyType Type => behaviorData.enemyType;
     public FinalComboController FinalComboController => finalComboController;
     public int MaxHP => behaviorData.maxHP;
@@ -76,6 +77,9 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         currentHP = behaviorData.maxHP;
 
         fsm.ResetToIdle();
+
+        agent.speed = MoveSpeed;
+        timeController.SetSpeed(MoveSpeed);
 
         if (hpUI != null)
         {
