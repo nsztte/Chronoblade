@@ -11,7 +11,7 @@ public class ChronoMonk : Enemy
     // ChronoMonk 전용 프로퍼티
     public float TeleportDistance => behaviorData.teleportDistance;
     public float SlowDuration => behaviorData.slowDuration;
-    public GameObject ChronoProjectilePrefab => behaviorData.chronoProjectilePrefab;
+    // public GameObject ChronoProjectilePrefab => behaviorData.chronoProjectilePrefab;
     public float ProjectileSpeed => behaviorData.projectileSpeed;
     public float ProjectileLifetime => behaviorData.projectileLifetime;
     public float RetreatRange => behaviorData.retreatRange;
@@ -41,9 +41,9 @@ public class ChronoMonk : Enemy
     // 크로노몽크 구체 발사
     private void FireChronoProjectile()
     {
-        if (ChronoProjectilePrefab == null || projectileSpawnPoint == null)
+        if (projectileSpawnPoint == null)
         {
-            Debug.LogWarning("크로노몽크 발사체 프리팹 또는 스폰 포인트 없음");
+            Debug.LogWarning("크로노몽크 발사체 스폰 포인트 없음");
             return;
         }
 
@@ -72,12 +72,12 @@ public class ChronoMonk : Enemy
         Vector3 adjustedTargetPos = new Vector3(targetPos.x, targetHeight, targetPos.z);
         Vector3 direction = (adjustedTargetPos - spawnPos).normalized;
         
-        // 발사체 생성 및 초기화
-        GameObject projectileObj = Instantiate(ChronoProjectilePrefab, projectileSpawnPoint.position, Quaternion.LookRotation(direction));
-        ChronoProjectile projectile = projectileObj.GetComponent<ChronoProjectile>();
+        // 발사체 풀에서 꺼내오기 및 초기화
+        ChronoProjectile projectile = ChronoProjectilePool.Instance?.Get();
         
         if (projectile != null)
         {
+            projectile.transform.SetPositionAndRotation(projectileSpawnPoint.position, Quaternion.LookRotation(direction));
             projectile.Initialize(direction, Damage, SlowDuration);
             Debug.Log($"크로노몽크 발사체 발사: {target.name} (높이: {targetHeight:F2})");
         }

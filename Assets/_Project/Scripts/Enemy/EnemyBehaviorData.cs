@@ -27,12 +27,12 @@ public class EnemyBehaviorData : ScriptableObject
     public float retreatRange = 3f;
 
     [Header("ChronoMonk 프로젝타일")]
-    public GameObject chronoProjectilePrefab;
+    // public GameObject chronoProjectilePrefab;
     public float projectileSpeed = 15f;
     public float projectileLifetime = 5f;
 
     [Header("Mirror Duelist")]
-    public GameObject fakeClonePrefab;
+    // public GameObject fakeClonePrefab;
     public int numberOfClones;
     public float cloneLifeTime;
     public float cloneSpawnRadius;

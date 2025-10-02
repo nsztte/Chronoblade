@@ -39,7 +39,7 @@ public class ChronoProjectile : MonoBehaviour
         
         if (elapsedTime >= lifetime)
         {
-            Destroy(gameObject);
+            ChronoProjectilePool.Instance?.Release(this);
             return;
         }
         
@@ -66,8 +66,8 @@ public class ChronoProjectile : MonoBehaviour
                 // }
             }
             
-            // 충돌 후 발사체 파괴
-            Destroy(gameObject);
+            // 충돌 후 풀에 넣기
+            ChronoProjectilePool.Instance?.Release(this);
         }
     }
     

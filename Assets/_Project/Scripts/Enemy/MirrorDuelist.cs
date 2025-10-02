@@ -10,7 +10,7 @@ public class MirrorDuelist : Enemy
     private List<FakeClone> activeClones = new();
 
     // Mirror Duelist 전용 프로퍼티
-    public GameObject FakeClonePrefab => behaviorData.fakeClonePrefab;
+    // public GameObject FakeClonePrefab => behaviorData.fakeClonePrefab;
     public int NumberOfClones => behaviorData.numberOfClones;
     public float CloneLifetime => behaviorData.cloneLifeTime;
     public float CloneSpawnRadius => behaviorData.cloneSpawnRadius;
