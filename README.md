@@ -3221,3 +3221,42 @@ Enemy FSM(상태머신) 시스템 구현
 - 웨이브 구조 확장 시 `SpawnGroup`, `WaveSpawner` 스크립트로 분리 예정
 
 ---
+
+## 2025.10.02 (목) 작업 기록
+
+### 주요 작업
+- MirrorDuelist 클론 무적 처리 및 FSM 구조 개선
+  - 클론 존재 중 본체 데미지 무효화 (HasActiveClones)
+  - 클론 리스트 등록/해제 함수 도입
+  - AttackState에서 소환 조건 검사 및 쿨타임 분기 처리
+
+- FakeClone 풀링 도입 및 폭발 시스템 완성
+  - FakeClonePool.cs 추가 (Pool<FakeClone>)
+  - Instantiate 제거 후 풀에서 가져오는 방식으로 수정
+  - FakeClone:
+    - 수명 만료 시 자동 폭발
+    - 폭발 시 주변 클론 연쇄 폭발 처리
+    - 피격 시에도 즉시 폭발
+    - NavMeshAgent 기반 추적 전환
+    - Animator의 IsRunning 파라미터로 이동 애니메이션 제어
+    - EnemyTimeController 연동 구조 반영
+
+- ChronoMonk 발사체 풀링 적용
+  - ChronoProjectilePool.cs 생성
+  - Instantiate 제거, 풀에서 발사체 획득 후 Initialize로 세팅
+  - 수명 초과 또는 충돌 시 풀로 반환
+
+- EnemyTimeController 구조 개선
+  - SetSpeed(float speed): baseSpeed 1회 등록 방식 도입
+  - currentTimeScale에 따라 NavMeshAgent 및 Animator 속도 자동 조정
+
+- Enemy.cs 전체 구조 정리
+  - ResetState()에서 EnemyTimeController.SetSpeed(MoveSpeed) 호출로 통일
+  - 시간 조작과 이동 속도 구조 일관성 확보
+
+### 메모
+- FakeClone은 FSM 없이도 시간 조작 + 연쇄 폭발 + 애니메이션까지 자연스럽게 처리되도록 구조화됨
+- baseSpeed 구조 통일로 추후 다른 Enemy 계열에도 시간 조작 연동이 쉬워짐
+- 연출 작업 시 FakeClone 예열 및 폭발에 이펙트/SFX/카메라 흔들림 추가 예정
+
+---
