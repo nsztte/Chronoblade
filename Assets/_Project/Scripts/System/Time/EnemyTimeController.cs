@@ -12,7 +12,6 @@ public class EnemyTimeController : MonoBehaviour, ITimeControllable
     {
         agent = GetComponent<NavMeshAgent>();
         animator = GetComponent<Animator>();
-        baseSpeed = agent.speed;
     }
 
     private void Start()
@@ -32,6 +31,13 @@ public class EnemyTimeController : MonoBehaviour, ITimeControllable
         agent.speed = baseSpeed * currentTimeScale;
         if(animator != null) animator.speed = currentTimeScale;
     }
+
+    public void SetSpeed(float speed)
+    {
+        if(baseSpeed <= 0)
+            baseSpeed = speed;
+    }
+    
     public float GetTimeScale()
     {
         return currentTimeScale;
