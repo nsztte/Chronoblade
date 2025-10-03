@@ -10,7 +10,7 @@ public class EnemyChaseState : EnemyBaseState
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = false;
-        lastDistanceUpdate = 0f; // 캐시 초기화
+        lastDistanceUpdate = 0f;
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -48,6 +48,21 @@ public class EnemyChaseState : EnemyBaseState
                 enemy.TransitionToState(enemy.AttackState);
             }
         }
+
+        // 미러 듀얼리스트 클론 스폰
+        if (enemy.Enemy.Type == EnemyType.MirrorDuelist)
+        {
+            var duelist = enemy.Enemy as MirrorDuelist;
+
+            float dist = GetCachedDistance(enemy);
+
+            if (dist < duelist.DetectionRange && !duelist.HasActiveClones() && duelist.CanSpawnClone())
+            {
+                enemy.Animator.SetTrigger("IsSpawnClones");
+                duelist.MarkCloneSpawned();
+                Debug.Log("MirrorDuelist 클론 소환 트리거 발동");
+            }
+        }
     }
 
     // 캐시된 거리 계산
@@ -66,5 +81,11 @@ public class EnemyChaseState : EnemyBaseState
     public override void Exit(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = true;
+
+        if(enemy.Enemy.Type == EnemyType.MirrorDuelist)
+        {
+            var duelist = enemy.Enemy as MirrorDuelist;
+            duelist.OnMirrorSpawnEnd();
+        }
     }
 }

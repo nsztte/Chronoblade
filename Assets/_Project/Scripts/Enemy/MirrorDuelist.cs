@@ -7,6 +7,11 @@ public class MirrorDuelist : Enemy
     [SerializeField] private Transform attackCenter;
     [SerializeField] private float attackRadius = 1f;
 
+    [Header("클론 쿨다운")]
+    [SerializeField] private float cloneCooldown = 10f;
+    private float lastCloneSpawnTime;
+    private bool isSpawning = false;
+
     private List<FakeClone> activeClones = new();
 
     // Mirror Duelist 전용 프로퍼티
@@ -33,6 +38,17 @@ public class MirrorDuelist : Enemy
         return activeClones.Count > 0;
     }
 
+    public bool CanSpawnClone()
+    {
+        return Time.time - lastCloneSpawnTime >= cloneCooldown;
+    }
+
+    public void MarkCloneSpawned()
+    {
+        isSpawning = true;
+        lastCloneSpawnTime = Time.time;
+    }
+
     public override void TakeDamage(int damage)
     {
         if (HasActiveClones())
@@ -47,7 +63,7 @@ public class MirrorDuelist : Enemy
         // 공격 중이거나 클론 스폰 중일 때는 HitState로 전환하지 않음
         if (fsm?.CurrentState is MirrorAttackState mirrorAttackState)
         {
-            if ((mirrorAttackState.isAttacking || mirrorAttackState.isSpawned) && currentHP > 0)
+            if ((mirrorAttackState.isAttacking || isSpawning) && currentHP > 0)
             {
                 Debug.Log("Mirror Duelist 공격 중 피격 - 애니메이션 없이 데미지만 적용");
                 return;
@@ -68,22 +84,10 @@ public class MirrorDuelist : Enemy
         Debug.Log("Mirror Duelist 근접 공격 실행");
     }
 
-    // 애니메이션 이벤트로 호출될 메서드 (공격 완료)
-    public void OnMirrorAttackEnd()
-    {
-        if (fsm?.CurrentState is MirrorAttackState mirrorAttackState)
-        {
-            mirrorAttackState.OnMirrorAttackEnd();
-        }
-    }
-
     // 애니메이션 이벤트로 호출될 메서드 (클론 스폰 완료)
     public void OnMirrorSpawnEnd()
     {
-        if (fsm?.CurrentState is MirrorAttackState mirrorAttackState)
-        {
-            mirrorAttackState.OnMirrorSpawnEnd();
-        }
+        isSpawning = false;
     }
 
     // 애니메이션 이벤트로 호출될 메서드 (실제 클론 생성)
