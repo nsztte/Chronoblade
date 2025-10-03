@@ -27,6 +27,8 @@ public class EnemyAttackState : EnemyBaseState
         // 공격 범위를 벗어나면 추적 상태로 전환
         if(distance > enemy.Enemy.AttackRange)
         {
+            if (enemy.Animator.GetCurrentAnimatorStateInfo(0).IsTag("Attack")) return;
+
             enemy.TransitionToState(enemy.ChaseState);
             return;
         }
