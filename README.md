@@ -3260,3 +3260,42 @@ Enemy FSM(상태머신) 시스템 구현
 - 연출 작업 시 FakeClone 예열 및 폭발에 이펙트/SFX/카메라 흔들림 추가 예정
 
 ---
+
+## 2025.10.03 (금) 작업 기록
+
+### 주요 작업
+
+- MirrorDuelist 클론 소환 FSM 구조 분리 및 개선
+  - MirrorAttackState 제거, EnemyAttackState로 공격 FSM 통합
+  - 클론 소환은 ChaseState에서만 트리거되도록 변경
+  - CanSpawnClone(), MarkCloneSpawned() 등 MirrorDuelist 내부 로직으로 쿨타임/상태 관리 분리
+  - 소환 중에는 이동 정지 처리 (isSpawning), 애니메이션 종료 시 이동 재개
+
+- Enemy FSM 통합 정리
+  - EnemyAttackState에서 MirrorDuelist도 동일 FSM 사용
+  - 공격 중엔 "Attack" 태그 애니메이션 진행 상태일 경우 상태 전이 방지
+  - 애니메이션 종료 후에만 ChaseState로 전이되도록 안정성 개선
+
+- 피격 시 강제 감지 유도 시스템 도입
+  - Enemy.TakeDamage() 내부에서 DetectPlayer() 호출
+  - hasDetectedPlayer 플래그로 중복 감지 방지
+  - 상태와 무관하게 피격 시 추적 시작
+
+- 시야 기반 감지 시스템 도입
+  - Enemy.CanSeePlayer() 함수 구현 (시야각 + 거리 + 장애물 Raycast)
+  - IdleState에서 거리 기반 감지 제거, 시야 기반으로 감지 전환
+  - 감지 성공 시 DetectPlayer()로 상태 전이 및 전투 시작
+
+- 시야각 시각화를 위한 Gizmos 표시 추가
+  - 시야거리 원 + 부채꼴 시야각 라인 표시
+  - MirrorDuelist, Watcher, ChronoMonk에서 공통 Gizmo 표시 적용
+  - EnemyBehaviorData에 detectionAngle(기본값 150°) 추가
+
+### 메모
+
+- Enemy FSM 구조가 간결하게 통합되면서도, MirrorDuelist 특수 행동은 분기 처리로 유지됨
+- 감지 시스템이 거리/피격/시야 기반으로 확장되며, 몰입감 있는 전투 흐름 구축 완료
+- 시야각 Gizmo는 레벨 디자인/디버깅 시 시각적 피드백에 매우 유용
+- 다음 작업: PatrolState 도입, 감지 연동, Waypoint 순회 로직 등
+
+---
