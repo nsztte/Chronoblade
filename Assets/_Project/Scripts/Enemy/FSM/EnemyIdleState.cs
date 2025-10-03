@@ -9,15 +9,9 @@ public class EnemyIdleState : EnemyBaseState
 
     public override void Update(EnemyStateMachine enemy)
     {
-        float distance = Vector3.Distance(enemy.transform.position, enemy.Target.position);
-        if(distance < enemy.Enemy.DetectionRange)
+        if (enemy.Enemy.CanSeePlayer())
         {
-            if(GameManager.Instance.CurrentGameState is ExplorationState || GameManager.Instance.CurrentGameState is PuzzleState)
-            {
-                Enemy.TriggerCombatStarted();
-            }
-
-            enemy.TransitionToState(enemy.ChaseState);
+            enemy.Enemy.DetectPlayer();
         }
     }
 

@@ -16,11 +16,14 @@ public class EnemyBehaviorData : ScriptableObject
     public int maxHP;
     public int damage;
     public float moveSpeed;
-    public float detectionRange;
     public float attackRange;
     public float attackCooldown;
     public float attackSpeed;
 
+    [Header("Detection Settings")]
+    public float detectionRange;
+    public float detectionAngle = 120f;
+    
     [Header("ChronoMonk")]
     public float teleportDistance;
     public float slowDuration;

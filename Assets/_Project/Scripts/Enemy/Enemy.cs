@@ -7,18 +7,20 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 {
     [Header("디폴트")]
     [SerializeField] protected EnemyBehaviorData behaviorData;
-    protected EnemyStateMachine fsm;
-    protected EnemyTimeController timeController;
-    protected FinalComboController finalComboController;
     [SerializeField] protected int currentHP;
     [SerializeField] protected float destroyTime = 5f;
     [SerializeField] private Vector3 hpUIOffset = new Vector3(0, 0.3f, 0);
     [SerializeField] private GameObject hpUIPrefab;
+    [SerializeField] private LayerMask obstacleLayer;
 
     [Header("공격 판정")]
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected float stunDuration = 1.5f;
     [SerializeField] protected float stunKnockbackForce = 1f;
+
+    protected EnemyStateMachine fsm;
+    protected EnemyTimeController timeController;
+    protected FinalComboController finalComboController;
 
     private Animator animator;
     private NavMeshAgent agent;
@@ -60,7 +62,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
-
+        
         SetupHPUI();
     }
     
@@ -93,6 +95,27 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (collider != null) collider.enabled = true;
     }
 
+    public bool CanSeePlayer()
+    {
+        if (hasDetectedPlayer) return false;
+        if (fsm.Target == null) return false;
+
+        Vector3 toTarget = (fsm.Target.position - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, fsm.Target.position);
+
+        if (distance > BehaviorData.detectionRange) return false;
+
+        // 시야각 판정
+        float angle = Vector3.Angle(transform.forward, toTarget);
+        if (angle > BehaviorData.detectionAngle / 2f) return false;
+
+        // 가림 판정
+        if (Physics.Raycast(transform.position + Vector3.up, toTarget, distance, obstacleLayer))
+            return false;
+
+        return true;
+    }
+
     public void DetectPlayer()
     {
         if(hasDetectedPlayer) return;
@@ -111,7 +134,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public virtual void TakeDamage(int damage)
     {
         DetectPlayer();
-        
+
         currentHP -= damage;
         Debug.Log($"Enemy HP: {currentHP}");
 

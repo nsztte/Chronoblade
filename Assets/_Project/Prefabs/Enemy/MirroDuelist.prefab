@@ -1110,6 +1110,9 @@ MonoBehaviour:
   destroyTime: 5
   hpUIOffset: {x: 0, y: 0.45, z: 0}
   hpUIPrefab: {fileID: 0}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 65536
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
@@ -1117,6 +1120,7 @@ MonoBehaviour:
   stunKnockbackForce: 3
   attackCenter: {fileID: 1404039361556307732}
   attackRadius: 0.3
+  cloneCooldown: 10
 --- !u!114 &8606516330785623606
 MonoBehaviour:
   m_ObjectHideFlags: 0

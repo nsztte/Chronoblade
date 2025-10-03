@@ -72990,6 +72990,11 @@ MonoBehaviour:
   behaviorData: {fileID: 11400000, guid: 2548fd5f0aadc7845a99944193ff92dc, type: 2}
   currentHP: 0
   destroyTime: 1
+  hpUIOffset: {x: 0, y: 0.3, z: 0}
+  hpUIPrefab: {fileID: 0}
+  obstacleLayer:
+    serializedVersion: 2
+    m_Bits: 65536
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
