@@ -84,7 +84,7 @@ public class EnemyStateMachine : MonoBehaviour
         
         // 파생된 공격 상태들도 매핑
         stateTypeMap[typeof(ChronoAttackState)] = EnemyState.Attack;
-        stateTypeMap[typeof(MirrorAttackState)] = EnemyState.Attack;
+        // stateTypeMap[typeof(MirrorAttackState)] = EnemyState.Attack;
     }
 
     public void TransitionToState(EnemyBaseState newState)

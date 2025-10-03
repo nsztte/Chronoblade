@@ -11,10 +11,12 @@ public class EnemyAttackState : EnemyBaseState
 
     public override void Enter(EnemyStateMachine enemy)
     {
-        enemy.Animator.SetTrigger("IsAttacking");
-        // Debug.Log("공격 상태 진입");
-        lastAttackTime = Time.time;
         lastDistanceUpdate = 0f; // 캐시 초기화
+
+        if (enemy.Agent != null && enemy.Enemy.Type == EnemyType.MirrorDuelist)
+        {
+            enemy.Agent.isStopped = true;
+        }
     }
 
     public override void Update(EnemyStateMachine enemy)
@@ -69,5 +71,11 @@ public class EnemyAttackState : EnemyBaseState
         return cachedDistance;
     }
 
-    public override void Exit(EnemyStateMachine enemy){}
+    public override void Exit(EnemyStateMachine enemy)
+    {
+        if (enemy.Agent != null && enemy.Enemy.Type == EnemyType.MirrorDuelist)
+        {
+            enemy.Agent.isStopped = false;
+        }
+    }
 }

@@ -41,9 +41,9 @@ public class EnemyBehaviorData : ScriptableObject
     {
         return enemyType switch
         {
-            EnemyType.Watcher => new EnemyAttackState(),
+            // EnemyType.Watcher => new EnemyAttackState(),
             EnemyType.ChronoMonk => new ChronoAttackState(),
-            EnemyType.MirrorDuelist => new MirrorAttackState(),
+            // EnemyType.MirrorDuelist => new EnemyAttackState(),
             _ => new EnemyAttackState()
         };
     }
