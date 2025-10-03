@@ -15,13 +15,36 @@ public class EnemyChaseState : EnemyBaseState
 
     public override void Update(EnemyStateMachine enemy)
     {
-        if(enemy.Agent.isStopped) return;
+        // if(enemy.Agent.isStopped) return;
         
-        enemy.Agent.SetDestination(enemy.Target.position);
-
         float distance = GetCachedDistance(enemy);
+
+        // 미러 듀얼리스트 스폰
+        if (enemy.Enemy.Type == EnemyType.MirrorDuelist)
+        {
+            var duelist = enemy.Enemy as MirrorDuelist;
+
+            // 클론 스폰 중이면 이동 금지
+            if (duelist.IsSpawning)
+            {
+                enemy.Agent.isStopped = true;
+                return;
+            }
+
+            enemy.Agent.isStopped = false; // 클론 소환이 끝났다면 다시 이동 허용
+
+            if (distance < duelist.DetectionRange && !duelist.HasActiveClones() && duelist.CanSpawnClone())
+            {
+                enemy.Animator.SetTrigger("IsSpawnClones");
+                duelist.MarkCloneSpawned();
+                Debug.Log("MirrorDuelist 클론 소환 트리거 발동");
+            }
+        }
         
-        // 크로노몽크의 경우 특별한 거리 로직 적용
+        // 이동
+        enemy.Agent.SetDestination(enemy.Target.position);
+        
+        // 크로노몽크 거리 로직 적용
         if (enemy.Enemy.Type == EnemyType.ChronoMonk)
         {
             ChronoMonk chronoMonk = enemy.Enemy as ChronoMonk;
@@ -46,21 +69,6 @@ public class EnemyChaseState : EnemyBaseState
             if (distance < enemy.Enemy.AttackRange)
             {
                 enemy.TransitionToState(enemy.AttackState);
-            }
-        }
-
-        // 미러 듀얼리스트 클론 스폰
-        if (enemy.Enemy.Type == EnemyType.MirrorDuelist)
-        {
-            var duelist = enemy.Enemy as MirrorDuelist;
-
-            float dist = GetCachedDistance(enemy);
-
-            if (dist < duelist.DetectionRange && !duelist.HasActiveClones() && duelist.CanSpawnClone())
-            {
-                enemy.Animator.SetTrigger("IsSpawnClones");
-                duelist.MarkCloneSpawned();
-                Debug.Log("MirrorDuelist 클론 소환 트리거 발동");
             }
         }
     }

@@ -19,6 +19,7 @@ public class MirrorDuelist : Enemy
     public int NumberOfClones => behaviorData.numberOfClones;
     public float CloneLifetime => behaviorData.cloneLifeTime;
     public float CloneSpawnRadius => behaviorData.cloneSpawnRadius;
+    public bool IsSpawning => isSpawning;
 
     public void RegisterClone(FakeClone clone)
     {
