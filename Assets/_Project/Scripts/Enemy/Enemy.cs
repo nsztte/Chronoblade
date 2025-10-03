@@ -24,6 +24,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     private NavMeshAgent agent;
     private EnemyHPUI hpUI;
 
+    private bool hasDetectedPlayer = false;
+
     #region 전투 감지 이벤트
     // 전투 감지 이벤트
     public static event System.Action OnCombatStarted;
@@ -91,9 +93,25 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (collider != null) collider.enabled = true;
     }
 
+    public void DetectPlayer()
+    {
+        if(hasDetectedPlayer) return;
+        hasDetectedPlayer = true;
+
+        if (GameManager.Instance.CurrentGameState is ExplorationState or PuzzleState)
+        {
+            TriggerCombatStarted();
+        }
+
+        // 즉시 추적 상태로 전환
+        fsm?.TransitionToState(fsm.ChaseState);
+    }
+
     // 데미지 처리
     public virtual void TakeDamage(int damage)
     {
+        DetectPlayer();
+        
         currentHP -= damage;
         Debug.Log($"Enemy HP: {currentHP}");
 
