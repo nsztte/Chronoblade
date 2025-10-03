@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using Unity.VisualScripting;
 
 public class MirrorDuelist : Enemy
 {
@@ -129,8 +130,10 @@ public class MirrorDuelist : Enemy
     
 
 #if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    protected override void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
+        
         // 구체 공격 범위 표시
         if (attackCenter != null)
         {

@@ -151,8 +151,10 @@ public class ChronoMonk : Enemy
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    protected override void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
+        
         // 발사체 스폰 포인트 표시
         if (projectileSpawnPoint != null)
         {

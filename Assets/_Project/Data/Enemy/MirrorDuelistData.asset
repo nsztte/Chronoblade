@@ -16,17 +16,16 @@ MonoBehaviour:
   maxHP: 120
   damage: 5
   moveSpeed: 1.5
-  detectionRange: 10
   attackRange: 2
   attackCooldown: 2
   attackSpeed: 1.2
+  detectionRange: 10
+  detectionAngle: 150
   teleportDistance: 0
   slowDuration: 0
   retreatRange: 3
-  chronoProjectilePrefab: {fileID: 0}
   projectileSpeed: 15
   projectileLifetime: 5
-  fakeClonePrefab: {fileID: 6785313998283858962, guid: e9c483dd513726245b9276b703b75119, type: 3}
   numberOfClones: 3
   cloneLifeTime: 10
   cloneSpawnRadius: 5

@@ -1,3 +1,4 @@
+using Unity.VisualScripting;
 using UnityEngine;
 
 public class Watcher : Enemy
@@ -15,8 +16,10 @@ public class Watcher : Enemy
     }
 
 #if UNITY_EDITOR
-    private void OnDrawGizmosSelected()
+    protected override void OnDrawGizmosSelected()
     {
+        base.OnDrawGizmosSelected();
+        
         // 근접 공격(캡슐) 범위 표시
         if (attackStartPosition != null && attackEndPosition != null)
         {

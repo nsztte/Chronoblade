@@ -1,6 +1,7 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
+using UnityEngine.Rendering.RenderGraphModule;
 
 [RequireComponent(typeof(EnemyStateMachine), typeof(EnemyTimeController), typeof(FinalComboController))]
 public abstract class Enemy : MonoBehaviour, IDamageable
@@ -62,7 +63,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
-        
+
         SetupHPUI();
     }
     
@@ -378,4 +379,32 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         hpUI.SetOffset(hpUIOffset);
         hpUI.SetHP(currentHP, MaxHP);
     }
+
+    #if UNITY_EDITOR
+    protected virtual void OnDrawGizmosSelected()
+    {
+        if (fsm?.Target == null) return;
+
+        // 시야 범위 색상
+        Gizmos.color = Color.yellow;
+
+        // 시야 거리 원
+        Gizmos.DrawWireSphere(transform.position, BehaviorData.detectionRange);
+
+        // 시야각 시각화 (부채꼴 방향 표시)
+        Vector3 forward = transform.forward;
+        float halfAngle = BehaviorData.detectionAngle * 0.5f;
+
+        // 부채꼴 양쪽 라인
+        Quaternion leftRot = Quaternion.Euler(0, -halfAngle, 0);
+        Quaternion rightRot = Quaternion.Euler(0, halfAngle, 0);
+
+        Vector3 leftDir = leftRot * forward;
+        Vector3 rightDir = rightRot * forward;
+
+        Gizmos.color = new Color(1f, 0.6f, 0f, 0.6f);
+        Gizmos.DrawRay(transform.position + Vector3.up * 1f, leftDir * BehaviorData.detectionRange);
+        Gizmos.DrawRay(transform.position + Vector3.up * 1f, rightDir * BehaviorData.detectionRange);
+    }
+    #endif
 }

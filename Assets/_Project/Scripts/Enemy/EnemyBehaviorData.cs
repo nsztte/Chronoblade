@@ -22,8 +22,8 @@ public class EnemyBehaviorData : ScriptableObject
 
     [Header("Detection Settings")]
     public float detectionRange;
-    public float detectionAngle = 120f;
-    
+    public float detectionAngle = 150f;
+
     [Header("ChronoMonk")]
     public float teleportDistance;
     public float slowDuration;
