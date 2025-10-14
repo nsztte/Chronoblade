@@ -35,7 +35,11 @@ public class EnemyPatrolState : EnemyBaseState
     public override void Update(EnemyStateMachine enemy)
     {
         var e = enemy.Enemy;
-        if (e.CanSeePlayer()) { e.DetectPlayer(); return; }
+        if (e.CanSeePlayer())
+        {
+            e.DetectPlayer();
+            return; 
+        }
 
         if (!enemy.Agent.pathPending && enemy.Agent.remainingDistance <= enemy.Agent.stoppingDistance)
         {

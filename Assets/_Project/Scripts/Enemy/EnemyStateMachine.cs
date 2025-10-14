@@ -5,6 +5,7 @@ using System.Collections.Generic;
 public enum EnemyState
 {
     Idle,
+    Patrol,
     Chase,
     Attack,
     Hit,
@@ -26,6 +27,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     // 상태 인스턴스
     private readonly EnemyIdleState idleState = new EnemyIdleState();
+    private readonly EnemyPatrolState patrolState = new EnemyPatrolState();
     private readonly EnemyChaseState chaseState = new EnemyChaseState();
     private EnemyAttackState attackState;
     private readonly EnemyHitState hitState = new EnemyHitState();
@@ -36,6 +38,7 @@ public class EnemyStateMachine : MonoBehaviour
 
     // 상태 인스턴스 접근자
     public EnemyIdleState IdleState => idleState;
+    public EnemyPatrolState PatrolState => patrolState;
     public EnemyChaseState ChaseState => chaseState;
     public EnemyAttackState AttackState => attackState;
     public EnemyHitState HitState => hitState;
@@ -77,6 +80,7 @@ public class EnemyStateMachine : MonoBehaviour
     private void InitializeStateTypeMap()
     {
         stateTypeMap[typeof(EnemyIdleState)] = EnemyState.Idle;
+        stateTypeMap[typeof(EnemyPatrolState)] = EnemyState.Patrol;
         stateTypeMap[typeof(EnemyChaseState)] = EnemyState.Chase;
         stateTypeMap[typeof(EnemyAttackState)] = EnemyState.Attack;
         stateTypeMap[typeof(EnemyHitState)] = EnemyState.Hit;

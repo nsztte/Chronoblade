@@ -7,15 +7,32 @@ public class EnemyChaseState : EnemyBaseState
     private float lastDistanceUpdate;
     private const float DISTANCE_UPDATE_INTERVAL = 0.1f;
 
+    // 추격 해제
+    private float lostSightTimer;
+    private const float LOST_SIGHT_TIME = 3.0f;    // 시야에서 3초 연속으로 놓치면 복귀
+    // private const float LEASH_DISTANCE = 50f;      // 홈 기준 리쉬
+
     public override void Enter(EnemyStateMachine enemy)
     {
         enemy.Agent.isStopped = false;
         lastDistanceUpdate = 0f;
+        lostSightTimer = 0f;
     }
 
     public override void Update(EnemyStateMachine enemy)
     {
-        // if(enemy.Agent.isStopped) return;
+        if (!enemy.Enemy.CanSeePlayer()) lostSightTimer += Time.deltaTime;
+        else lostSightTimer = 0f;
+
+        if (lostSightTimer >= LOST_SIGHT_TIME)
+        {
+            // PatrolMode에 따라 복귀 목적지 다르게
+            if (enemy.Enemy.PatrolMode == PatrolMode.None)
+                enemy.TransitionToState(enemy.IdleState);
+            else
+                enemy.TransitionToState(enemy.PatrolState);
+            return;
+        }
         
         float distance = GetCachedDistance(enemy);
 
