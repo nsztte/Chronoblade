@@ -3,6 +3,8 @@ using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
 
+public enum PatrolMode { None, RandomInRadius, WaypointsLoop }
+
 [RequireComponent(typeof(EnemyStateMachine), typeof(EnemyTimeController), typeof(FinalComboController))]
 public abstract class Enemy : MonoBehaviour, IDamageable
 {
@@ -18,6 +20,14 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [SerializeField] protected LayerMask playerLayer;
     [SerializeField] protected float stunDuration = 1.5f;
     [SerializeField] protected float stunKnockbackForce = 1f;
+
+    [Header("패트롤 설정")]
+    [SerializeField] private PatrolMode patrolMode = PatrolMode.None;
+    [SerializeField] private float patrolRadius = 6f;
+    [SerializeField] private Transform[] patrolPoints;
+    [SerializeField] private float waitAtPoint = 1.0f;
+    [SerializeField] private bool startAtNearest = true;
+    public Vector3 HomePosition { get; private set; }
 
     // 리스폰 용
     public event Action<Enemy> OnDied;
@@ -38,12 +48,41 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     #region 전투 감지 이벤트
     // 전투 감지 이벤트
-    public static event System.Action OnCombatStarted;
+    public static event Action OnCombatStarted;
 
     // 전투 감지 이벤트를 호출하는 정적 메서드
     public static void TriggerCombatStarted()
     {
         OnCombatStarted?.Invoke();
+    }
+    #endregion
+   
+    #region 패트롤 관련
+    public PatrolMode PatrolMode => patrolMode;
+    public float PatrolRadius => patrolRadius;
+    public Transform[] PatrolPoints => patrolPoints;
+    public float WaitAtPoint => waitAtPoint;
+    public bool StartAtNearest => startAtNearest;
+
+    [Serializable]
+    public struct PatrolConfig
+    {
+        public PatrolMode mode;
+        public float radius;
+        public Transform[] points;
+        public float waitAtPoint;
+        public bool startAtNearest;
+        public Vector3 homePosition;
+    }
+
+    public void ApplyPatrolConfig(in PatrolConfig c)
+    {
+        patrolMode = c.mode;
+        patrolRadius = c.radius;
+        patrolPoints = c.points;
+        waitAtPoint = c.waitAtPoint;
+        startAtNearest = c.startAtNearest;
+        HomePosition = c.homePosition;
     }
     #endregion
 
