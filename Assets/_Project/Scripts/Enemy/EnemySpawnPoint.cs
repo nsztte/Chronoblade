@@ -21,6 +21,14 @@ public class EnemySpawnPoint : MonoBehaviour
     [SerializeField] private int maxPerCount = 2;           // 한 번의 쿨다운 후 최대 스폰 수
     [SerializeField] private float minPlayerDistance = 12f; // 플레이어와의 최소 거리
 
+    [Header("패트롤 오버라이드 설정")]
+    [SerializeField] private bool overridePatrol = false;                  // true면 아래 설정으로 덮어씀
+    [SerializeField] private PatrolMode patrolMode = PatrolMode.None;      // None / RandomInRadius / WaypointsLoop
+    [SerializeField] private float patrolRadius = 6f;                      // RandomInRadius용
+    [SerializeField] private float waitAtPoint = 1.0f;                     // 공통 대기 시간
+    [SerializeField] private bool startAtNearest = true;                   // 웨이포인트 시작 인덱스 최적화
+    [SerializeField] private Transform patrolPointsRoot;                   // 자식들을 웨이포인트로
+
     private readonly List<Enemy> active = new List<Enemy>();
     private float nextRespawnAt;
     private Transform player;
@@ -31,7 +39,8 @@ public class EnemySpawnPoint : MonoBehaviour
 
         if (spawnOnStart)
         {
-            TrySpawnEnemies(Random.Range(minSpawnCount, maxSpawnCount + 1));
+            int spawned = TrySpawnEnemies(Random.Range(minSpawnCount, maxSpawnCount + 1));
+            if (allowRespawn && spawned > 0) ScheduleNextRespawn();
         }
     }
 
@@ -44,10 +53,9 @@ public class EnemySpawnPoint : MonoBehaviour
         int need = Mathf.Clamp(maxAlive - active.Count, 0, maxPerCount);
         if (need > 0)
         {
-            TrySpawnEnemies(need);
+            int spawned = TrySpawnEnemies(need);
+            if (spawned > 0) ScheduleNextRespawn();
         }
-
-        ScheduleNextRespawn();
     }
 
     private void ScheduleNextRespawn()
@@ -56,14 +64,15 @@ public class EnemySpawnPoint : MonoBehaviour
     }
 
 
-    public void TrySpawnEnemies(int spawnCount)
+    public int TrySpawnEnemies(int spawnCount)
     {
         if (EnemyManager.Instance == null)
         {
             Debug.LogWarning($"[SpawnPoint] EnemyManager 인스턴스 없음");
-            return;
+            return 0;
         }
 
+        int spawned = 0;
         for (int i = 0; i < spawnCount; i++)
         {
             if(active.Count >= maxAlive) break;
@@ -77,13 +86,31 @@ public class EnemySpawnPoint : MonoBehaviour
                     continue;
                 }
 
+                // 필요할 때만 패트롤 덮어쓰기
+                if (overridePatrol)
+                {
+                    var cfg = new Enemy.PatrolConfig
+                    {
+                        mode = patrolMode,
+                        radius = patrolRadius,
+                        points = GetPatrolPoints(),
+                        waitAtPoint = waitAtPoint,
+                        startAtNearest = startAtNearest,
+                        homePosition = pos
+                    };
+                    enemy.ApplyPatrolConfig(cfg);
+                }
+
                 RegisterEnemy(enemy);
+                spawned++;
             }
             else
             {
                 Debug.LogWarning($"[SpawnPoint] NavMesh 샘플 실패 (반경:{spawnRadius})");
             }
         }
+
+        return spawned;
     }
 
     private void RegisterEnemy(Enemy enemy)
@@ -133,6 +160,18 @@ public class EnemySpawnPoint : MonoBehaviour
 
         position = default;
         return false;
+    }
+
+    private Transform[] GetPatrolPoints()
+    {
+        if (patrolPointsRoot == null) return null;
+
+        var list = new List<Transform>();
+        foreach (Transform child in patrolPointsRoot)
+        {
+            if (child != null) list.Add(child);
+        }
+        return list.Count > 0 ? list.ToArray() : null;
     }
 
     #if UNITY_EDITOR
