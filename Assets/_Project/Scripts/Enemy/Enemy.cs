@@ -1,7 +1,6 @@
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
-using UnityEngine.Rendering.RenderGraphModule;
 
 [RequireComponent(typeof(EnemyStateMachine), typeof(EnemyTimeController), typeof(FinalComboController))]
 public abstract class Enemy : MonoBehaviour, IDamageable
@@ -23,6 +22,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected EnemyTimeController timeController;
     protected FinalComboController finalComboController;
 
+    private Collider col;
     private Animator animator;
     private NavMeshAgent agent;
     private EnemyHPUI hpUI;
@@ -61,6 +61,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         timeController = GetComponent<EnemyTimeController>();
         finalComboController = GetComponent<FinalComboController>();
 
+        col = GetComponent<Collider>();
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
 
@@ -79,12 +80,37 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     public virtual void ResetState()
     {
+        // 코루틴 누수 방지
+        StopAllCoroutines();
+
+        // FSM/Agent/Animator 기본 복구
+        if (fsm != null)
+        {
+            fsm.enabled = true;
+            fsm.ResetToIdle();
+        }
+
+        if (agent != null)
+        {
+            if (!agent.enabled) agent.enabled = true;
+            agent.isStopped = false;
+            agent.ResetPath();
+            agent.speed = MoveSpeed;
+        }
+
+        if (animator != null)
+        {
+            // 스턴/트리거 잔상 제거
+            animator.Rebind();
+            animator.Update(0f);
+            animator.SetBool("IsStunned", false);
+        }
+
+        hasDetectedPlayer = false;
+
         currentHP = behaviorData.maxHP;
 
-        fsm.ResetToIdle();
-
-        agent.speed = MoveSpeed;
-        timeController.SetSpeed(MoveSpeed);
+        if (timeController != null) timeController.SetSpeed(MoveSpeed);
 
         if (hpUI != null)
         {
@@ -92,8 +118,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             hpUI.gameObject.SetActive(true);
         }
 
-        var collider = GetComponent<Collider>();
-        if (collider != null) collider.enabled = true;
+        if (col != null) col.enabled = true;
     }
 
     public bool CanSeePlayer()

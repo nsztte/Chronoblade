@@ -82,7 +82,17 @@ public class EnemyManager : MonoBehaviour
             return null;
         }
 
-        enemy.transform.SetPositionAndRotation(position, rotation);
+        var agent = enemy.Fsm.Agent;
+        if(agent != null && agent.enabled)
+        {
+            agent.Warp(position);
+            enemy.transform.rotation = rotation;
+        }
+        else
+        {
+            enemy.transform.SetPositionAndRotation(position, rotation);
+        }
+
         enemy.enabled = true;
         enemy.ResetState();
         
