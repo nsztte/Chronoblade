@@ -3300,7 +3300,40 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 날짜: 2025.10.14 (화) 작업 기록
 
+### 주요 작업
+- **스폰 초기화 구조 개선**
+  - `Enemy.ResetState()` 강화: 코루틴 정리, FSM/Agent/Animator/HP/UI/Collider/감지 플래그 초기화, `timeController.SetSpeed(MoveSpeed)` 복구
+  - `EnemyManager.SpawnEnemy()`: **Warp(+회전 보정) → enabled=true → ResetState()** 순서 일원화로 경로 꼬임/풀 잔상 방지
+
+- **리스폰 이벤트/관리 정비**
+  - `Enemy.cs`에 `OnDied`, `OnDespawned`(+중복 가드) 추가
+  - `Die()`에서 **OnDied 1회** 발행 후 릴리즈 코루틴, 등록해제는 **OnDisable 경로로 단일화**
+  - 풀 반환 직전 **OnDespawned 1회** 발행
+
+- **EnemySpawnPoint 리스폰 로직 보강**
+  - 조건: `allowRespawn / respawnCooldown / maxAlive / maxPerCount / minPlayerDistance`
+  - 쿨다운: **실제 스폰 발생 시에만** `ScheduleNextRespawn()` 갱신(초기 스폰 시 1회 시작)
+  - 위치 샘플링: `NavMesh.SamplePosition` **랜덤 3회 + 중심 폴백**
+
+- **패트롤 시스템 도입 & 주입 구조**
+  - `PatrolMode`: `None / RandomInRadius / WaypointsLoop`
+  - `Enemy.PatrolConfig` + `ApplyPatrolConfig(in cfg)`로 **스폰포인트→Enemy 런타임 오버라이드**
+  - `patrolPointsRoot` 자식 트랜스폼 **자동 수집**으로 웨이포인트 관리 단순화
+  - `RandomAround(center, radius)` 내부에 **NavMesh 샘플/폴백** 적용
+
+- **FSM 전환 자연화**
+  - **Idle → Patrol**: `PatrolMode != None`이면 **0.3s 지연 후** 자동 진입(플레이어 감지 시 기존 Detect→Chase 유지)
+  - **Patrol → Chase**: `CanSeePlayer()` 시 즉시 전환
+  - **Chase → Patrol/Idle**: **시야 연속 상실(LOST_SIGHT_TIME)** 로만 복귀(거리 리쉬 제거), `PatrolMode`에 따라 복귀 대상 결정
+
+### 메모
+- 동일 스폰포인트 기준 **사망→쿨다운→리스폰**, **Patrol→Chase→(시야 상실)→복귀** 잔상/중복 스폰/전이 튀는 현상 없음 확인  
+- 동선 겹침 이슈는 **레벨 단위 운영** 예정
+  - 병목 지형: 해당 스폰포인트만 `maxAlive=1`
+  - 넓은 공간: 다중 허용
+- `LOST_SIGHT_TIME`는 맵에 맞춰 수정 여지 있음
 
 
 
