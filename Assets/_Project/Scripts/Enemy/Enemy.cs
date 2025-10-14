@@ -1,3 +1,4 @@
+using System;
 using UnityEngine;
 using UnityEngine.AI;
 using System.Collections;
@@ -18,6 +19,12 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     [SerializeField] protected float stunDuration = 1.5f;
     [SerializeField] protected float stunKnockbackForce = 1f;
 
+    // 리스폰 용
+    public event Action<Enemy> OnDied;
+    public event Action<Enemy> OnDespawned;
+    private bool deathEventSent;
+    private bool despawnEventSent;
+
     protected EnemyStateMachine fsm;
     protected EnemyTimeController timeController;
     protected FinalComboController finalComboController;
@@ -27,7 +34,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     private NavMeshAgent agent;
     private EnemyHPUI hpUI;
 
-    private bool hasDetectedPlayer = false;
+    private bool hasDetectedPlayer = false;     // 플레이어 감지
 
     #region 전투 감지 이벤트
     // 전투 감지 이벤트
@@ -107,6 +114,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         }
 
         hasDetectedPlayer = false;
+        deathEventSent = false;
+        despawnEventSent = false;
 
         currentHP = behaviorData.maxHP;
 
@@ -250,14 +259,22 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     public virtual void Die()
     {
         Debug.Log("Enemy Die");
-        EnemyManager.Instance.UnregisterEnemy(this);
+
+        if (!deathEventSent)
+        {
+            deathEventSent = true;
+            OnDied?.Invoke(this);
+        }
+
+        // EnemyManager.Instance.UnregisterEnemy(this);
         
-        Collider collider = GetComponent<Collider>();
-        if(collider != null) collider.enabled = false;
+        if(col != null) col.enabled = false;
+        if (fsm != null) fsm.enabled = false;
+        if (agent != null) agent.isStopped = true;
         
-        enabled = false;
+        // enabled = false;
         
-        // 시간 조절을 반영한 파괴 지연
+        // 시간 조절을 반영한 해제 지연
         StartCoroutine(ReleaseWithTimeScale(destroyTime));
     }
 
@@ -270,7 +287,13 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             elapsed += GetAdjustedDeltaTime();
             yield return null;
         }
-        // Destroy(this.gameObject);
+
+        if (!despawnEventSent)
+        {
+            despawnEventSent = true;
+            OnDespawned?.Invoke(this);
+        }
+
         EnemyManager.Instance?.ReleaseEnemy(this);
     }
 
