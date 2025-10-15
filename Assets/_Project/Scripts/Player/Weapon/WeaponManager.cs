@@ -6,6 +6,7 @@ public class WeaponManager : MonoBehaviour
 
     [Header("무기 슬롯")]
     [SerializeField] private List<WeaponController> weaponSlots;
+    [SerializeField] private SkinnedMeshRenderer arms_mesh;
     private int currentWeaponIndex = -1;
     [SerializeField] private WeaponController currentWeapon;
     public WeaponController CurrentWeapon => currentWeapon;
@@ -83,6 +84,9 @@ public class WeaponManager : MonoBehaviour
         // 인벤토리 연동
         InventoryManager.Instance.Equip(currentWeapon.weaponData);
 
+        // 본체 팔 렌더러
+        if(arms_mesh) arms_mesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.ShadowsOnly;
+
         // 무기 타입이 Sword인지 판별하여 애니메이터 bool 변경
         bool isSword = currentWeapon.weaponData.weaponType == WeaponType.Sword;
         bool isGun = currentWeapon.weaponData.weaponType != WeaponType.Sword;
@@ -120,6 +124,9 @@ public class WeaponManager : MonoBehaviour
         // 애니메이터 상태 해제
         PlayerManager.Instance?.SetAnimatorBool("IsSwordHeld", false);
         PlayerManager.Instance?.SetAnimatorBool("IsGunHeld", false);
+
+        // 본체 팔 렌더러
+        if(arms_mesh) arms_mesh.shadowCastingMode = UnityEngine.Rendering.ShadowCastingMode.On;
 
         // UI 비활성화
         UIManager.Instance?.SetCrosshairActive(false);

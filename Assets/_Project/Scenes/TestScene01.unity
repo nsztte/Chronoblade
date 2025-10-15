@@ -3305,6 +3305,11 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
+--- !u!137 &3010886550147080624 stripped
+SkinnedMeshRenderer:
+  m_CorrespondingSourceObject: {fileID: 301228429859553365, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+  m_PrefabInstance: {fileID: 8590179395040169635}
+  m_PrefabAsset: {fileID: 0}
 --- !u!4 &3018695392774411088
 Transform:
   m_ObjectHideFlags: 0
@@ -9690,6 +9695,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5109236020159060349, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: arms_mesh
+      value: 
+      objectReference: {fileID: 3010886550147080624}
     - target: {fileID: 5109236020159060349, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: 'weaponSlots.Array.data[0]'
       value: 
