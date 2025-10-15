@@ -4,10 +4,10 @@ public class CameraController : MonoBehaviour
 {
     [SerializeField] private Transform player;
     [SerializeField] private Transform cameraPosition;
+    [SerializeField] private Camera fpCamera;
     [SerializeField] private float mouseSensitivity = 100f;
     [SerializeField] private float clampAngle = 80f;
     [SerializeField] private float normalFOV = 60f;
-    // [SerializeField] private float zoomedFOV = 30f;
     [SerializeField] private float zoomSpeed = 5f;
 
     private float rotX = 0f;
@@ -64,6 +64,7 @@ public class CameraController : MonoBehaviour
         
         targetFOV = normalFOV;
         playerCamera.fieldOfView = normalFOV;
+        if (fpCamera) fpCamera.fieldOfView = normalFOV;
         
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
@@ -85,7 +86,9 @@ public class CameraController : MonoBehaviour
         // FOV 부드러운 전환
         if (!Mathf.Approximately(playerCamera.fieldOfView, targetFOV))
         {
-            playerCamera.fieldOfView = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
+            float fov = Mathf.Lerp(playerCamera.fieldOfView, targetFOV, zoomSpeed * Time.deltaTime);
+            playerCamera.fieldOfView = fov;
+            if (fpCamera) fpCamera.fieldOfView = fov;
         }
 
         // 카메라 Y 위치 부드럽게 이동
@@ -216,6 +219,7 @@ public class CameraController : MonoBehaviour
         // FOV 복구
         targetFOV = normalFOV;
         playerCamera.fieldOfView = normalFOV;
+        if (fpCamera) fpCamera.fieldOfView = normalFOV;
 
         // 줌 상태 초기화
         isZoomed = false;
