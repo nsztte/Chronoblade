@@ -3335,9 +3335,39 @@ Enemy FSM(상태머신) 시스템 구현
   - 넓은 공간: 다중 허용
 - `LOST_SIGHT_TIME`는 맵에 맞춰 수정 여지 있음
 
+---
 
+## 2025.10.15 (수) 작업 기록
 
+### 주요 작업
+- **모델/프리팹**
+  - 플레이어 메시 분리: `body_mesh(가슴+다리)` / `arms_mesh(양팔)` FBX 임포트 및 적용
+  - `Player` 프리팹 SkinnedMeshRenderer → `body_mesh`로 교체
+  - `FP_Arms_Sword` 프리팹 추가(Layer=`FirstPerson`) 및 총기류 무기 레이어도 `FirstPerson`로 정리
 
+- **카메라**
+  - `FPCamera` 생성: MainCamera 자식 **Overlay**로 설정, **URP Camera Stack**에 추가
+  - CullingMask 분리: Main=월드(`FirstPerson` 제외), FP=`FirstPerson` 전용
+  - FPCamera **Near Clip=0.01**, FP 팔/무기 **Cast/Receive Shadows 비활성**
+  - `CameraController`에 `fpCamera` 참조 추가 → **Start/Update/Reset에서 Main/FP FOV 동기화**
+
+- **애니메이터/전투**
+  - `SwordAnimator` 컨트롤러 생성(기본 틀)
+  - `MeleeWeaponController`가 **플레이어 Animator 대신 자체 Animator(SwordAnimator)** 사용하도록 전환
+  - (준비) 애니메이션 이벤트 바인딩 계획 수립
+
+- **무기 장착 시 가시성/섀도우 전환**
+  - `WeaponManager`에 월드 팔(`arms_mesh`) **ShadowCastingMode 토글** 로직 추가  
+    - 장착(drawn): `ShadowsOnly`  
+    - 해제: `On`
+
+- **애니메이션 이벤트 책임 이관**
+  - 근접 공격용 **애니메이션 이벤트 호출 대상을 PlayerManager → MeleeWeaponController로 재바인딩**(정리/주석 포함)
+
+### 메모
+- FP/월드 렌더 분리는 **Main에서 `FirstPerson` 제외**, **FPCamera는 `FirstPerson`만**으로 유지
+- FOV는 부모-자식으로 상속되지 않으므로 **양 카메라 동기화**를 계속 보장할 것
+- 다음 단계: `SwordAnimator` 상태/트리거(Idle/Light/Heavy/Combo) 구성 및 **클립 이벤트(Impact/HitStop/CameraShake) 바인딩**
 
 ---
 
