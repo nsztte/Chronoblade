@@ -365,24 +365,24 @@ public class PlayerManager : MonoBehaviour, IDamageable
     }
     #endregion
 
-    #region 애니메이션 이벤트 메서드
-    // 애니메이션 이벤트 메서드들 (무기 컨트롤러에 전달)
-    public void OnMeleeAttackHit()
-    {
-        WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackHit();
-    }
+    // #region 애니메이션 이벤트 메서드
+    // // 애니메이션 이벤트 메서드들 (무기 컨트롤러에 전달)
+    // public void OnMeleeAttackHit()
+    // {
+    //     WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackHit();
+    // }
 
-    public void OnMeleeAttackEnd()
-    {
-        WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackEnd();
-    }
+    // public void OnMeleeAttackEnd()
+    // {
+    //     WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackEnd();
+    // }
 
     // 애니메이션 이벤트에서 호출할 메서드
     public void OnComboAttackHit()
     {
         WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit(currentComboDamage, currentCombo);
     }
-    #endregion
+    // #endregion
 
     // 콤보 공격 정보 설정
     public void SetCurrentCombo(float damage, ComboAttackData comboAttackData)

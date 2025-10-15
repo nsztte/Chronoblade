@@ -164,6 +164,7 @@ public class MeleeWeaponController : WeaponController
     {
         hitTargets.Clear();
     }
+    
 
 #if UNITY_EDITOR
     private void OnDrawGizmosSelected()
