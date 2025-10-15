@@ -106,7 +106,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
     private void Awake()
     {
         animator = GetComponent<Animator>();
-        Debug.Log("메인카메라 이름 : " + Camera.main.gameObject.name);
     }
 
     private void Start()

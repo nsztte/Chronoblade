@@ -12,10 +12,15 @@ public class MeleeWeaponController : WeaponController
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
     // [SerializeField] private float attackDuration = 0.3f;
-    public LayerMask hitLayer;
+    [SerializeField] private LayerMask hitLayer;
+
+    private Animator animator;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
-
+    private void Awake()
+    {
+        animator = GetComponent<Animator>();
+    }
 
     public override void ExecuteLightAttack()
     {
@@ -26,8 +31,7 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         currentAttackType = AttackType.Light;
-        // PlayerManager.Instance.SetAnimatorTrigger("IsLightAttacking");
-        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
+        if(animator) animator.SetTrigger("IsAttacking");    // 나중에 수정해야됨 지금은 테스트용
         ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
@@ -43,8 +47,7 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         currentAttackType = AttackType.Heavy;
-        // PlayerManager.Instance.SetAnimatorTrigger("IsHeavyAttacking");
-        PlayerManager.Instance.SetAnimatorTrigger("IsAttacking"); // 나중에 수정해야됨 지금은 테스트용
+        if(animator) animator.SetTrigger("IsAttacking");    // 나중에 수정해야됨 지금은 테스트용
         ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;

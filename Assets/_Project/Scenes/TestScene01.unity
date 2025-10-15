@@ -9642,6 +9642,10 @@ PrefabInstance:
       propertyPath: 'enemyPools.Array.data[2]'
       value: 
       objectReference: {fileID: 218477305}
+    - target: {fileID: 3606974362354393559, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: m_RootBone
+      value: 
+      objectReference: {fileID: 0}
     - target: {fileID: 3622482551212602503, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_Name
       value: Core
@@ -9685,6 +9689,14 @@ PrefabInstance:
     - target: {fileID: 4788467398907169153, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5109236020159060349, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: 'weaponSlots.Array.data[0]'
+      value: 
+      objectReference: {fileID: 9220680182277679852}
+    - target: {fileID: 7104480629767278618, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: heldPosition
+      value: 
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -9967,6 +9979,17 @@ MeshRenderer:
   m_SortingLayer: 0
   m_SortingOrder: 0
   m_AdditionalVertexStreams: {fileID: 0}
+--- !u!114 &9220680182277679852 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 1769272083339508191, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+  m_PrefabInstance: {fileID: 8590179395040169635}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3584adec461c00c40ba69dc9042807a1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
