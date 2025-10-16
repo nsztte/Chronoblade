@@ -110,7 +110,6 @@ public class TimingComboManager : MonoBehaviour
         while (true)
         {
             yield return new WaitForSeconds(beatInterval);
-            Debug.Log("지금!!!!!!!!!!!!!!!");
             OnBeat?.Invoke(); // 비트마다 알림 (UI, 사운드 호출 용도)
         }
     }

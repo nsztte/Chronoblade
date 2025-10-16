@@ -40,6 +40,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     public Vector2 LastMoveInput => Time.time - lastMoveTime > 0.2f ? Vector2.zero : lastMoveInput;
 
     private bool isRunning = false;
+    public bool IsRunning => isRunning;
     private bool isCrouching = false;
 
     // 웅크리기 관련 변수

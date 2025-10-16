@@ -23,13 +23,18 @@ public class CameraController : MonoBehaviour
     // 무기 들었을 때 시야각 제한
     [SerializeField] private float weaponClampAngle = 30f;
     [SerializeField] private float zoomedClampAngle = 10f;
-
     [SerializeField] private float defaultLocalY;
     [SerializeField] private float targetLocalY;
     private float cameraLerpSpeed = 10f;
 
-    // private Vector3 defaultLocalPosition;
-    // private Vector3 targetLocalPosition;
+    [Header("이동 쉐이킹")]
+    [SerializeField] private float walkBobAmplitude = 0.02f;
+    [SerializeField] private float runBobAmplitude = 0.05f;
+    [SerializeField] private float bobFrequency = 8f;
+
+    private float bobPhase;
+    private Vector3 baseCamLocalPos;
+
 
     #region Singleton
     public static CameraController Instance { get; private set; }
@@ -72,6 +77,8 @@ public class CameraController : MonoBehaviour
 
         // defaultLocalPosition = transform.localPosition;
         // targetLocalPosition = defaultLocalPosition;
+
+        baseCamLocalPos = transform.localPosition;
     }
 
     private void OnDestroy()
@@ -103,6 +110,32 @@ public class CameraController : MonoBehaviour
         // Recoil 복구
         recoilX = Mathf.Lerp(recoilX, 0f, recoilRecoverySpeed * Time.deltaTime);
         recoilY = Mathf.Lerp(recoilY, 0f, recoilRecoverySpeed * Time.deltaTime);
+    }
+
+    private void LateUpdate()
+    {
+        // 이동시 카메라 좌우 이동
+        var player = PlayerManager.Instance?.PlayerController;
+        if (player == null) return;
+
+        Vector3 hv = new Vector3(player.GetComponent<CharacterController>().velocity.x, 0, player.GetComponent<CharacterController>().velocity.z);
+        float speed = hv.magnitude;
+
+        bool isRunning = player.IsRunning;
+        float amp = isRunning ? runBobAmplitude : walkBobAmplitude;
+
+        if (speed < 0.1f)
+        {
+            transform.localPosition = Vector3.Lerp(transform.localPosition, baseCamLocalPos, Time.deltaTime * 5f);
+            return;
+        }
+
+        bobPhase += bobFrequency * Time.deltaTime * (isRunning ? 1.5f : 1f);
+        float xOffset = Mathf.Sin(bobPhase) * amp;
+        float yOffset = Mathf.Cos(bobPhase * 2f) * amp * 0.5f; // 상하 살짝
+
+        Vector3 targetPos = baseCamLocalPos + new Vector3(xOffset, yOffset, 0f);
+        transform.localPosition = Vector3.Lerp(transform.localPosition, targetPos, Time.deltaTime * 10f);
     }
 
     private void OnLookInput(Vector2 input)
