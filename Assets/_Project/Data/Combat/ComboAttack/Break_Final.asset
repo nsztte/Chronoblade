@@ -16,7 +16,15 @@ MonoBehaviour:
   damage: 52
   attackType: 1
   beatPosition: 2
-  knockbackPower: 3
   isFinalHit: 1
-  animationClip: {fileID: 7400000, guid: b069554e9ff1d384690b0d700a9b9e4a, type: 2}
+  knockbackPower: 3
+  animationClip: {fileID: 7400000, guid: e034dc165a585a342a3c57ae2d5c6620, type: 2}
   soundEffect: {fileID: 0}
+  statusEffectType: 0
+  statusDuration: 0
+  isAOE: 0
+  aoeRadius: 0
+  aoeHitCount: 0
+  isMultiHit: 0
+  multiHitCount: 0
+  multiHitInterval: 0
