@@ -71,8 +71,6 @@ public class MeleeWeaponController : WeaponController
 
     public override void OnMeleeAttackHit()
     {
-        CameraController.Instance?.PlayImpactShake(shakeIntensity, shakeDuration);
-        
         Vector3 startPos = startPoint.position;
         Vector3 endPos = endPoint.position;
         float radius = weaponData.range;
@@ -88,6 +86,8 @@ public class MeleeWeaponController : WeaponController
             {
                 target.TakeDamage(damage);
                 hitTargets.Add(target);
+
+                CameraController.Instance?.PlayImpactShake(shakeIntensity, shakeDuration);
                 
                 Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {damage} (타입: {currentAttackType})");
             }
