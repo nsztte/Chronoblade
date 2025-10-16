@@ -12,6 +12,9 @@ public class MeleeWeaponController : WeaponController
     [SerializeField] private Transform endPoint;
     [SerializeField] private LayerMask hitLayer;
 
+    private float pendingComboDamage;
+    private ComboAttackData pendingComboData;
+
     private Animator animator;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
 
@@ -53,6 +56,13 @@ public class MeleeWeaponController : WeaponController
         isAttacking = true;
     }
 
+    // 콤보 공격 데이터 셋팅
+    public void SetPendingCombo(float damage, ComboAttackData data)
+    {
+        pendingComboDamage = damage;
+        pendingComboData   = data;
+    }
+
     public override void OnMeleeAttackHit()
     {
         Vector3 startPos = startPoint.position;
@@ -77,10 +87,13 @@ public class MeleeWeaponController : WeaponController
 
     public override void OnMeleeAttackEnd()
     {
-        // Debug.Log($"[공격 종료] 총 타격 대상 수: {hitTargets.Count}");
-        // CameraController.Instance?.ResetCameraPosition(10f);
         isAttacking = false;
         currentAttackType = AttackType.None;
+    }
+
+    public void OnComboAttackHit()
+    {
+        OnComboAttackHit(pendingComboDamage, pendingComboData);
     }
 
     public override void OnComboAttackHit(float damage, ComboAttackData comboAttackData)

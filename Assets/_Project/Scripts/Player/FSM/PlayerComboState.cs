@@ -56,7 +56,7 @@ public class PlayerComboState : PlayerBaseState
             weapon.SetSpeed(1f);
             weapon.PlayClip("SwordIdle", 0.25f);
         }
-        
+
         Debug.Log($"[PlayerComboState] 종료");
         isLastAttackPlaying = false;
         isWaitingForInput = false;
@@ -176,8 +176,9 @@ public class PlayerComboState : PlayerBaseState
         // 타이밍 배율을 적용한 데미지 계산
         float finalDamage = attackData.damage * damageMultiplier;
 
-        PlayerManager.Instance.SetCurrentCombo(finalDamage, attackData);
-
+        // PlayerManager.Instance.SetCurrentCombo(finalDamage, attackData);
+        meleeWeapon.SetPendingCombo(finalDamage, attackData);
+        
         // 애니메이션 속도 조절 (비트 길이에 맞춰 동기화)
         float animLength = attackData.animationClip.length;
         float speed;

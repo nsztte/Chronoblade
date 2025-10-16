@@ -53,8 +53,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private Transform heldPosition;
     private GameObject currentHeldObject;
 
-    private float currentComboDamage;
-    private ComboAttackData currentCombo;
 
     private Animator animator;
     private PlayerStateMachine playerStateMachine;
@@ -83,7 +81,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public int StaminaCost => staminaCost;
     public int DashStaminaCost => dashStaminaCost;
     public bool IsInvincibleProperty => isInvincible;
-    public ComboAttackData CurrentCombo => currentCombo;
     public bool IsFrozen => playerController.IsFrozen;
     public bool IsParalyzed => playerController.IsParalyzed;
     public GameObject CurrentHeldObject => currentHeldObject;
@@ -364,32 +361,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
         animator.SetFloat(param, value, dampTime, deltaTime);
     }
     #endregion
-
-    // #region 애니메이션 이벤트 메서드
-    // // 애니메이션 이벤트 메서드들 (무기 컨트롤러에 전달)
-    // public void OnMeleeAttackHit()
-    // {
-    //     WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackHit();
-    // }
-
-    // public void OnMeleeAttackEnd()
-    // {
-    //     WeaponManager.Instance?.CurrentWeapon?.OnMeleeAttackEnd();
-    // }
-
-    // 애니메이션 이벤트에서 호출할 메서드
-    public void OnComboAttackHit()
-    {
-        WeaponManager.Instance?.CurrentWeapon?.OnComboAttackHit(currentComboDamage, currentCombo);
-    }
-    // #endregion
-
-    // 콤보 공격 정보 설정
-    public void SetCurrentCombo(float damage, ComboAttackData comboAttackData)
-    {
-        currentComboDamage = damage;
-        currentCombo = comboAttackData;
-    }
 
     public void ApplyKnockback(float force) {}
 
