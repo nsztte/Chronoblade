@@ -12,6 +12,12 @@ public class MeleeWeaponController : WeaponController
     [SerializeField] private Transform endPoint;
     [SerializeField] private LayerMask hitLayer;
 
+    [Header("쉐이킹 설정")]
+    [SerializeField] private float shakeIntensity = 0.06f;
+    [SerializeField] private float shakeDuration = 0.1f;
+    [SerializeField] private float comboShakeIntensity = 1f;
+    [SerializeField] private float comboShakeDuration = 0.1f;
+
     private float pendingComboDamage;
     private ComboAttackData pendingComboData;
 
@@ -65,6 +71,8 @@ public class MeleeWeaponController : WeaponController
 
     public override void OnMeleeAttackHit()
     {
+        CameraController.Instance?.PlayImpactShake(shakeIntensity, shakeDuration);
+        
         Vector3 startPos = startPoint.position;
         Vector3 endPos = endPoint.position;
         float radius = weaponData.range;
@@ -80,6 +88,7 @@ public class MeleeWeaponController : WeaponController
             {
                 target.TakeDamage(damage);
                 hitTargets.Add(target);
+                
                 Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {damage} (타입: {currentAttackType})");
             }
         }
@@ -116,6 +125,9 @@ public class MeleeWeaponController : WeaponController
                {
                     ProcessComboAttack(hit.gameObject, comboAttackData, damage);
                }
+
+               if (comboAttackData.isFinalHit)
+                    CameraController.Instance?.PlayImpactShake(comboShakeIntensity, comboShakeDuration);
             }
         }
     }

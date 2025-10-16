@@ -31,9 +31,14 @@ public class CameraController : MonoBehaviour
     [SerializeField] private float walkBobAmplitude = 0.02f;
     [SerializeField] private float runBobAmplitude = 0.05f;
     [SerializeField] private float bobFrequency = 8f;
-
     private float bobPhase;
     private Vector3 baseCamLocalPos;
+
+    [Header("공격/콤보용 임팩트 쉐이크")]
+    [SerializeField] private float shakeDuration = 0.1f;
+    [SerializeField] private float shakeIntensity = 0.05f;
+    private float shakeTimer = 0f;
+    private Vector3 shakeOffset = Vector3.zero;
 
 
     #region Singleton
@@ -120,25 +125,39 @@ public class CameraController : MonoBehaviour
 
         Vector3 hv = new Vector3(player.GetComponent<CharacterController>().velocity.x, 0, player.GetComponent<CharacterController>().velocity.z);
         float speed = hv.magnitude;
-
         bool isRunning = player.IsRunning;
+
+        // 1) 보블 오프셋 (속도=0이면 자동으로 0에 수렴)
         float amp = isRunning ? runBobAmplitude : walkBobAmplitude;
+        if (isZoomed) amp *= 0.3f;
 
-        // 조준 중 감쇠
-        if (isZoomed)
-            amp *= 0.3f;
-
-        if (speed < 0.1f)
+        if (speed >= 0.1f)
         {
-            transform.localPosition = Vector3.Lerp(transform.localPosition, baseCamLocalPos, Time.deltaTime * 5f);
-            return;
+            bobPhase += bobFrequency * Time.deltaTime * (isRunning ? 1.5f : 1f);
+        }
+        else
+        {
+            // 정지 시 페이즈만 천천히 감쇠(선택), 오프셋은 0으로 자연 복귀
+            bobPhase = Mathf.Lerp(bobPhase, 0f, Time.deltaTime * 5f);
         }
 
-        bobPhase += bobFrequency * Time.deltaTime * (isRunning ? 1.5f : 1f);
-        float xOffset = Mathf.Sin(bobPhase) * amp;
-        float yOffset = Mathf.Cos(bobPhase * 2f) * amp * 0.5f; // 상하 살짝
+        float bobX = (speed >= 0.1f) ? Mathf.Sin(bobPhase) * amp : 0f;
+        float bobY = (speed >= 0.1f) ? Mathf.Cos(bobPhase * 2f) * amp * 0.5f : 0f;
+        Vector3 bobOffset = new Vector3(bobX, bobY, 0f);
 
-        Vector3 targetPos = baseCamLocalPos + new Vector3(xOffset, yOffset, 0f);
+        // 2) 임팩트 쉐이크 오프셋 (항상 적용 경로에 둔다)
+        Vector3 impactOffset = Vector3.zero;
+        if (shakeTimer > 0f)
+        {
+            shakeTimer -= Time.deltaTime;
+            float t = Mathf.Clamp01(shakeTimer / shakeDuration); // 페이드아웃
+            impactOffset = Random.insideUnitSphere * (shakeIntensity * t);
+            // 조준 중 과도한 멀미 방지 (선택)
+            if (isZoomed) impactOffset *= 0.5f;
+        }
+
+        // 3) 최종 타겟 = 기본위치 + 보블 + 임팩트 (early return 없음)
+        Vector3 targetPos = baseCamLocalPos + bobOffset + impactOffset;
         transform.localPosition = Vector3.Lerp(transform.localPosition, targetPos, Time.deltaTime * 10f);
     }
 
@@ -264,5 +283,14 @@ public class CameraController : MonoBehaviour
         // 커서 락 상태 복구
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
+    }
+
+    public void PlayImpactShake(float intensity = -1f, float duration = -1f)
+    {
+        if (intensity > 0f) shakeIntensity = intensity;
+        if (duration  > 0f) shakeDuration  = duration;
+        shakeTimer = shakeDuration;
+
+        Debug.Log($"PlayImpactShake: {shakeIntensity}, {shakeDuration}, {shakeDuration}");
     }
 }
