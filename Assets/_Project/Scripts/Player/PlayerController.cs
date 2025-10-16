@@ -186,6 +186,11 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         else if(normalizedInput.y < 0)
             currentSpeed *= 0.8f;
 
+        // 조준 중 속도 감쇠
+        var weapon = WeaponManager.Instance?.CurrentWeapon as GunWeaponController;
+        if (weapon != null && weapon.IsAiming)
+            currentSpeed *= 0.6f;
+
         // 수평 속도 벡터 + 중력 적용
         Vector3 horizontalMove = moveDirection * currentSpeed;
         Vector3 finalMove = horizontalMove + Vector3.up * velocity.y;

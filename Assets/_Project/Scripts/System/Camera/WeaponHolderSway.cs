@@ -27,6 +27,11 @@ public class WeaponHolderSway : MonoBehaviour
         bool isRunning = PlayerManager.Instance != null && PlayerManager.Instance.PlayerController.IsRunning;
         float amp = isRunning ? runAmplitude : walkAmplitude;
 
+        // 조준 중 감쇠
+        var currentWeapon = WeaponManager.Instance?.CurrentWeapon as GunWeaponController;
+        if (currentWeapon != null && currentWeapon.IsAiming)
+            amp *= 0.3f;
+
         // 속도 없으면 제자리 복귀
         if (speed < 0.1f)
         {

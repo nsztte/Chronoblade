@@ -124,6 +124,10 @@ public class CameraController : MonoBehaviour
         bool isRunning = player.IsRunning;
         float amp = isRunning ? runBobAmplitude : walkBobAmplitude;
 
+        // 조준 중 감쇠
+        if (isZoomed)
+            amp *= 0.3f;
+
         if (speed < 0.1f)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, baseCamLocalPos, Time.deltaTime * 5f);
