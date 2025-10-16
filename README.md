@@ -3371,6 +3371,49 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.10.16 (목) 작업 기록
+
+### 주요 작업
+- **공격 및 콤보 시 카메라 쉐이킹(임팩트) 효과 추가**
+  - `CameraController`
+    - `PlayImpactShake(float intensity, float duration)` 함수 추가
+    - 이동 보블(bob)과 임팩트 쉐이크를 통합 적용하도록 LateUpdate 로직 개선
+    - 조준 중엔 임팩트 강도 50% 감쇠 처리
+  - `MeleeWeaponController`
+    - `OnMeleeAttackHit()` 시 공격 임팩트 쉐이크 호출 (`0.06f / 0.1f`)
+    - `OnComboAttackHit()`에서 피니시 히트 시 강도 높은 쉐이크 호출 (`1f / 0.1f`)
+    - 인스펙터에서 쉐이크 강도·지속시간 튜닝 가능
+
+- **조준(ADS) 시 카메라·무기 흔들림 및 이동속도 감쇠**
+  - `CameraController`: 조준 중 카메라 흔들림 진폭 0.3배 축소
+  - `WeaponHolderSway`: 조준 중 무기 흔들림 진폭 0.3배 축소
+  - `PlayerController`: 조준 상태 시 이동 속도 0.6배로 감소
+
+- **무기/카메라 이동 쉐이킹(보블) 효과**
+  - `CameraController`: 걷기·뛰기 속도에 따라 좌우·상하 보블 적용, 정지 시 복귀 처리
+  - `WeaponHolderSway`: 이동 속도 기반 무기 좌우 흔들림 구현, 걷기/뛰기 진폭 차등 적용
+
+- **콤보 시스템 리팩터링**
+  - `PlayerComboState`: 플레이어 Animator 직접 제어 제거 → 무기 전용 Animator 제어로 전환
+  - `MeleeWeaponController`: 콤보 애니메이션 재생, 속도 제어, 종료 판정 API 일원화
+  - Idle 복귀, 속도 초기화, 널 가드 등 종료 루틴 보강
+
+- **검 전용 애니메이터 적용**
+  - `SwordAnimator`에 콤보 및 기본 공격 애니메이션 클립 배치
+  - 이벤트를 `MeleeWeaponController`로 재바인딩
+  - Light/Heavy 공격 및 콤보 트랙 연결, 테스트 완료
+
+### 메모
+- 공격 직후에도 쉐이크가 즉시 반영되도록 `LateUpdate()` early return 제거 → 정상 작동 확인  
+- 콤보 피니시 시 강한 쉐이크와 일반 공격 시 약한 쉐이크의 강도 차이 뚜렷하게 체감됨  
+- 조준 중 감쇠로 시점 안정감 확보, 이동·무기 리듬감 유지됨
+
+---
+
+
+
+
+
 ## 2025.10 월간 개발 계획 (최종 빌드 완성 플랜)
 
 ### 목표
