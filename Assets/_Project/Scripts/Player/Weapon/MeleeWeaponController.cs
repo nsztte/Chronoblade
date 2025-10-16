@@ -1,7 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
 using System.Collections;
-using System.Data.Common;
 
 public class MeleeWeaponController : WeaponController
 {
@@ -11,11 +10,13 @@ public class MeleeWeaponController : WeaponController
     [Header("근접 공격 설정")]
     [SerializeField] private Transform startPoint;
     [SerializeField] private Transform endPoint;
-    // [SerializeField] private float attackDuration = 0.3f;
     [SerializeField] private LayerMask hitLayer;
 
     private Animator animator;
     private HashSet<IDamageable> hitTargets = new HashSet<IDamageable>();
+
+    private static readonly int Light = Animator.StringToHash("Light");
+    private static readonly int Heavy = Animator.StringToHash("Heavy");
 
     private void Awake()
     {
@@ -31,11 +32,10 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         currentAttackType = AttackType.Light;
-        if(animator) animator.SetTrigger("IsAttacking");    // 나중에 수정해야됨 지금은 테스트용
+        if(animator) animator.SetTrigger(Light);
         ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
-        // Debug.Log($"[약공격 시작] {weaponData.weaponName}");
     }
 
     public override void ExecuteHeavyAttack()
@@ -47,11 +47,10 @@ public class MeleeWeaponController : WeaponController
             return;
         }
         currentAttackType = AttackType.Heavy;
-        if(animator) animator.SetTrigger("IsAttacking");    // 나중에 수정해야됨 지금은 테스트용
+        if(animator) animator.SetTrigger(Heavy);
         ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
-        // Debug.Log($"[강공격 시작] {weaponData.weaponName}");
     }
 
     public override void OnMeleeAttackHit()
@@ -164,6 +163,37 @@ public class MeleeWeaponController : WeaponController
     {
         hitTargets.Clear();
     }
+
+    #region 애니메이션 관련
+    public void SetSpeed(float speed)
+    {
+        if (animator) animator.speed = Mathf.Max(0.01f, speed);
+    }
+
+    // 스테이트 이름으로 페이드 재생
+    public void PlayClip(string stateName, float fade = 0.05f)
+    {
+        if (!animator || string.IsNullOrEmpty(stateName)) return;
+
+        int hash = Animator.StringToHash(stateName);
+        animator.CrossFadeInFixedTime(hash, fade, 0);
+    }
+
+    // 클립 이름으로 페이드 재생
+    public void PlayClip(AnimationClip clip, float fade = 0.05f)
+    {
+        if (!animator || clip == null) return;
+        animator.CrossFadeInFixedTime(clip.name, fade, 0);
+    }
+
+    // 현재 상태 완료 여부 확인
+    public bool IsCurrentStateFinished(float normalizedThreshold = 1.0f)
+    {
+        if (!animator) return true;
+        var info = animator.GetCurrentAnimatorStateInfo(0);
+        return info.normalizedTime >= normalizedThreshold;
+    }
+    #endregion
     
 
 #if UNITY_EDITOR

@@ -11,7 +11,7 @@ public class PlayerComboState : PlayerBaseState
     private int currentAttackIndex = 0;
     private float comboStartTime;
     private float beatInterval;
-    private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
+    // private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
     private bool isWaitingForInput = false;
     private bool isLastAttackPlaying = false; // 마지막 공격 애니메이션 재생 중인지 확인
 
@@ -46,22 +46,18 @@ public class PlayerComboState : PlayerBaseState
 
     public override void Exit()
     {
-        var weapon = WeaponManager.Instance.CurrentWeapon;
+        var weapon = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
         if (weapon != null)
-        {
-            weapon.SetAttackingFalse();
-        }
-        Debug.Log($"[PlayerComboState] 종료");
-        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", 1f);
-        if (WeaponManager.Instance.CurrentWeapon?.weaponData.weaponType == WeaponType.Sword)
         {
             InputManager.Instance.OnLightAttackPressed -= OnLightAttack;
             InputManager.Instance.OnHeavyAttackPressed -= OnHeavyAttack;
+
+            weapon.SetAttackingFalse();
+            weapon.SetSpeed(1f);
+            weapon.PlayClip("SwordIdle", 0.25f);
         }
-        stateMachine.Animator.CrossFadeInFixedTime("SwordIdle", 0.25f, upperBodyLayerIndex);
-        stateMachine.Animator.ResetTrigger("IsAttacking");
         
-        // 상태 초기화
+        Debug.Log($"[PlayerComboState] 종료");
         isLastAttackPlaying = false;
         isWaitingForInput = false;
     }
@@ -116,11 +112,20 @@ public class PlayerComboState : PlayerBaseState
 
     private void CheckLastAttackAnimationComplete()
     {
-        // 현재 재생 중인 애니메이션 상태 정보 가져오기
-        AnimatorStateInfo stateInfo = stateMachine.Animator.GetCurrentAnimatorStateInfo(upperBodyLayerIndex);
+        // // 현재 재생 중인 애니메이션 상태 정보 가져오기
+        // AnimatorStateInfo stateInfo = stateMachine.Animator.GetCurrentAnimatorStateInfo(upperBodyLayerIndex);
         
-        // 애니메이션이 완료되었는지 확인 (normalizedTime >= 1.0f)
-        if (stateInfo.normalizedTime >= 1.0f)
+        // // 애니메이션이 완료되었는지 확인 (normalizedTime >= 1.0f)
+        // if (stateInfo.normalizedTime >= 1.0f)
+        // {
+        //     Debug.Log("[PlayerComboState] 마지막 공격 애니메이션 완료, 상태 전환");
+        //     isLastAttackPlaying = false;
+        //     stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+        // }
+
+        var melee = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
+
+        if (melee == null || melee.IsCurrentStateFinished(1.0f))
         {
             Debug.Log("[PlayerComboState] 마지막 공격 애니메이션 완료, 상태 전환");
             isLastAttackPlaying = false;
@@ -184,12 +189,23 @@ public class PlayerComboState : PlayerBaseState
         {
             speed = animLength / beatInterval;
         }
-        PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
-        stateMachine.Animator.CrossFadeInFixedTime(
-            attackData.animationClip.name,
-            0.05f,
-            upperBodyLayerIndex
-        );
+
+        // PlayerManager.Instance.SetAnimatorFloat("AttackSpeed", speed);
+        // stateMachine.Animator.CrossFadeInFixedTime(
+        //     attackData.animationClip.name,
+        //     0.05f,
+        //     upperBodyLayerIndex
+        // );
+
+        var melee = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
+        if (melee == null)
+        {
+            stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
+            return;
+        }
+
+        melee.SetSpeed(speed);
+        melee.PlayClip(attackData.animationClip, 0.05f);
         
         comboStartTime = Time.time;
         Debug.Log($"[콤보] {comboToUse.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}, 판정: {result}, 데미지: {finalDamage:F1} (배율: {damageMultiplier:F1}, absOffset: {absOffset:F3})");
