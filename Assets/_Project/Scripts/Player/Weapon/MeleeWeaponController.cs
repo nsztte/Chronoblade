@@ -18,6 +18,9 @@ public class MeleeWeaponController : WeaponController
     [SerializeField] private float comboShakeIntensity = 1f;
     [SerializeField] private float comboShakeDuration = 0.1f;
 
+    [Header("Vfx 설정")]
+    [SerializeField] private Transform vfxSpawnPoint;
+
     private float pendingComboDamage;
     private ComboAttackData pendingComboData;
 
@@ -92,6 +95,9 @@ public class MeleeWeaponController : WeaponController
                 Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {damage} (타입: {currentAttackType})");
             }
         }
+
+        if (vfxSpawnPoint)
+            VFXManager.Instance?.Spawn("Swing", vfxSpawnPoint.position, vfxSpawnPoint.rotation);
     }
 
     public override void OnMeleeAttackEnd()
