@@ -3410,7 +3410,49 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.10.17 (금) 작업 기록
 
+### 주요 작업
+- **Watcher 전용 Upper Layer 분리 및 피격 리액션 구조 구성**
+  - Animator에 Upper Layer 추가 (Spine~Head 중심 AvatarMask 적용)
+  - Base Layer: 이동·공격·사망 등 전신 애니메이션 유지
+  - Upper Layer: 상체 전용 Hit 리액션 재생 전용 상태머신 구성 (Empty ↔ Hit)
+  - Avatar Mask 설정으로 하체 이동 유지 + 상체 플린치 자연스럽게 구현
+
+- **ChronoMonk 스턴 파라미터 및 전이 조건 추가**
+  - Bool 파라미터 `IsStunned` 추가
+  - `Hit` 진입/유지/복귀 전이에 `IsStunned` 조건 적용
+  - `Move`·`AttackSM` 전이 경로에 스턴 가드 반영
+
+- **MirrorDuelist 제너릭 리그용 Upper Layer 및 아바타 마스크 적용**
+  - 제너릭 스켈레톤 기반 UpperBodyMask Generic 신규 생성 (Spine~Head만 활성)
+  - Animator에 Upper Layer 추가 및 마스크 지정
+  - Base Layer: 이동·공격·사망 전신 애니메이션 유지
+  - Upper Layer: 상체 전용 Hit 리액션 전담 (Empty ↔ Hit 상태 구성)
+
+- **MirrorDuelist 피격 처리 보완 및 Hit 지속시간 조정**
+  - EnemyHitState의 `hitDuration`을 0.20f → 0.22f로 조정하여 ChaseState 전환 텀 보강
+  - MirrorDuelist에 누락된 `TakeDamage()` 기능 복원 및 FSM 전환 로직 정상화
+    - 클론 존재 시 무적 처리
+    - 공격/소환 중 피격 시 HitState 진입 제한
+    - HP 0 이하 시 DeadState로 전환
+
+- **VFXManager 도입 및 풀 기반 VFX 스폰/반환 구현**
+  - VFXManager: 키→풀 매핑, Spawn API, 자동 반환 지원 (Init/Singleton)
+  - VFXPool: Transform 풀에 파티클 정리(OnBeforeRelease) 로직 추가
+  - CoreBootstrap: Presentation 단계에서 VFXManager.Initialize() 연동
+
+- **스윙 VFX를 애니메이션 히트 시점에 재생**
+  - MeleeWeaponController.OnMeleeAttackHit에서 `vfxSpawnPoint` 기준으로 `"Swing"` 스폰
+  - `vfxSpawnPoint` 필드 추가 및 사용 (무기 하위 빈 오브젝트)
+  - VFXManager 및 VFXPool 테스트 완료
+
+### 메모
+- 보스 전용 파이널콤보컨트롤러 기획은 주말~다음주 초로 보류
+  - 잡몹과 달리 풀스턴 없이 마이크로 스태거 + 짧은 슬로우 중심 구조로 구상 중
+  - IStatusEffectable 인터페이스를 활용한 상태 적용 설계 검토 예정
+
+---
 
 
 
