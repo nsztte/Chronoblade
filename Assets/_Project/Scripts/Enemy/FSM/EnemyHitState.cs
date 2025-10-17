@@ -41,7 +41,7 @@ public class ChronoMonkHitBehavior : IHitBehavior
 
 public class EnemyHitState : EnemyBaseState
 {
-    private float hitDuration = 0.2f;
+    private float hitDuration = 0.22f;
     private float elapsed = 0f;
     private float lastHitTime = 0f;
     

@@ -42,7 +42,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     private Collider col;
     private Animator animator;
     private NavMeshAgent agent;
-    private EnemyHPUI hpUI;
+    protected EnemyHPUI hpUI;
 
     private bool hasDetectedPlayer = false;     // 플레이어 감지
 

@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using Unity.VisualScripting;
 
 public class MirrorDuelist : Enemy
 {
@@ -53,6 +52,8 @@ public class MirrorDuelist : Enemy
 
     public override void TakeDamage(int damage)
     {
+        DetectPlayer();
+
         if (HasActiveClones())
         {
             Debug.Log("Mirror Duelist 클론 존재 중 - 무적 상태");
@@ -62,20 +63,34 @@ public class MirrorDuelist : Enemy
         currentHP -= damage;
         Debug.Log($"Mirror Duelist HP: {currentHP}");
 
-        // 공격 중이거나 클론 스폰 중일 때는 HitState로 전환하지 않음
-        if (fsm?.CurrentState is MirrorAttackState mirrorAttackState)
+        hpUI.SetHP(currentHP, MaxHP);
+
+        // 플레이어가 적을 공격하면 전투 시작
+        if (GameManager.Instance.CurrentGameState is ExplorationState || GameManager.Instance.CurrentGameState is PuzzleState)
         {
-            if ((mirrorAttackState.isAttacking || isSpawning) && currentHP > 0)
-            {
-                Debug.Log("Mirror Duelist 공격 중 피격 - 애니메이션 없이 데미지만 적용");
-                return;
-            }
+            TriggerCombatStarted();
         }
 
-        // 일반적인 피격 처리
-        if (fsm != null)
+        if(fsm != null)
         {
-            fsm.TransitionToState(currentHP <= 0 ? fsm.DeadState : fsm.HitState);
+            if(currentHP <= 0)
+            {
+                fsm.TransitionToState(fsm.DeadState);
+            }
+            else
+            {
+                // 공격 중이거나 클론 스폰 중일 때는 HitState로 전환하지 않음
+                if (fsm?.CurrentState is MirrorAttackState mirrorAttackState)
+                {
+                    if ((mirrorAttackState.isAttacking || isSpawning) && currentHP > 0)
+                    {
+                        Debug.Log("Mirror Duelist 공격 중 피격 - 애니메이션 없이 데미지만 적용");
+                        return;
+                    }
+                }
+                
+                fsm.TransitionToState(fsm.HitState);
+            }
         }
     }
 
