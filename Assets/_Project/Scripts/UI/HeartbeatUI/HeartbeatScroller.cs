@@ -115,12 +115,16 @@ public class HeartbeatScroller : MonoBehaviour
 
     public void Show()
     {
+        if(gameObject.activeSelf) return;
+        
         gameObject.SetActive(true);
         isScrolling = true;
     }
 
     public void Hide()
     {
+        if(!gameObject.activeSelf) return;
+
         isScrolling = false;
         gameObject.SetActive(false);
     }
