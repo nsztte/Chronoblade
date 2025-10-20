@@ -26,7 +26,7 @@ public class FinalPuzzleState : BaseBossState
         boss.PuzzleClockManager.OnPuzzleSuccess -= OnPuzzleSuccess;
         boss.PuzzleClockManager.OnPuzzleFail -= OnPuzzleFail;
 
-        GameManager.Instance.EnterCombat();
+        // GameManager.Instance.EnterCombat();
     }
 
     private void OnPuzzleSuccess()
@@ -57,6 +57,7 @@ public class FinalPuzzleState : BaseBossState
 
     private void ChangeToPhase2()
     {
+        GameManager.Instance.EnterCombat(); // 퍼즐 종료 → 전투 복귀
         boss.PhaseManager.SetPhase(BossPhase.Phase2);
         stateMachine.ChangeState(new BossIdleState(boss, stateMachine));
     }

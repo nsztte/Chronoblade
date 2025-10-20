@@ -20,5 +20,7 @@ public class BossIntroState : BaseBossState
     {
         boss.PhaseManager.SetPhase(BossPhase.Phase1);
         boss.ShowBossHUD();
+
+        GameManager.Instance.EnterCombat();
     }
 }

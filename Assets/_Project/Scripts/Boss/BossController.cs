@@ -42,10 +42,13 @@ public class BossController : MonoBehaviour, IDamageable
     private Transform player;
     private Collider col;
 
+    public BossStateMachine BossSM => stateMachine;
     public BossPhaseManager PhaseManager => phaseManager;
     public PuzzleClockManager PuzzleClockManager => puzzleClockManager;
     public Transform Player => player;
     public GameObject ClockPuzzleCamera => clockPuzzleCamera;
+
+    public Animator Animator => animator;
 
     public int CurrentHpPercentInt
     {
@@ -422,7 +425,7 @@ public class BossController : MonoBehaviour, IDamageable
                         if(player.TryParry(Time.time))
                         {
                             Debug.Log("패리 성공");
-                            stateMachine.ChangeState(new StaggerCheckState(this, stateMachine));
+                            stateMachine.ChangeState(new StaggerCheckState(this, stateMachine, 1f));
                             yield break;
                         }
                     }

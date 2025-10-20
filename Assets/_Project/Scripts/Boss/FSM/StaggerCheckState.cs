@@ -2,9 +2,11 @@ using UnityEngine;
 
 public class StaggerCheckState : BaseBossState
 {
-    public StaggerCheckState(BossController boss, BossStateMachine stateMachine) : base(boss, stateMachine)
+    private readonly float staggerDur;
+
+    public StaggerCheckState(BossController boss, BossStateMachine sm, float staggerDuration) : base(boss, sm)
     {
-        
+        staggerDur = staggerDuration;
     }
 
     public override void Enter()
@@ -13,6 +15,6 @@ public class StaggerCheckState : BaseBossState
 
         boss.PlayAnimation("Stagger");
 
-        WaitAndChangeToState(1f, new CheckPhaseEndState(boss, stateMachine));
+        WaitAndChangeToState(staggerDur, new CheckPhaseEndState(boss, stateMachine));
     }
 }
