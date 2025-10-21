@@ -7,6 +7,7 @@ public class CutsceneState : GameBaseState
     {
         Debug.Log("[GameState] CutsceneState Enter");
         // UIManager.Instance.ShowCutsceneOverlay();
+
         UIManager.Instance.UpdatePlayerHud(false);
         TimeManager.Instance.SetTimeScale(0f);
 
@@ -15,9 +16,14 @@ public class CutsceneState : GameBaseState
 
     public override void Exit()
     {
+        Debug.Log("CutsceneState Exit");
         // UIManager.Instance.HideCutsceneOverlay();
         UIManager.Instance.UpdatePlayerHud(true);
-        TimeManager.Instance.InitializeTimeState();
+
+        if(TimeManager.Instance.CurrentTimeState == TimeState.Normal)
+            TimeManager.Instance.SetTimeScale(1f);
+        else
+            TimeManager.Instance.InitializeTimeState();
 
         SaveGuard.Instance?.ClearTag(SaveBlockTag.Cutscene);
         
