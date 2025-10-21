@@ -15,6 +15,8 @@ public class FadeUI : MonoBehaviour
         canvasGroup.interactable = false;
     }
 
+    public void ShowBlackScreen() => canvasGroup.alpha = 1f;
+
     public Coroutine Show(float duration = -1f) =>
         StartCoroutine(FadeTo(1f, duration < 0 ? defaultDuration : duration));
 

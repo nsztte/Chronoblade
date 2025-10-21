@@ -199,6 +199,32 @@ public class UIManager : MonoBehaviour
     public void ClosePause() => pauseUI?.Hide();
     #endregion
 
+    #region 대사 실행
+    public void ShowSubtitleAuto(IEnumerable<string> lines)
+    {
+        if (subtitleUI == null) return;
+
+        subtitleUI.Clear();
+        subtitleUI.Open();
+        foreach (var line in lines)
+            subtitleUI.Enqueue(line, SubtitleMode.Auto);
+
+        subtitleUI.Play();
+    }
+
+    public void ShowSubtitleHold(IEnumerable<string> lines)
+    {
+        if (subtitleUI == null) return;
+
+        subtitleUI.Clear();
+        subtitleUI.Open();
+        foreach (var line in lines)
+            subtitleUI.Enqueue(line, SubtitleMode.Click);
+
+        subtitleUI.Play();
+    }
+    #endregion
+
     #region 게임스테이트 디버그용 (추후 UI로 대체)
 
     public void ShowLoadingScreen() => Debug.Log("[UI] Show Loading Screen");

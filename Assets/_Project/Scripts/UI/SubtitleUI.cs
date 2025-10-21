@@ -17,6 +17,8 @@ public class SubtitleUI : MonoBehaviour
     private float clickCooldown;
     private Coroutine runCo;
 
+    public bool IsPlaying => runCo != null;
+
     private void Update()
     {
         if (clickCooldown > 0f) clickCooldown -= Time.unscaledDeltaTime;
