@@ -35,6 +35,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private StatusIconUI statusIconUI;
     [SerializeField] private HeartbeatScroller heartbeatScroller;
     [SerializeField] private ComboResultUIController comboResultUIController;
+    [SerializeField] private SubtitleUI subtitleUI;
 
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
@@ -53,6 +54,7 @@ public class UIManager : MonoBehaviour
     public StatusIconUI StatusIconUI => statusIconUI;
     public HeartbeatScroller HeartbeatScroller => heartbeatScroller;
     public ComboResultUIController ComboResultUIController => comboResultUIController;
+    public SubtitleUI SubtitleUI => subtitleUI;
 
     public bool IsConfirmModalOpen => ConfirmModalUI != null && confirmModal.gameObject.activeSelf;
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;

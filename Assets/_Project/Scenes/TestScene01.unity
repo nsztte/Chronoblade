@@ -130,6 +130,7 @@ GameObject:
   - component: {fileID: 114085767}
   - component: {fileID: 114085768}
   - component: {fileID: 114085769}
+  - component: {fileID: 114085770}
   m_Layer: 0
   m_Name: TestItems
   m_TagString: Untagged
@@ -181,6 +182,18 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: da4ab8fb5feb3dc4aaf199646d3b07af, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &114085770
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 114085766}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 00648fd6c1ca82b4eb7c3e054a46501b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!1 &205339424
@@ -904,7 +917,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_text: "\uB300\uC0AC\uC4F0\uB294 \uACF3~~~~"
+  m_text: 
   m_isRightToLeft: 0
   m_fontAsset: {fileID: 11400000, guid: 2ae3538ab04436f4abfd94d3d4416038, type: 2}
   m_sharedMaterial: {fileID: -7984047664914734173, guid: 2ae3538ab04436f4abfd94d3d4416038, type: 2}
@@ -1026,13 +1039,14 @@ GameObject:
   - component: {fileID: 954948837}
   - component: {fileID: 954948838}
   - component: {fileID: 954948836}
+  - component: {fileID: 954948839}
   m_Layer: 5
   m_Name: Subtitle_Panel
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &954948835
 RectTransform:
   m_ObjectHideFlags: 0
@@ -1103,6 +1117,25 @@ CanvasGroup:
   m_Interactable: 1
   m_BlocksRaycasts: 1
   m_IgnoreParentGroups: 0
+--- !u!114 &954948839
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 954948834}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6c82fc0c020a62048be5d367997bb342, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  group: {fileID: 954948838}
+  text: {fileID: 931217601}
+  fadeIn: 0.2
+  fadeOut: 0.2
+  minSec: 1.2
+  secPerChar: 0.045
+  maxSec: 3.5
 --- !u!1 &1055445717
 GameObject:
   m_ObjectHideFlags: 0
@@ -4356,6 +4389,10 @@ PrefabInstance:
       propertyPath: m_Name
       value: UI
       objectReference: {fileID: 0}
+    - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: subtitleUI
+      value: 
+      objectReference: {fileID: 954948839}
     - target: {fileID: 4928955715645927795, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: comboResultUIController
       value: 
