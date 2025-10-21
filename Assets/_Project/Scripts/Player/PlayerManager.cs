@@ -1,10 +1,10 @@
 using UnityEngine;
-using UnityEngine.Rendering;
 
 public class PlayerManager : MonoBehaviour, IDamageable
 {
     [Header("플레이어 참조")]
     [SerializeField] private Transform playerTransform;
+    [SerializeField] private Transform playerBody;
 
     [Header("HP")]
     [SerializeField] private int maxHP = 100;
@@ -68,6 +68,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     #region Properties
     public Transform PlayerTransform => playerTransform;
+    public Transform PlayerBody => playerBody;
+
     public Transform HeldPosition => heldPosition;
     public int MaxHP => maxHP;
     public float CurrentHP => currentHP;
