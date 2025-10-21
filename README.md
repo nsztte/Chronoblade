@@ -3452,6 +3452,39 @@ Enemy FSM(상태머신) 시스템 구현
   - 잡몹과 달리 풀스턴 없이 마이크로 스태거 + 짧은 슬로우 중심 구조로 구상 중
   - IStatusEffectable 인터페이스를 활용한 상태 적용 설계 검토 예정
 
+※ 테스트 이후 보스 전용 파이널콤보컨트롤러는 넣지 않는 것으로 결정
+
+---
+
+## 2025.10.21 (화) 작업 기록
+
+### 주요 작업
+- 스타트 컷씬 연출 완성
+  - 눈 깜빡임 → 시스템 대사 → 카메라 애니메이션(기상·둘러보기·일어서기) → 플레이어 복귀 시퀀스 구현
+  - Animator를 **UnscaledTime / AlwaysAnimate**로 설정하여 타임스케일 0에서도 정상 재생되도록 수정
+  - **CINE_StartCutscene** 카메라를 활성화하여 컷씬 블렌딩 및 페이드 연출 완성
+  - 자막 종료 타이밍(`SubtitleUI.IsPlaying`)을 컷씬 진행 조건으로 연결하여 대사 완료 시점에 맞춰 연출 전환
+
+- UI / 페이드 / 컷씬 시스템 통합
+  - `BaseCutscene`을 통한 공통 흐름 관리 (입력 차단, HUD 숨김, 컷씬 모드 전환)
+  - `FadeUI`를 활용한 블랙스크린 및 눈 깜빡임 연출 추가
+  - `UIManager`에 `ShowSubtitleAuto` / `ShowSubtitleHold` 중계 함수 추가로 컷씬 내 자막 호출 간소화
+
+- SubtitleUI 시스템 정비
+  - 큐 기반 자막 재생 구조 확립 (`SubtitleMode { Auto, Click }`)
+  - CanvasGroup 페이드 인/아웃을 **언스케일드 시간**으로 처리
+  - 클릭 입력(좌클릭 / Space) + 디바운스 로직 구현
+  - `IsPlaying` 프로퍼티로 재생 상태 감지 가능하도록 개선
+
+- 타임스케일 및 블렌드 관련 수정
+  - `CutsceneState` 종료 시 항상 **타임스케일 1f**로 복구되도록 보정
+  - Cinemachine **Ignore Time Scale** 옵션 활성화로 컷씬 블렌드 정상 작동
+
+### 메모
+- 컷씬용 Animator는 반드시 `UnscaledTime` + `AlwaysAnimate`로 설정해야 함
+- CinemachineBrain의 **Ignore Time Scale** 옵션을 기본 활성화하여 timeScale=0에서도 블렌드 유지
+- 스타트 컷씬에서 카메라 연출, 페이드, 자막이 모두 연결되어 최종적인 플로우 완성
+
 ---
 
 
