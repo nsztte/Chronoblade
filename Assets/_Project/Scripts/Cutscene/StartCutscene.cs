@@ -11,9 +11,9 @@ public class StartCutscene : BaseCutscene
 
     private void Awake()
     {
-        camAnimator.updateMode = AnimatorUpdateMode.UnscaledTime;
-        camAnimator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        ForceUnscaledAnimators(camAnimator);
     }
+
     private void Start()
     {
         fadeUI.ShowBlackScreen();
@@ -62,21 +62,13 @@ public class StartCutscene : BaseCutscene
         yield return fadeUI.Hide();
     }
 
-    private IEnumerator WaitAnimDone(Animator a, int stateHash)
-    {
-        // 해당 상태로 진입할 때까지
-        yield return new WaitUntil(() => a.GetCurrentAnimatorStateInfo(0).shortNameHash == stateHash);
-        // 클립 끝날 때까지
-        yield return new WaitUntil(() =>
-        {
-            var s = a.GetCurrentAnimatorStateInfo(0);
-            return s.shortNameHash == stateHash && s.normalizedTime >= 1f && !a.IsInTransition(0);
-        });
-    }
-
     private void OnComplete()
     {
         PlayerManager.Instance.PlayerBody.gameObject.SetActive(true);
         gm.EnterExploration();
     }
+    
+    protected override void OnBeforePlay(){}
+
+    protected override void OnAfterPlay(){}
 }
