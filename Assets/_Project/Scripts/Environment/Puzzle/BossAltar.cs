@@ -1,4 +1,5 @@
 using System.Linq;
+using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 public class BossAltar : MonoBehaviour
@@ -6,6 +7,7 @@ public class BossAltar : MonoBehaviour
     [SerializeField] private GameObject[] keySockets;
     [SerializeField] private GameObject bossGateToOpen;
     [SerializeField] private GameObject lastPart;
+    [SerializeField] private BossAwakeningCutscene cm;
  
     [SerializeField] private int activated = 0;
     private Animator animator;
@@ -65,8 +67,8 @@ public class BossAltar : MonoBehaviour
 
         if (activated >= keySockets.Length && bossGateToOpen)
         {
-            // 문 열림 연출
-            bossGateToOpen.SetActive(true);
+            bossGateToOpen.SetActive(false);    // 콜라이더 제거
+            cm.StartPlay();
         }
     }
 

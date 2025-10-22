@@ -74,8 +74,10 @@ public class BossController : MonoBehaviour, IDamageable
         player = PlayerManager.Instance.PlayerTransform;
 
         // 초기 상태 설정
-        var introState = new BossIntroState(this, stateMachine);
-        stateMachine.Initialize(introState);
+        // var introState = new BossIntroState(this, stateMachine);
+        // stateMachine.Initialize(introState);
+
+        animator.Play("StartIdle", 0);
     }
 
     private void Update()

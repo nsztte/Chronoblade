@@ -17,7 +17,7 @@ public class StartCutscene : BaseCutscene
     private void Start()
     {
         fadeUI.ShowBlackScreen();
-        CutsceneCameraManager.Instance.StartCutscene(cinemachineCam);
+        cm.StartCutscene(cinemachineCam);
         StartCoroutine(Play());
     }
 

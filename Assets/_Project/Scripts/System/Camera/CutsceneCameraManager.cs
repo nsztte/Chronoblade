@@ -70,7 +70,7 @@ public class CutsceneCameraManager : MonoBehaviour
         onComplete?.Invoke();
     }
 
-    private bool IsBlending()
+    public bool IsBlending()
     {
         return Camera.main.TryGetComponent(out CinemachineBrain brain) && brain.IsBlending;
     }

@@ -6,7 +6,7 @@ public abstract class BaseCutscene : MonoBehaviour
 {
     protected GameManager gm => GameManager.Instance;
     protected UIManager ui => UIManager.Instance;
-    protected CutsceneCameraManager cam => CutsceneCameraManager.Instance;
+    protected CutsceneCameraManager cm => CutsceneCameraManager.Instance;
     protected FadeUI fadeUI => UIManager.Instance.FadeUI;
     protected SubtitleUI subtitleUI => UIManager.Instance.SubtitleUI;
 
