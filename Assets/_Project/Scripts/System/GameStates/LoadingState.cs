@@ -9,7 +9,7 @@ public class LoadingState : GameBaseState
     public static LoadingMode NextLoadingMode = LoadingMode.None;
     public static int NextSlotToLoad = -1;
     public static string NextSceneName = "";   // 테스트 이후 수정
-    private const string STARTSCENE = "TestScene01";    // 테스트 이후 수정
+    private const string STARTSCENE = "Chapter_1";
 
     public override void Enter()
     {

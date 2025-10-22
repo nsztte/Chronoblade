@@ -65,7 +65,6 @@ public class StartCutscene : BaseCutscene
     private void OnComplete()
     {
         PlayerManager.Instance.PlayerBody.gameObject.SetActive(true);
-        gm.EnterExploration();
     }
     
     protected override void OnBeforePlay(){}

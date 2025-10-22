@@ -129,7 +129,7 @@ public class GameManager : MonoBehaviour
         var prev = PreviousGameState;
 
         // 유효성 검사: null 이거나 복귀하기 부적합한 상태면 탐색 상태로 대체
-        if (prev == null || prev is MainMenuState || prev is LoadingState || prev is GameOverState || prev is PausedState)
+        if (prev == null || prev is MainMenuState || prev is LoadingState || prev is GameOverState || prev is PausedState || prev is CutsceneState)
             prev = explorationState;
 
         // 만약 이미 현재 상태와 동일하면 무시
