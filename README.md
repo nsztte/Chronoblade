@@ -3487,7 +3487,45 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.10.22 (수) 작업 기록
 
+### 주요 작업
+- **보스 각성 컷씬 구현**
+  - `BossAwakeningCutscene` 스크립트 추가
+    - **OnBeforePlay**: Animator를 `UnscaledTime / AlwaysAnimate`로 강제, 플레이어 비활성화, 컷씬 카메라 전환
+    - **RunSequence**: 블렌드 종료 대기 → 보스 심장 이동(`MoveToBoss`) 애니메이션 재생 및 완료 대기 → 보스 `Idle` 트리거 → 컷씬 종료
+    - **OnAfterPlay**: 애니메이터 설정 원복
+    - **OnComplete**: 플레이어 재활성화 처리
+  - 타임스케일 0 상태에서도 정상 재생되도록 언스케일드 시간 기반으로 구성
+  - `StartPlay()` 외부 호출 함수 추가 (보스 제단 등에서 컷씬 트리거 가능)
+  - `BossAltar`에서 `BossAwakeningCutscene.StartPlay()` 호출 연결
+
+- **보스 심장부 애니메이터 구성**
+  - `BossHeartAnimator.controller` 생성 및 **심장 이동/장착 애니메이션 클립(`MoveToBoss`)** 추가
+  - 컷씬 내에서 보스 각성 연출과 동기화되도록 설정
+
+- **보스 StartIdle 애니메이션 1차 제작**
+  - `Boss_StartIdle.anim` 추가 (무릎 꿇은 대기 자세)
+  - 보스 Animator Controller에 `StartIdle` 스테이트 구성
+  - 향후 Intro/Idle 전이 및 루프 보정 예정
+
+- **컷씬 공통 구조 개선**
+  - `BaseCutscene`에 `try/finally` 적용 → `OnAfterPlay`가 항상 호출되도록 보장
+  - 탐험 상태 복귀 시점을 **카메라 블렌드 완료 시점**으로 통일
+  - `WaitAnimDone`, `ForceUnscaledAnimators`, `RestoreAnimators` 유틸 함수를 `BaseCutscene`으로 이동
+  - `StartCutscene`의 Animator 모드 강제/원복을 `OnBeforePlay/OnAfterPlay`로 이전
+
+- **게임 상태 복귀 로직 정리**
+  - `GameManager.EnterPreviousState`에서 이전 상태가 `CutsceneState`일 경우 자동으로 `ExplorationState`로 복귀하도록 변경
+  - `StartCutscene`에서 직접 탐험 상태로 복귀하던 코드를 제거하여 중복 로직 해소
+  - `LoadingState`의 테스트용 시작 씬을 `Chapter_1`로 설정 → 로딩 → 탐험 → 스타트 컷씬 → 탐험 복귀 흐름 정상화
+
+### 메모
+- 보스각성 컷씬에서는 **심장 이동 및 보스 각성 애니메이션**을 전부 Animator 기반으로 제어해 안정적임
+- `EnterPreviousState()` 수정 덕분에 모든 컷씬 종료 후 탐험 복귀 흐름이 자동으로 정리됨
+- 향후 보스 인트로 컷씬(`BossIntroCutscene`)에서 전투 시작 전 연출만 추가하면 챕터2의 전체 플로우 완성 예정
+
+---
 
 ## 2025.10 월간 개발 계획 (최종 빌드 완성 플랜)
 
