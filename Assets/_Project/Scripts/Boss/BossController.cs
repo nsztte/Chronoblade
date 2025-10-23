@@ -7,7 +7,6 @@ public class BossController : MonoBehaviour, IDamageable
 {
     [Header("FSM")]
     private BossStateMachine stateMachine;
-    [SerializeField] private BaseBossState currentState;
 
     [Header("스탯")]
     [SerializeField] private float maxHP = 1000f;

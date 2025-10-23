@@ -13,9 +13,14 @@ public class BossIntroCutscene : BaseCutscene
     
     static readonly int IntroHash = Animator.StringToHash("Intro");
 
-    private void Awake()
+    private void Start()
     {
         if(bossController != null) bossAnimator = bossController.Animator;
+    }
+
+    public void StartPlay()
+    {
+        StartCoroutine(Play());
     }
 
     protected override IEnumerator RunSequence()
@@ -24,25 +29,20 @@ public class BossIntroCutscene : BaseCutscene
 
         bossController.StartIntroState();
 
-        yield return WaitAnimDone(bossAnimator, IntroHash);
+        yield return new WaitForSecondsRealtime(bossController.GetCurrentAnimationLength() - 1f);
 
         CutsceneCameraManager.Instance.EndCutscene(cinemachineCam);
     }
 
     protected override void OnBeforePlay()
     {
-        if (bossAnimator != null)
-            ForceUnscaledAnimators(bossController.Animator);
+        ForceUnscaledAnimators(bossController.Animator);
 
-        PlayerManager.Instance.ShowPlayerBody(false);
         CutsceneCameraManager.Instance.StartCutscene(cinemachineCam);
     }
 
     protected override void OnAfterPlay()
     {
-        if (bossController != null && bossController.Animator != null)
-            RestoreAnimators(bossController.Animator);
-
-        PlayerManager.Instance.ShowPlayerBody(true);
+        RestoreAnimators(bossController.Animator);
     }
 }

@@ -11,6 +11,7 @@ public class BossAwakeningCutscene : BaseCutscene
     [SerializeField] Animator bossAnimator;
 
     static readonly int MoveToBossHash = Animator.StringToHash("MoveToBoss");
+
     public void StartPlay()
     {
         StartCoroutine(Play());
@@ -24,7 +25,7 @@ public class BossAwakeningCutscene : BaseCutscene
 
         yield return WaitAnimDone(heartAnimator, MoveToBossHash);
 
-        yield return new WaitForSecondsRealtime(1.5f);
+        // yield return new WaitForSecondsRealtime(1.5f);
 
         bossAnimator.SetTrigger("Idle");
 

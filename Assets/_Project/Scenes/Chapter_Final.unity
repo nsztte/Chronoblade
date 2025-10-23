@@ -1323,7 +1323,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 7012263832458234077, guid: 1ed72d0b62a605d4ba843f06a2328f85, type: 3}
       propertyPath: priority
-      value: 10
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 7211412620711988162, guid: 1ed72d0b62a605d4ba843f06a2328f85, type: 3}
       propertyPath: m_LocalEulerAnglesHint.x
@@ -6434,7 +6434,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &104127121
 Transform:
   m_ObjectHideFlags: 0
@@ -6463,8 +6463,8 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Priority:
-    Enabled: 0
-    m_Value: 0
+    Enabled: 1
+    m_Value: 20
   OutputChannel: 1
   StandbyUpdate: 2
   m_StreamingVersion: 20241001
@@ -60606,8 +60606,9 @@ GameObject:
   - component: {fileID: 843266385}
   - component: {fileID: 843266384}
   - component: {fileID: 843266383}
+  - component: {fileID: 843266387}
   m_Layer: 0
-  m_Name: BossTrigger
+  m_Name: BossIntroTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -60641,7 +60642,7 @@ MeshRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 843266382}
-  m_Enabled: 1
+  m_Enabled: 0
   m_CastShadows: 1
   m_ReceiveShadows: 1
   m_DynamicOccludee: 1
@@ -60702,6 +60703,19 @@ Transform:
   m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &843266387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 843266382}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c5602dbc9fefcdf429517657c91c89e4, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  bossIntroCutscene: {fileID: 1654063734}
 --- !u!1 &849198217
 GameObject:
   m_ObjectHideFlags: 0
@@ -78167,7 +78181,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5317583528977117743, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: field of view
-      value: 60.000004
+      value: 65.72451
       objectReference: {fileID: 0}
     - target: {fileID: 6125324836093535223, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalPosition.x
@@ -78211,31 +78225,31 @@ PrefabInstance:
       objectReference: {fileID: 648762869}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.40472126
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 3.2630005
+      value: 1.7010002
       objectReference: {fileID: 0}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 13.5168915
+      value: 0.23600006
       objectReference: {fileID: 0}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalRotation.w
-      value: 0.9610804
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.23261656
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.14425753
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8934546659395684091, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.037468612
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -294429,7 +294443,7 @@ Animator:
   m_Avatar: {fileID: 0}
   m_Controller: {fileID: 9100000, guid: 7c22f1a7d2bdf364b8207e428978dee6, type: 2}
   m_CullingMode: 0
-  m_UpdateMode: 0
+  m_UpdateMode: 2
   m_ApplyRootMotion: 0
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0

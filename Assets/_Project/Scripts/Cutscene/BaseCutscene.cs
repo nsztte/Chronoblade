@@ -46,12 +46,12 @@ public abstract class BaseCutscene : MonoBehaviour
     protected void ForceUnscaledAnimators(Animator a)
     {
         a.updateMode = AnimatorUpdateMode.UnscaledTime;
-        a.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+        // a.cullingMode = AnimatorCullingMode.AlwaysAnimate;
     }
 
     protected void RestoreAnimators(Animator a)
     {
         a.updateMode = AnimatorUpdateMode.Normal;
-        a.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
+        // a.cullingMode = AnimatorCullingMode.CullUpdateTransforms;
     }
 }
