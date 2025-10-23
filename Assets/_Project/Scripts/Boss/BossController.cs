@@ -36,6 +36,9 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("시네머신 카메라")]
     [SerializeField] private GameObject clockPuzzleCamera;
 
+    [Header("컷씬")]
+    [SerializeField] private BossPhaseTransitionCutscene phaseTransitionCutscene;
+
     // 참조
     private Animator animator;
     private Transform player;
@@ -46,6 +49,7 @@ public class BossController : MonoBehaviour, IDamageable
     public PuzzleClockManager PuzzleClockManager => puzzleClockManager;
     public Transform Player => player;
     public GameObject ClockPuzzleCamera => clockPuzzleCamera;
+    public BossPhaseTransitionCutscene TC => phaseTransitionCutscene;
 
     public Animator Animator => animator;
 
@@ -96,6 +100,12 @@ public class BossController : MonoBehaviour, IDamageable
     {
         var introState = new BossIntroState(this, stateMachine);
         stateMachine.Initialize(introState);
+    }
+
+    public void StartPhaseTransitionState()
+    {
+        var transitionState = new BossPhaseTransitionState(this, stateMachine);
+        stateMachine.ChangeState(transitionState);
     }
 
     public void TakeDamage(int damage)

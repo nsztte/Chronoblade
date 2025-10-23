@@ -64,6 +64,8 @@ public class PuzzlePhase1State : BaseBossState
     private void ChangeToPhase2()
     {
         boss.PhaseManager.SetPhase(BossPhase.Phase2);
-        stateMachine.ChangeState(new BossIdleState(boss, stateMachine));
+        // stateMachine.ChangeState(new BossIdleState(boss, stateMachine));
+        // stateMachine.ChangeState(new BossPhaseTransitionState(boss, stateMachine));
+        boss.TC.StartPlay();
     }
 }
