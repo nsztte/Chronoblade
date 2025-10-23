@@ -68,7 +68,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     #region Properties
     public Transform PlayerTransform => playerTransform;
-    public Transform PlayerBody => playerBody;
+    // public Transform PlayerBody => playerBody;
 
     public Transform HeldPosition => heldPosition;
     public int MaxHP => maxHP;
@@ -132,6 +132,13 @@ public class PlayerManager : MonoBehaviour, IDamageable
     }
 
     #region 플레이어 상태 관리
+    public void ShowPlayerBody(bool value)
+    {
+        if (playerBody == null || playerBody.gameObject.activeSelf == value) return;
+
+        playerBody.gameObject.SetActive(value);
+    }
+
     public void TakeDamage(int damage)
     {
         // 무적 상태 체크

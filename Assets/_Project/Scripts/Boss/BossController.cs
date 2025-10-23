@@ -73,10 +73,6 @@ public class BossController : MonoBehaviour, IDamageable
     {
         player = PlayerManager.Instance.PlayerTransform;
 
-        // 초기 상태 설정
-        // var introState = new BossIntroState(this, stateMachine);
-        // stateMachine.Initialize(introState);
-
         animator.Play("StartIdle", 0);
     }
 
@@ -95,6 +91,12 @@ public class BossController : MonoBehaviour, IDamageable
         stateMachine.Update();
 
         // phaseManager.UpdatePhase(currentHP, maxHP);
+    }
+
+    public void StartIntroState()
+    {
+        var introState = new BossIntroState(this, stateMachine);
+        stateMachine.Initialize(introState);
     }
 
     public void TakeDamage(int damage)

@@ -44,12 +44,12 @@ public class BossAwakeningCutscene : BaseCutscene
         ForceUnscaledAnimators(heartAnimator);
         ForceUnscaledAnimators(bossAnimator);
 
-        PlayerManager.Instance.PlayerBody.gameObject.SetActive(false);
+        PlayerManager.Instance.ShowPlayerBody(false);
         CutsceneCameraManager.Instance.StartCutscene(cinemachineCam);
     }
 
     private void OnComplete()
     {
-        PlayerManager.Instance.PlayerBody.gameObject.SetActive(true);
+        PlayerManager.Instance.ShowPlayerBody(true);
     }
 }

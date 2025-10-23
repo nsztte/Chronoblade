@@ -64,10 +64,13 @@ public class StartCutscene : BaseCutscene
 
     private void OnComplete()
     {
-        PlayerManager.Instance.PlayerBody.gameObject.SetActive(true);
+        PlayerManager.Instance.ShowPlayerBody(true);
     }
     
-    protected override void OnBeforePlay(){}
+    protected override void OnBeforePlay()
+    {
+        PlayerManager.Instance.ShowPlayerBody(false);
+    }
 
     protected override void OnAfterPlay(){}
 }
