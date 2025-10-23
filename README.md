@@ -3527,6 +3527,44 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.10.23 (목) 작업 기록
+
+### 주요 작업
+- **보스 인트로 컷씬 구현 및 FSM 연동**
+  - `BossIntroCutscene` 신규 구현 (`BaseCutscene` 상속)
+  - `OnBeforePlay`에서 카메라 전환 및 플레이어 비활성화 처리
+  - `RunSequence`에서 `BossController.StartIntroState()` 호출 후 **애니 길이 기반 실시간 대기**로 전환
+  - `OnAfterPlay`에서 애니메이터 복원 및 플레이어 재활성화
+  - `CutsceneCameraManager` 블렌드/복귀 루틴 정상 동작 확인
+
+- **플레이어 표시 및 보스 인트로 상태 제어 기능 추가**
+  - `PlayerManager.ShowPlayerBody(bool)` 추가: 플레이어 모델 활성/비활성 안전 토글
+  - `BossController.StartIntroState()` 추가: FSM 초기화 진입점
+  - `BossAwakeningCutscene`, `StartCutscene`에 `ShowPlayerBody()` 반영(컷씬 중 비활성화 → 종료 후 복원)
+
+- **보스 인트로 트리거 및 컷씬 실행 로직**
+  - `BossIntroTrigger`: 플레이어 진입 시 `BossIntroCutscene.StartPlay()` 호출, 1회성 실행 위해 트리거 비활성화
+  - `BossIntroCutscene`: `WaitAnimDone` 대신 `bossController.GetCurrentAnimationLength()` 기반 대기로 **EndCutscene 미호출 문제 해결**
+  - 언스케일드 애니메이터 처리 및 시네머신 전환 유지
+
+- **보스 페이즈 전환 컷씬 + 퍼즐 연동**
+  - `BossPhaseTransitionCutscene`: 인트로 구조 재사용, **VFX 재생 + 애니 길이 기반 대기** 후 `EndCutscene()` 처리
+  - `BossPhaseTransitionState`: 동일 Intro 클립 재생 후 대기 → Idle 전환, `Exit`에서 Phase2/HUD/Combat 진입
+  - `PuzzlePhase1State`: 퍼즐 완료 시 `boss.TC.StartPlay()`로 전환 컷씬 실행
+  - `BossController`: `BossPhaseTransitionCutscene` 참조 추가 및 `StartPhaseTransitionState()` 제공
+
+- **유니티 버전 업그레이드**
+  - Unity **6000.0.58f2 → 6000.0.60f1**
+  - VFX 메모리 누수(`JobTempAlloc`) 경고 해결, 파티클/VFX 생성 시 안정성 개선
+
+### 메모
+- `WaitAnimDone()`가 레이어/전이 이슈로 대기 해제되지 않던 문제를 **애니 길이 기반 대기**로 우회하여 안정화
+- 인트로/페이즈 전환은 **같은 애니 클립 재사용**, FSM/컷씬 역할 분리로 전투 흐름 유지
+- `CutsceneCameraManager`의 블렌드 대기/복귀 구조가 모든 컷씬에서 일관적으로 정상 작동
+- 다음 목표: **EndingCutscene** 구현 및 `GameManager` 복귀 흐름 테스트
+
+---
+
 ## 2025.10 월간 개발 계획 (최종 빌드 완성 플랜)
 
 ### 목표
