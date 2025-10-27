@@ -9,7 +9,14 @@ public class BossIdleState : BaseBossState
 
     public override void Enter()
     {
+        if(boss.IsEndingTest)
+        {
+            stateMachine.ChangeState(new BossEndingState(boss, stateMachine));
+            return;
+        }
+
         boss.PlayAnimation("Idle");
+
         if(boss.PhaseManager.CurrentPhase == BossPhase.Phase1)
         {
             boss.StartCoroutine(DecideNextPatternPhase1());

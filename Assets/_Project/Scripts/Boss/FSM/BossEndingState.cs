@@ -10,5 +10,6 @@ public class BossEndingState : BaseBossState
     {
         Debug.Log("BossEndingState: 보스 엔딩 시작");
         boss.HideBossHUD();
+        boss.EC.StartPlay();
     }
 }

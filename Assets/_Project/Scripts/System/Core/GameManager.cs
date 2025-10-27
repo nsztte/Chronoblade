@@ -126,6 +126,12 @@ public class GameManager : MonoBehaviour
         ChangeState(gameOverState);
     }
 
+    public void EnterEnding()
+    {
+        LoadingState.NextLoadingMode = LoadingMode.Ending;
+        EnterLoading();
+    }
+
     public void EnterPreviousState()
     {
         var prev = PreviousGameState;

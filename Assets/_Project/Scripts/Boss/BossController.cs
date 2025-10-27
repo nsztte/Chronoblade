@@ -5,6 +5,9 @@ using System;
 [RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
 public class BossController : MonoBehaviour, IDamageable
 {
+    [SerializeField] private bool isEndingTest = false;
+    public bool IsEndingTest => isEndingTest;
+
     [Header("FSM")]
     private BossStateMachine stateMachine;
 
@@ -31,6 +34,7 @@ public class BossController : MonoBehaviour, IDamageable
     private BossPhaseManager phaseManager;
 
     [Header("취약점 세팅")]
+    [SerializeField] private Animator heartAnimator;
     [SerializeField] private GameObject weakPointObject;
 
     [Header("시네머신 카메라")]
@@ -38,6 +42,7 @@ public class BossController : MonoBehaviour, IDamageable
 
     [Header("컷씬")]
     [SerializeField] private BossPhaseTransitionCutscene phaseTransitionCutscene;
+    [SerializeField] private BossEndingCutscene bossEndingCutscene;
 
     // 참조
     private Animator animator;
@@ -50,8 +55,10 @@ public class BossController : MonoBehaviour, IDamageable
     public Transform Player => player;
     public GameObject ClockPuzzleCamera => clockPuzzleCamera;
     public BossPhaseTransitionCutscene TC => phaseTransitionCutscene;
+    public BossEndingCutscene EC => bossEndingCutscene;
 
     public Animator Animator => animator;
+    public Animator HeartAnimator => heartAnimator;
 
     public int CurrentHpPercentInt
     {

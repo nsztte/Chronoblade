@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
-public enum LoadingMode { None, NewGame, LoadSave, SceneTransition }
+public enum LoadingMode { None, NewGame, LoadSave, SceneTransition, Ending }
 
 [CreateAssetMenu(menuName="GameState/Loading")]
 public class LoadingState : GameBaseState
@@ -10,6 +10,7 @@ public class LoadingState : GameBaseState
     public static int NextSlotToLoad = -1;
     public static string NextSceneName = "";   // 테스트 이후 수정
     private const string STARTSCENE = "Chapter_1";
+    private const string TitleScene = "Title";
 
     public override void Enter()
     {
@@ -45,6 +46,11 @@ public class LoadingState : GameBaseState
             case LoadingMode.SceneTransition:
                 SceneManager.sceneLoaded += OnSceneLoaded;
                 SceneManager.LoadScene(NextSceneName);
+                break;
+
+            case LoadingMode.Ending:
+                SceneManager.sceneLoaded += OnSceneLoaded;
+                SceneManager.LoadScene(TitleScene);
                 break;
         }
     }
