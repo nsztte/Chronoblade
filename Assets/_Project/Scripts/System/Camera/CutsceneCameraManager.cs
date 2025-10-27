@@ -37,7 +37,7 @@ public class CutsceneCameraManager : MonoBehaviour
         StartCoroutine(EnableCamNextFrame(targetCamera));
     }
 
-    public void EndCutscene(GameObject targetCamera, Action onComplete = null)
+    public void EndCutscene(GameObject targetCamera, Action onComplete = null, bool autoSave = false)
     {
         targetCamera.SetActive(false);
         StartCoroutine(DisablePlayerCameraAfterBlend(() =>
@@ -49,8 +49,8 @@ public class CutsceneCameraManager : MonoBehaviour
 
             onComplete?.Invoke();
 
-            // 자동 저장
-            SaveManager.Instance?.AutoSave("컷씬 시작");
+            if (autoSave)
+                SaveManager.Instance?.AutoSave("컷씬 완료");
         }));
     }
 

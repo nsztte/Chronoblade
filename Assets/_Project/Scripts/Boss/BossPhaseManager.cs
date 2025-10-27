@@ -81,7 +81,7 @@ public class BossPhaseManager : MonoBehaviour
 
             case BossPhase.Ending:
                 isFinalPuzzleCleared = true;
-                SaveManager.Instance?.AutoSave("Boss Ending");
+                // SaveManager.Instance?.AutoSave("Boss Ending");
                 break;
         }
 
