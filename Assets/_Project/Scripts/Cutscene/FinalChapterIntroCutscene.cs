@@ -5,6 +5,7 @@ public class FinalChapterIntroCutscene : BaseCutscene
 {
     [SerializeField] private GameObject cinemachineCam;
     [SerializeField] private Animator camAnimator;
+    [SerializeField] private Transform sceneStartPoint;
 
     static readonly int Final_IntroHash = Animator.StringToHash("Final_Intro");
 
@@ -44,7 +45,7 @@ public class FinalChapterIntroCutscene : BaseCutscene
 
         yield return new WaitUntil(() => !subtitleUI.IsPlaying);
 
-        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam);
+        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam, autoSave: true);
     }
 
     private IEnumerator Blink()
@@ -55,6 +56,10 @@ public class FinalChapterIntroCutscene : BaseCutscene
 
     protected override void OnBeforePlay()
     {
+        var pc = PlayerManager.Instance?.PlayerController;
+        if (pc && sceneStartPoint)
+            pc.SetPositionAndRotation(sceneStartPoint.position, sceneStartPoint.rotation);
+
         fadeUI.ShowBlackScreen();
         cm.StartCutscene(cinemachineCam);
     }
