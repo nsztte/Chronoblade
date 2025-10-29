@@ -10,6 +10,7 @@ public class LoadingState : GameBaseState
     public static int NextSlotToLoad = -1;
     public static string NextSceneName = "";   // 테스트 이후 수정
     private const string STARTSCENE = "Chapter_1";
+    public const string FINALSCENE = "Chapter_Final";
     private const string TitleScene = "Title";
 
     public override void Enter()
@@ -64,6 +65,20 @@ public class LoadingState : GameBaseState
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
         SceneManager.sceneLoaded -= OnSceneLoaded;
+
+        if (scene.name == STARTSCENE)
+        {
+            var intro = GameObject.FindFirstObjectByType<StartCutscene>();
+            if (intro != null)
+                intro.StartPlay();
+        }
+        else if (scene.name == FINALSCENE)
+        {
+            var intro = GameObject.FindFirstObjectByType<FinalChapterIntroCutscene>();
+            if (intro != null)
+                intro.StartPlay();
+        }
+
         GameManager.Instance.EnterExploration(); // 탐색 상태 진입
     }
 

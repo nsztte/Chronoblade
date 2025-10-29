@@ -14,10 +14,8 @@ public class StartCutscene : BaseCutscene
         ForceUnscaledAnimators(camAnimator);
     }
 
-    private void Start()
+    public void StartPlay()
     {
-        fadeUI.ShowBlackScreen();
-        cm.StartCutscene(cinemachineCam);
         StartCoroutine(Play());
     }
 
@@ -69,6 +67,9 @@ public class StartCutscene : BaseCutscene
     
     protected override void OnBeforePlay()
     {
+        fadeUI.ShowBlackScreen();
+        cm.StartCutscene(cinemachineCam);
+
         PlayerManager.Instance.ShowPlayerBody(false);
     }
 

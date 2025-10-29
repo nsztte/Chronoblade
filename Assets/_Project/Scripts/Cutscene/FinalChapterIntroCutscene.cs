@@ -13,10 +13,8 @@ public class FinalChapterIntroCutscene : BaseCutscene
         ForceUnscaledAnimators(camAnimator);
     }
 
-    private void Start()
+    public void StartPlay()
     {
-        fadeUI.ShowBlackScreen();
-        cm.StartCutscene(cinemachineCam);
         StartCoroutine(Play());
     }
 
@@ -55,7 +53,11 @@ public class FinalChapterIntroCutscene : BaseCutscene
         yield return fadeUI.Hide();
     }
 
-    protected override void OnAfterPlay(){}
+    protected override void OnBeforePlay()
+    {
+        fadeUI.ShowBlackScreen();
+        cm.StartCutscene(cinemachineCam);
+    }
 
-    protected override void OnBeforePlay(){}
+    protected override void OnAfterPlay(){}
 }

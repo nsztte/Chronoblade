@@ -126,6 +126,13 @@ public class GameManager : MonoBehaviour
         ChangeState(gameOverState);
     }
 
+    public void EnterFinalChapter()
+    {
+        LoadingState.NextLoadingMode = LoadingMode.SceneTransition;
+        LoadingState.NextSceneName = LoadingState.FINALSCENE;
+        EnterLoading();
+    }
+
     public void EnterEnding()
     {
         LoadingState.NextLoadingMode = LoadingMode.Ending;
