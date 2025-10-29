@@ -38,9 +38,10 @@ public class FinalChapterIntroCutscene : BaseCutscene
         yield return WaitAnimDone(camAnimator, Final_IntroHash);
 
         // 대사 출력
-        ui.ShowSubtitleAuto(new []{
-            "여긴 또 어디야..?",
-            "일단 둘러보자"
+        ui.ShowSubtitleHold(new []{
+            "…여긴 대체 뭐지?",
+            "공기가… 멈춰 있는 것 같아.",
+            "일단, 안으로 들어가보자."
         });
 
         yield return new WaitUntil(() => !subtitleUI.IsPlaying);
