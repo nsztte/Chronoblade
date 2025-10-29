@@ -1,0 +1,60 @@
+using System.Collections;
+using UnityEngine;
+
+public class FinalChapterIntroCutscene : BaseCutscene
+{
+    [SerializeField] private GameObject cinemachineCam;
+    [SerializeField] private Animator camAnimator;
+
+    static readonly int Final_IntroHash = Animator.StringToHash("Final_Intro");
+
+    private void Awake()
+    {
+        ForceUnscaledAnimators(camAnimator);
+    }
+
+    private void Start()
+    {
+        fadeUI.ShowBlackScreen();
+        cm.StartCutscene(cinemachineCam);
+        StartCoroutine(Play());
+    }
+
+    protected override IEnumerator RunSequence()
+    {
+        ui.ShowSubtitleHold(new []{
+            "..........",
+            ".............."
+        });
+
+        yield return new WaitUntil(() => !subtitleUI.IsPlaying);
+
+        // 눈 깜빡임
+        yield return Blink();
+        yield return Blink();
+
+        camAnimator.Play(Final_IntroHash, 0, 0);
+
+        yield return WaitAnimDone(camAnimator, Final_IntroHash);
+
+        // 대사 출력
+        ui.ShowSubtitleAuto(new []{
+            "여긴 또 어디야..?",
+            "일단 둘러보자"
+        });
+
+        yield return new WaitUntil(() => !subtitleUI.IsPlaying);
+
+        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam);
+    }
+
+    private IEnumerator Blink()
+    {
+        yield return fadeUI.Show();
+        yield return fadeUI.Hide();
+    }
+
+    protected override void OnAfterPlay(){}
+
+    protected override void OnBeforePlay(){}
+}
