@@ -3612,57 +3612,6 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
-## 2025.10.25 (토) 작업 기록
-
-### 주요 작업
-- **파이널 챕터 인트로 컷씬 구현**
-  - `FinalChapterIntroCutscene` 신규 구성 (BaseCutscene 상속)
-  - 씬 전환 직후 자동 실행 구조로 변경 (Start() → LoadingState.OnSceneLoaded() 호출)
-  - 블랙 화면 → 페이드 인 → 카메라 연출(Final_Intro 애니메이션) → 자막 출력 순으로 진행
-  - 자막을 플레이어 내면 독백 형태로 수정  
-    - "…여긴 대체 뭐지?"  
-    - "공기가… 멈춰 있는 것 같아."  
-    - "일단, 안으로 들어가보자."
-  - 카메라 애니메이션 및 Blink 효과로 자연스러운 장면 전환 연출 구현
-
-- **로딩스테이트 기반 컷씬 자동 실행 구조 정비**
-  - `LoadingState.OnSceneLoaded()`에서 씬별 컷씬 자동 호출
-    - `Chapter_1` → `StartCutscene.StartPlay()`  
-    - `Chapter_Final` → `FinalChapterIntroCutscene.StartPlay()`
-  - `GameManager.EnterFinalChapter()` 함수 추가  
-    - `NextLoadingMode = SceneTransition`, `NextSceneName = "Chapter_Final"` 설정 후 `EnterLoading()` 진입  
-    - 로딩 완료 시 파이널 챕터 인트로 컷씬 자동 재생
-  - `StartCutscene`의 Start() 자동 실행 제거 → 로딩스테이트 기반으로 일원화
-
-- **씬 시작 시 플레이어 위치 초기화 구조 통합**
-  - `StartCutscene` / `FinalChapterIntroCutscene`
-    - `sceneStartPoint(Transform)` 기준으로 플레이어 위치 및 회전 세팅
-    - `PlayerController.SetPositionAndRotation()` 호출로 정확한 시작 위치 반영
-    - 컷씬 카메라 활성화 전에 위치 보정해 화면 튐 방지
-  - `PlayerController`
-    - 함수명 오타 수정: `SetPositionAndRotaion → SetPositionAndRotation`
-    - 기존 안전 이동 로직(Controller 비활성 → 위치 세팅 → 재활성) 유지
-
-- **HUD 표시 및 상태 전환 흐름 개선**
-  - `UIManager.UpdatePlayerHud()`  
-    - HUD 숨김 시 퀵슬롯 패널도 함께 비활성화되도록 수정  
-    - HUD 비활성화 시 퀵슬롯만 남는 문제 해결
-  - `GameManager`  
-    - Start()에서 불필요하게 `EnterExploration()` 호출하던 로직 제거  
-    - 컷씬/로딩 중 HUD가 강제로 표시되던 문제 수정
-  - `LoadingState`  
-    - OnSceneLoaded()에서 `GameManager.EnterExploration()` 호출 제거  
-    - 컷씬 종료 시점에서 탐험 상태로 복귀하도록 흐름 정리  
-    - HUD 활성화 시점을 컷씬 종료 시점으로 일원화
-
-### 메모
-- 씬 전환 → 컷씬 → 탐험 복귀 전체 루프 정상 작동 확인  
-- 플레이어 위치, 카메라 전환, HUD 표시 상태 모두 일관성 확보  
-- 불러오기·로딩 시 중복 컷씬 재생이나 HUD 오작동 문제 제거  
-- 다음 단계: 챕터1~2 간 **게임 흐름 배치(맵 구성, 카드키·문 퍼즐, 상점 배치 등)** 우선 진행
-
----
-
 ## 2025.10 월간 개발 계획 (최종 빌드 완성 플랜)
 
 ### 목표
