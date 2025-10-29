@@ -5,6 +5,7 @@ public class StartCutscene : BaseCutscene
 {
     [SerializeField] private GameObject cinemachineCam;
     [SerializeField] private Animator camAnimator;
+    [SerializeField] private Transform sceneStartPoint;
 
     static readonly int SitAndScanHash = Animator.StringToHash("SitAndScan");
     static readonly int TurnLeftAndStandHash = Animator.StringToHash("TurnLeftAndStand");
@@ -51,7 +52,7 @@ public class StartCutscene : BaseCutscene
         yield return null;
         yield return WaitAnimDone(camAnimator, TurnLeftAndStandHash);
         
-        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam, OnComplete);
+        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam, OnComplete, true);
     }
 
     private IEnumerator Blink()
@@ -67,6 +68,10 @@ public class StartCutscene : BaseCutscene
     
     protected override void OnBeforePlay()
     {
+        var pc = PlayerManager.Instance?.PlayerController;
+        if (pc && sceneStartPoint)
+            pc.SetPositionAndRotation(sceneStartPoint.position, sceneStartPoint.rotation);
+
         fadeUI.ShowBlackScreen();
         cm.StartCutscene(cinemachineCam);
 
