@@ -42,6 +42,7 @@ public class UIManager : MonoBehaviour
     private int overlayCount = 0;
 
     [Header("퀵슬롯")]
+    [SerializeField] private GameObject quickSlotPanel;
     [SerializeField] private List<QuickSlotSlot> quickSlots;
 
     #region UI 참조 & 스테이트
@@ -109,7 +110,13 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region 플레이어 상태 업데이트
-    public void UpdatePlayerHud(bool value) => playerHUD?.SetPlayerHud(value);
+    public void UpdatePlayerHud(bool value)
+    {
+        Debug.Log("UpdatePlayerHud : " + value);
+        playerHUD?.SetPlayerHud(value);
+        quickSlotPanel?.SetActive(value);
+    }
+
     // === 체력, MP, 스태미나 ===
     public void UpdateHP(int current, int max) => playerHUD?.UpdateHP(current, max);
 

@@ -79,7 +79,7 @@ public class LoadingState : GameBaseState
                 intro.StartPlay();
         }
 
-        GameManager.Instance.EnterExploration(); // 탐색 상태 진입
+        // GameManager.Instance.EnterExploration(); // 탐색 상태 진입
     }
 
     public override void Exit()

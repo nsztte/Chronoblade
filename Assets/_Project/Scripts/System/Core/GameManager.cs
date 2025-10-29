@@ -50,8 +50,8 @@ public class GameManager : MonoBehaviour
 
         if (sceneName == TITLESCENE)
             EnterMainMenu();
-        else
-            EnterExploration();
+        // else
+        //     EnterExploration();
     }
 
     private void OnEnable()

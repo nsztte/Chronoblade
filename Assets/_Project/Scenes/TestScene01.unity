@@ -211,6 +211,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   cinemachineCam: {fileID: 0}
   camAnimator: {fileID: 0}
+  sceneStartPoint: {fileID: 0}
 --- !u!1 &218477303
 GameObject:
   m_ObjectHideFlags: 0
@@ -3924,6 +3925,10 @@ PrefabInstance:
     - target: {fileID: 4719850307116080497, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_Name
       value: UI
+      objectReference: {fileID: 0}
+    - target: {fileID: 5397965642742709789, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: m_IsActive
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5402150034782711902, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
