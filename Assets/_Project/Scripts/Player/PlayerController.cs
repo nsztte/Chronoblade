@@ -68,7 +68,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         originalAnimSpeed = animator.speed;
     }
 
-    public void SetPositionAndRotaion(Vector3 position, Quaternion rotation)
+    public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
     {
         controller.enabled = false;
         transform.SetPositionAndRotation(position, rotation);
