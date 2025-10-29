@@ -71,7 +71,7 @@ public abstract class PuzzleRoomManager : MonoBehaviour
             Vector3 position = entrance.position;
             Quaternion rotation = entrance.rotation;
 
-            PlayerManager.Instance?.PlayerController?.SetPositionAndRotaion(position, rotation);
+            PlayerManager.Instance?.PlayerController?.SetPositionAndRotation(position, rotation);
         }
     }
 

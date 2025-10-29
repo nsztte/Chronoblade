@@ -40,7 +40,7 @@ public class PlayerSaveProxy : SaveableBehaviour
         Vector3 position = new Vector3(d.pos[0], d.pos[1], d.pos[2]);
         Quaternion rotation = Quaternion.Euler(0f, d.yaw, 0f);
 
-        Player.PlayerController.SetPositionAndRotaion(position, rotation);
+        Player.PlayerController.SetPositionAndRotation(position, rotation);
 
         // 2) HP/MP 복원 (UI 동기화 포함)
         Player.SetHP(d.hp, true);

@@ -20,7 +20,7 @@ public class TeleportPortal : MonoBehaviour
             Vector3 position = teleportPosition.position;
             Quaternion rotation = teleportPosition.rotation;
 
-            PlayerManager.Instance.PlayerController.SetPositionAndRotaion(position, rotation);
+            PlayerManager.Instance.PlayerController.SetPositionAndRotation(position, rotation);
         }
     }
 }
