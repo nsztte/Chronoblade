@@ -190,6 +190,21 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         return true;
     }
 
+    // 공격 용 LOS: 탐지 여부/시야각/탐지거리와 무관하게 장애물 가림만 검사
+    public bool HasClearShotToTarget()
+    {
+        if (fsm == null || fsm.Target == null) return false;
+
+        Vector3 toTarget = (fsm.Target.position - transform.position).normalized;
+        float distance = Vector3.Distance(transform.position, fsm.Target.position);
+
+        // 장애물에 가려져 있으면 명확한 시야가 아님
+        if (Physics.Raycast(transform.position + Vector3.up, toTarget, distance, obstacleLayer))
+            return false;
+
+        return true;
+    }
+
     public void DetectPlayer()
     {
         if(hasDetectedPlayer) return;

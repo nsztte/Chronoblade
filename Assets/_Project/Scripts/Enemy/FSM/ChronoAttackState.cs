@@ -14,7 +14,7 @@ public class ChronoAttackState : EnemyAttackState
         LookAtPlayer(enemy);
         float distance = GetCachedDistance(enemy);
         
-        if(distance > enemy.Enemy.DetectionRange)
+        if(distance > enemy.Enemy.DetectionRange || !enemy.Enemy.HasClearShotToTarget())
         {
             enemy.TransitionToState(enemy.ChaseState);
             return;
