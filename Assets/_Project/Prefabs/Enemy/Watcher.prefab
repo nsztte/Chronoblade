@@ -277,12 +277,17 @@ MonoBehaviour:
   hpUIPrefab: {fileID: 0}
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 65536
+    m_Bits: 65545
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
   stunDuration: 1.5
   stunKnockbackForce: 1
+  patrolMode: 0
+  patrolRadius: 6
+  patrolPoints: []
+  waitAtPoint: 1
+  startAtNearest: 1
   attackStartPosition: {fileID: 2699806782120361991}
   attackEndPosition: {fileID: 8352042035406943800}
   attackRadius: 0.2

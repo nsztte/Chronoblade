@@ -72994,12 +72994,17 @@ MonoBehaviour:
   hpUIPrefab: {fileID: 0}
   obstacleLayer:
     serializedVersion: 2
-    m_Bits: 65536
+    m_Bits: 65545
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
   stunDuration: 1.5
   stunKnockbackForce: 3
+  patrolMode: 0
+  patrolRadius: 6
+  patrolPoints: []
+  waitAtPoint: 1
+  startAtNearest: 1
   projectileSpawnPoint: {fileID: 6272972601880773256}
   teleportEffect: {fileID: 4351332082603982324}
   deathEffect: {fileID: 1853620622448995768}
