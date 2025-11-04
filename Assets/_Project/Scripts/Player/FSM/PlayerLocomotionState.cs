@@ -75,6 +75,8 @@ public class PlayerLocomotionState : PlayerBaseState
 
     private void OnDashPressed()
     {
+        if (!PlayerManager.Instance.CanDash) return;
+        
         if(PlayerManager.Instance.UseStaminaIfAvailable(PlayerManager.Instance.DashStaminaCost))
         {
             stateMachine.ChangeState(new PlayerDashState(stateMachine));

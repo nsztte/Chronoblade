@@ -55,6 +55,12 @@ public class PlayerManager : MonoBehaviour, IDamageable
     [SerializeField] private Transform heldPosition;
     private GameObject currentHeldObject;
 
+    [Header("능력 해금")]
+    [SerializeField] private bool canDash = false;
+    public bool CanDash => canDash;
+
+    public void UnlockDash() => canDash = true;
+    public void LockDash() => canDash = false;
 
     private Animator animator;
     private PlayerStateMachine playerStateMachine;

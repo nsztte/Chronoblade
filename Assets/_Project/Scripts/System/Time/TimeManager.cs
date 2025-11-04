@@ -27,6 +27,13 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private float slowMpDrain = 10f;
     [SerializeField] private float fastForwardMpDrain = 8f;
 
+    // 기본 잠금 상태
+    [Header("시간 스킬 해금 상태")]
+    [SerializeField] private bool unlockedSlow = false;
+    [SerializeField] private bool unlockedStop = false;
+    [SerializeField] private bool unlockedRewind = false;
+    [SerializeField] private bool unlockedFastForward = false;
+
     public float SlowFactor => slowFactor;
     public float FastForwardFactor => fastForwardFactor;
 
@@ -107,6 +114,30 @@ public class TimeManager : MonoBehaviour
         }
     }
 
+    #region 시간 스킬 해금 상태 설정
+    public void UnlockTimeSkill(TimeState skill)
+    {
+        switch (skill)
+        {
+            case TimeState.Slow:        unlockedSlow = true; break;
+            case TimeState.Stop:        unlockedStop = true; break;
+            case TimeState.Rewind:      unlockedRewind = true; break;
+            case TimeState.FastForward: unlockedFastForward = true; break;
+        }
+    }
+
+    private bool IsUnlocked(TimeState skill)
+    {
+        return skill switch {
+            TimeState.Slow        => unlockedSlow,
+            TimeState.Stop        => unlockedStop,
+            TimeState.Rewind      => unlockedRewind,
+            TimeState.FastForward => unlockedFastForward,
+            _ => true
+        };
+    }
+    #endregion
+
     #region 타임 컨트롤 등록 및 해제
     public void RegisterControllable(ITimeControllable controllable)
     {
@@ -169,12 +200,23 @@ public class TimeManager : MonoBehaviour
     public void InitializeTimeState()
     {
         if(currentTimeState == TimeState.Normal) return;
-        currentTimeState = TimeState.Normal;
-        ApplyTimeScale(1f);
+        
+        if (!IsTimeSkillAllowed(currentTimeState))
+        {
+            currentTimeState = TimeState.Normal;
+            ApplyTimeScale(1f);
+            UpdateTimeUI();
+        }
     }
 
     public bool IsTimeSkillAllowed(TimeState timeState)
     {
+        if (!IsUnlocked(timeState))
+        {
+            UIManager.Instance.ShowToast($"{timeState} 스킬 해금이 필요합니다.");
+            return false;
+        }
+
         var state = GameManager.Instance.CurrentGameState;
 
         if(state is PuzzleState) return true;
