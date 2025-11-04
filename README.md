@@ -3692,3 +3692,52 @@ Enemy FSM(상태머신) 시스템 구현
 - 파이널 챕터 작업은 챕터1 흐름 완성 후 착수 예정
 
 ---
+
+## 2025.11.04 (화) 작업 기록
+
+### 주요 작업
+- **문 제어 및 컷씬 연동 구조 개선**
+  - DoorController에 `isUnlocked` 플래그 추가로 문 해금 상태 제어
+  - `OnConditionMet()`에서 다음 문 해금 및 자동 개방 처리
+  - 다중 문 해금 지원을 위해 DoorController 배열 구조로 확장
+  - 컷씬 종료 시 OnConditionMet() 호출로 자동 문 해금 구현
+  - 코드 일관성 향상 (isOpen 상태를 OpenDoor/CloseDoor 내부에서 관리)
+
+- **아이템 및 상호작용 개선**
+  - ItemPickup에 `onPickupSuccess` 이벤트 추가  
+    → 아이템 완전 획득 시 이벤트 호출로 다음 문 해금 연동  
+    → 인스펙터에서 DoorController.OnConditionMet() 다중 바인딩 가능
+  - ItemPickup 프롬프트 표시 조건에 콜라이더 활성 상태 반영  
+    → 콜라이더가 없거나 비활성화된 경우 프롬프트 비표시로 변경
+
+- **퍼즐 및 키카드 시스템 개선**
+  - KeycardMover에 시간 상태 기반 픽업 제어 추가  
+    → TimeManager.CurrentTimeState가 Normal일 때 키카드 콜라이더 비활성화  
+    → 시간 조작 중에만 픽업 가능하도록 변경  
+  - KeycardMover의 이동 루틴을 누적(acc) 기반 타이머 방식으로 변경  
+    → 시간 정지 시 즉시 멈추고, 재개 시 자연스럽게 이동 이어짐  
+    → "정지 상태에서 다음 위치로 이동 후 멈추는 문제" 수정
+
+- **능력 해금 시스템 도입**
+  - TimeManager에 시간 스킬 해금 플래그(`unlockedSlow/Stop/Rewind/FastForward`) 추가  
+    → 해금된 스킬만 사용 가능하도록 구조 개선  
+    → 허용되지 않는 상태일 경우 자동 Normal 복귀 처리  
+  - PlayerManager에 대쉬 해금 플래그(`canDash`) 추가  
+    → UnlockDash/LockDash 메서드 제공, LocomotionState에서 입력 게이트로 활용  
+
+- **AbilityUnlockTrigger 구현 및 맵 반영**
+  - AbilityUnlockTrigger 스크립트 추가 (트리거 진입 시 능력 자동 해금)
+    - TimeSlow, TimeStop, TimeRewind, TimeFastForward, Dash 해금 지원
+    - 해금 시 UI 토스트 출력 및 오브젝트 자동 제거
+  - 시간실(Time Room): TimeSlow, TimeStop 해금 트리거 배치
+  - 감시실(Surveillance Room): TimeRewind, TimeFastForward 해금 트리거 배치
+  - 각 방의 키카드와 문 연결  
+    → 카드 습득 시 다음 방 문 자동 개방
+  - 챕터1 루프 완성: **능력 해금 → 카드 획득 → 문 개방 → 다음 방 진입**  
+
+### 메모
+- 시간 능력 및 대쉬 해금 로직이 통합되면서 챕터1 전체 흐름 안정화  
+- 키카드 Normal 상태 차단 및 정지 시 이동 문제 해결로 퍼즐 안정성 향상  
+- 컷씬, 검 픽업, 카드 획득, 능력 해금이 전부 DoorController 연동 구조로 통합됨
+
+---
