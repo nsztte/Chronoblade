@@ -6,15 +6,16 @@ public class ItemPickup : MonoBehaviour, IInteractable
 {
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
-
-    // 아이템 습득 후 호출할 이벤트트
     [SerializeField] private UnityEvent onPickupSuccess;
 
     private bool isPlayerInRange = false;
 
+    private Collider col;
+
     private void Start()
     {
         GetComponent<Collider>().isTrigger = true;
+        col = GetComponent<Collider>();
     }
 
     private void OnTriggerEnter(Collider other)
@@ -56,7 +57,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
             }
 
             onPickupSuccess.Invoke();
-            
+
             Destroy(gameObject);
         }
         else
@@ -83,6 +84,8 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     public string GetPrompt()
     {
+        if (col == null || !col.enabled) return "";
+
         return itemData.isAutoPickup ? "" : $"줍기: {itemData.itemName}";
     }
 }

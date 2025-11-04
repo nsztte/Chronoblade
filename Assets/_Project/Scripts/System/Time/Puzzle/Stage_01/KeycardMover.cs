@@ -11,6 +11,7 @@ public class KeycardMover : MonoBehaviour, ITimeControllable, IRewindable
     private int currentTargetIndex = -1;
     private float timeScale = 1f;
     private Animator animator;
+    private Collider col;
 
     // 리와인드 설정
     private List<int> rewindIndices = new();
@@ -19,6 +20,7 @@ public class KeycardMover : MonoBehaviour, ITimeControllable, IRewindable
     private void Awake()
     {
         animator = GetComponent<Animator>();
+        col = GetComponent<Collider>();
     }
 
     private void Start()    // 상황에 따라서 OnEnable로 변경 가능성 있음
@@ -27,6 +29,18 @@ public class KeycardMover : MonoBehaviour, ITimeControllable, IRewindable
         TimeManager.Instance.RegisterRewindable(this);
 
         StartCoroutine(MoveRoutine());
+    }
+
+    private void Update()
+    {
+        if (TimeManager.Instance != null && col != null)
+        {
+            bool isNormal = TimeManager.Instance.CurrentTimeState == TimeState.Normal;
+            if (col.enabled == isNormal)
+            {
+                col.enabled = !isNormal;
+            }
+        }
     }
 
     private void OnDisable()

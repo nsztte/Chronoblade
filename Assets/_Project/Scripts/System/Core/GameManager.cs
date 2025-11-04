@@ -4,6 +4,8 @@ using UnityEngine.SceneManagement;
 [RequireComponent(typeof(GameStateMachine))]
 public class GameManager : MonoBehaviour
 {
+    [SerializeField] private bool test = false;
+
     [Header("스테이트 스크립터블오브젝트")]
     public GameBaseState mainMenuState;
     public GameBaseState loadingState;
@@ -46,6 +48,12 @@ public class GameManager : MonoBehaviour
 
     private void Start()
     {
+        if(test)
+        {
+            EnterExploration();
+            return;
+        }
+
         var sceneName = SceneManager.GetActiveScene().name;
 
         if (sceneName == TITLESCENE)
