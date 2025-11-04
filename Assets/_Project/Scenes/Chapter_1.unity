@@ -1190,6 +1190,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 4d569663473d1924ba283a349b2c6306, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &524230022
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1594,6 +1597,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 6beb5da11dc7b7941849993969293cac, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 4008485726751223169}
+        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
+        m_MethodName: OnConditionMet
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1001 &795366971
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -3194,6 +3212,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: 6beb5da11dc7b7941849993969293cac, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1664599359
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -139912,6 +139933,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: e2e343bee6391f045b13ed9119dfd3fe, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!1 &3369844607850057842
 GameObject:
   m_ObjectHideFlags: 0
@@ -165221,7 +165245,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f083524c9b691243b3932a272a24ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnlocked: 0
+  isUnlocked: 1
   nextDoor:
   - {fileID: 6191318993347229801}
 --- !u!23 &4008510468366896185

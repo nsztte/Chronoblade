@@ -1,10 +1,14 @@
 using UnityEngine;
+using UnityEngine.Events;
 
 [RequireComponent(typeof(Collider))]
 public class ItemPickup : MonoBehaviour, IInteractable
 {
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
+
+    // 아이템 습득 후 호출할 이벤트트
+    [SerializeField] private UnityEvent onPickupSuccess;
 
     private bool isPlayerInRange = false;
 
@@ -50,6 +54,9 @@ public class ItemPickup : MonoBehaviour, IInteractable
             {
                 InventoryManager.Instance.RegisterWeapon(itemData);
             }
+
+            onPickupSuccess.Invoke();
+            
             Destroy(gameObject);
         }
         else
