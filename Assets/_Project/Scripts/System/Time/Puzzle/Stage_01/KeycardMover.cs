@@ -64,17 +64,20 @@ public class KeycardMover : MonoBehaviour, ITimeControllable, IRewindable
 
     private IEnumerator MoveRoutine()
     {
+        float acc = 0f;
         while (true)
         {
-            MoveToNextPoint();
+            // 정지면 누적을 멈추고 다음 프레임
+            if (timeScale <= 0f) { yield return null; continue; }
 
-            if (timeScale <= 0f)
+            acc += Time.deltaTime * timeScale;
+            if (acc >= interval)
             {
-                // 시간 정지 상태일 때는 한 프레임씩 기다리며 timeScale 회복 대기
-                yield return new WaitUntil(() => timeScale > 0f);
+                MoveToNextPoint();
+                acc = 0f;
             }
 
-            yield return new WaitForSeconds(interval / timeScale);
+            yield return null;
         }
     }
 

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerManager : MonoBehaviour, IDamageable
 {
+    [SerializeField] private bool testMP = false;
+
     [Header("플레이어 참조")]
     [SerializeField] private Transform playerTransform;
     [SerializeField] private Transform playerBody;
@@ -239,6 +241,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     public void UseMP(float amount)
     {
+        if(testMP) return;
+        
         currentMP -= amount;
         currentMP = Mathf.Clamp(currentMP, 0, maxMP);
         mpRecoveryTimer = 0f;
