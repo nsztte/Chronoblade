@@ -6,6 +6,7 @@ public class StartCutscene : BaseCutscene
     [SerializeField] private GameObject cinemachineCam;
     [SerializeField] private Animator camAnimator;
     [SerializeField] private Transform sceneStartPoint;
+    [SerializeField] private DoorController door_0;
 
     static readonly int SitAndScanHash = Animator.StringToHash("SitAndScan");
     static readonly int TurnLeftAndStandHash = Animator.StringToHash("TurnLeftAndStand");
@@ -78,5 +79,8 @@ public class StartCutscene : BaseCutscene
         PlayerManager.Instance.ShowPlayerBody(false);
     }
 
-    protected override void OnAfterPlay(){}
+    protected override void OnAfterPlay()
+    {
+        door_0.OnConditionMet();
+    }
 }
