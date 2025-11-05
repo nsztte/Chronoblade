@@ -205,6 +205,11 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         return true;
     }
 
+    public void ResetDetection()
+    {
+        hasDetectedPlayer = false;
+    }
+
     public void DetectPlayer()
     {
         if(hasDetectedPlayer) return;

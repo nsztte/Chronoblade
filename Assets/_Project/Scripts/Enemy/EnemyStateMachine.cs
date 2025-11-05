@@ -68,7 +68,11 @@ public class EnemyStateMachine : MonoBehaviour
     {
         target = PlayerManager.Instance.PlayerTransform;
         
-        TransitionToState(idleState);
+        // 이미 다른 상태로 전환된 경우(예: DetectPlayer()로 ChaseState) Start에서 Idle로 덮어쓰지 않음
+        if (currentState == null)
+        {
+            TransitionToState(idleState);
+        }
     }
 
     private void Update()

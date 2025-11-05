@@ -9,7 +9,7 @@ public class EnemyChaseState : EnemyBaseState
 
     // 추격 해제
     private float lostSightTimer;
-    private const float LOST_SIGHT_TIME = 3.0f;    // 시야에서 3초 연속으로 놓치면 복귀
+    private const float LOST_SIGHT_TIME = 5.0f;    // 시야에서 3초 연속으로 놓치면 복귀
     // private const float LEASH_DISTANCE = 50f;      // 홈 기준 리쉬
 
     public override void Enter(EnemyStateMachine enemy)
@@ -59,7 +59,14 @@ public class EnemyChaseState : EnemyBaseState
         }
         
         // 이동
-        enemy.Agent.SetDestination(enemy.Target.position);
+        if (enemy.Target != null)
+        {
+            if (!enemy.Agent.isOnNavMesh)
+            {
+                Debug.LogWarning($"[EnemyChaseState] Agent가 NavMesh 위에 없음 - Enemy: {enemy.name}, 위치: {enemy.transform.position}");
+            }
+            enemy.Agent.SetDestination(enemy.Target.position);
+        }
         
         // 크로노몽크 거리 로직 적용
         if (enemy.Enemy.Type == EnemyType.ChronoMonk)

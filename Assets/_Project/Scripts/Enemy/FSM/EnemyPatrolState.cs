@@ -10,6 +10,7 @@ public class EnemyPatrolState : EnemyBaseState
     {
         enemy.Agent.isStopped = false;
         var e = enemy.Enemy;
+        e.ResetDetection();
 
         if (e.PatrolMode == PatrolMode.WaypointsLoop)
         {

@@ -9,6 +9,7 @@ public class EnemyIdleState : EnemyBaseState
     {
         enemy.Agent.isStopped = true;
         timer = 0f;
+        enemy.Enemy.ResetDetection();
     }
 
     public override void Update(EnemyStateMachine enemy)

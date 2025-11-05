@@ -754,9 +754,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 642682955909939834}
     - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
+      propertyPath: spawnCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
+      propertyPath: spawnPoint
+      value: 
+      objectReference: {fileID: 1446901988}
+    - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
       propertyPath: enemySpawner
       value: 
-      objectReference: {fileID: 1446901987}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -3216,7 +3224,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1446901986}
-  - component: {fileID: 1446901987}
   - component: {fileID: 1446901988}
   m_Layer: 0
   m_Name: WatcherSpawnPoint
@@ -3240,23 +3247,6 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1233238049}
   m_LocalEulerAnglesHint: {x: 0, y: -139.6, z: 0}
---- !u!114 &1446901987
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1446901985}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7cbee85b60fecf44bb61b7a7c8c95184, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  enemyPrefab: {fileID: 562160104480518956, guid: 829b086058faeec49a9ae05755a4a044, type: 3}
-  spawnPoint: {fileID: 1446901986}
-  spawnRange: 2
-  spawnCount: 5
-  spawnCooldown: 10
 --- !u!114 &1446901988
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -139856,7 +139846,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f083524c9b691243b3932a272a24ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isUnlocked: 0
+  isUnlocked: 1
   nextDoor:
   - {fileID: 4041256125866633169}
 --- !u!1 &3361151199621731269
@@ -182176,9 +182166,17 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 642682955909939834}
     - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
+      propertyPath: spawnCount
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
+      propertyPath: spawnPoint
+      value: 
+      objectReference: {fileID: 1446901988}
+    - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
       propertyPath: enemySpawner
       value: 
-      objectReference: {fileID: 1446901987}
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
