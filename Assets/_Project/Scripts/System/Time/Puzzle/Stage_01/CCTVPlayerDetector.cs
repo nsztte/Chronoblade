@@ -118,7 +118,13 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
         
         if (spawnPoint != null)
         {
-            spawnPoint.TrySpawnEnemies(spawnCount);
+            if (spawnPoint.ActiveEnemies.Count == 0)
+                spawnPoint.TrySpawnEnemies(spawnCount);
+
+            foreach (var e in spawnPoint.ActiveEnemies)
+            {
+                e.DetectPlayer();
+            }
         }
     }
 

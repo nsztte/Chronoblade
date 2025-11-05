@@ -33,6 +33,8 @@ public class EnemySpawnPoint : MonoBehaviour
     private float nextRespawnAt;
     private Transform player;
 
+    public List<Enemy> ActiveEnemies => active;
+
     private void Start()
     {
         player = PlayerManager.Instance.PlayerTransform;
