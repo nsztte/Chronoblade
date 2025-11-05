@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections;
 using System.Collections.Generic;
 using TMPro;
+using UnityEngine.UIElements;
 
 public enum SubtitleMode { Auto, Click }
 public class SubtitleUI : MonoBehaviour
@@ -27,12 +28,14 @@ public class SubtitleUI : MonoBehaviour
             clicked = true;
     }
 
-    public void Open()
+    public void Open(TextAlignmentOptions align = TextAlignmentOptions.Center)
     {
         if (!gameObject.activeSelf) gameObject.SetActive(true);
         group.alpha = 0f;
         group.blocksRaycasts = false;
         group.interactable   = false;
+
+        text.alignment = align;
     }
 
     public void Close()

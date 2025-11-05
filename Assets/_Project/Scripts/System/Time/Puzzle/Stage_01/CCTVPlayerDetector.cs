@@ -12,7 +12,7 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
     [Header("감지 설정")]
     [SerializeField] private float detectionThreshold = 3f;
     [SerializeField] private Transform cctvBody; // CCTV가 회전하는 본체
-    [SerializeField] private GameObject door; // 문 애니메이션 포함 오브젝트
+    [SerializeField] private DoorController door; // 문 애니메이션 포함 오브젝트
     [SerializeField] private EnemySpawnPoint spawnPoint; // 와쳐 소환용
     [SerializeField] private int spawnCount = 5;
     [SerializeField] private float detectedTimer = 0f;
@@ -114,7 +114,7 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
     private void TriggerAlarm()
     {
         // TODO:경고등 이펙트, 사운드 등 추가
-        if(door != null) door.GetComponent<DoorController>().OpenDoor();
+        if(door != null) door.OpenDoor();
         
         if (spawnPoint != null)
         {

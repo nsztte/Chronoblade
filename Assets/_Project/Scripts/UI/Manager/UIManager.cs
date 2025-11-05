@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using UnityEngine;
+using TMPro;
 
 public class UIManager : MonoBehaviour
 {
@@ -207,24 +208,24 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region 대사 실행
-    public void ShowSubtitleAuto(IEnumerable<string> lines)
+    public void ShowSubtitleAuto(IEnumerable<string> lines, TextAlignmentOptions align = TextAlignmentOptions.Center)
     {
         if (subtitleUI == null) return;
 
         subtitleUI.Clear();
-        subtitleUI.Open();
+        subtitleUI.Open(align);
         foreach (var line in lines)
             subtitleUI.Enqueue(line, SubtitleMode.Auto);
 
         subtitleUI.Play();
     }
 
-    public void ShowSubtitleHold(IEnumerable<string> lines)
+    public void ShowSubtitleHold(IEnumerable<string> lines, TextAlignmentOptions align = TextAlignmentOptions.Center)
     {
         if (subtitleUI == null) return;
 
         subtitleUI.Clear();
-        subtitleUI.Open();
+        subtitleUI.Open(align);
         foreach (var line in lines)
             subtitleUI.Enqueue(line, SubtitleMode.Click);
 
