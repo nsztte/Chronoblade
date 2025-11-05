@@ -3217,6 +3217,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1446901986}
   - component: {fileID: 1446901987}
+  - component: {fileID: 1446901988}
   m_Layer: 0
   m_Name: WatcherSpawnPoint
   m_TagString: Untagged
@@ -3233,7 +3234,7 @@ Transform:
   m_GameObject: {fileID: 1446901985}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.9384931, z: -0, w: 0.3452982}
-  m_LocalPosition: {x: 0.07408905, y: -7.248765, z: -4.4461784}
+  m_LocalPosition: {x: 0.85, y: -7.248765, z: -3.54}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -3256,6 +3257,35 @@ MonoBehaviour:
   spawnRange: 2
   spawnCount: 5
   spawnCooldown: 10
+--- !u!114 &1446901988
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1446901985}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327aa5212ed1ad042baff2d4e0f97489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enemyType: 0
+  spawnOnStart: 0
+  spawnRadius: 2
+  minSpawnCount: 5
+  maxSpawnCount: 5
+  sampleMaxDistance: 2
+  allowRespawn: 0
+  respawnCooldown: 10
+  maxAlive: 6
+  maxPerCount: 2
+  minPlayerDistance: 12
+  overridePatrol: 0
+  patrolMode: 0
+  patrolRadius: 6
+  waitAtPoint: 1
+  startAtNearest: 1
+  patrolPointsRoot: {fileID: 0}
 --- !u!4 &1451257866 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 8048478395277917520, guid: 4f9b3f5ed3fbbd64396dbdbe65be3f48, type: 3}
