@@ -3741,3 +3741,42 @@ Enemy FSM(상태머신) 시스템 구현
 - 컷씬, 검 픽업, 카드 획득, 능력 해금이 전부 DoorController 연동 구조로 통합됨
 
 ---
+
+## 2025.11.05 (수) 작업 기록
+
+### 주요 작업
+- **CCTV 감지 기반 전투 구조 리팩토링**
+  - CCTV 감지 시 `EnemySpawner` 의존 제거 후 **`EnemySpawnPoint` 풀링 구조**로 전환  
+  - 감시실 CCTV 감지 시 `EnemySpawnPoint.TrySpawnEnemies()` 호출 → **풀링된 Watcher 소환**  
+  - 스폰된 적들은 CCTVPlayerDetector에서 **`DetectPlayer()`** 호출로 즉시 플레이어 추적  
+  - 스폰/추적 로직을 완전히 분리하여 **유지보수성 및 재사용성 향상**
+
+- **Enemy FSM 안정화**
+  - FSM의 `currentState`가 `null`일 때만 IdleState로 전환하도록 조건 보완  
+  - IdleState / PatrolState 진입 시 **`ResetDetection()`** 호출로 감지 플래그 초기화  
+  - Chase → Idle 복귀 후에도 플레이어 재인식 정상화  
+  - 스폰 후 감지 인식 누락 및 초기화 불일치 문제 해결
+
+- **홀로그램 로그 시스템 구현**
+  - `SubtitleUI.Open()`에 **텍스트 정렬 매개변수 추가** (중앙 / 왼쪽 정렬 지원)  
+  - `UIManager.ShowSubtitleAuto()`, `ShowSubtitleHold()`에서 정렬 인자 전달 가능  
+  - **`HologramLogTerminal` 스크립트 구현 및 적용**  
+    - 기록실 홀로그램 단말 오브젝트와 연동  
+    - 상호작용 시 SubtitleUI 좌측 정렬 로그 출력  
+    - 재생 완료 후 문 해금 및 상호작용 종료 처리  
+  - 기록실 내 세계관 로그 연출(Subject-09 / ChronoCore 실험 기록) 완성
+
+- **기록실 샷건 보상 및 보급실 문 연동**
+  - 기록실에 **샷건 아이템 프리팹** 배치  
+  - 샷건 획득 시 **보급실 문 자동 개방** (`DoorController.OnConditionMet()` 호출)  
+  - 로그 → 샷건 획득 → 보급실 진입으로 이어지는 전투 준비 흐름 완성  
+
+---
+
+### 메모
+- 감시실 CCTV 감지 구조를 풀링 기반으로 완전히 교체하면서 **퍼포먼스와 구조 일관성 확보**  
+- Enemy FSM 감지 플래그 초기화 문제 해결로 **AI 추적 루프가 안정화됨**  
+- 기록실 홀로그램 로그 및 샷건 보상까지 완성되어 **챕터1 후반부 흐름 정리 완료 단계**  
+- 내일 남은 작업:  
+  - **보급실 카드키 연동 / 대쉬 해금 트리거 구성**  
+  - **전투실 웨이브 클리어 → 신전(파이널 챕터) 전환 트리거 연결**
