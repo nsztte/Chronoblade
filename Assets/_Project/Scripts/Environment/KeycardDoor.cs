@@ -9,9 +9,13 @@ public class KeycardDoor : MonoBehaviour, IInteractable, IInteractableSavable
     [SerializeField] private string openStateName = "OpenState";
     [SerializeField] private string closedStateName = "ClosedState";
 
+    [SerializeField] private Collider colToActivate;
+
     private void Awake()
     {
         animator = GetComponent<Animator>();
+
+        if(colToActivate) colToActivate.enabled = false;
     }
 
     public void Interact()
@@ -22,6 +26,7 @@ public class KeycardDoor : MonoBehaviour, IInteractable, IInteractableSavable
         {
             animator.SetTrigger("Open");
             isOpen = true;
+            if(colToActivate) colToActivate.enabled = true;
         }
         else
         {
@@ -52,6 +57,8 @@ public class KeycardDoor : MonoBehaviour, IInteractable, IInteractableSavable
     public void ApplyActivated(bool activated)
     {
         isOpen = activated;
+
+        if (colToActivate) colToActivate.enabled = activated;
 
         if (!animator) return;
 
