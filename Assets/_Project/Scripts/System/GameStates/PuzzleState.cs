@@ -27,5 +27,6 @@ public class PuzzleState : GameBaseState
         SaveGuard.Instance?.ClearTag(SaveBlockTag.Puzzle);
 
         UIManager.Instance.ClearTimeState();
+        TimeManager.Instance.InitializeTimeState();
     }
 }
