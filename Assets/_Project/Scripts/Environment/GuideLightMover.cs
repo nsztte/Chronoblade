@@ -23,8 +23,14 @@ public class GuideLightMover : MonoBehaviour
         SetVisible(false);
     }
 
+    private void OnEnable()
+    {
+        PuzzleProgressManager.Instance.OnKeyInserted += HandleKeyInserted;
+    }
+
     private void OnDisable()
     {
+        PuzzleProgressManager.Instance.OnKeyInserted -= HandleKeyInserted;
         StopGuide();
     }
 
@@ -46,6 +52,12 @@ public class GuideLightMover : MonoBehaviour
         SetVisible(false);
     }
 
+    private void HandleKeyInserted(int insertedRoomId)
+    {
+        if (insertedRoomId == roomId)
+            StartGuide();
+    }
+
     private IEnumerator CoRunGuide()
     {
         if (!ValidatePath()) yield break;
@@ -57,7 +69,7 @@ public class GuideLightMover : MonoBehaviour
         if (roomId == 3 && !didRepeat)
         {
             didRepeat = true;
-            
+
             // 1회 더 재실행
             yield return new WaitForSeconds(startDelay);
             if (!ValidatePath()) { SetVisible(false); isActive = false; co = null; yield break; }

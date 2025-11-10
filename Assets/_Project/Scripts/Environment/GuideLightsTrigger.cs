@@ -5,6 +5,14 @@ public class GuideLightsTrigger : MonoBehaviour
     [SerializeField] private GuideLightMover[] lightMovers;
     private bool isActive = false;
 
+    private void Awake()
+    {
+        foreach (var l in lightMovers)
+        {
+            l.gameObject.SetActive(false);
+        }
+    }
+
     private void OnTriggerEnter(Collider other)
     {
         if (!other.CompareTag("Player")) return;
@@ -13,6 +21,7 @@ public class GuideLightsTrigger : MonoBehaviour
         {
             foreach (var l in lightMovers)
             {
+                l.gameObject.SetActive(true);
                 l.StartGuide();
             }
         }
