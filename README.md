@@ -3814,3 +3814,37 @@ Enemy FSM(상태머신) 시스템 구현
 - 폴리싱 단계에서는 포탈 활성화 컷씬 → 씬 전환 컷씬으로 자연스럽게 이어지도록 구성할 계획
 
 ---
+
+## 2025.11.10 (월) 작업 기록
+
+### 주요 작업
+- **GuideLightMover 및 퍼즐 매니저 연동 마무리**
+  - `PuzzleProgressManager.OnKeyInserted` 이벤트를 **unlockMap 기반의 다음 방 roomId**로 발행하도록 수정
+  - `GuideLightMover`는 해당 roomId가 자기와 일치할 때 자동으로 `StartGuide()` 실행
+  - `OnEnable` / `OnDisable` 에서 이벤트 구독 및 해제 처리로 구조 안정화
+  - `GuideLightsTrigger`를 통해 초기 팬아웃(4개 빛 동시 이동) 트리거 구현 완료
+  - roomId=3 완료 시 1회 추가 이동 옵션 유지 (`repeatOnceIfRoom3`)
+  - 전역 제어(static currentGuide) 완전 제거 → **동시 이동 가능**
+  - 트리거 및 매니저 이벤트 흐름 정리 완료
+
+- **LightPathController → Light 기반 연출로 전환**
+  - 기존 `LineRenderer` 기반의 LightPathController는 테스트 결과 어색하여 제거
+  - 대신 **빛(GuideLight) 이동형 에셋**으로 전환
+    - 부드러운 이동 및 공간감 표현이 자연스러움
+    - 포스트프로세싱 Bloom과 조합 시 시각적 완성도 향상
+  - 각 빛 오브젝트는 `GuideLightMover`를 통해 경로(waypoints)를 따라 이동
+  - 심장부 트리거 진입 시 4개 빛이 동시에 이동하며 팬아웃 연출
+  - 퍼즐 클리어 후 키 삽입 시 unlockMap에 따라 다음 방으로 이동
+
+- **PuzzleProgressManager 리팩터링**
+  - `lastClearedRoomId` 필드 추가 및 `MarkCleared()`에서 갱신
+  - `ReportKeyInserted()` 호출 시 `unlockMap[lastClearedRoomId]`를 참조해 다음 방 ID 발행
+  - `OnAllCleared`는 기존 구조 유지
+  - 라이트 시스템 외부 의존 없이 내부 이벤트만으로 가이드 연출 제어
+
+### 메모
+- `LightPathController`는 초기 구상(라인 기반 빛 경로)에서는 구현 완전했지만, 실제 씬에서는 3D 공간에서 어색하게 보여 **빛 오브젝트 이동형으로 교체**함
+- `GuideLightMover` 구조는 단순하며 확장성 높음 코루틴 기반 이동 + Renderer/Light 제어가 핵심
+- `GuideLightsTrigger`와 `PuzzleProgressManager.OnKeyInserted`의 이벤트 흐름이 명확히 분리되어 관리 용이
+
+---
