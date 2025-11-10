@@ -15,6 +15,7 @@ public class GuideLightMover : MonoBehaviour
 
     private Coroutine co;
     private bool isActive;
+    private bool didRepeat = false;
     public int RoomId => roomId;
 
     private void Awake()
@@ -52,6 +53,20 @@ public class GuideLightMover : MonoBehaviour
         isActive = true;
         SetVisible(true);
         yield return MoveAlongPathOnce();
+
+        if (roomId == 3 && !didRepeat)
+        {
+            didRepeat = true;
+            
+            // 1회 더 재실행
+            yield return new WaitForSeconds(startDelay);
+            if (!ValidatePath()) { SetVisible(false); isActive = false; co = null; yield break; }
+
+            isActive = true;
+            SetVisible(true);
+            yield return MoveAlongPathOnce();
+        }
+
         SetVisible(false);
         isActive = false;
         co = null;
