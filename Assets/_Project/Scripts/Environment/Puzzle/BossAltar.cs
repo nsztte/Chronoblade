@@ -1,5 +1,3 @@
-using System.Linq;
-using UnityEditor.Rendering.Universal;
 using UnityEngine;
 
 public class BossAltar : MonoBehaviour

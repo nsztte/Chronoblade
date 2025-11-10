@@ -27,7 +27,6 @@ public class GuideLightMover : MonoBehaviour
         StopGuide();
     }
 
-    // 매니저가 roomId 기준으로 호출(동시 실행 허용)
     public void StartGuide()
     {
         StopGuide();
@@ -45,7 +44,7 @@ public class GuideLightMover : MonoBehaviour
         }
         SetVisible(false);
     }
-    
+
     private IEnumerator CoRunGuide()
     {
         if (!ValidatePath()) yield break;
