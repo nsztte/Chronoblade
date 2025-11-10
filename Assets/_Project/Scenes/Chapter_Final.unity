@@ -42306,7 +42306,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &485365644
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42527,7 +42527,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &490715889
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -42846,7 +42846,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &523584499
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -77767,6 +77767,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5769285881828288737, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: test
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 6125324836093535223, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalPosition.x
       value: -2.8
@@ -104655,7 +104659,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!114 &1578835939
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -115136,6 +115140,7 @@ MonoBehaviour:
   puzzle4Cleared: 0
   puzzle5Cleared: 0
   puzzle6Cleared: 0
+  lastClearedRoomId: -1
 --- !u!1 &1657260701
 GameObject:
   m_ObjectHideFlags: 0

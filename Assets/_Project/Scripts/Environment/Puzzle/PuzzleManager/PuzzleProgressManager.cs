@@ -19,7 +19,7 @@ public class PuzzleProgressManager : MonoBehaviour
     private readonly HashSet<int> cleared  = new();
     private int keyCount = 0;
     private int maxCount = 0;
-    private int lastClearedRoomId = -1;
+    [SerializeField] private int lastClearedRoomId = -1;
     private bool allClearedRaised = false;
 
     private static readonly Dictionary<int, int> unlockMap = new()
@@ -85,7 +85,8 @@ public class PuzzleProgressManager : MonoBehaviour
         }
         else
         {
-            OnKeyInserted?.Invoke(lastClearedRoomId);
+            if (unlockMap.TryGetValue(lastClearedRoomId, out var nextRoomId))
+                OnKeyInserted?.Invoke(nextRoomId);
         }
     }
 

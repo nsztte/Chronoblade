@@ -52,9 +52,9 @@ public class GuideLightMover : MonoBehaviour
         SetVisible(false);
     }
 
-    private void HandleKeyInserted(int insertedRoomId)
+    private void HandleKeyInserted(int nextRoomId)
     {
-        if (insertedRoomId == roomId)
+        if (nextRoomId == roomId)
             StartGuide();
     }
 
