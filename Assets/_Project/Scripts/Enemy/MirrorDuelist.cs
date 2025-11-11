@@ -120,25 +120,46 @@ public class MirrorDuelist : Enemy
         
         for(int i = 0; i < NumberOfClones; i++)
         {
-            // 반경 내 랜덤 위치 계산
+            // 반경 내 랜덤 위치 계산 (수평면만, Y는 transform.position.y 사용)
             Vector2 randomCircle = Random.insideUnitCircle * CloneSpawnRadius;
             Vector3 spawnPosition = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
 
-            // NavMesh 위의 유효한 위치 찾기
-            if(UnityEngine.AI.NavMesh.SamplePosition(spawnPosition, out UnityEngine.AI.NavMeshHit hit, 2f, UnityEngine.AI.NavMesh.AllAreas))
+            // NavMesh 위의 유효한 위치 찾기 (여러 시도)
+            bool found = false;
+            for (int attempt = 0; attempt < 3; attempt++)
             {
-                FakeClone clone = FakeClonePool.Instance?.Get();
-                if (clone != null)
+                if (UnityEngine.AI.NavMesh.SamplePosition(spawnPosition, out UnityEngine.AI.NavMeshHit hit, 5f, UnityEngine.AI.NavMesh.AllAreas))
                 {
-                    clone.transform.SetPositionAndRotation(hit.position, Quaternion.identity);
-                    clone.Initialize(this);
-                    RegisterClone(clone);
-                    Debug.Log($"클론 {i + 1} 생성 완료: {hit.position}");
+                    FakeClone clone = FakeClonePool.Instance?.Get();
+                    if (clone != null)
+                    {
+                        // 위치 설정 (Initialize에서 NavMeshAgent.Warp로 고정됨)
+                        clone.transform.position = hit.position;
+                        clone.transform.rotation = Quaternion.identity;
+                        
+                        // Initialize 호출 (내부에서 NavMeshAgent 위치 고정)
+                        clone.Initialize(this);
+                        RegisterClone(clone);
+                        Debug.Log($"클론 {i + 1} 생성 완료: {hit.position}");
+                        found = true;
+                        break;
+                    }
+                    else
+                    {
+                        Debug.LogWarning("FakeClonePool에서 클론 가져오기 실패");
+                        found = true; // 풀 문제는 재시도해도 소용없음
+                        break;
+                    }
                 }
-                else
-                {
-                    Debug.LogWarning("FakeClonePool에서 클론 가져오기 실패");
-                }
+                
+                // 실패 시 다른 위치 재시도
+                randomCircle = Random.insideUnitCircle * CloneSpawnRadius;
+                spawnPosition = transform.position + new Vector3(randomCircle.x, 0, randomCircle.y);
+            }
+            
+            if (!found)
+            {
+                Debug.LogWarning($"클론 {i + 1} 생성 실패: NavMesh 위치를 찾을 수 없음");
             }
         }
     }

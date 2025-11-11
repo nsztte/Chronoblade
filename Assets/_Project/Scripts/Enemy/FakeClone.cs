@@ -43,9 +43,25 @@ public class FakeClone : MonoBehaviour, IDamageable
         if (agent == null)
             agent = GetComponent<NavMeshAgent>();
 
-        agent.isStopped = false;
-        agent.updateRotation = false;
-        agent.speed = moveSpeed;
+        // NavMeshAgent 위치를 현재 transform 위치로 강제 고정 (땅에 쳐박히는 문제 방지)
+        // Warp를 사용하여 NavMeshAgent가 위치를 자동 조정하지 않도록 함
+        if (agent != null)
+        {
+            // agent가 활성화되어 있어야 Warp가 작동함
+            if (!agent.enabled)
+                agent.enabled = true;
+                
+            // 현재 위치가 NavMesh 위에 있는지 확인하고 Warp
+            if (NavMesh.SamplePosition(transform.position, out NavMeshHit hit, 2f, NavMesh.AllAreas))
+            {
+                transform.position = hit.position;
+                agent.Warp(hit.position);
+            }
+            
+            agent.isStopped = false;
+            agent.updateRotation = false;
+            agent.speed = moveSpeed;
+        }
 
         timeController.SetSpeed(moveSpeed);
     }
