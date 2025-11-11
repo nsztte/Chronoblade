@@ -181,6 +181,12 @@ public class EnemySpawnPoint : MonoBehaviour
     {
         Gizmos.color = new Color(1f, 0.2f, 0.2f, 0.3f);
         Gizmos.DrawSphere(transform.position, spawnRadius);
+
+        if (overridePatrol && patrolMode == PatrolMode.RandomInRadius)
+        {
+            Gizmos.color = new Color(0.2f, 0.4f, 1f, 0.5f);
+            Gizmos.DrawWireSphere(transform.position, patrolRadius);
+        }
     }
     #endif
 }
