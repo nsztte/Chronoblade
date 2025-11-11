@@ -3848,3 +3848,47 @@ Enemy FSM(상태머신) 시스템 구현
 - `GuideLightsTrigger`와 `PuzzleProgressManager.OnKeyInserted`의 이벤트 흐름이 명확히 분리되어 관리 용이
 
 ---
+
+## 2025.11.11 (화) 작업 기록
+
+### 주요 작업
+- **파이널 챕터 NavMesh 설정 및 베이크 완료**
+  - Temple_Environment에 `NavMeshSurface` 구성 및 베이크
+  - Agent Type: Humanoid (Radius 0.5, Height 2.0, Max Slope 45°)
+  - Use Geometry: Physics Colliders / Include Layers: Ground
+  - Override Voxel Size(0.1)로 계단·단차 구간의 경계 끊김 해결
+  - 베이크 후 적 AI 이동 정상 동작 및 계단 이동 테스트 완료
+
+- **MirrorDuelist / FakeClone 지면 침투 문제 수정**
+  - `CreateClones()`에서 `NavMesh.SamplePosition()`을 사용해 유효 지면 좌표 샘플링
+  - `FakeClone.Initialize()` 내 `agent.Warp()` 적용으로 내부 좌표(nextPosition) 동기화
+  - NavMeshAgent의 baseOffset / path / nextPosition 초기화로 Y축 오프셋 문제 해결
+  - 클론 생성 시 지면 아래로 파고드는 현상 완전 수정
+
+- **EnemySpawnPoint 기즈모 시각화 및 테스트용 스폰포인트 배치**
+  - `OnDrawGizmosSelected()`에 패트롤 반경(파란색 와이어) 표시 추가
+  - `overridePatrol && patrolMode == RandomInRadius` 조건에서만 표시
+  - MirrorDuelist(웨이포인트 루프/랜덤), Watcher(RandomInRadius) 스폰포인트 각 1개씩 배치
+  - 씬 내 반경 시각화 및 적 동작 정상 확인
+
+- **이동형 상점 ShopOrbitMover 구현**
+  - 상점이 중심점을 기준으로 일정 반경에서 **원형 공전**하도록 구현
+  - 플레이어 접근 시(`stopRange` 이내) **정지 및 상호작용 대기**
+  - Animator 파라미터(`IsInteract`)로 이동/정지 상태 전환
+  - Gizmos 시각화 추가: 중심점, 궤도 원(오렌지), 정지 반경(파란색) 및 진행 방향 화살표 표시
+  - 파이널 챕터 상점 오브젝트에 적용 후 정상 작동 확인
+
+- **상점 정지 시 플레이어 응시 및 수직 보블 모션 추가**
+  - `stopRange` 내 플레이어 감지 시 **플레이어 바라보기 로직 추가**
+  - 공전 중엔 기존처럼 궤도 접선 방향 회전 유지
+  - 사인 곡선 기반 수직 보블(부양) 모션 구현
+    - `bobAmplitude`, `bobFrequency`, `bobMinScaleOnStop` 파라미터로 진폭/주기/정지 시 잔여 움직임 조절
+  - 이동 중에는 부드럽게 떠오르며 공전, 정지 시엔 자연스럽게 응시하며 호흡하는 연출 완성
+
+### 메모
+- NavMesh는 파이널 챕터 전체 구간에서 끊김 없이 매끄럽게 이어지며, 계단/단차 문제 해결됨
+- MirrorDuelist 클론의 지면 침투는 NavMeshAgent의 Warp 사용으로 구조적으로 해결됨
+- 상점은 공전과 정지를 동시에 수행하며, 플레이어가 접근할 때 자연스럽게 응시하는 시각적 연출 완성
+- EnemySpawnPoint 기즈모 시각화로 테스트 및 배치 효율성 향상
+
+---
