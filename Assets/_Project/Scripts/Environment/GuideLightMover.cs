@@ -25,12 +25,14 @@ public class GuideLightMover : MonoBehaviour
 
     private void OnEnable()
     {
-        PuzzleProgressManager.Instance.OnKeyInserted += HandleKeyInserted;
+        if(PuzzleProgressManager.Instance != null)
+            PuzzleProgressManager.Instance.OnKeyInserted += HandleKeyInserted;
     }
 
     private void OnDisable()
     {
-        PuzzleProgressManager.Instance.OnKeyInserted -= HandleKeyInserted;
+        if(PuzzleProgressManager.Instance != null)
+            PuzzleProgressManager.Instance.OnKeyInserted -= HandleKeyInserted;
         StopGuide();
     }
 
