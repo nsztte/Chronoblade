@@ -59,7 +59,7 @@ public class EnemySpawnPointSaveProxy : SaveableBehaviour
 
         sp.SpawnOnStart = false; // 초기 자동 스폰 차단
         var d = JsonUtility.FromJson<Data>(json);
-        if (d == null || !d.valid) return;
+        if (d == null || !d.valid || d.list == null) return;
 
         sp.DespawnAllEnemies();
 
