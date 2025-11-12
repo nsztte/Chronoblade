@@ -18,6 +18,8 @@ public abstract class PuzzleRoomManager : MonoBehaviour
     public bool IsCleared => isCleared;
     protected bool isActivated = false;
     public bool IsActivated => isActivated;
+
+    public int RoomId => roomId;
     
     [System.Serializable]
     private struct TransformSnapshot
@@ -53,6 +55,16 @@ public abstract class PuzzleRoomManager : MonoBehaviour
 
         SaveGuard.Instance?.Unblock(SaveBlockTag.Puzzle);
         SaveManager.Instance?.AutoSave("퍼즐 성공");
+    }
+
+    // 저장/로드 API
+    public void ApplyState(bool cleared, bool activated)
+    {
+        isActivated = activated;
+        isCleared = cleared;
+
+        if (clearedPortal) clearedPortal.SetActive(cleared);
+        if (clearedReward) clearedReward.SetActive(cleared);
     }
 
     public void ChangeState(bool isActive)

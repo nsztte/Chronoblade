@@ -51,15 +51,12 @@ public class PuzzleProgressManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-    }
-    #endregion
 
-    private void Start()
-    {
         suppressEvents = true;
         Unlock(3);
         suppressEvents = false;
     }
+    #endregion
 
     private void Update()
     {
@@ -74,6 +71,12 @@ public class PuzzleProgressManager : MonoBehaviour
 
         if(puzzle6Cleared)
             MarkCleared(6);
+
+        if(Input.GetKeyDown(KeyCode.Alpha9))
+        {
+            foreach(var c in cleared)
+                Debug.Log(c);
+        }
     }
 
     public bool IsUnlocked(int roomId) => unlocked.Contains(roomId);

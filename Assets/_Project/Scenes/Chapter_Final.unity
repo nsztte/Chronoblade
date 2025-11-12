@@ -115802,6 +115802,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1656381684}
   - component: {fileID: 1656381685}
+  - component: {fileID: 1656381687}
+  - component: {fileID: 1656381686}
   m_Layer: 0
   m_Name: Puzzle
   m_TagString: Untagged
@@ -115845,7 +115847,31 @@ MonoBehaviour:
   puzzle4Cleared: 0
   puzzle5Cleared: 0
   puzzle6Cleared: 0
-  lastClearedRoomId: -1
+--- !u!114 &1656381686
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656381683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4b19b198d857b204c82cf8a90bd674a2, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1656381687
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1656381683}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 7bbbb8cf46814f85a8099d66a6fdb112
 --- !u!1 &1657260701
 GameObject:
   m_ObjectHideFlags: 0
@@ -188710,7 +188736,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!1 &919132149495219758
 GameObject:
   m_ObjectHideFlags: 0
