@@ -19,8 +19,18 @@ public class PuzzleProgressManager : MonoBehaviour
     private readonly HashSet<int> cleared  = new();
     private int keyCount = 0;
     private int maxCount = 0;
-    [SerializeField] private int lastClearedRoomId = -1;
+    private int lastClearedRoomId = -1;
     private bool allClearedRaised = false;
+    private bool suppressEvents = false;
+
+    #region Getter
+    public IReadOnlyCollection<int> ClearedRooms => cleared;
+    public IReadOnlyCollection<int> UnlockedRooms => unlocked;
+    public int LastClearedRoomId => lastClearedRoomId;
+    public int KeyCount => keyCount;
+    public int MaxCount => maxCount;
+    public bool AllClearedRaised => allClearedRaised;
+    #endregion
 
     private static readonly Dictionary<int, int> unlockMap = new()
     {
@@ -41,10 +51,15 @@ public class PuzzleProgressManager : MonoBehaviour
         {
             Destroy(gameObject);
         }
-
-        Unlock(3);
     }
     #endregion
+
+    private void Start()
+    {
+        suppressEvents = true;
+        Unlock(3);
+        suppressEvents = false;
+    }
 
     private void Update()
     {
@@ -68,7 +83,7 @@ public class PuzzleProgressManager : MonoBehaviour
     public void MarkCleared(int roomId)
     {
         if (!cleared.Add(roomId)) return;
-        OnRoomCleared?.Invoke(roomId);
+        if (!suppressEvents) OnRoomCleared?.Invoke(roomId);
         lastClearedRoomId = roomId;
         if (unlockMap.TryGetValue(roomId, out var next)) Unlock(next);
     }
@@ -81,11 +96,11 @@ public class PuzzleProgressManager : MonoBehaviour
         if(!allClearedRaised && keyCount == maxCount)
         {
             allClearedRaised = true;
-            OnAllCleared?.Invoke();
+            if (!suppressEvents) OnAllCleared?.Invoke();
         }
         else
         {
-            if (unlockMap.TryGetValue(lastClearedRoomId, out var nextRoomId))
+            if (unlockMap.TryGetValue(lastClearedRoomId, out var nextRoomId) && !suppressEvents)
                 OnKeyInserted?.Invoke(nextRoomId);
         }
     }
@@ -93,6 +108,33 @@ public class PuzzleProgressManager : MonoBehaviour
     private void Unlock(int roomId)
     {
         if (!unlocked.Add(roomId)) return;
-        OnRoomUnlocked?.Invoke(roomId);
+        if (!suppressEvents) OnRoomUnlocked?.Invoke(roomId);
+    }
+
+    // 저장/복원 전용 API
+    public void ApplyDataOnly(
+    IEnumerable<int> clearedIn,
+    IEnumerable<int> unlockedIn,
+    int lastClearedId,
+    int keyCnt,
+    int maxCnt,
+    bool allCleared)
+    {
+        suppressEvents = true;
+
+        // 상태 초기화
+        unlocked.Clear();
+        cleared.Clear();
+
+        // 값 주입
+        if (unlockedIn != null) foreach (var r in unlockedIn) unlocked.Add(r);
+        if (clearedIn  != null) foreach (var r in clearedIn) cleared.Add(r);
+
+        lastClearedRoomId = lastClearedId;
+        keyCount = keyCnt;
+        maxCount = maxCnt;
+        allClearedRaised = allCleared;
+
+        suppressEvents = false;
     }
 }
