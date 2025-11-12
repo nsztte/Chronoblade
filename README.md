@@ -3892,3 +3892,69 @@ Enemy FSM(상태머신) 시스템 구현
 - EnemySpawnPoint 기즈모 시각화로 테스트 및 배치 효율성 향상
 
 ---
+
+## 2025.11.12 (수) 작업 기록
+
+### 주요 작업
+- **EnemySpawnPoint 저장/복원 시스템 완성**
+  - `EnemySpawnPoint`에 세이브 프록시용 브리지 및 유틸 함수 추가  
+    - `AllowRespawn` 게터, `SpawnOnStart` 프로퍼티 추가  
+    - `DespawnAllEnemies()` / `SpawnOneAt(Vector3 pos, float yaw)` 구현  
+    - `NavMeshAgent.Warp()` 기반 정확 위치/회전 복원 및 풀 반환 구조 확립  
+  - `EnemySpawnPointSaveProxy` 구현  
+    - `allowRespawn == false`인 스폰포인트만 저장/복원  
+    - 적의 위치/회전/HP비율을 JSON 스냅샷으로 저장  
+    - 로드시 자동 스폰 차단 후 기존 적 제거 및 정확 좌표 재스폰  
+    - `Enemy.SetHpRatio()`로 HP 비율 복원 (UI 연동 포함)  
+  - `Enemy.cs` 개선  
+    - `GetHpRatio()` / `SetHpRatio(float ratio, bool syncUi=true)` 추가  
+    - HP UI 자동 동기화 옵션 지원  
+
+- **PuzzleProgressManager 저장/복원 구조 도입**
+  - `PuzzleProgressManagerSaveProxy` 구현  
+    - `PPMData` 구조체(clearedRooms, unlockedRooms, keyCount 등) 직렬화  
+    - `ToData()` / `ApplyDataOnly()` 구현, 이벤트 발행 억제  
+    - 로드시 컷씬/사운드 없이 상태만 복원  
+  - `PuzzleProgressManager`에 브리지 추가  
+    - `ClearedRooms`, `UnlockedRooms` 읽기 전용 프로퍼티  
+    - `_suppressEvents` 가드 및 무음 복원 모드 적용  
+
+- **PuzzleRoomManager / PuzzleRoomSaveProxy 추가**
+  - `PuzzleRoomManager`  
+    - `RoomId`, `IsCleared`, `IsActivated` 게터 및 `ApplyState()` 구현  
+    - `CacheInitialStates()` / `ResetToInitialIfUncleared()` 유지  
+  - `PuzzleRoomSaveProxy`  
+    - `RoomData(roomId, isCleared, isActivated)` 직렬화  
+    - `RestoreStateJson()` 시 이벤트 없이 무음 복원  
+
+- **PuzzleStateTrigger 구조 단순화**
+  - `subscribed` 변수 완전 제거  
+  - `TrySubscribeOrWait()`를 `OnEnable()`에서 호출하도록 변경 (지연 구독 지원)  
+  - `Start()`에서 1회 `CacheInitialStates()` 및 초기 `OnAfterLoadCommon()` 실행  
+  - `Update()`는 퍼즐 클리어 시 비주얼 정리만 담당  
+  - 구독/해제 관리 경로를 `Start()`/`OnDisable()`로 일원화  
+
+- **퍼즐 시작 스냅샷 제거 및 프리셋 재구성 방식으로 변경**
+  - `PuzzleRoomManager`의 `startStates`, `CacheStartStates()`, `RestoreForLoad()` 제거  
+  - `PuzzleStateTrigger`  
+    - 로드시 `IsActivated`면 `ActivePuzzleRoomDoor()` / `ActivePuzzleObjects()` 호출  
+    - 비활성 상태면 `ResetToInitialIfUncleared()`만 실행  
+    - 퍼즐 입장 시 스냅샷 캐싱 삭제, 자동 저장 유지  
+  - 결과적으로 퍼즐 시작→오토세이브→로드 시 동일한 프리셋 복원  
+
+- **RewindableObjects 구조 단순화**
+  - `isStarted` 필드 제거, `PuzzleRoomManager.IsActivated` 기반으로 통일  
+  - 퍼즐룸 미존재 시 자동 비활성 폴백 처리  
+  - 퍼즐 활성/비활성 상태에 따라 복원·콜라이더 제어 단순화  
+  - `SnapToOriginalPose()` 추가  
+    - `originalPositions` / `originalRotations` 기반 즉시 포즈 복원  
+    - `Rigidbody` 속도 초기화 및 `Physics.SyncTransforms()` 호출  
+    - 퍼즐 비활성 또는 로드 시점 오브젝트 리셋용으로 사용  
+
+### 메모
+- 퍼즐 시작 스냅샷은 유지 부담이 커서 제거, 로드시 퍼즐 활성 상태(`IsActivated`) 기준으로 비주얼 재구성  
+- `RewindableObjects`는 퍼즐룸의 상태만 참고해 동작하도록 단순화  
+- 전체 퍼즐 세이브/로드 체계가 PuzzleRoomManager의 논리 상태(`IsCleared`, `IsActivated`) 중심으로 통합됨
+
+---
+
