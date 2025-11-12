@@ -169,6 +169,25 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         if (col != null) col.enabled = true;
     }
 
+    #region HP 접근 유틸
+    public float GetHpRatio()
+    {
+        int max = Mathf.Max(1, MaxHP);
+        return Mathf.Clamp01((float)currentHP / max);
+    }
+
+    public void SetHpRatio(float ratio, bool syncUi = true)
+    {
+        int max = Mathf.Max(1, MaxHP);
+        currentHP = Mathf.Clamp(Mathf.RoundToInt(ratio * max), 0, max);
+
+        if (syncUi && hpUI != null)
+        {
+            hpUI.SetHP(currentHP, max);
+        }
+    }
+    #endregion
+
     public bool CanSeePlayer()
     {
         if (hasDetectedPlayer) return false;
