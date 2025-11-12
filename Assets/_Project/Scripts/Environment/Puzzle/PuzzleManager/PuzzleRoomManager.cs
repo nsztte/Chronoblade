@@ -8,15 +8,15 @@ public abstract class PuzzleRoomManager : MonoBehaviour
     [SerializeField] protected GameObject clearedPortal;
     [SerializeField] protected GameObject clearedReward;
 
-    [Header("로드 설정")]
-    [SerializeField] private bool forceEntranceOnLoad = true;
-    [SerializeField] private Transform entrance;
+    // [Header("로드 설정")]
+    // [SerializeField] private bool forceEntranceOnLoad = true;
+    // [SerializeField] private Transform entrance;
 
     private Dictionary<Transform, TransformSnapshot> initialStates = new();
 
-    protected bool isCleared = false;
+    [SerializeField] protected bool isCleared = false;
     public bool IsCleared => isCleared;
-    protected bool isActivated = false;
+    [SerializeField] protected bool isActivated = false;
     public bool IsActivated => isActivated;
 
     public int RoomId => roomId;
@@ -78,13 +78,13 @@ public abstract class PuzzleRoomManager : MonoBehaviour
 
         RestoreInitialStates();
         
-        if (forceEntranceOnLoad && entrance != null)
-        {
-            Vector3 position = entrance.position;
-            Quaternion rotation = entrance.rotation;
+        // if (forceEntranceOnLoad && entrance != null)
+        // {
+        //     Vector3 position = entrance.position;
+        //     Quaternion rotation = entrance.rotation;
 
-            PlayerManager.Instance?.PlayerController?.SetPositionAndRotation(position, rotation);
-        }
+        //     PlayerManager.Instance?.PlayerController?.SetPositionAndRotation(position, rotation);
+        // }
     }
 
     public void CacheInitialStates()

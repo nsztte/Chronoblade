@@ -12,6 +12,8 @@ public class PuzzleStateTrigger : MonoBehaviour
     private bool isCleared = false;
     private Coroutine waitSubscribeCo;
 
+    private Collider col;
+
     public bool IsActive
     {
         get => puzzleRoomManager ? puzzleRoomManager.IsActivated : isActive;
@@ -33,6 +35,8 @@ public class PuzzleStateTrigger : MonoBehaviour
 
     private void Start()
     {
+        col = GetComponent<Collider>();
+
         // 최초 진입 시 1회 캐싱
         if (!hasCachedInitialStates)
         {
@@ -108,9 +112,26 @@ public class PuzzleStateTrigger : MonoBehaviour
 
     private void OnAfterLoadCommon()
     {
-        // 퍼즐이 아직 미클리어면 방 초기화
-        if (!IsCleared)
-            puzzleRoomManager?.ResetToInitialIfUncleared();
+        if (puzzleRoomManager == null) return;
+
+        if (IsCleared)
+        {
+            if(col) col.enabled = false;
+            return;
+        }
+
+        if (IsActive)
+        {
+            ActivePuzzleRoomDoor();
+            ActivePuzzleObjects();
+            if (col) col.enabled = false;
+        }
+        else
+        {
+            // 비활성 상태 → 초기 스냅샷으로만 복원
+            puzzleRoomManager.ResetToInitialIfUncleared();
+            if (col) col.enabled = true;
+        }
     }
 
     private void TrySubscribeOrWait()

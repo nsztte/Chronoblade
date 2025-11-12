@@ -42184,6 +42184,8 @@ GameObject:
   m_Component:
   - component: {fileID: 470683485}
   - component: {fileID: 470683486}
+  - component: {fileID: 470683488}
+  - component: {fileID: 470683487}
   m_Layer: 0
   m_Name: Puzzle_Room3
   m_TagString: Untagged
@@ -42233,11 +42235,38 @@ MonoBehaviour:
   clearedReward: {fileID: 1000912835}
   forceEntranceOnLoad: 1
   entrance: {fileID: 414174331}
+  isCleared: 0
+  isActivated: 0
   clearPosition: {fileID: 1519897047}
   detectRadius: 0.5
   playerLayer:
     serializedVersion: 2
     m_Bits: 64
+--- !u!114 &470683487
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470683484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 033cd99ecb515384aadad1d1c0085a00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &470683488
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 470683484}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 124ba8565bdb4b36a4d2e93b435da8ef
 --- !u!95 &474020737
 Animator:
   serializedVersion: 7
@@ -72356,6 +72385,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1046868904}
   - component: {fileID: 1046868905}
+  - component: {fileID: 1046868907}
+  - component: {fileID: 1046868906}
   m_Layer: 0
   m_Name: Puzzle_Room4
   m_TagString: Untagged
@@ -72400,6 +72431,33 @@ MonoBehaviour:
   clearedReward: {fileID: 5364921}
   forceEntranceOnLoad: 1
   entrance: {fileID: 0}
+  isCleared: 0
+  isActivated: 0
+--- !u!114 &1046868906
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046868903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 033cd99ecb515384aadad1d1c0085a00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1046868907
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1046868903}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: e575634468da4c748a2f93d006ba5986
 --- !u!1 &1053738916
 GameObject:
   m_ObjectHideFlags: 0
@@ -93725,6 +93783,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1247172075}
   - component: {fileID: 1247172076}
+  - component: {fileID: 1247172078}
+  - component: {fileID: 1247172077}
   m_Layer: 0
   m_Name: Puzzle_Room6
   m_TagString: Untagged
@@ -93772,11 +93832,38 @@ MonoBehaviour:
   clearedReward: {fileID: 1043679853}
   forceEntranceOnLoad: 1
   entrance: {fileID: 0}
+  isCleared: 0
+  isActivated: 0
   endPoint: {fileID: 1682708915}
   detectRadius: 0.5
   statueLayer:
     serializedVersion: 2
     m_Bits: 1
+--- !u!114 &1247172077
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247172074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 033cd99ecb515384aadad1d1c0085a00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1247172078
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1247172074}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 6e6c820cf16d49d7a1ea4dc62a5e5c22
 --- !u!4 &1261274341 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 6541588079325297701, guid: 14f16daa11f050f4eae3c147e683de6c, type: 3}
@@ -127662,6 +127749,8 @@ GameObject:
   m_Component:
   - component: {fileID: 1833788179}
   - component: {fileID: 1833788180}
+  - component: {fileID: 1833788182}
+  - component: {fileID: 1833788181}
   m_Layer: 0
   m_Name: Puzzle_Room5
   m_TagString: Untagged
@@ -127708,7 +127797,34 @@ MonoBehaviour:
   clearedReward: {fileID: 933805244}
   forceEntranceOnLoad: 1
   entrance: {fileID: 0}
+  isCleared: 0
+  isActivated: 0
   Pedestals: {fileID: 1053738916}
+--- !u!114 &1833788181
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833788178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 033cd99ecb515384aadad1d1c0085a00, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &1833788182
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1833788178}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: a897a85dba0044aea7b9e678216bb43b
 --- !u!1 &1837538992
 GameObject:
   m_ObjectHideFlags: 0
