@@ -129,6 +129,15 @@ public class PlayerManager : MonoBehaviour, IDamageable
         UIManager.Instance?.UpdateMP(Mathf.RoundToInt(currentMP), maxMP);
         UIManager.Instance?.UpdateStamina(Mathf.RoundToInt(currentStamina), maxStamina);
         UIManager.Instance?.UpdateGold(gold);
+
+        if (testMP)
+        {
+            UnlockDash();
+            TimeManager.Instance.UnlockTimeSkill(TimeState.Slow);
+            TimeManager.Instance.UnlockTimeSkill(TimeState.Stop);
+            TimeManager.Instance.UnlockTimeSkill(TimeState.Rewind);
+            TimeManager.Instance.UnlockTimeSkill(TimeState.FastForward);
+        }
     }
 
     private void Update()

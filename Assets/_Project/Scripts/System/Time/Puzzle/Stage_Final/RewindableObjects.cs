@@ -14,7 +14,7 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
 
     private float timeScale = 1f;
     private bool isRewinding = false;
-    private bool isStarted = false;
+    private bool isStarted => puzzleRoomManager.IsActivated;
 
     private void Awake()
     {
@@ -40,12 +40,16 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
 
     private void Start()
     {
+        SaveManager.Instance.OnAfterLoad += OnAfterLoadCommon;
+
         TimeManager.Instance?.RegisterControllable(this);
         TimeManager.Instance?.RegisterRewindable(this);
     }
 
     private void OnDisable()
     {
+        SaveManager.Instance.OnAfterLoad -= OnAfterLoadCommon;
+
         TimeManager.Instance?.UnregisterControllable(this);
         TimeManager.Instance?.UnregisterRewindable(this);
     }
@@ -63,11 +67,6 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
             {
                 Restoring();
             }
-        }
-
-        if(puzzleRoomManager.IsActivated && !isStarted)
-        {
-            isStarted = true;
         }
     }
 
@@ -101,9 +100,45 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
 
         if(allRestored)
         {
-            isStarted = false;
             rootCollider.enabled = true;
         }
+    }
+
+    private void OnAfterLoadCommon()
+    {
+        // 로드 직후엔 항상 되감기 종료 상태로 맞춤
+        isRewinding = false;
+
+        if (isStarted)
+        {
+            rootCollider.enabled = false;
+        }
+        else
+        {
+            // 퍼즐 비활성이면 원래 포즈로 스냅
+            SnapToOriginalPose();
+            rootCollider.enabled = true;
+        }
+    }
+
+    private void SnapToOriginalPose()
+    {
+        if (childrenRb == null || originalPositions == null || originalRotations == null)
+            return;
+
+        for (int i = 0; i < childrenRb.Length; i++)
+        {
+            if (childrenRb[i] == null) continue;
+
+            childrenRb[i].isKinematic = false;
+
+            Transform t = childrenRb[i].transform;
+            t.position = originalPositions[i];
+            t.rotation = originalRotations[i];
+        }
+
+        // 물리 정합성 보정
+        Physics.SyncTransforms();
     }
 
     public void StartRewind()
@@ -114,7 +149,7 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
     public void StopRewind()
     {
         isRewinding = false;
-        isStarted = true;
+        // isStarted = true;
     }
 
     public void SetTimeScale(float timeScale)

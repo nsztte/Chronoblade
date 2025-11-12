@@ -42233,8 +42233,6 @@ MonoBehaviour:
   roomId: 3
   clearedPortal: {fileID: 94356684}
   clearedReward: {fileID: 1000912835}
-  forceEntranceOnLoad: 1
-  entrance: {fileID: 414174331}
   isCleared: 0
   isActivated: 0
   clearPosition: {fileID: 1519897047}
@@ -71248,7 +71246,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!4 &966513882
 Transform:
   m_ObjectHideFlags: 0
@@ -72429,8 +72427,6 @@ MonoBehaviour:
   roomId: 4
   clearedPortal: {fileID: 896735420}
   clearedReward: {fileID: 5364921}
-  forceEntranceOnLoad: 1
-  entrance: {fileID: 0}
   isCleared: 0
   isActivated: 0
 --- !u!114 &1046868906
@@ -78337,6 +78333,10 @@ PrefabInstance:
     - target: {fileID: 6935400953924274499, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_Layer
       value: 6
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104480629767278618, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: testMP
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7137788929181196808, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_Layer
@@ -93830,8 +93830,6 @@ MonoBehaviour:
   roomId: 6
   clearedPortal: {fileID: 2129203948}
   clearedReward: {fileID: 1043679853}
-  forceEntranceOnLoad: 1
-  entrance: {fileID: 0}
   isCleared: 0
   isActivated: 0
   endPoint: {fileID: 1682708915}
@@ -127795,8 +127793,6 @@ MonoBehaviour:
   roomId: 5
   clearedPortal: {fileID: 5607819271350505260}
   clearedReward: {fileID: 933805244}
-  forceEntranceOnLoad: 1
-  entrance: {fileID: 0}
   isCleared: 0
   isActivated: 0
   Pedestals: {fileID: 1053738916}
