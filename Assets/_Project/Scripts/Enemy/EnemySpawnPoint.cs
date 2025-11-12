@@ -34,6 +34,8 @@ public class EnemySpawnPoint : MonoBehaviour
     private Transform player;
 
     public List<Enemy> ActiveEnemies => active;
+    public bool AllowRespawn => allowRespawn;
+    public bool SpawnOnStart { get => spawnOnStart; set => spawnOnStart = value; }
 
     private void Start()
     {
@@ -64,7 +66,6 @@ public class EnemySpawnPoint : MonoBehaviour
     {
         nextRespawnAt = Time.time + respawnCooldown;
     }
-
 
     public int TrySpawnEnemies(int spawnCount)
     {
@@ -113,6 +114,58 @@ public class EnemySpawnPoint : MonoBehaviour
         }
 
         return spawned;
+    }
+
+    public void DespawnAllEnemies()
+    {
+        var copy = new List<Enemy>(active);
+
+        foreach (var e in copy)
+        {
+            if (e == null) continue;
+
+            HandleEnemyGone(e); // 이벤트 해제, 리스트 정리
+
+            // 풀 반환
+            EnemyManager.Instance?.ReleaseEnemy(e);
+        }
+
+        active.Clear();
+    }
+
+    // 정확한 위치에 스폰
+    public Enemy SpawnOneAt(Vector3 pos, float yaw)
+    {
+        var enemy = EnemyManager.Instance?.SpawnEnemy(enemyType, transform.position, transform.rotation);
+        if (enemy == null) return null;
+
+        // 위치/회전 정확 주입
+        var agent = enemy.GetComponent<NavMeshAgent>();
+        if (agent != null && agent.isOnNavMesh) agent.Warp(pos);
+        else enemy.transform.position = pos;
+
+        var rot = enemy.transform.rotation.eulerAngles;
+        rot.y = yaw;
+        enemy.transform.rotation = Quaternion.Euler(rot);
+
+        // 필요 시 패트롤 재적용
+        if (overridePatrol)
+        {
+            var cfg = new Enemy.PatrolConfig
+            {
+                mode = patrolMode,
+                radius = patrolRadius,
+                points = GetPatrolPoints(),
+                waitAtPoint = waitAtPoint,
+                startAtNearest = startAtNearest,
+                homePosition = pos
+            };
+            enemy.ApplyPatrolConfig(cfg);
+        }
+
+        // 내부 등록(이벤트 구독 포함)
+        RegisterEnemy(enemy);
+        return enemy;
     }
 
     private void RegisterEnemy(Enemy enemy)
