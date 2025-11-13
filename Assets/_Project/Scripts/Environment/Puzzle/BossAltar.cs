@@ -49,6 +49,44 @@ public class BossAltar : MonoBehaviour
         }
     }
 
+    public int InsertedKeyCount => activated;
+    public int SlotCount => keySockets != null ? keySockets.Length : 0;
+
+    // 현재 슬롯 삽입 상태를 얻기 (소켓 활성 여부 기준)
+    public void GetSlotInsertedSnapshot(bool[] dst)
+    {
+        if (dst == null || keySockets == null) return;
+        for (int i = 0; i < dst.Length && i < keySockets.Length; i++)
+            dst[i] = keySockets[i] != null && keySockets[i].activeSelf;
+    }
+
+    // 복원: 이벤트/컷씬 발행 없이 상태만 맞춤
+    public void ApplyStateOnly(int insertedKeyCount, bool[] slotInserted)
+    {
+        if (keySockets == null) return;
+        insertedKeyCount = Mathf.Clamp(insertedKeyCount, 0, keySockets.Length);
+
+        // 슬롯 비주얼/콜라이더 동기화
+        int count = 0;
+        for (int i = 0; i < keySockets.Length; i++)
+        {
+            bool on = (slotInserted != null && i < slotInserted.Length) ? slotInserted[i] : false;
+            if (keySockets[i] != null)
+                keySockets[i].SetActive(on);
+            if (on) count++;
+        }
+
+        activated = count; // 실제 카운트로 동기화
+
+        // 모든 키가 꽂힌 상태면 보스문 상태만 즉시 동기화
+        if (activated >= keySockets.Length)
+        {
+            if (bossGateToOpen) bossGateToOpen.SetActive(false);    // 게이트/콜라이더 오프
+            if (lastPart) lastPart.SetActive(true);                 // 마지막 파트 비주얼 온
+            // animator나 cm.StartPlay() 등 연출은 호출하지 않음
+        }
+    }
+
     private void InsertKey(BossKeyPickup key)
     {
         int i = Mathf.Clamp(key.SlotIndex, 0, keySockets.Length - 1);
