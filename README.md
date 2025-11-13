@@ -3958,3 +3958,38 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.11.13 (목) 작업 기록
+
+### 주요 작업
+- **BossAltar 저장/로드 구조 개선**
+  - BossAltar에 InsertedKeyCount / SlotCount 공개 게터 추가
+  - GetSlotInsertedSnapshot(bool[]) API 추가
+  - ApplyStateOnly(int, bool[]) 추가하여 이벤트·컷씬 없이 상태만 복원 가능하도록 구조 분리
+  - 모든 슬롯 완료 시 bossGateToOpen 비활성, lastPart 활성(연출 호출 제거)
+  - BossAltarSaveProxy 도입
+    - insertedKeyCount, slotInserted[] 직렬화
+    - Capture에서 슬롯 활성 및 삽입 수 스냅샷 저장
+    - Restore에서 ApplyStateOnly로 “무음 복원” 처리 (컷씬/이펙트 재생 방지)
+
+- **보스키 & 플레이어 장비 상태 리팩토링**
+  - PlayerManager에 isHeld 필드 추가 및 SetHeldObject / ClearHeldObject / HeldSomething에 반영
+  - 물건을 내려놓을 때 currentHeldObject의 부모를 null로 설정하도록 수정
+  - HeldSomething에서 Animator의 "IsHeld"를 isHeld와 연동되도록 개선
+  - BossKeyPickup 구조 정리
+    - isActivated를 OnEnable/OnDisable에서 자동 갱신되도록 변경
+    - isActivated 수동 변경 로직 제거 및 관련 조건문 정리
+    - ApplyActivated의 SetActive(true/false) 방향이 반대로 적용되던 문제 수정
+
+- **퍼즐 진행도 저장/로드 오류 수정**
+  - PuzzleProgressManager의 suppressEvents 제거 및 연동 로직 단순화
+  - ApplyData에서 unlocked.Add → Unlock(r)로 변경하여 이벤트가 정상적으로 다시 호출되도록 개선
+  - 퍼즐룸 구조 개선
+    - ResetToInitialIfUncleared가 다음 방 문의 상태를 강제로 초기화하던 문제 해결
+    - 다음 방 문을 PuzzleRoomManager의 자식이 아닌 이전 룸 하위로 이동해 초기화 로직 영향에서 제외
+
+### 메모
+- BossAltar 관련 저장/로드 흐름이 안정화됨. 컷씬/연출이 재생되지 않는 "무음 복원" 동작 확인 필요.
+- 퍼즐룸 문 구조 이동으로 인해 로드 시 문 상태가 정확히 유지되는 것을 확인했음.
+- 보스키 관련 isActivated 자동 갱신으로 상태 불일치 문제 대부분 해결됨.
+
+---
