@@ -48,7 +48,7 @@ public class PuzzleProgressManagerSaveProxy : SaveableBehaviour
         if (d == null) return;
 
         // 이벤트 억제 모드로 상태만 복원
-        ppm.ApplyDataOnly(
+        ppm.ApplyData(
             d.clearedRooms ?? Array.Empty<int>(),
             d.unlockedRooms ?? Array.Empty<int>(),
             d.lastClearedRoomId,

@@ -21,7 +21,7 @@ public class PuzzleProgressManager : MonoBehaviour
     private int maxCount = 0;
     private int lastClearedRoomId = -1;
     private bool allClearedRaised = false;
-    private bool suppressEvents = false;
+    // private bool suppressEvents = false;
 
     #region Getter
     public IReadOnlyCollection<int> ClearedRooms => cleared;
@@ -52,9 +52,9 @@ public class PuzzleProgressManager : MonoBehaviour
             Destroy(gameObject);
         }
 
-        suppressEvents = true;
+        // suppressEvents = true;
         Unlock(3);
-        suppressEvents = false;
+        // suppressEvents = false;
     }
     #endregion
 
@@ -86,7 +86,7 @@ public class PuzzleProgressManager : MonoBehaviour
     public void MarkCleared(int roomId)
     {
         if (!cleared.Add(roomId)) return;
-        if (!suppressEvents) OnRoomCleared?.Invoke(roomId);
+        OnRoomCleared?.Invoke(roomId);
         lastClearedRoomId = roomId;
         if (unlockMap.TryGetValue(roomId, out var next)) Unlock(next);
     }
@@ -99,11 +99,11 @@ public class PuzzleProgressManager : MonoBehaviour
         if(!allClearedRaised && keyCount == maxCount)
         {
             allClearedRaised = true;
-            if (!suppressEvents) OnAllCleared?.Invoke();
+            OnAllCleared?.Invoke();
         }
         else
         {
-            if (unlockMap.TryGetValue(lastClearedRoomId, out var nextRoomId) && !suppressEvents)
+            if (unlockMap.TryGetValue(lastClearedRoomId, out var nextRoomId))
                 OnKeyInserted?.Invoke(nextRoomId);
         }
     }
@@ -111,11 +111,11 @@ public class PuzzleProgressManager : MonoBehaviour
     private void Unlock(int roomId)
     {
         if (!unlocked.Add(roomId)) return;
-        if (!suppressEvents) OnRoomUnlocked?.Invoke(roomId);
+        OnRoomUnlocked?.Invoke(roomId);
     }
 
     // 저장/복원 전용 API
-    public void ApplyDataOnly(
+    public void ApplyData(
     IEnumerable<int> clearedIn,
     IEnumerable<int> unlockedIn,
     int lastClearedId,
@@ -123,21 +123,17 @@ public class PuzzleProgressManager : MonoBehaviour
     int maxCnt,
     bool allCleared)
     {
-        suppressEvents = true;
-
         // 상태 초기화
         unlocked.Clear();
         cleared.Clear();
 
         // 값 주입
-        if (unlockedIn != null) foreach (var r in unlockedIn) unlocked.Add(r);
+        if (unlockedIn != null) foreach (var r in unlockedIn) Unlock(r);
         if (clearedIn  != null) foreach (var r in clearedIn) cleared.Add(r);
 
         lastClearedRoomId = lastClearedId;
         keyCount = keyCnt;
         maxCount = maxCnt;
         allClearedRaised = allCleared;
-
-        suppressEvents = false;
     }
 }

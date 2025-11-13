@@ -40,6 +40,6 @@ public class BossAltarSaveProxy : SaveableBehaviour
         if (d == null) return;
 
         // 복원 (이벤트/컷씬 발행 금지)
-        altar.ApplyStateOnly(d.insertedKeyCount, d.slotInserted);
+        altar.ApplyState(d.insertedKeyCount, d.slotInserted);
     }
 }

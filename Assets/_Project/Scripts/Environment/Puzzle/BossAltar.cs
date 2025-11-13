@@ -61,7 +61,7 @@ public class BossAltar : MonoBehaviour
     }
 
     // 복원: 이벤트/컷씬 발행 없이 상태만 맞춤
-    public void ApplyStateOnly(int insertedKeyCount, bool[] slotInserted)
+    public void ApplyState(int insertedKeyCount, bool[] slotInserted)
     {
         if (keySockets == null) return;
         insertedKeyCount = Mathf.Clamp(insertedKeyCount, 0, keySockets.Length);

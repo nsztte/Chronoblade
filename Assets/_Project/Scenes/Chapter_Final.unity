@@ -5709,11 +5709,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1046868904}
+    m_TransformParent: {fileID: 1833788179}
     m_Modifications:
     - target: {fileID: 2226234425662676155, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_Name
-      value: PuzzleRoomDoor
+      value: PuzzleRoomDoor_4
       objectReference: {fileID: 0}
     - target: {fileID: 5083120751046860719, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: roomId
@@ -5721,15 +5721,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -0.028
+      value: -46.898
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.3089399
+      value: -2.4699993
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 5.934001
+      value: 55.792793
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalRotation.w
@@ -37186,11 +37186,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1247172075}
+    m_TransformParent: {fileID: 1046868904}
     m_Modifications:
     - target: {fileID: 2226234425662676155, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_Name
-      value: PuzzleRoomDoor
+      value: PuzzleRoomDoor_6
       objectReference: {fileID: 0}
     - target: {fileID: 5083120751046860719, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: roomId
@@ -37198,7 +37198,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.7000008
+      value: 1.7000009
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalScale.y
@@ -37206,15 +37206,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.x
-      value: 8.1977825
+      value: 5.047781
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.375
+      value: 5.1539392
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.z
-      value: -0.021
+      value: -49.87979
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalRotation.w
@@ -37222,7 +37222,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0
+      value: -0
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalRotation.y
@@ -42216,8 +42216,9 @@ Transform:
   - {fileID: 2079206401}
   - {fileID: 229094411}
   - {fileID: 559085518}
-  - {fileID: 5516487406777742672}
   - {fileID: 731662486}
+  - {fileID: 5516487406777742672}
+  - {fileID: 929824045}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &470683486
@@ -70086,11 +70087,11 @@ PrefabInstance:
   serializedVersion: 2
   m_Modification:
     serializedVersion: 3
-    m_TransformParent: {fileID: 1833788179}
+    m_TransformParent: {fileID: 470683485}
     m_Modifications:
     - target: {fileID: 2226234425662676155, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_Name
-      value: PuzzleRoomDoor
+      value: PuzzleRoomDoor_5
       objectReference: {fileID: 0}
     - target: {fileID: 5083120751046860719, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: roomId
@@ -70098,7 +70099,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalScale.x
-      value: 1.7000006
+      value: 1.7000008
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalScale.y
@@ -70106,15 +70107,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.x
-      value: -9.726999
+      value: -5.452219
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 1.375
+      value: 5.153942
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalPosition.z
-      value: 0.09500122
+      value: -49.76379
       objectReference: {fileID: 0}
     - target: {fileID: 9201900549155838215, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_LocalRotation.w
@@ -71878,9 +71879,9 @@ Transform:
   m_Children:
   - {fileID: 896735421}
   - {fileID: 622206673}
-  - {fileID: 155924876}
   - {fileID: 1216660259}
   - {fileID: 1859028723}
+  - {fileID: 442272013}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1046868905
@@ -93280,7 +93281,6 @@ Transform:
   - {fileID: 1043679857}
   - {fileID: 543450652513506005}
   - {fileID: 859644793}
-  - {fileID: 442272013}
   - {fileID: 1749294900}
   - {fileID: 543450653431526590}
   - {fileID: 1532960222}
@@ -127065,9 +127065,9 @@ Transform:
   - {fileID: 5516487407436062361}
   - {fileID: 543450652575846842}
   - {fileID: 820905557}
-  - {fileID: 929824045}
   - {fileID: 543450651736311685}
   - {fileID: 659762150}
+  - {fileID: 155924876}
   m_Father: {fileID: 1656381684}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &1833788180
@@ -331841,7 +331841,7 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 2226234425662676155, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: m_Name
-      value: PuzzleRoomDoor
+      value: PuzzleRoomDoor_3
       objectReference: {fileID: 0}
     - target: {fileID: 5083120751046860719, guid: 929478aa6955b984ab9c76d2464cfe24, type: 3}
       propertyPath: roomId
