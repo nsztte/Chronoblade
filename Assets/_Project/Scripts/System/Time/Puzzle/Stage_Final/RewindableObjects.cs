@@ -109,37 +109,29 @@ public class RewindableObjects : MonoBehaviour, ITimeControllable, IRewindable
         // 로드 직후엔 항상 되감기 종료 상태로 맞춤
         isRewinding = false;
 
-        if (isStarted)
-        {
-            rootCollider.enabled = false;
-        }
-        else
-        {
-            // 퍼즐 비활성이면 원래 포즈로 스냅
-            SnapToOriginalPose();
-            rootCollider.enabled = true;
-        }
+        // rootCollider.enabled = false;
+        // SetChildrenPhysics(false);
     }
 
-    private void SnapToOriginalPose()
-    {
-        if (childrenRb == null || originalPositions == null || originalRotations == null)
-            return;
+    // private void SnapToOriginalPose()
+    // {
+    //     if (childrenRb == null || originalPositions == null || originalRotations == null)
+    //         return;
 
-        for (int i = 0; i < childrenRb.Length; i++)
-        {
-            if (childrenRb[i] == null) continue;
+    //     SetChildrenPhysics(false);
 
-            childrenRb[i].isKinematic = false;
+    //     for (int i = 0; i < childrenRb.Length; i++)
+    //     {
+    //         if (childrenRb[i] == null) continue;
 
-            Transform t = childrenRb[i].transform;
-            t.position = originalPositions[i];
-            t.rotation = originalRotations[i];
-        }
+    //         Transform t = childrenRb[i].transform;
+    //         t.position = originalPositions[i];
+    //         t.rotation = originalRotations[i];
+    //     }
 
-        // 물리 정합성 보정
-        Physics.SyncTransforms();
-    }
+    //     // 물리 정합성 보정
+    //     Physics.SyncTransforms();
+    // }
 
     public void StartRewind()
     {
