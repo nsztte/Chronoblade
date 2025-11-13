@@ -53,7 +53,8 @@ public class PlayerManager : MonoBehaviour, IDamageable
     
     [Header("장착 소켓")]
     [SerializeField] private Transform heldPosition;
-    private GameObject currentHeldObject;
+    [SerializeField] private GameObject currentHeldObject;
+    private bool isHeld;
 
     [Header("능력 해금")]
     [SerializeField] private bool canDash = false;
@@ -214,20 +215,23 @@ public class PlayerManager : MonoBehaviour, IDamageable
 
     public void SetHeldObject(GameObject obj)
     {
+        isHeld = true;
         currentHeldObject = obj;
         HeldSomething();
     }
 
     public void ClearHeldObject()
     {
-        currentHeldObject = null;
+        isHeld = false;
         HeldSomething();
+        currentHeldObject = null;
     }
 
     private void HeldSomething()
     {
-        bool isHolding = currentHeldObject != null;
-        SetAnimatorBool("IsHeld", isHolding);
+        // bool isHolding = currentHeldObject != null;
+        SetAnimatorBool("IsHeld", isHeld);
+        if(!isHeld && currentHeldObject != null) currentHeldObject.transform.SetParent(null);
     }
     #endregion
 

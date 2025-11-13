@@ -7,8 +7,8 @@ public class BossKeyPickup : MonoBehaviour, IInteractable, IInteractableSavable
     private Transform startParent;
     public int SlotIndex;
     public Action insert;
-    private bool isHeld = false;
-    private bool isActivated = false;
+    [SerializeField] private bool isHeld = false;
+    [SerializeField] private bool isActivated = false;
     private Rigidbody rb;
     // private Collider col;
 
@@ -26,14 +26,20 @@ public class BossKeyPickup : MonoBehaviour, IInteractable, IInteractableSavable
         startParent = transform.parent;
     }
 
+    private void OnEnable()
+    {
+        isActivated = true;
+    }
+
     private void OnDisable()
     {
         if (isHeld) PlayerManager.Instance?.ClearHeldObject();
+        isActivated = false;
     }
 
     public void ActivateSocket(GameObject socket)
     {
-        isActivated = true;
+        // isActivated = false;
         isHeld = false;
 
         PlayerManager.Instance?.ClearHeldObject();
@@ -67,13 +73,14 @@ public class BossKeyPickup : MonoBehaviour, IInteractable, IInteractableSavable
 
     public void Interact()
     {
-        if (isActivated) return;
+        // if (isActivated) return;
         if (!isHeld && PlayerManager.Instance != null && PlayerManager.Instance?.CurrentHeldObject) return;
 
-        if(CanActive)
+        if (CanActive)
         {
             insert?.Invoke();
             CanActive = false;
+            // isActivated = false;
         }
         else
         {
@@ -83,7 +90,7 @@ public class BossKeyPickup : MonoBehaviour, IInteractable, IInteractableSavable
 
     public string GetPrompt()
     {
-        if (isActivated) return "";
+        // if (isActivated) return "";
         if (CanActive) return "삽입하기";
         if (!isHeld && PlayerManager.Instance?.CurrentHeldObject != null) return "";
         return isHeld ? "놓기" : "들기";
@@ -97,10 +104,17 @@ public class BossKeyPickup : MonoBehaviour, IInteractable, IInteractableSavable
 
     public void ApplyActivated(bool activated)
     {
-        isActivated = activated;
+        Debug.Log($"{gameObject.name} 활성화 여부 : {activated}");
+        // isActivated = activated;
         if (activated)
         {
+            Debug.Log("ApplyActivated: SetActive(true)");
             if (isHeld) PlayerManager.Instance?.ClearHeldObject();
+            gameObject.SetActive(true);
+        }
+        else
+        {
+            Debug.Log("ApplyActivated: SetActive(false)");
             gameObject.SetActive(false);
         }
     }
@@ -108,6 +122,6 @@ public class BossKeyPickup : MonoBehaviour, IInteractable, IInteractableSavable
     public void ApplyHeld(bool held) => PickUp(held);
     public void ApplyWorldPose(Vector3 p, Quaternion r)
     {
-        if (!isHeld && !isActivated) transform.SetPositionAndRotation(p, r);
+        if (!isHeld) transform.SetPositionAndRotation(p, r);
     }
 }

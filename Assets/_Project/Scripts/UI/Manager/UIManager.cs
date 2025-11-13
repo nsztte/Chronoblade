@@ -113,7 +113,7 @@ public class UIManager : MonoBehaviour
     #region 플레이어 상태 업데이트
     public void UpdatePlayerHud(bool value)
     {
-        Debug.Log("UpdatePlayerHud : " + value);
+        // Debug.Log("UpdatePlayerHud : " + value);
         playerHUD?.SetPlayerHud(value);
         quickSlotPanel?.SetActive(value);
     }

@@ -27,7 +27,7 @@ public class GenericInteractionSaveProxy : SaveableBehaviour
 
         var d = new Data {
             activated = sav.IsActivated(),
-            held      = sav.IsHeld()
+            held = sav.IsHeld()
         };
 
         if (sav.TryGetWorldPose(out d.pos, out d.rot)) d.hasPose = true;
@@ -39,10 +39,11 @@ public class GenericInteractionSaveProxy : SaveableBehaviour
         if (sav == null || string.IsNullOrEmpty(json)) return;
         var d = JsonUtility.FromJson<Data>(json);
 
-        // 1) 위치/회전 (필요할 때만)
-        if (d.hasPose) sav.ApplyWorldPose(d.pos, d.rot);
+        // 포즈
+        if (d.hasPose)
+            sav.ApplyWorldPose(d.pos, d.rot);
 
-        // 2) 상태/홀드
+        // 상태/홀드
         sav.ApplyActivated(d.activated);
         sav.ApplyHeld(d.held);
     }
