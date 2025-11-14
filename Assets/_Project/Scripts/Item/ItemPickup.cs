@@ -1,8 +1,8 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Collider))]
-public class ItemPickup : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Collider)), RequireComponent(typeof(GenericInteractionSaveProxy))]
+public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
 {
     [SerializeField] private ItemData itemData;
     [SerializeField] private int amount = 1;
@@ -12,10 +12,10 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     private Collider col;
 
-    private void Start()
+    private void Awake()
     {
-        GetComponent<Collider>().isTrigger = true;
         col = GetComponent<Collider>();
+        col.isTrigger = true;
     }
 
     private void OnTriggerEnter(Collider other)
@@ -58,7 +58,8 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
             onPickupSuccess.Invoke();
 
-            Destroy(gameObject);
+            if(col != null) col.enabled = false;
+            gameObject.SetActive(false);
         }
         else
         {
@@ -88,4 +89,50 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
         return itemData.isAutoPickup ? "" : $"줍기: {itemData.itemName}";
     }
+
+
+    #region IInteractableSavable 구현부
+    public bool IsActivated()
+    {
+        return gameObject.activeSelf;
+    }
+
+    public bool IsHeld()
+    {
+        return false;
+    }
+
+    public bool TryGetWorldPose(out Vector3 pos, out Quaternion rot)
+    {
+        pos = transform.position;
+        rot = transform.rotation;
+        return true;
+    }
+
+    public void ApplyActivated(bool activated)
+    {
+        if (col == null) col = GetComponent<Collider>();
+
+        if (activated)
+        {
+            gameObject.SetActive(true);
+            col.enabled = true;
+            isPlayerInRange = false; // 로드 시에는 항상 새로 트리거 들어오게
+        }
+        else
+        {
+            // 이미 주운 상태: 안 보이고, 콜리전도 꺼둠
+            col.enabled = false;
+            gameObject.SetActive(false);
+            isPlayerInRange = false;
+        }
+    }
+
+    public void ApplyHeld(bool held){}
+
+    public void ApplyWorldPose(Vector3 pos, Quaternion rot)
+    {
+        transform.SetPositionAndRotation(pos, rot);
+    }
+    #endregion
 }
