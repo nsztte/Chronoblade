@@ -2913,6 +2913,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c68460b8acb5d614a8ba8af1dada7c7b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  testMP: 0
   playerTransform: {fileID: 6125324836093535223}
   playerBody: {fileID: 6533035517338845293}
   maxHP: 100
@@ -2936,6 +2937,8 @@ MonoBehaviour:
   invincibilityTimer: 0
   hitInvincibilityDuration: 0.5
   heldPosition: {fileID: 1104695888157392320}
+  currentHeldObject: {fileID: 0}
+  canDash: 0
 --- !u!114 &2302039866358306470
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2975,7 +2978,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 13b0ae789ab6477dab1c08ce04e82c53
+  guid: 691c5137809d469d8088ffb0248f0545
 --- !u!114 &8834180583919842792
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -5046,6 +5049,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 255906bd268e27346b087f4ac50e1580, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  test: 0
   mainMenuState: {fileID: 11400000, guid: c2282990e49e56a40ba186df5f56e1d4, type: 2}
   loadingState: {fileID: 11400000, guid: add15f0406a567149b12b7fe308db0dc, type: 2}
   explorationState: {fileID: 11400000, guid: 42c732350cbdacd46b00a502ea06011d, type: 2}
@@ -5793,7 +5797,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: a5c71751ec5c4c588676c9ba54e0fdb0
+  guid: 0af44da8997c477ab07814d56c9c0275
 --- !u!114 &7526526358828160504
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -10523,6 +10527,10 @@ MonoBehaviour:
   stopMpDrain: 25
   slowMpDrain: 10
   fastForwardMpDrain: 8
+  unlockedSlow: 0
+  unlockedStop: 0
+  unlockedRewind: 0
+  unlockedFastForward: 0
 --- !u!1 &6081377816929003426
 GameObject:
   m_ObjectHideFlags: 0
@@ -11167,7 +11175,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 2cddac8c48a949a8b6f7235d92e2f010
+  guid: 5717313dcc0541f39fc071a590e02506
 --- !u!114 &2957629307022837122
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -14168,7 +14176,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  guid: 783bf2febb2b4380b53ea533c758e65b
+  guid: 18f42d74f5734d7089b9afcf15eb23b9
 --- !u!114 &5799521300247699478
 MonoBehaviour:
   m_ObjectHideFlags: 0
