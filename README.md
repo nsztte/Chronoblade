@@ -3993,3 +3993,53 @@ Enemy FSM(상태머신) 시스템 구현
 - 보스키 관련 isActivated 자동 갱신으로 상태 불일치 문제 대부분 해결됨.
 
 ---
+
+## 2025.11.14 (금) 작업 기록
+
+### 주요 작업
+- **ItemPickup 세이브/로드 대응**
+  - IInteractableSavable 구현
+  - IsActivated/ApplyActivated로 활성 상태 저장·복원
+  - TryGetWorldPose/ApplyWorldPose로 위치·회전 반영
+  - Destroy() 제거 → SetActive(false) + Collider 비활성화 방식으로 전환
+  - GenericInteractionSaveProxy 필수 구성 요소로 RequireComponent 적용
+  - itemData 누락 시 경고 출력 추가
+
+- **DoorController 세이브/로드 구조 정비**
+  - IInteractableSavable 적용  
+    - isOpen → activated, isUnlocked → held 매핑  
+    - ApplyActivated(true): OpenDoor 호출  
+    - ApplyActivated(false): isOpen = false만 반영  
+    - ApplyHeld로 잠금 상태 반영
+  - Trigger 기반 자동 개폐 유지
+  - 문 오브젝트는 고정 위치이므로 TryGetWorldPose는 false 반환 처리
+  - GenericInteractionSaveProxy 필수 구성 요소 처리
+
+- **SaveId 개선**
+  - GUID 자동 충돌 방지 로직 구현(OnValidate)
+  - FindObjectsByType로 중복 GUID 검사
+  - 충돌 시 새로운 GUID 자동 생성
+  - EditorUtility.SetDirty 사용해 에디터 반영 보장
+  - 프리팹 복제 시 고유 GUID 자동 유지
+
+- **GenericInteractionSaveProxy 개선**
+  - 같은 오브젝트 내 IInteractableSavable 자동 탐색 후 target 자동 할당
+  - OnValidate/Awake에서 누락된 target 자동 보정
+  - 에디터 Dirty 처리 적용
+
+- **랜덤 아이템 스폰 시스템 구축**
+  - XZ 무작위 샘플링 후 월드 좌표 변환
+  - 레이캐스트 기반 바닥 탐색(raycastHeight + surfaceOffset)
+  - MAX_ATTEMPTS로 복잡 지형 대응
+  - 장애물/가림 검사(obstacleMask + CheckSphere + 상향 Raycast)
+  - 아이템 간 최소 거리 보장(minDistanceBetweenItems)
+  - 스폰 로직 기능 분리(TryGetValidPosition / IsPositionFree)
+  - itemPickupPrefab 누락 시 경고 출력
+  - 자연스러운 분산 배치 및 지형/오브젝트 충돌 없는 품질 확보
+
+### 메모
+- RandomItemSpawner는 추후 SaveableBehaviour로 되돌리고 SpawnItems 호출 시점을 RestoreState 이후로 지연시키도록 개선 필요
+- 랜덤 아이템 슬롯을 풀 기반으로 고정화하는 방식이 GUID & 세이브 정합성 문제를 해결하는 최종 구조로 유력함
+- 월요일에 SaveManager 호출 순서 기반으로 스폰 타이밍(지연) 최종 정리 예정
+
+---

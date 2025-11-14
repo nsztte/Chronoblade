@@ -54,7 +54,7 @@ public class SaveId : MonoBehaviour
     }
 
     [ContextMenu("GUID 재생성 (주의)")]
-    public void Regenerate()
+    private void Regenerate()
     {
         guid = System.Guid.NewGuid().ToString("N");
         UnityEditor.EditorUtility.SetDirty(this);
