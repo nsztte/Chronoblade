@@ -16,6 +16,11 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
     {
         col = GetComponent<Collider>();
         col.isTrigger = true;
+
+        if (itemData == null)
+        {
+            Debug.LogWarning($"[ItemPickup] {name} 오브젝트의 itemData가 비어 있습니다.", this);
+        }
     }
 
     private void OnTriggerEnter(Collider other)
@@ -135,4 +140,14 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
         transform.SetPositionAndRotation(pos, rot);
     }
     #endregion
+
+    #if UNITY_EDITOR
+    private void OnValidate()
+    {
+        if (itemData == null)
+        {
+            Debug.LogWarning($"[ItemPickup] {name} 오브젝트의 itemData가 비어 있습니다.", this);
+        }
+    }
+    #endif
 }
