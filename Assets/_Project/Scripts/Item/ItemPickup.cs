@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.Events;
 
-[RequireComponent(typeof(Collider)), RequireComponent(typeof(GenericInteractionSaveProxy))]
+[RequireComponent(typeof(Collider))]
 public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
 {
     [SerializeField] private ItemData itemData;

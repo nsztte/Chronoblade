@@ -2370,6 +2370,66 @@ Transform:
   m_CorrespondingSourceObject: {fileID: 3769708576829788682, guid: fa8989944c73d1641b988f94da78e693, type: 3}
   m_PrefabInstance: {fileID: 872637139}
   m_PrefabAsset: {fileID: 0}
+--- !u!1 &936149115
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 936149117}
+  - component: {fileID: 936149116}
+  m_Layer: 0
+  m_Name: RandomItemSpawner
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!114 &936149116
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936149115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d8912c4e4faf85b4397dfa36613daf05, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  itemPickupPrefab: {fileID: 6668975616189719548, guid: 3061764f16d72724eb27491044cdb85f, type: 3}
+  count: 10
+  areaSize: {x: 60, y: 2, z: 60}
+  raycastHeight: 5
+  raycastDistance: 50
+  surfaceOffset: -0.1
+  groundMask:
+    serializedVersion: 2
+    m_Bits: 8
+  obstacleMask:
+    serializedVersion: 2
+    m_Bits: 2147577335
+  overlapRadius: 1
+  headroomHeight: 0.5
+  minDistanceBetweenItems: 3
+  spawnOnStart: 1
+--- !u!4 &936149117
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936149115}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0.056, y: 1.223, z: -48.563}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &982361712
 GameObject:
   m_ObjectHideFlags: 0
@@ -397103,3 +397163,4 @@ SceneRoots:
   - {fileID: 2144356754}
   - {fileID: 495849991}
   - {fileID: 2007216555}
+  - {fileID: 936149117}
