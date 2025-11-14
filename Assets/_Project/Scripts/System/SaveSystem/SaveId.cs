@@ -6,7 +6,7 @@ public class SaveId : MonoBehaviour
     [SerializeField] private string guid;
     public string Guid => guid;
 
-    private void Reset()
+    public void Reset()
     {
         if(string.IsNullOrWhiteSpace(guid))
             guid = System.Guid.NewGuid().ToString("N");
@@ -22,7 +22,7 @@ public class SaveId : MonoBehaviour
             guid = System.Guid.NewGuid().ToString("N");
 
         // 씬 안의 모든 SaveId를 가져와서 중복 체크
-        var all = UnityEngine.Object.FindObjectsByType<SaveId>(
+        var all = Object.FindObjectsByType<SaveId>(
             FindObjectsInactive.Include,
             FindObjectsSortMode.None
         );
@@ -54,7 +54,7 @@ public class SaveId : MonoBehaviour
     }
 
     [ContextMenu("GUID 재생성 (주의)")]
-    private void Regenerate()
+    public void Regenerate()
     {
         guid = System.Guid.NewGuid().ToString("N");
         UnityEditor.EditorUtility.SetDirty(this);

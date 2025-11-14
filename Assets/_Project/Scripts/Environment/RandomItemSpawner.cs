@@ -1,5 +1,6 @@
 using UnityEngine;
 using System.Collections.Generic;
+using TMPro;
 
 public class RandomItemSpawner : MonoBehaviour
 {
@@ -51,7 +52,8 @@ public class RandomItemSpawner : MonoBehaviour
             }
 
             Quaternion rot = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
-            Instantiate(itemPickupPrefab, worldPos, rot, transform);
+            GameObject item = Instantiate(itemPickupPrefab, worldPos, rot, transform);
+            item.GetComponent<SaveId>().Regenerate();
             spawnedPositions.Add(worldPos);
         }
     }
