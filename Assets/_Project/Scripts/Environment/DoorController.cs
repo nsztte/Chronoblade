@@ -1,10 +1,10 @@
 using UnityEngine;
 
-public class DoorController : MonoBehaviour
+[RequireComponent(typeof(Animator)), RequireComponent(typeof(GenericInteractionSaveProxy)), RequireComponent(typeof(Collider))]
+public class DoorController : MonoBehaviour, IInteractableSavable
 {
     private Animator animator;
-    private bool isOpen = false;
-
+    [SerializeField] private bool isOpen = false;
     [SerializeField] private bool isUnlocked = false;
     [SerializeField] private DoorController[] nextDoor;
 
@@ -13,7 +13,7 @@ public class DoorController : MonoBehaviour
         animator = GetComponent<Animator>();
     }
 
-    private void OnTriggerEnter(Collider other)
+    private void OnTriggerStay(Collider other)
     {
         if (!isUnlocked) return;
 
@@ -55,4 +55,44 @@ public class DoorController : MonoBehaviour
         }
     }
     public void SetUnlocked(bool unlocked) => isUnlocked = unlocked;
+
+    #region IInteractableSavable 구현부
+    public bool IsActivated()
+    {
+        return isOpen;
+    }
+
+    public bool IsHeld()
+    {
+        return isUnlocked;
+    }
+
+    public bool TryGetWorldPose(out Vector3 pos, out Quaternion rot)
+    {
+        pos = Vector3.zero;
+        rot = Quaternion.identity;
+        return false;
+    }
+
+    public void ApplyActivated(bool activated)
+    {
+        // 세이브된 "열림 상태"를 복원
+        if (activated)
+        {
+            OpenDoor();
+        }
+        else
+        {
+            isOpen = false;
+        }
+    }
+
+    public void ApplyHeld(bool held)
+    {
+        // 세이브된 "잠금 상태" 복원
+        SetUnlocked(held);
+    }
+
+    public void ApplyWorldPose(Vector3 pos, Quaternion rot){}
+    #endregion
 }
