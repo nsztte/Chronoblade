@@ -55,7 +55,8 @@ public class ShopManager : MonoBehaviour
         int sellPrice = currentShop.shopData.GetSellPrice(item);
 
         PlayerManager.Instance.AddGold(sellPrice);
-        Debug.Log($"[ShopManager] 아이템 판매 성공: {item.name} / 판매 가격: {sellPrice}G");
+        UIManager.Instance.ShowToast($"아이템 판매 성공: {item.name} / 판매 가격: {sellPrice}G");
+        // Debug.Log($"[ShopManager] 아이템 판매 성공: {item.name} / 판매 가격: {sellPrice}G");
     }
 
     public void BuyItem(ItemData item)
@@ -65,7 +66,8 @@ public class ShopManager : MonoBehaviour
         // 1단계: 골드 차감
         if(!PlayerManager.Instance.SpendGold(price))
         {
-            Debug.LogError($"[ShopManager] 골드가 부족합니다. 아이템 구매 실패: {item.name}");
+            UIManager.Instance.ShowToast($"골드가 부족합니다. 아이템 구매 실패: {item.name}");
+            // Debug.LogError($"[ShopManager] 골드가 부족합니다. 아이템 구매 실패: {item.name}");
             return;
         }
 
@@ -75,12 +77,15 @@ public class ShopManager : MonoBehaviour
         {
             // 아이템 추가 실패 시 골드 환불
             PlayerManager.Instance.AddGold(price);
-            Debug.LogError($"[ShopManager] 아이템 구매 실패: {failReason} - 골드 환불됨: {price}G");
+            UIManager.Instance.ShowToast($"아이템 구매 실패: {failReason}");
+            // Debug.LogError($"[ShopManager] 아이템 구매 실패: {failReason} - 골드 환불됨: {price}G");
+
             return;
         }
 
         // 3단계: 구매 성공
-        Debug.Log($"[ShopManager] 아이템 구매 성공: {item.name} / 수량: {InventoryManager.Instance.GetItemCount(item)}");
+        UIManager.Instance.ShowToast($"아이템 구매 성공: {item.name} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(item)}");
+        // Debug.Log($"[ShopManager] 아이템 구매 성공: {item.name} / 수량: {InventoryManager.Instance.GetItemCount(item)}");
     }
 
     public void CloseShop()
