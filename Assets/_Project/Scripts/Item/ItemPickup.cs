@@ -56,9 +56,14 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
 
         if(leftOver <= 0)
         {
-            if(itemData.itemType == ItemType.Equipment && itemData.weaponData != null)
+            if (itemData.itemType == ItemType.Equipment && itemData.weaponData != null)
             {
                 InventoryManager.Instance.RegisterWeapon(itemData);
+                UIManager.Instance.ShowToast($"무기 획득: {itemData.itemName}");
+            }
+            else
+            {
+                UIManager.Instance.ShowToast($"아이템 획득: {itemData.itemName} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(itemData)}");
             }
 
             onPickupSuccess.Invoke();
@@ -68,12 +73,24 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
         }
         else
         {
+            int requestedAmount = amount;
+
             // 총알 아이템이라면: 남은 총알 수 → 박스 개수로 환산
             if (itemData.itemType == ItemType.Consumable &&
                 itemData.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
             {
                 int originalValue = itemData.value;
+                int requested = originalValue * requestedAmount;
                 int remaining = leftOver;
+                int picked = requested - remaining;
+
+                if (picked > 0)
+                {
+                    int pickedBoxes = Mathf.FloorToInt((float)picked / originalValue);
+                    UIManager.Instance.ShowToast(
+                        $"탄약 획득: {itemData.itemName} x {pickedBoxes} 상자 ({picked}발) / 총 보유 수량: {InventoryManager.Instance.GetAmmoCount(itemData.ammoType)}발"
+                    );
+                }
 
                 itemData = Instantiate(itemData);
                 itemData.value = remaining;
@@ -81,10 +98,19 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
             }
             else
             {
+                int pickedAmount = requestedAmount - leftOver;   // 실제로 들어간 개수
+
+                if (pickedAmount > 0)
+                {
+                    UIManager.Instance.ShowToast(
+                        $"아이템 획득: {itemData.itemName} x {pickedAmount} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(itemData)}"
+                    );
+                }
+
                 amount = leftOver; // 일반 아이템은 남은 개수 그대로 사용
             }
 
-            Debug.Log($"[ItemPickup] 일부만 획득됨. 남은 수량: {leftOver} | 사유: {failReason}");
+            // Debug.Log($"아이템 일부만 획득됨. 남은 수량: {leftOver} | 사유: {failReason}");
         }
     }
 
