@@ -56,6 +56,16 @@ public class InventoryUI : MonoBehaviour
 
     public void UpdateOrAddSlot(ItemData item, ItemDetailPanel overrideDetailPanel = null)
     {
+        if (item == null) return;
+
+        // 탄약(AmmoSupply) 아이템은 인벤토리 슬롯에서 아예 취급하지 않음
+        if (item.itemType == ItemType.Consumable &&
+            item.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
+        {
+            // TODO: 추후 인벤토리에 탄약용 패널 추가 예정
+            return;
+        }
+
         var existingSlot = spawnedSlots.FirstOrDefault(s => s.item == item);
         if (existingSlot != null)
         {
