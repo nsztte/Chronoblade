@@ -4043,3 +4043,73 @@ Enemy FSM(상태머신) 시스템 구현
 - 월요일에 SaveManager 호출 순서 기반으로 스폰 타이밍(지연) 최종 정리 예정
 
 ---
+
+## 2025.11.17 (월) 작업 기록
+
+### 주요 작업
+- **FixedItemPool 구현 및 랜덤 아이템 스포너 전면 리팩토링**
+  - `FixedItemPool` 신규 구현  
+    - `itemPrefab / count` 기반 자동 슬롯 생성(OnValidate)  
+    - Instantiate 후 `SaveId.Regenerate()` 호출로 고유 GUID 부여  
+    - Awake에서 자식 슬롯 스캔 및 풀 큐 초기화  
+    - `Get / Release / ReleaseAll` 풀링 기능 구현
+  - `SaveId`에 `Regenerate()` 함수 추가
+  - `RandomItemSpawner`를 FixedItemPool 기반 구조로 리팩토링  
+    - `SaveableBehaviour` 재도입  
+    - hasSpawned 플래그 저장/복원  
+    - RestoreState 이후 1~2프레임 지연 후 스폰 결정  
+    - Instantiate 완전 제거, 풀 슬롯 배치 방식으로 변경  
+    - 위치/회전 초기화 후 상태는 ItemPickup/GenericInteractionSaveProxy에 위임  
+    - 새 게임 1회 스폰 / 로드 시 정상 스킵 흐름 완성
+
+- **인벤토리 골드 표시 및 실시간 갱신**
+  - `InventoryUI.SetGold` 구현
+  - 인벤토리 Open 시 보유 골드 자동 반영
+  - `UIManager.UpdateGold`에서 인벤토리 UI에도 동기화
+
+- **소비형 아이템에 장착 표시가 뜨는 오류 수정**
+  - `InventoryManager.IsEquipped`에 장비 조건 강화  
+    (`itemType == Equipment && weaponData != null`)
+
+- **장착 변경 시 equippedMarker 전체 갱신**
+  - `InventorySlot.RefreshEquippedMarker` 추가  
+  - `InventoryUI.RefreshEquippedMarkers` 구현  
+  - `ItemDetailPanel.RefreshUI`에서 슬롯 갱신 후 전체 마커 리프레시하도록 변경
+
+- **새 게임 시작 시 기본 무기 지급 & 퀵슬롯 세팅**
+  - `InventoryManager.GiveDefaultWeaponAndQuickSlot` 구현  
+  - 테스트용 초기 지급 코드 제거  
+  - `LoadingState.OnSceneLoaded`에서 STARTSCENE 로드 시 기본 무기 지급 + 컷씬 실행
+
+- **마우스 휠 무기 전환 개선**
+  - 퀵슬롯 무기 1개 → 휠로 장착/해제 토글  
+  - 퀵슬롯 무기 여러 개 → 순환만, 해제 없음
+
+- **탄약(AmmoSupply) 인벤토리 슬롯 노출 제거**
+  - `InventoryUI.UpdateOrAddSlot`에서 AmmoSupply 즉시 필터링
+  - 탄약은 슬롯 로직에서 완전히 제외
+
+- **무기 슬롯 카운트뱃지에 탄약 표시**
+  - 무기일 경우 `ammoCounts` 기반 탄약 수 표시
+  - `RefreshCountBadge`, `RefreshAllCountBadges` 구현  
+  - `AddAmmo / DropAmmo / UseAmmo`에서 인벤토리 열려 있으면 즉시 갱신
+
+- **상점 구매/판매 결과를 Toast로 전환**
+  - 구매 성공 / 판매 성공 / 골드 부족 / 보유량 부족 등 토스트 출력
+  - 내부 개발 오류는 Debug 로그 유지
+
+- **상점 슬롯에서 장착 마커 숨김**
+  - `InventorySlot.Set`에서 `isShopSlot == true` → equippedMarker 비활성화 처리
+
+- **아이템/탄약 획득 시 토스트 출력**
+  - 무기 획득 시 무기명 표시 + RegisterWeapon  
+  - 일반 아이템은 획득량/보유량 표시  
+  - 탄약은 박스 단위 및 발 수 기반 계산 후 토스트 출력  
+  - 부분 획득 시 남은 양 재조정 및 남은 개수 유지
+
+### 메모
+- FixedItemPool 도입으로 아이템 스포너가 완전히 세이브/로드 호환  
+- 인벤토리 UI가 점점 안정적인 구조로 정착  
+- 획득/상점/인벤토리 연동 흐름이 자연스러워짐  
+
+---
