@@ -61,4 +61,13 @@ public class InventorySlot : MonoBehaviour
         if (selectionFrame != null)
             selectionFrame.SetActive(isSelected);
     }
+
+    public void RefreshEquippedMarker()
+    {
+        if (equippedMarker == null || item == null)
+            return;
+
+        bool isEquipped = InventoryManager.Instance.IsEquipped(item);
+        equippedMarker.SetActive(isEquipped);
+    }
 }

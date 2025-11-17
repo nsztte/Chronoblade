@@ -66,14 +66,14 @@ public class ItemDetailPanel : MonoBehaviour
     {
         int count = InventoryManager.Instance.GetItemCount(item);
         if (count <= 0)
-        {
             Clear(); // 패널 닫기
-            UIManager.Instance.InventoryUI.UpdateOrAddSlot(item); // 슬롯 제거
-        }
         else
-        {
             SetButtonText(item); // 버튼 텍스트 업데이트
-            UIManager.Instance.InventoryUI.UpdateOrAddSlot(item); // 수량 갱신
+
+        if (UIManager.Instance?.InventoryUI != null)
+        {
+            UIManager.Instance.InventoryUI.UpdateOrAddSlot(item);       // 슬롯 제거/수량 업데이트
+            UIManager.Instance.InventoryUI.RefreshEquippedMarkers();    //장착/해제/버리기 후 전체 슬롯의 equippedMarker 갱신
         }
     }
 

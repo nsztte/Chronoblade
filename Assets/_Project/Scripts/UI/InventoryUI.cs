@@ -43,13 +43,6 @@ public class InventoryUI : MonoBehaviour
             detailPanel.gameObject.SetActive(false);
     }
 
-    public void SetGold(int amount)
-    {
-        if (goldText == null) return;
-
-        goldText.text = $"{amount} G";
-    }
-
     public void Open(InventoryOpenContext context = InventoryOpenContext.Standalone, ItemDetailPanel overrideDetailPanel = null)
     {
         this.context = context;
@@ -80,6 +73,21 @@ public class InventoryUI : MonoBehaviour
         else
         {
             AddSlot(item, overrideDetailPanel);
+        }
+    }
+
+    public void SetGold(int amount)
+    {
+        if (goldText == null) return;
+
+        goldText.text = $"{amount} G";
+    }
+
+    public void RefreshEquippedMarkers()
+    {
+        foreach (var slot in spawnedSlots)
+        {
+            slot.RefreshEquippedMarker();
         }
     }
 
