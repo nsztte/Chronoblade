@@ -2,6 +2,7 @@ using UnityEngine;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine.UI;
+using TMPro;
 
 public enum InventoryOpenContext { Standalone, Shop }
 public class InventoryUI : MonoBehaviour
@@ -9,6 +10,7 @@ public class InventoryUI : MonoBehaviour
     [SerializeField] private Transform slotParent;
     [SerializeField] private GameObject slotPrefab;
     [SerializeField] private ItemDetailPanel detailPanel;
+    [SerializeField] private TextMeshProUGUI goldText;
     [SerializeField] private int minLeftPadding = 30;
     [SerializeField] private int maxLeftPadding = 90;
 
@@ -41,11 +43,22 @@ public class InventoryUI : MonoBehaviour
             detailPanel.gameObject.SetActive(false);
     }
 
+    public void SetGold(int amount)
+    {
+        if (goldText == null) return;
+
+        goldText.text = $"{amount} G";
+    }
+
     public void Open(InventoryOpenContext context = InventoryOpenContext.Standalone, ItemDetailPanel overrideDetailPanel = null)
     {
         this.context = context;
         gameObject.SetActive(true);
         Refresh(overrideDetailPanel);
+
+        // 현재 플레이어 골드 표시
+        if (PlayerManager.Instance != null)
+            SetGold(PlayerManager.Instance.Gold);
     }
 
     public void UpdateOrAddSlot(ItemData item, ItemDetailPanel overrideDetailPanel = null)
@@ -69,7 +82,6 @@ public class InventoryUI : MonoBehaviour
             AddSlot(item, overrideDetailPanel);
         }
     }
-
 
     private void Refresh(ItemDetailPanel overrideDetailPanel = null)
     {

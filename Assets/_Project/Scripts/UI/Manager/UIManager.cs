@@ -133,7 +133,7 @@ public class UIManager : MonoBehaviour
     public void ActiveAmmoPanel(bool value) => playerHUD?.SetAmmoVisible(value);
 
     // === 골드 ===
-    public void UpdateGold(int amount) => playerHUD?.UpdateGold(amount);
+    public void UpdateGold(int amount) => inventoryUI?.SetGold(amount);
 
     // public void SetQuickSlotSelectedIndex(int index)
     // {
