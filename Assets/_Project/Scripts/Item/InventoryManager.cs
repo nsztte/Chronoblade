@@ -19,27 +19,9 @@ public class InventoryManager : MonoBehaviour
     #endregion
 
     [SerializeField] private ItemData defaultPistolData;
-    [SerializeField] private ItemData[] testWeaponData;   // 테스트 이후에는 모두 지울것
     private Dictionary<string, int> itemCounts = new Dictionary<string, int>();
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
     [SerializeField] private WeaponData equippedWeapon;
-
-
-    private void Start()
-    {
-        if(defaultPistolData != null)
-        {
-            RegisterWeapon(defaultPistolData);
-        }
-
-        if(testWeaponData.Length > 0)   // 테스트 이후에는 모두 지울것
-        {
-            foreach(var w in testWeaponData)
-            {
-                RegisterWeapon(w);
-            }
-        }
-    }
 
     public Dictionary<ItemData, int> GetAllItems()
     {
@@ -102,6 +84,18 @@ public class InventoryManager : MonoBehaviour
             }
             return success;
         }
+    }
+
+    // 새 게임용 초기 세팅
+    public void GiveDefaultWeaponAndQuickSlot()
+    {
+        if (defaultPistolData == null) return;
+
+        // 인벤토리에 등록
+        RegisterWeapon(defaultPistolData);
+
+        // 퀵슬롯 0번에 배치
+        QuickSlotManager.Instance?.AssignItemToSlot(0, defaultPistolData);
     }
 
     #region 세이브/로드 관리

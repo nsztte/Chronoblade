@@ -68,6 +68,8 @@ public class LoadingState : GameBaseState
 
         if (scene.name == STARTSCENE)
         {
+            InventoryManager.Instance.GiveDefaultWeaponAndQuickSlot();
+            
             var intro = GameObject.FindFirstObjectByType<StartCutscene>();
             if (intro != null)
                 intro.StartPlay();
