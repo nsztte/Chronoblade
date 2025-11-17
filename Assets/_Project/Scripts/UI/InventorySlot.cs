@@ -38,13 +38,7 @@ public class InventorySlot : MonoBehaviour
             infoTooltip.gameObject.SetActive(false);
             
 
-        if(isShopSlot)
-            CountBadge.SetActive(false);
-        else
-        {
-            CountBadge.SetActive(true);
-            CountText.text = $"X{InventoryManager.Instance.GetItemCount(itemData)}";
-        }
+        UpdateCountBadge(isShopSlot);
 
         if(isShopSlot) return;
         bool IsEquipped = InventoryManager.Instance.IsEquipped(itemData);
@@ -69,5 +63,40 @@ public class InventorySlot : MonoBehaviour
 
         bool isEquipped = InventoryManager.Instance.IsEquipped(item);
         equippedMarker.SetActive(isEquipped);
+    }
+
+    public void RefreshCountBadge()
+    {
+        UpdateCountBadge(false);
+    }
+
+    private void UpdateCountBadge(bool isShopSlot)
+    {
+        if (CountBadge == null || CountText == null)
+            return;
+
+        if (isShopSlot)
+        {
+            CountBadge.SetActive(false);
+            return;
+        }
+
+        CountBadge.SetActive(true);
+
+        // 무기 + 탄약 사용하는 경우 → 탄약 수 표시
+        if (item != null &&
+            item.itemType == ItemType.Equipment &&
+            item.weaponData != null &&
+            item.weaponData.ammoType != AmmoType.None)
+        {
+            int ammo = InventoryManager.Instance.GetAmmoCount(item.weaponData.ammoType);
+            CountText.text = $"{ammo}";
+        }
+        else
+        {
+            // 기존 일반 아이템 수량
+            int count = InventoryManager.Instance.GetItemCount(item);
+            CountText.text = $"X{count}";
+        }
     }
 }

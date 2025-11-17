@@ -101,6 +101,15 @@ public class InventoryUI : MonoBehaviour
         }
     }
 
+    public void RefreshAllCountBadges()
+    {
+        foreach (var slot in spawnedSlots)
+        {
+            if (slot == null) continue;
+            slot.RefreshCountBadge();
+        }
+    }
+
     private void Refresh(ItemDetailPanel overrideDetailPanel = null)
     {
         ClearSlots();

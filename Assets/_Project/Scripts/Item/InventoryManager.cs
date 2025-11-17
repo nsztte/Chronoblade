@@ -235,6 +235,11 @@ public class InventoryManager : MonoBehaviour
 
         Debug.Log($"[InventoryManager] 탄약 추가 결과: {toAdd} | 남은 수량: {ammoCounts[type]}");
 
+        // 인벤토리가 열려 있다면 무기 슬롯 총알 갯수 뱃지 갱신
+        var ui = UIManager.Instance;
+        if (ui != null && ui.IsInventoryOpen)
+            ui.InventoryUI.RefreshAllCountBadges();
+
         return amount - toAdd; // 추가되지 못한 탄약 수량 반환
     }
 
@@ -246,6 +251,11 @@ public class InventoryManager : MonoBehaviour
         ammoCounts[type] -= amount;
 
         if(ammoCounts[type] <= 0) ammoCounts.Remove(type);
+
+        // 인벤토리가 열려 있다면 무기 슬롯 총알 갯수 뱃지 갱신
+        var ui = UIManager.Instance;
+        if (ui != null && ui.IsInventoryOpen)
+            ui.InventoryUI.RefreshAllCountBadges();
 
         return true;
     }
@@ -284,6 +294,11 @@ public class InventoryManager : MonoBehaviour
 
         if (ammoCounts[type] <= 0)
             ammoCounts.Remove(type);
+
+        // 인벤토리가 열려 있다면 무기 슬롯 총알 갯수 뱃지 갱신
+        var ui = UIManager.Instance;
+        if (ui != null && ui.IsInventoryOpen)
+            ui.InventoryUI.RefreshAllCountBadges();
 
         return true;
     }

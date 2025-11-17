@@ -1420,17 +1420,6 @@ Transform:
   - {fileID: 175566286}
   m_Father: {fileID: 1537940931}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &265382879 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5017010959322779953, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
-  m_PrefabInstance: {fileID: 1174838081}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 0}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: f4688fdb7df04437aeb418b961361dc5, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!1 &268168148
 GameObject:
   m_ObjectHideFlags: 0
@@ -4823,10 +4812,6 @@ PrefabInstance:
       propertyPath: m_AnchoredPosition.y
       value: -190
       objectReference: {fileID: 0}
-    - target: {fileID: 2410196625269372877, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
-      propertyPath: goldText
-      value: 
-      objectReference: {fileID: 265382879}
     - target: {fileID: 2833387216665266431, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -191189,8 +191174,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8f083524c9b691243b3932a272a24ceb, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  isOpen: 1
-  isUnlocked: 0
+  isOpen: 0
+  isUnlocked: 1
   nextDoor:
   - {fileID: 835277186498529473}
 --- !u!65 &4041774221325850998
