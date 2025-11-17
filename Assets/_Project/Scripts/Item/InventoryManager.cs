@@ -318,7 +318,7 @@ public class InventoryManager : MonoBehaviour
     #region 무기 장착 관리
     public bool IsEquipped(ItemData item)
     {
-        return item.weaponData == equippedWeapon;
+        return item.itemType == ItemType.Equipment && item.weaponData != null && item.weaponData == equippedWeapon;
     }
 
     public void Equip(WeaponData weapon)
