@@ -23,6 +23,14 @@ public class InventoryManager : MonoBehaviour
     private Dictionary<AmmoType, int> ammoCounts = new Dictionary<AmmoType, int>();
     [SerializeField] private WeaponData equippedWeapon;
 
+    private void Start()    //테스트 이후 지울것@!!!!!!!!!
+    {
+        if(defaultPistolData != null)
+        {
+            RegisterWeapon(defaultPistolData);
+        }
+    }
+
     public Dictionary<ItemData, int> GetAllItems()
     {
         Dictionary<ItemData, int> result = new();

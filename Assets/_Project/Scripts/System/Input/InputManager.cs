@@ -303,10 +303,28 @@ public class InputManager : MonoBehaviour
         int direction = scrollWheel > 0f ? -1 : 1;
 
         int nextWeaponIndex = QuickSlotManager.Instance.GetNextWeaponSlotIndex(currentIndex, direction);
-        if (nextWeaponIndex != currentIndex)
+
+        // 현재 아무 무기도 안 들고 있는 상태
+        if (currentIndex == -1)
         {
-            QuickSlotManager.Instance.ActivateSlot(nextWeaponIndex);
+            // 스크롤로 첫 무기 장착
+            if (nextWeaponIndex != -1)
+                QuickSlotManager.Instance.ActivateSlot(nextWeaponIndex);
+            return;
         }
+
+        // 무기가 하나뿐이거나, 다음 무기가 없어서 자기 자신만 나오는 경우
+        if (nextWeaponIndex == currentIndex)
+        {
+            // 스크롤 시 무기 해제
+            WeaponManager.Instance.UnEquipWeapon();
+            QuickSlotManager.Instance.RefreshHighlight();
+
+            return;
+        }
+
+        // 실제로 다른 무기가 있으면 그걸로 전환
+        QuickSlotManager.Instance.ActivateSlot(nextWeaponIndex);
     }
 
     #region 옵션용 Setter
