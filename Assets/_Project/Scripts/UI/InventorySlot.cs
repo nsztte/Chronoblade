@@ -40,9 +40,14 @@ public class InventorySlot : MonoBehaviour
 
         UpdateCountBadge(isShopSlot);
 
-        if(isShopSlot) return;
-        bool IsEquipped = InventoryManager.Instance.IsEquipped(itemData);
-        equippedMarker.SetActive(IsEquipped);
+        if (isShopSlot)
+            equippedMarker.SetActive(false);
+        else
+        {
+            bool IsEquipped = InventoryManager.Instance.IsEquipped(itemData);
+            equippedMarker.SetActive(IsEquipped);
+        }
+        
     }
 
     public void Bind()
