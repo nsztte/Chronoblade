@@ -3852,6 +3852,7 @@ GameObject:
   m_Component:
   - component: {fileID: 936149117}
   - component: {fileID: 936149118}
+  - component: {fileID: 936149119}
   m_Layer: 0
   m_Name: RandomItemSpawner
   m_TagString: Untagged
@@ -3886,9 +3887,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d8912c4e4faf85b4397dfa36613daf05, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  itemPickupPrefab: {fileID: 6668975616189719548, guid: 363930c29310c3a408816ce8ce8b1cdd, type: 3}
+  fixedItemPool: {fileID: 372080757}
   count: 10
   areaSize: {x: 60, y: 2, z: 60}
+  spawnOnStart: 1
   raycastHeight: 5
   raycastDistance: 50
   surfaceOffset: -0.1
@@ -3901,7 +3903,20 @@ MonoBehaviour:
   overlapRadius: 1
   headroomHeight: 0.5
   minDistanceBetweenItems: 3
-  spawnOnStart: 1
+  hasSpawned: 0
+--- !u!114 &936149119
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 936149115}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: 44677ebd2c6044d8b7a462a2b1e6fac6
 --- !u!1 &982361712
 GameObject:
   m_ObjectHideFlags: 0
@@ -189422,7 +189437,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
-  isUnlocked: 0
+  isUnlocked: 1
   nextDoor:
   - {fileID: 6191318993347229801}
 --- !u!23 &4008510468366896185

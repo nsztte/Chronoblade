@@ -1,11 +1,16 @@
-using UnityEngine;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-public class RandomItemSpawner : MonoBehaviour
+public class RandomItemSpawner : SaveableBehaviour
 {
-    [SerializeField] private GameObject itemPickupPrefab;
+    [Header("아이템 슬롯 풀")]
+    [SerializeField] private FixedItemPool fixedItemPool;
+
+    [Header("스폰 설정")]
     [SerializeField] private int count = 10;
     [SerializeField] private Vector3 areaSize = new Vector3(10, 0, 10);
+    [SerializeField] private bool spawnOnStart = true;
 
     [Header("바닥 맞춤 설정")]
     [SerializeField] private float raycastHeight = 5f;      // 스폰 기준점에서 얼마나 위에서 쏠지
@@ -21,26 +26,41 @@ public class RandomItemSpawner : MonoBehaviour
     [Header("아이템 간 최소 거리")]
     [SerializeField] private float minDistanceBetweenItems = 1.5f;
 
-    [SerializeField] private bool spawnOnStart = true;
 
     private const int MAX_ATTEMPTS = 50;
     private readonly List<Vector3> spawnedPositions = new List<Vector3>();
 
+    [SerializeField] private bool hasSpawned;
+
     private void Start()
     {
-        if (spawnOnStart)
-        {
-            SpawnItems();
-        }
+        if (!spawnOnStart) return;
+
+        StartCoroutine(SpawnAfterRestore());
+    }
+
+    private IEnumerator SpawnAfterRestore()
+    {
+        // RestoreStateJson이 SaveManager에서 호출될 프레임을 넘겨주기 위해 지연
+        yield return null;
+        yield return null;
+
+        // 세이브에서 hasSpawned=true로 복원되었다면 다시 스폰하지 않는다
+        if (hasSpawned) yield break;
+
+        SpawnItems();
+        hasSpawned = true;
     }
 
     public void SpawnItems()
     {
-        if (itemPickupPrefab == null)
+        if (fixedItemPool == null)
         {
-            Debug.LogWarning($"[RandomItemSpawner] {name}: itemPickupPrefab이 비어 있음", this);
+            Debug.LogWarning($"[RandomItemSpawner] {name}: FixedItemPool이 비어 있음", this);
             return;
         }
+
+        spawnedPositions.Clear();
 
         for (int i = 0; i < count; i++)
         {
@@ -50,8 +70,19 @@ public class RandomItemSpawner : MonoBehaviour
                 continue;
             }
 
-            Quaternion rot = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
-            Instantiate(itemPickupPrefab, worldPos, rot, transform);
+            var pickup = fixedItemPool.Get();
+            if (pickup == null)
+            {
+                Debug.LogWarning($"[RandomItemSpawner] {name}: FixedItemPool에서 더 이상 사용할 수 있는 슬롯이 없음 (index {i})", this);
+                break;
+            }
+
+            // 부모를 이 스포너 밑으로 붙이고 위치/회전 지정
+            pickup.transform.SetParent(transform, true);
+            pickup.transform.position = worldPos;
+            pickup.transform.rotation = Quaternion.Euler(0, Random.Range(0f, 360f), 0);
+            pickup.gameObject.SetActive(true);
+
             spawnedPositions.Add(worldPos);
         }
     }
@@ -110,7 +141,31 @@ public class RandomItemSpawner : MonoBehaviour
         return true;
     }
 
+    // SaveableBehaviour 구현부
+    [System.Serializable]
+    private class Data
+    {
+        public bool hasSpawned;
+    }
 
+    public override string CaptureStateJson()
+    {
+        var data = new Data
+        {
+            hasSpawned = this.hasSpawned
+        };
+        return JsonUtility.ToJson(data);
+    }
+
+    public override void RestoreStateJson(string json)
+    {
+        if (string.IsNullOrEmpty(json)) return;
+
+        var data = JsonUtility.FromJson<Data>(json);
+        hasSpawned = data.hasSpawned;
+    }
+
+#if UNITY_EDITOR
     private void OnDrawGizmosSelected()
     {
         Gizmos.color = new Color(0f, 1f, 0f, 0.15f);
@@ -120,13 +175,14 @@ public class RandomItemSpawner : MonoBehaviour
         Gizmos.DrawWireCube(Vector3.up * 0f, areaSize);
     }
 
-    #if UNITY_EDITOR
     private void OnValidate()
     {
-        if (itemPickupPrefab == null)
-        {   
-            Debug.LogWarning($"[RandomItemSpawner] {name}: itemPickupPrefab이 비어 있습니다.", this);
+        if (fixedItemPool == null)
+        {
+            Debug.LogWarning($"[RandomItemSpawner] {name}: FixedItemPool이 비어 있습니다.", this);
         }
+
+        if (count < 0) count = 0;
     }
-    #endif
+#endif
 }
