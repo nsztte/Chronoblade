@@ -212,6 +212,7 @@ MonoBehaviour:
   cinemachineCam: {fileID: 0}
   camAnimator: {fileID: 0}
   sceneStartPoint: {fileID: 0}
+  door_0: {fileID: 0}
 --- !u!114 &218477305 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 4706585336099269650, guid: b8f7deabcedcb0845a8d77c1cd0e61e6, type: 3}
@@ -378,6 +379,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &560958991
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -756,6 +760,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1109526490
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -879,6 +886,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1118609883
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1002,6 +1012,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1209193345
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1125,6 +1138,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1221138679
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1383,6 +1399,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!114 &1470282376 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 2483533433339543098, guid: b8f7deabcedcb0845a8d77c1cd0e61e6, type: 3}
@@ -1428,6 +1447,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1505766728
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -1551,6 +1573,9 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemData: {fileID: 11400000, guid: d9a8b71f93e45654b97baf072fb8e7d6, type: 2}
   amount: 1
+  onPickupSuccess:
+    m_PersistentCalls:
+      m_Calls: []
 --- !u!65 &1849600256
 BoxCollider:
   m_ObjectHideFlags: 0
@@ -3430,6 +3455,22 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 995084783435754201, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: m_AnchorMax.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 995084783435754201, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: m_AnchorMin.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 995084783435754201, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: m_AnchoredPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 995084783435754201, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: m_AnchoredPosition.y
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 1957485597279828472, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
       value: 0
@@ -3545,10 +3586,6 @@ PrefabInstance:
     - target: {fileID: 4719850307116080497, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_Name
       value: UI
-      objectReference: {fileID: 0}
-    - target: {fileID: 5397965642742709789, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
-      propertyPath: m_IsActive
-      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 5402150034782711902, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_AnchorMax.y
