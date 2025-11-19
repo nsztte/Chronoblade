@@ -4113,3 +4113,46 @@ Enemy FSM(상태머신) 시스템 구현
 - 획득/상점/인벤토리 연동 흐름이 자연스러워짐  
 
 ---
+
+## 2025.11.19 (수) 작업 기록
+
+### 주요 작업
+
+- 상태바(UI) 구조 개편 및 시인성 강화
+  - StatusBar 오브젝트 추가 후 Stamina → HP → MP 순으로 재배치
+  - HP Bar 우측 하단 사선 컷 디자인 적용
+  - Background 이미지를 Fill과 동일한 스프라이트로 교체 + 투명도 부여
+  - 자원 감소 시 빈 영역이 자연스럽게 드러나도록 처리
+  - 전체 위치 정렬을 통해 HUD 좌측 상단 UI 가독성 개선
+
+- 퀵슬롯 UI 개선
+  - QuickSlot 배경 이미지를 신규 UI로 교체
+  - 알파값 230 적용하여 은은한 투명도 구현
+  - 선택된 슬롯 하이라이트가 더 잘 드러나도록 조정
+
+- 탄약 UI 개선
+  - AmmoIcon 신규 아이콘으로 교체
+  - AmmoText 폰트 교체로 가독성 향상
+  - AmmoIcon에 약한 글로우 효과 적용
+
+- 보스 HP바 프레임 및 레이아웃/톤 전체 보정
+  - 신규 프레임 이미지 적용 및 중앙 정렬 재조정
+  - 파이널 챕터 분위기에 맞게 색감·톤·배치 전체 보정
+  - 보스 이름 텍스트에 Outline + Underlay 적용
+  - Fill 색상 및 투명도 톤 재정비
+
+- 플레이어 상태바 색상 톤 보정
+  - 원래 과하게 쨍하던 색에서 파이널 챕터 톤에 맞춘 색상으로 조정
+
+- 시간 상태(TimeState) 아이콘 전면 교체 + 노말 상태 추가
+  - 슬로우 / 정지 / 되감기 / 빨리감기 / 노말 아이콘 신규 교체
+  - 각 아이콘 크기 조정 → 라인 두께 시각적 통일감 확보
+  - HUD 우측 상단 레이아웃에 자연스럽게 배치
+  - 시간 상태 UI 색상 `#D6F8EE`로 통일 적용
+
+- TimeState 로직 버그 수정
+  - PlayerHUD에 normalIcon 참조 추가 + ResetAll/IconOf 반영
+  - InitializeTimeState 조건식 오류 수정 (`IsTimeSkillAllowed` → `!IsTimeSkillAllowed`)
+  - UpdateTimeUI에서 Normal 상태 시 `ShowTimeState(TimeState.Normal)` 호출되도록 변경
+
+---
