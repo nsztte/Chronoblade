@@ -12,7 +12,6 @@ public class PlayerHUD : MonoBehaviour
 
     [Header("텍스트")]
     [SerializeField] private TextMeshProUGUI ammoText;
-    [SerializeField] private TextMeshProUGUI goldText;
 
     [Header("이미지")]
     [SerializeField] private Image hpFillImage;
@@ -123,14 +122,6 @@ public class PlayerHUD : MonoBehaviour
         if(ammoText != null)
         {
             ammoText.text = current >= 0 ? $"{current}/{total}" : $"{total}";
-        }
-    }
-
-    public void UpdateGold(int amount)
-    {
-        if(goldText != null)
-        {
-            goldText.text = $"{amount.ToString()} G";
         }
     }
 
