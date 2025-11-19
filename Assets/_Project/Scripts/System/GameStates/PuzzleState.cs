@@ -22,11 +22,11 @@ public class PuzzleState : GameBaseState
     }
 
     public override void Exit()
-    {
+    {        
         // 퍼즐 상태 종료 시 안전 복구
         SaveGuard.Instance?.ClearTag(SaveBlockTag.Puzzle);
 
-        UIManager.Instance.ClearTimeState();
         TimeManager.Instance.InitializeTimeState();
+        UIManager.Instance.ClearTimeState();
     }
 }

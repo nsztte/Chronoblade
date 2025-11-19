@@ -33,6 +33,7 @@ public class PlayerHUD : MonoBehaviour
     [SerializeField] private Image rifleCrosshair;
 
     [Header("시간 아이콘")]
+    [SerializeField] private Image normalIcon;
     [SerializeField] private Image rewindIcon;
     [SerializeField] private Image stopIcon;
     [SerializeField] private Image slowIcon;
@@ -187,6 +188,7 @@ public class PlayerHUD : MonoBehaviour
 
     private void ResetAll()
     {
+        SetAlpha(normalIcon, 0f);
         SetAlpha(rewindIcon, 0f);
         SetAlpha(stopIcon, 0f);
         SetAlpha(slowIcon, 0f);
@@ -205,6 +207,7 @@ public class PlayerHUD : MonoBehaviour
     {
         switch (s)
         {
+            case TimeState.Normal: return normalIcon;
             case TimeState.Rewind: return rewindIcon;
             case TimeState.Stop: return stopIcon;
             case TimeState.Slow: return slowIcon;

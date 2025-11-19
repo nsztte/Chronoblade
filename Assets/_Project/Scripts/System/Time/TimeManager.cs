@@ -199,9 +199,9 @@ public class TimeManager : MonoBehaviour
 
     public void InitializeTimeState()
     {
-        if(currentTimeState == TimeState.Normal) return;
+        if (currentTimeState == TimeState.Normal) return;
         
-        if (!IsTimeSkillAllowed(currentTimeState))
+        if (IsTimeSkillAllowed(currentTimeState))
         {
             currentTimeState = TimeState.Normal;
             ApplyTimeScale(1f);
@@ -219,12 +219,12 @@ public class TimeManager : MonoBehaviour
 
         var state = GameManager.Instance.CurrentGameState;
 
-        if(state is PuzzleState) return true;
-        if(state is CombatState)
+        if (state is PuzzleState) return true;
+        if (state is CombatState)
         {
             return timeState != TimeState.Rewind && timeState != TimeState.FastForward;
         }
-        if(state is ExplorationState) return false;
+        if (state is ExplorationState) return false;
 
         return false;
     }
@@ -373,7 +373,8 @@ public class TimeManager : MonoBehaviour
         switch (currentTimeState)
         {
             case TimeState.Normal:
-                UIManager.Instance?.ClearTimeState();
+                // UIManager.Instance?.ClearTimeState();
+                UIManager.Instance?.ShowTimeState(TimeState.Normal);
                 break;
             case TimeState.Slow:
                 UIManager.Instance?.ShowTimeState(TimeState.Slow);
