@@ -9,9 +9,9 @@ public class ControlTabController : MonoBehaviour, IOptionsTab
     [SerializeField] private TextMeshProUGUI sensitivityValueText;
 
     [Header("토글")]
-    [SerializeField] private Toggle invertYToggle;
-    [SerializeField] private Toggle toggleSprintToggle;
-    [SerializeField] private Toggle toggleCrouchToggle;
+    [SerializeField] private UISwitcher.UISwitcher invertYToggle;
+    [SerializeField] private UISwitcher.UISwitcher toggleSprintToggle;
+    [SerializeField] private UISwitcher.UISwitcher toggleCrouchToggle;
 
     private const float STEP = 0.05f;
 
@@ -64,8 +64,8 @@ public class ControlTabController : MonoBehaviour, IOptionsTab
         var input = InputManager.Instance;
         mouseSensitivitySlider.SetValueWithoutNotify(input.MouseSensitivityX);
         sensitivityValueText.text = input.MouseSensitivityX.ToString("0.0");
-        invertYToggle.SetIsOnWithoutNotify(input.InvertMouseY);
-        toggleSprintToggle.SetIsOnWithoutNotify(input.ToggleSprint);
-        toggleCrouchToggle.SetIsOnWithoutNotify(input.ToggleCrouch);
+        invertYToggle.SetWithoutNotify(input.InvertMouseY);
+        toggleSprintToggle.SetWithoutNotify(input.ToggleSprint);
+        toggleCrouchToggle.SetWithoutNotify(input.ToggleCrouch);
     }
 }
