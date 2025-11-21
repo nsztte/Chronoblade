@@ -3,7 +3,7 @@ using UnityEngine.UI;
 
 public class AudioTabController : MonoBehaviour, IOptionsTab
 {
-    [SerializeField] private Toggle muteToggle;
+    [SerializeField] private UISwitcher.UISwitcher muteToggle;
     [SerializeField] private Slider masterSlider;
     [SerializeField] private Slider bgmSlider;
     [SerializeField] private Slider sfxSlider;
