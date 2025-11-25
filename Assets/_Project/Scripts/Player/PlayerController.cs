@@ -155,7 +155,7 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     #endregion
 
     #region FSM LocomotionState에서 호출할 이동 관련 Update
-    public void LocomotionUpdate()
+    public void LocomotionUpdate(float movementFactor = 1f)
     {
         if(IsFrozen) return;
 
@@ -167,17 +167,17 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
                 isRunning = false;
             }
         }
-        Move();
+        Move(movementFactor);
         ApplyGravity();
     }
 
-    private void Move()
+    private void Move(float movementFactor)
     {
         // 입력 벡터를 정규화하여 대각선 이동 시 속도가 증가하지 않도록 함
         Vector2 normalizedInput = moveInput.normalized;
         Vector3 moveDirection = transform.right * normalizedInput.x + transform.forward * normalizedInput.y;
 
-        float currentSpeed = moveSpeed;
+        float currentSpeed = moveSpeed * movementFactor;
 
         if(isCrouching)
             currentSpeed *= 0.5f;
