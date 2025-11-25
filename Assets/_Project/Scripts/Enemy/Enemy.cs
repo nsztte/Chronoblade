@@ -45,6 +45,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     protected EnemyHPUI hpUI;
 
     private bool hasDetectedPlayer = false;     // 플레이어 감지
+    public float LastSeenPlayerTime { get; private set; } = float.NegativeInfinity;
 
     #region 전투 감지 이벤트
     // 전투 감지 이벤트
@@ -153,6 +154,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         }
 
         hasDetectedPlayer = false;
+        LastSeenPlayerTime = float.NegativeInfinity;
         deathEventSent = false;
         despawnEventSent = false;
 
@@ -190,7 +192,7 @@ public abstract class Enemy : MonoBehaviour, IDamageable
 
     public bool CanSeePlayer()
     {
-        if (hasDetectedPlayer) return false;
+        // if (hasDetectedPlayer) return false;
         if (fsm.Target == null) return false;
 
         Vector3 toTarget = (fsm.Target.position - transform.position).normalized;
@@ -205,6 +207,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         // 가림 판정
         if (Physics.Raycast(transform.position + Vector3.up, toTarget, distance, obstacleLayer))
             return false;
+
+        LastSeenPlayerTime = Time.time;
 
         return true;
     }
@@ -233,6 +237,8 @@ public abstract class Enemy : MonoBehaviour, IDamageable
     {
         if(hasDetectedPlayer) return;
         hasDetectedPlayer = true;
+
+        LastSeenPlayerTime = Time.time;
 
         if (GameManager.Instance.CurrentGameState is ExplorationState or PuzzleState)
         {

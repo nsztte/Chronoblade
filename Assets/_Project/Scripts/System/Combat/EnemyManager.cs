@@ -19,8 +19,16 @@ public class EnemyManager : MonoBehaviour
     
     [SerializeField] private List<EnemyPool> enemyPools;
     private Dictionary<EnemyType, EnemyPool> poolMap = new();
-
     private List<Enemy> activeEnemies = new List<Enemy>();
+
+    [Header("전투 종료 판정 설정")]
+    [SerializeField] private float combatRecentSeenTime = 4f;          // 최근에 플레이어를 본 시간 기준
+    [SerializeField] private float combatMaxHorizontalDistance = 25f;  // 전투로 취급할 최대 가로 거리(m)
+    [SerializeField] private float combatExitCheckInterval = 0.25f;    // 전투 종료 체크 주기
+    [SerializeField] private float combatNoEnemyDuration = 3f;         // "전투 적 없음" 상태가 지속되어야 하는 시간
+
+    private float combatExitCheckTimer;
+    private float combatNoEnemyTimer;
 
     private void Awake()
     {
@@ -43,6 +51,47 @@ public class EnemyManager : MonoBehaviour
             }
 
             poolMap[type] = pool;
+        }
+    }
+
+    private void Update()
+    {
+        var gm = GameManager.Instance;
+        var player = PlayerManager.Instance;
+
+        if (gm == null || player == null) return;
+
+        // 컴뱃 상태일 때만 전투 종료 판정
+        if (gm.CurrentGameState is CombatState)
+        {
+            combatExitCheckTimer += Time.deltaTime;
+            if (combatExitCheckTimer < combatExitCheckInterval)
+                return;
+
+            combatExitCheckTimer = 0f;
+
+            bool hasRelevant = HasRelevantCombatEnemy(player.transform.position);
+
+            if (hasRelevant)
+            {
+                // 아직 전투적으로 의미 있는 적이 있으면 타이머 리셋
+                combatNoEnemyTimer = 0f;
+            }
+            else
+            {
+                // "전투 적 없음" 상태가 누적되면 탐험으로 복귀
+                combatNoEnemyTimer += combatExitCheckInterval;
+                if (combatNoEnemyTimer >= combatNoEnemyDuration)
+                {
+                    gm.EnterExploration();
+                }
+            }
+        }
+        else
+        {
+            // 컴뱃이 아닐 때는 타이머 리셋
+            combatExitCheckTimer = 0f;
+            combatNoEnemyTimer = 0f;
         }
     }
 
@@ -108,5 +157,37 @@ public class EnemyManager : MonoBehaviour
         }
 
         pool.Release(enemy);
+    }
+
+    private bool HasRelevantCombatEnemy(Vector3 playerPosition)
+    {
+        float now = Time.time;
+        float maxSqrDist = combatMaxHorizontalDistance * combatMaxHorizontalDistance;
+
+        Vector3 playerPos = playerPosition;
+        playerPos.y = 0f;
+
+        foreach (var enemy in activeEnemies)
+        {
+            if (enemy == null || !enemy.isActiveAndEnabled)
+                continue;
+
+            // 최근에 플레이어를 본 적이 없다면 스킵
+            if (now - enemy.LastSeenPlayerTime > combatRecentSeenTime)
+                continue;
+
+            // 가로 거리 계산
+            Vector3 enemyPos = enemy.transform.position;
+            enemyPos.y = 0f;
+
+            float sqrDist = (enemyPos - playerPos).sqrMagnitude;
+            if (sqrDist <= maxSqrDist)
+            {
+                // 전투적으로 의미 있는 적이 최소 1마리 존재
+                return true;
+            }
+        }
+
+        return false;
     }
 }
