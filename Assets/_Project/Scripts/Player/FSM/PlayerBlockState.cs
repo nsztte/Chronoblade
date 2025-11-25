@@ -4,6 +4,8 @@ public class PlayerBlockState : PlayerBaseState
 {
     private PlayerController playerController;
 
+    protected override float MovementFactor => 0.5f;
+
     public PlayerBlockState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         playerController = stateMachine.PlayerController;
@@ -30,7 +32,7 @@ public class PlayerBlockState : PlayerBaseState
 
     public override void Update()
     {
-        playerController.LocomotionUpdate();
+        UpdateMovement();
     }
 
     private void OnBlockCanceled()

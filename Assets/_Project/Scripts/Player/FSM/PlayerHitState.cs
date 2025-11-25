@@ -5,6 +5,8 @@ public class PlayerHitState : PlayerBaseState
     private float hitDuration = 0.3f;
     private float timer = 0f;
 
+    protected override float MovementFactor => 0f;
+
     public PlayerHitState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }
@@ -26,6 +28,10 @@ public class PlayerHitState : PlayerBaseState
     public override void Update()
     {
         timer += Time.deltaTime;
+
+        // 이동은 막고, 중력만 적용
+        UpdateMovement();
+
         if (timer >= hitDuration)
         {
             // 로코모션 상태로 복귀

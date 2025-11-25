@@ -7,6 +7,8 @@ public class PlayerAttackState : PlayerBaseState
     private bool wasAttacking = false;
     private bool isComboTriggered = false; // 콤보 상태 전이 방지 플래그
 
+    protected override float MovementFactor => 0.6f;
+
     public PlayerAttackState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         playerController = stateMachine.GetComponent<PlayerController>();
@@ -68,7 +70,7 @@ public class PlayerAttackState : PlayerBaseState
     public override void Update()
     {
         if (isComboTriggered) return; // 콤보 상태 전이 중이면 아무것도 하지 않음
-        playerController.LocomotionUpdate();
+        UpdateMovement();
         
         var weapon = WeaponManager.Instance.CurrentWeapon;
         if (weapon != null)

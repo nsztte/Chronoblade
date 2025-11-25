@@ -15,6 +15,8 @@ public class PlayerComboState : PlayerBaseState
     private bool isWaitingForInput = false;
     private bool isLastAttackPlaying = false; // 마지막 공격 애니메이션 재생 중인지 확인
 
+    protected override float MovementFactor => 0.4f;
+
 
     public PlayerComboState(PlayerStateMachine stateMachine, ComboSequence initialCombo) : base(stateMachine)
     {
@@ -76,7 +78,7 @@ public class PlayerComboState : PlayerBaseState
 			stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
-        playerController.LocomotionUpdate();
+        UpdateMovement();
     }
 
     private void OnLightAttack()

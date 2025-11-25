@@ -5,6 +5,8 @@ public class PlayerLocomotionState : PlayerBaseState
 {
     private PlayerController playerController;
 
+    protected override float MovementFactor => 1.0f;
+
     public PlayerLocomotionState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         playerController = stateMachine.GetComponent<PlayerController>();
@@ -42,7 +44,7 @@ public class PlayerLocomotionState : PlayerBaseState
 
     public override void Update()
     {
-        playerController.LocomotionUpdate();
+        UpdateMovement();
     }
 
     // private void OnMoveInput(Vector2 input)

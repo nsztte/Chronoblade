@@ -6,6 +6,8 @@ public class PlayerJumpState : PlayerBaseState
     private float jumpStartTime;
     private const float MAX_JUMP_DURATION = 2f; // 최대 점프 지속 시간
 
+    protected override float MovementFactor => 0.8f;
+
     public PlayerJumpState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         playerController = stateMachine.GetComponent<PlayerController>();
@@ -38,7 +40,7 @@ public class PlayerJumpState : PlayerBaseState
     public override void Update()
     {
         // 점프 중 물리 업데이트
-        playerController.LocomotionUpdate();
+        UpdateMovement();
         
         // 착지 체크
         if (playerController.IsGrounded())

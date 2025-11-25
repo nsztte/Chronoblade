@@ -50,7 +50,6 @@ public class PlayerStateMachine : MonoBehaviour
         stateTypeMap[typeof(PlayerComboState)] = PlayerState.Combo;
         stateTypeMap[typeof(PlayerHitState)] = PlayerState.Hit;
         stateTypeMap[typeof(PlayerDeathState)] = PlayerState.Death;
-        stateTypeMap[typeof(PlayerRewindState)] = PlayerState.Rewind;
         stateTypeMap[typeof(PlayerDashState)] = PlayerState.Dash;
         stateTypeMap[typeof(PlayerBlockState)] = PlayerState.Block;
     }

@@ -2,6 +2,8 @@ using UnityEngine;
 
 public class PlayerDeathState : PlayerBaseState
 {
+    protected override float MovementFactor => 0f;
+
     public PlayerDeathState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
     }

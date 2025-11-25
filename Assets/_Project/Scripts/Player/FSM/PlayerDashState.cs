@@ -7,6 +7,9 @@ public class PlayerDashState : PlayerBaseState
     private float dashSpeed = 20f;
     private float dashDuration = 0.25f;
     private float timer;
+
+    protected override float MovementFactor => 0f;
+
     public PlayerDashState(PlayerStateMachine stateMachine) : base(stateMachine)
     {
         playerController = stateMachine.PlayerController;
