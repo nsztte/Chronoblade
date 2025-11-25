@@ -5,6 +5,7 @@ public class InputManager : MonoBehaviour
 {
     #region 싱글톤 및 초기화
     public static InputManager Instance { get; private set; }
+    public static event Action OnInitialized;
 
     public void Initialize()
     {
@@ -14,6 +15,7 @@ public class InputManager : MonoBehaviour
             return;
         }
         Instance = this;
+        OnInitialized?.Invoke();
 
         LoadControlSettings();
     }

@@ -68,6 +68,28 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         originalAnimSpeed = animator.speed;
     }
 
+    private void OnEnable()
+    {
+        if (InputManager.Instance != null)
+        {
+            RegisterInput();
+        }
+        else
+        {
+            InputManager.OnInitialized += RegisterInput;
+        }
+    }
+
+    private void OnDisable()
+    {
+        if (InputManager.Instance != null)
+        {
+            UnregisterInput();
+        }
+
+        InputManager.OnInitialized -= RegisterInput;
+    }
+
     public void SetPositionAndRotation(Vector3 position, Quaternion rotation)
     {
         controller.enabled = false;
@@ -320,5 +342,27 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     }
 
     public void ApplyStatus(ComboAttackData attackData){}
+    #endregion
+
+    #region 이동, 달리기, 웅크리기 이벤트 등록 및 해제 함수
+    private void OnRunStarted() => SetRunning(true);
+    private void OnRunCanceled() => SetRunning(false);
+    private void OnCrouch() => ToggleCrouch();
+
+    private void RegisterInput()
+    {
+        InputManager.Instance.OnMoveInput += SetMoveInput;
+        InputManager.Instance.OnRunStarted += OnRunStarted;
+        InputManager.Instance.OnRunCanceled += OnRunCanceled;
+        InputManager.Instance.OnCrouchPressed += OnCrouch;
+    }
+
+    private void UnregisterInput()
+    {
+        InputManager.Instance.OnMoveInput -= SetMoveInput;
+        InputManager.Instance.OnRunStarted -= OnRunStarted;
+        InputManager.Instance.OnRunCanceled -= OnRunCanceled;
+        InputManager.Instance.OnCrouchPressed -= OnCrouch;
+    }
     #endregion
 }

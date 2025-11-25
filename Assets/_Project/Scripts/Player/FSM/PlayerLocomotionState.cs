@@ -12,11 +12,11 @@ public class PlayerLocomotionState : PlayerBaseState
 
     public override void Enter()
     {
-        InputManager.Instance.OnMoveInput += OnMoveInput;
+        // InputManager.Instance.OnMoveInput += OnMoveInput;
         InputManager.Instance.OnJumpPressed += OnJumpPressed;
-        InputManager.Instance.OnRunStarted += OnRunStarted;
-        InputManager.Instance.OnRunCanceled += OnRunCanceled;
-        InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
+        // InputManager.Instance.OnRunStarted += OnRunStarted;
+        // InputManager.Instance.OnRunCanceled += OnRunCanceled;
+        // InputManager.Instance.OnCrouchPressed += OnCrouchPressed;
         InputManager.Instance.OnAttackPressed += OnAttackPressed;
         InputManager.Instance.OnAttackHeld += OnAttackHeld;
         InputManager.Instance.OnLightAttackPressed += OnLightAttackPressed;
@@ -27,11 +27,11 @@ public class PlayerLocomotionState : PlayerBaseState
 
     public override void Exit()
     {
-        InputManager.Instance.OnMoveInput -= OnMoveInput;
+        // InputManager.Instance.OnMoveInput -= OnMoveInput;
         InputManager.Instance.OnJumpPressed -= OnJumpPressed;
-        InputManager.Instance.OnRunStarted -= OnRunStarted;
-        InputManager.Instance.OnRunCanceled -= OnRunCanceled;
-        InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
+        // InputManager.Instance.OnRunStarted -= OnRunStarted;
+        // InputManager.Instance.OnRunCanceled -= OnRunCanceled;
+        // InputManager.Instance.OnCrouchPressed -= OnCrouchPressed;
         InputManager.Instance.OnAttackPressed -= OnAttackPressed;
         InputManager.Instance.OnAttackHeld -= OnAttackHeld;
         InputManager.Instance.OnLightAttackPressed -= OnLightAttackPressed;
@@ -45,10 +45,10 @@ public class PlayerLocomotionState : PlayerBaseState
         playerController.LocomotionUpdate();
     }
 
-    private void OnMoveInput(Vector2 input)
-    {
-        playerController.SetMoveInput(input);
-    }
+    // private void OnMoveInput(Vector2 input)
+    // {
+    //     playerController.SetMoveInput(input);
+    // }
 
     private void OnJumpPressed()
     {
@@ -58,20 +58,20 @@ public class PlayerLocomotionState : PlayerBaseState
         }
     }
 
-    private void OnRunStarted()
-    {
-        playerController.SetRunning(true);
-    }
+    // private void OnRunStarted()
+    // {
+    //     playerController.SetRunning(true);
+    // }
 
-    private void OnRunCanceled()
-    {
-        playerController.SetRunning(false);
-    }
+    // private void OnRunCanceled()
+    // {
+    //     playerController.SetRunning(false);
+    // }
 
-    private void OnCrouchPressed()
-    {
-        playerController.ToggleCrouch();
-    }
+    // private void OnCrouchPressed()
+    // {
+    //     playerController.ToggleCrouch();
+    // }
 
     private void OnDashPressed()
     {
