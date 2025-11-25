@@ -80,7 +80,7 @@ public class EnemyManager : MonoBehaviour
             else
             {
                 // "전투 적 없음" 상태가 누적되면 탐험으로 복귀
-                combatNoEnemyTimer += combatExitCheckInterval;
+                combatNoEnemyTimer += combatExitCheckInterval;  // 이미 combatExitCheckInterval 만큼 시간이 흘렀기 때문에 해당 수치를 누적
                 if (combatNoEnemyTimer >= combatNoEnemyDuration)
                 {
                     gm.EnterExploration();

@@ -4212,3 +4212,49 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.11.25 (화) 작업 기록
+
+### 주요 작업
+- 인벤토리·상점 UI 공통 프레임 적용
+  - InventoryUI, ShopUI 전체에 공통 프레임·헤더 이미지 적용
+  - 슬롯 그리드 간격/패딩 재정렬 및 골드 영역 헤더 스타일 변경
+  - 상세 정보 패널(ItemDetailPanel) 폰트·위치 정리, ShopItemSlot 정렬 보정
+
+- 컨펌 모달 패널 UI 리뉴얼
+  - 공통 프레임 적용 및 투명도 조절로 가독성 강화
+  - 폰트·버튼 스타일을 전체 UI 테마와 통일
+  - Confirm/Cancel 버튼의 간격·정렬 최적화
+
+- MovementFactor 기반 플레이어 이동 시스템 구축
+  - PlayerBaseState에 MovementFactor 프로퍼티 및 UpdateMovement() 헬퍼 함수 추가
+  - PlayerController.Move()를 movementFactor 기반 속도 계산 구조로 확장
+  - 각 상태(FSM)가 MovementFactor만 설정하면 자동으로 이동 조절되도록 설계
+
+- 이동 입력 처리 리팩토링
+  - OnMove, OnRun, OnCrouch 입력을 PlayerController가 전담
+  - InputManager에 OnInitialized 이벤트 추가해 초기화 순서 문제 해결
+  - PlayerController OnEnable/OnDisable에서 Register/UnregisterInput 수행
+  - LocomotionState에서는 이동 입력 제거 후 전투·점프·대쉬 등 상태 전환 입력만 유지
+
+- FSM 이동 로직 통합 및 상태별 이동 계수 적용
+  - LocomotionState = 1.0 / AttackState = 0.6 / BlockState = 0.5 / ComboState = 0.4 / JumpState = 0.8
+  - DashState는 MovementFactor=0으로 입력 이동 차단, MoveDirectly 전용 이동 유지
+  - HitState는 MovementFactor=0 적용 후 UpdateMovement() 호출로 피격 중 중력만 유지
+
+- EnemyManager 기반 전투 지속/종료 시스템 완성
+  - Enemy에 LastSeenPlayerTime 추가 및 DetectPlayer/CanSeePlayer에서 최신 갱신
+  - CanSeePlayer()에서 hasDetectedPlayer 조건 제거해 전투 중에도 실제 시야 판정 지속
+  - EnemyManager에 전투 종료 판정 로직 도입  
+    - 조건: “가로거리 25m 이내 + 최근 4초 이내 시야 확보한 적 존재 여부”
+    - relevant 적이 없으면 combatNoEnemyTimer 누적 → 3초 지속 시 Exploration 복귀
+    - 0.25초 Tick 기반 평가(combatExitCheckInterval)로 안정적인 전투 종료 검출 구현
+  - Enemy 풀링 리셋 시 LastSeenPlayerTime 초기화
+
+### 메모
+- 이동 입력을 PlayerController로 옮기면서 FSM과 입력 레이어가 완전 분리됨 → 유지보수성 크게 증가
+- MovementFactor 구조 도입으로 “상태 기반 이동 제어”가 단순해지고 확장성 확보
+- EnemyManager가 CombatState 종료를 전담하게 되어 GameManager는 상태 전환만 담당하는 구조로 간소화됨
+- Tick 기반 전투 종료 판정으로 순간적인 시야 끊김/엄폐로 인한 Combat 해제 문제 방지
+- 전투 지속/종료 수치는 추후 플레이 템포에 맞게 조정 예정 (recent=4초, 거리=25m, exitDelay=3초)
+
+---
