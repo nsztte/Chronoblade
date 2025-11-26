@@ -4258,3 +4258,35 @@ Enemy FSM(상태머신) 시스템 구현
 - 전투 지속/종료 수치는 추후 플레이 템포에 맞게 조정 예정 (recent=4초, 거리=25m, exitDelay=3초)
 
 ---
+
+## 2025.11.26 (수) 작업 기록
+
+### 주요 작업
+
+- Enemy 패트롤 회전 로직 개선
+  - EnemyPatrolState에 제자리 회전 단계(isTurning) 도입  
+  - 패트롤 이동 루프: 도착 → 대기 → 다음 목적지 계산 → 제자리 회전 → 이동 구조로 자연스러운 흐름 완성  
+  - RotateTowards 기반 수동 회전 적용 → 옆으로 미끄러지는 부자연스러운 방향 전환 제거  
+  - WaypointsLoop / RandomInRadius 두 모드 모두 동일한 회전 로직 적용  
+
+- Enemy 애니메이션 전환 자연화 + BehaviorData 회전 속도 분리
+  - EnemyStateMachine에서 animator.SetFloat("Speed")에 damp 적용해 급격한 속도 변화 완화  
+  - Patrol 회전 중 animator Speed를 강제로 세팅해 회전 → 이동 애니메이션 전환 끊김 해결  
+  - EnemyBehaviorData에 turnSpeedDegPerSecond 추가해 개별 에너미 회전 속도 튜닝 가능  
+
+- Enemy 간 충돌 완화 – NavMeshAgent 설정 최적화
+  - AngularSpeed = 220, Acceleration = 10으로 상향해 추격 방향 전환과 가속 느낌 강화  
+  - StoppingDistance = 0.2로 설정해 목적지 떨림 감소  
+  - AutoBraking 비활성화로 불필요한 급정지 제거  
+  - Enemy.ResetState()에서 avoidancePriority(40~60 랜덤) 재부여 → 밀집 구간 충돌/저항 현상 완화  
+
+- Player 대쉬 연출 강화 – 카메라 쉐이크 적용
+  - PlayerDashState.Enter()에 PlayImpactShake 적용  
+  - 대쉬 순간 화면 흔들림을 주어 속도감 상승  
+  - 이동/회피 로직에는 영향 없이 연출 요소만 강화  
+
+### 메모
+- 대쉬의 시간왜곡 느낌을 어떻게 구현할지(타임스탑 볼륨 활용 여부 등) 내일 추가 예정  
+- 고스트 트레일 방식은 복잡성과 URP 호환성 문제 때문에 미보류 상태
+
+---
