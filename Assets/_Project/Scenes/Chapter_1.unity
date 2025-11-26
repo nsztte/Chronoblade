@@ -967,6 +967,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: WatcherSpawnPoint_Respawn
       objectReference: {fileID: 0}
+    - target: {fileID: 2874462657612774624, guid: 2c95c1b0fbb532c478e1027428ec3640, type: 3}
+      propertyPath: maxAlive
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2874462657612774624, guid: 2c95c1b0fbb532c478e1027428ec3640, type: 3}
+      propertyPath: maxSpawnCount
+      value: 10
+      objectReference: {fileID: 0}
+    - target: {fileID: 2874462657612774624, guid: 2c95c1b0fbb532c478e1027428ec3640, type: 3}
+      propertyPath: minSpawnCount
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4945939507134518817, guid: 2c95c1b0fbb532c478e1027428ec3640, type: 3}
       propertyPath: guid
       value: 44bb86f7e9324d45a1aa045f53826b00

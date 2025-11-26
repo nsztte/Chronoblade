@@ -143,6 +143,9 @@ public abstract class Enemy : MonoBehaviour, IDamageable
             agent.isStopped = false;
             agent.ResetPath();
             agent.speed = MoveSpeed;
+
+            // 우선순위
+            agent.avoidancePriority = UnityEngine.Random.Range(40, 61);
         }
 
         if (animator != null)
