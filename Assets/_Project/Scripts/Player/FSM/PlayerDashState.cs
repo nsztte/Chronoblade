@@ -6,6 +6,8 @@ public class PlayerDashState : PlayerBaseState
     private Vector3 dashDirection;
     private float dashSpeed = 20f;
     private float dashDuration = 0.25f;
+    private float shakeIntensity = 0.3f;
+
     private float timer;
 
     protected override float MovementFactor => 0f;
@@ -22,9 +24,6 @@ public class PlayerDashState : PlayerBaseState
         // 플레이어 무적 시간 부여
         PlayerManager.Instance.SetInvincible(true, dashDuration);
 
-        // 애니메이션 트리거
-        // PlayerManager.Instance.SetAnimatorTrigger("IsDashing");
-
         Vector2 input = playerController.LastMoveInput;
         dashDirection = (playerController.transform.forward * input.y + playerController.transform.right * input.x).normalized;
         if(dashDirection == Vector3.zero)
@@ -32,7 +31,10 @@ public class PlayerDashState : PlayerBaseState
             dashDirection = playerController.transform.forward;
         }
 
-        Debug.Log("DashState 시작");
+        // 대쉬 카메라 흔들림 추가
+        CameraController.Instance.PlayImpactShake(shakeIntensity, dashDuration); 
+
+        // Debug.Log("DashState 시작");
     }
 
     public override void Update()
@@ -48,6 +50,6 @@ public class PlayerDashState : PlayerBaseState
 
     public override void Exit()
     {
-        Debug.Log("DashState 종료");
+        // Debug.Log("DashState 종료");
     }
 }
