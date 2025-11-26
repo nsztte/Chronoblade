@@ -77,7 +77,8 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void Update()
     {
-        animator.SetFloat("Speed", agent.velocity.magnitude);
+        // animator.SetFloat("Speed", agent.velocity.magnitude);
+        animator.SetFloat("Speed", agent.velocity.magnitude, 0.1f, Time.deltaTime);
         currentState?.Update(this);
     }
 

@@ -1,3 +1,4 @@
+using UnityEditor.ShaderGraph.Internal;
 using UnityEngine;
 
 public enum EnemyType
@@ -19,6 +20,7 @@ public class EnemyBehaviorData : ScriptableObject
     public float attackRange;
     public float attackCooldown;
     public float attackSpeed;
+    public float turnSpeedDegPerSecond = 360f;     // 회전 속도 (도/초)
 
     [Header("Detection Settings")]
     public float detectionRange;

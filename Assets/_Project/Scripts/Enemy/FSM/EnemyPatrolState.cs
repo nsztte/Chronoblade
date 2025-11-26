@@ -11,7 +11,7 @@ public class EnemyPatrolState : EnemyBaseState
     private Vector3 nextPatrolDestination;
 
     // 회전 속도, 각도
-    private const float TurnSpeedDegPerSecond = 360f;   // 도/초
+    // private const float TurnSpeedDegPerSecond = 300f;   // 도/초
     private const float TurnAngleThreshold = 5f;        //도
 
     public override void Enter(EnemyStateMachine enemy)
@@ -58,6 +58,7 @@ public class EnemyPatrolState : EnemyBaseState
         // 2) 회전 처리
         if (isTurning)
         {
+            enemy.Animator.SetFloat("Speed", 0.7f);
             HandleTurn(enemy);
             return;
         }
@@ -155,7 +156,7 @@ public class EnemyPatrolState : EnemyBaseState
         }
 
         Quaternion targetRot = Quaternion.LookRotation(dir);
-        float maxStep = TurnSpeedDegPerSecond * Time.deltaTime;
+        float maxStep = e.BehaviorData.turnSpeedDegPerSecond * Time.deltaTime;
 
         // 현재 회전에서 타겟 회전으로 천천히 회전
         t.rotation = Quaternion.RotateTowards(t.rotation, targetRot, maxStep);
