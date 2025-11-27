@@ -20,6 +20,9 @@ public class EnemyStateMachine : MonoBehaviour
     private NavMeshAgent agent;
     private Enemy enemy;
     private Transform target;
+    private EnemyTimeController timeController;
+
+    private float speedDampTime = 0.1f;
 
     // 상태 트래킹
     public EnemyState currentStateType;
@@ -56,6 +59,7 @@ public class EnemyStateMachine : MonoBehaviour
         animator = GetComponent<Animator>();
         agent = GetComponent<NavMeshAgent>();
         enemy = GetComponent<Enemy>();
+        timeController = GetComponent<EnemyTimeController>();
 
         // 동적으로 공격 상태 생성
         attackState = enemy.BehaviorData.CreateAttackState();
@@ -77,9 +81,16 @@ public class EnemyStateMachine : MonoBehaviour
 
     private void Update()
     {
-        // animator.SetFloat("Speed", agent.velocity.magnitude);
-        animator.SetFloat("Speed", agent.velocity.magnitude, 0.1f, Time.deltaTime);
         currentState?.Update(this);
+
+        if (timeController != null && Mathf.Approximately(timeController.GetTimeScale(), 0f))
+            return;
+
+        // NavMeshAgent 속도 기반으로 BlendTree용 Speed 갱신
+        float moveSpeed = agent.velocity.magnitude;      // 0 ~ agent.speed
+        float normalized = moveSpeed / agent.speed;      // 0 ~ 1 정도로 정규화
+
+        animator.SetFloat("Speed", normalized, speedDampTime, Time.deltaTime);
     }
 
     private void InitializeStateTypeMap()
