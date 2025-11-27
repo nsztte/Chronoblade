@@ -293,12 +293,30 @@ public class TimeManager : MonoBehaviour
             currentTimeState = TimeState.Normal;
             ApplyTimeScale(1f);
             Debug.Log($"[TimeManager] 시간 정지 해제");
+
+            // 현재 게임 스테이트에 맞는 스냅샷으로 복귀
+            var gm = GameManager.Instance;
+            if (gm != null)
+            {
+                if (gm.CurrentGameState is CombatState)
+                {
+                    VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.Combat);
+                }
+                else
+                {
+                    // Exploration / Puzzle 등은 탐험 스냅샷으로 통일
+                    VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.Exploration);
+                }
+            }
         }
         else
         {
             currentTimeState = TimeState.Stop;
             ApplyTimeScale(0f);
             Debug.Log($"[TimeManager] 시간 정지 실행");
+            
+            // 타임스탑 볼륨 스냅샷 적용
+            VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.TimeStop);
         }
 
         UpdateTimeUI();

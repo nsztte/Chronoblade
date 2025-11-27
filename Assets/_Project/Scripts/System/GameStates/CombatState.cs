@@ -11,6 +11,9 @@ public class CombatState : GameBaseState
         TimingComboManager.Instance.StartBeatRoutine();
 
         SaveGuard.Instance?.Block(SaveBlockTag.Combat);
+
+        // 볼륨 스냅샷 적용
+        VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.Combat);
     }
 
     public override void Exit()

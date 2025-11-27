@@ -9,6 +9,9 @@ public class ExplorationState : GameBaseState
         UIManager.Instance?.UpdatePlayerHud(true);
         TimeManager.Instance.InitializeTimeState();
         UIManager.Instance?.ClearTimeState();
+
+        // 볼륨 스냅샷 적용
+        VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.Exploration);
     }
 
     public override void Exit()
