@@ -370,7 +370,6 @@ public class SaveManager : MonoBehaviour
         while (!op.isDone) yield return null;
         yield return null; // 초기화 1프레임 대기
 
-        EnemyManager.Instance?.DespawnAllEnemiesInScene();
         RestoreState(file);
     }
 

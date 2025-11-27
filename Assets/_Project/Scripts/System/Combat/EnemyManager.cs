@@ -1,5 +1,6 @@
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 public class EnemyManager : MonoBehaviour
 {
@@ -52,6 +53,16 @@ public class EnemyManager : MonoBehaviour
 
             poolMap[type] = pool;
         }
+    }
+
+    private void OnEnable()
+    {
+        SceneManager.sceneUnloaded += HandleSceneUnloaded;
+    }
+
+    private void OnDisable()
+    {
+        SceneManager.sceneUnloaded -= HandleSceneUnloaded;
     }
 
     private void Update()
@@ -177,6 +188,13 @@ public class EnemyManager : MonoBehaviour
         }
 
         pool.Release(enemy);
+    }
+
+    private void HandleSceneUnloaded(Scene _)
+    {
+        // 씬이 내려가기 전에 적 풀을 정리해 다음 씬에 흔적이 남지 않도록 한다.
+        if (activeEnemies.Count == 0) return;
+        DespawnAllEnemiesInScene();
     }
 
     private bool HasRelevantCombatEnemy(Vector3 playerPosition)
