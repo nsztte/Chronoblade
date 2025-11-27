@@ -8,19 +8,25 @@ public class VolumeSnapshotController : MonoBehaviour
     [SerializeField] private Volume exploration;
     [SerializeField] private Volume combat;
     [SerializeField] private Volume timeStop;
+    [SerializeField] private Volume dashVolume;
 
     [Range(0.05f, 2f)]
     public float blendTime = 0.35f;
 
     private Coroutine blend;
+    private Coroutine dashPulse;
 
     public enum Snapshot { Exploration, Combat, TimeStop }
 
     private void Start()
     {
         SetSnapshot(Snapshot.Exploration);
+
+        if (dashVolume != null)
+            dashVolume.weight = 0f;
     }
 
+    // 스냅샷 전환
     public void SetSnapshot(Snapshot target)
     {
         if(blend != null)
@@ -54,10 +60,36 @@ public class VolumeSnapshotController : MonoBehaviour
         blend = null;
     }
 
-    void Update()
+    // 대쉬 펄스
+    public void PlayDashPulse(float maxWeight, float duration)
     {
-        if (Input.GetKeyDown(KeyCode.Alpha8)) SetSnapshot(Snapshot.Exploration);
-        if (Input.GetKeyDown(KeyCode.Alpha9)) SetSnapshot(Snapshot.Combat);
-        if (Input.GetKeyDown(KeyCode.Alpha0)) SetSnapshot(Snapshot.TimeStop);
+        if (dashVolume == null)
+            return;
+
+        maxWeight = Mathf.Clamp01(maxWeight);
+        duration  = Mathf.Max(0.01f, duration);
+
+        if (dashPulse != null)
+            StopCoroutine(dashPulse);
+
+        dashPulse = StartCoroutine(DashPulseRoutine(maxWeight, duration));
+    }
+
+    private IEnumerator DashPulseRoutine(float maxWeight, float duration)
+    {
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float n = t / duration;
+            float eased = 1f - (n * n); // ease-out
+
+            dashVolume.weight = maxWeight * eased;
+            yield return null;
+        }
+
+        dashVolume.weight = 0f;
+        dashPulse = null;
     }
 }
