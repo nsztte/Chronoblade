@@ -4290,3 +4290,51 @@ Enemy FSM(상태머신) 시스템 구현
 - 고스트 트레일 방식은 복잡성과 URP 호환성 문제 때문에 미보류 상태
 
 ---
+
+## 2025.11.27 (목) 작업 기록
+
+### 주요 작업
+
+- **대쉬 전용 볼륨 추가 및 SnapshotController 연동**
+  - exploration/combat/timeStop 외에 dashVolume 필드 추가  
+  - DashVolume 초기 weight = 0 설정  
+  - PlayDashPulse(maxWeight, duration) 구현해 weight 상승→감소 펄스 연출  
+  - Chromatic Aberration / MotionBlur / DoF 기반 대쉬 전용 왜곡 효과 구성  
+  - 챕터1·파이널 모두 대쉬 글로벌 볼륨(우선순위 10) 생성 및 적용  
+
+- **VolumeSnapshotController 구조 개선**
+  - 기존 싱글톤 방식 제거, 씬 로컬 Current(FindFirstObjectByType) 자동 탐색 방식으로 변경  
+  - 씬 전환 시 자동 갱신되도록 OnDestroy에서 Current 해제 처리  
+  - PlayerDashState.Enter에 PlayDashPulse 호출 연동해 대쉬 시 시각 효과 활성화  
+
+- **SaveId 안정화**
+  - OnValidate의 자동 GUID 재생성 기능을 완전히 비활성화  
+  - 저장/로드 매핑 오류(씬 저장 시 GUID 변경 문제) 방지  
+  - GUID는 수동 Regenerate로만 변경되도록 정책 통일  
+
+- **에너미 정리 시스템 전면 개선**
+  - EnemyManager에 DespawnAllEnemiesInScene() 신규 구현  
+    - SpawnPoint 스폰 개체 정리 + activeEnemies Release + 전투 타이머 리셋  
+  - SceneManager.sceneUnloaded 이벤트에 EnemyManager가 직접 등록  
+    → 씬이 내려가기 직전에 자동으로 적 정리 수행  
+  - LoadingState·SaveManager의 수동 호출 제거, 정리 책임을 EnemyManager로 일원화  
+
+- **볼륨 스냅샷의 게임 상태 연동**
+  - ExplorationState.Enter → Exploration 스냅샷 적용  
+  - CombatState.Enter → Combat 스냅샷 적용  
+  - TimeManager.OnTimeStop  
+    - 발동 시 TimeStop 스냅샷 적용  
+    - 해제 시 GameState 상태(탐험/컴뱃)에 맞는 스냅샷 복구  
+
+- **타임스탑 애니메이션 정지 개선**
+  - EnemyStateMachine.Update에 TimeScale=0 체크 추가  
+    → Speed 파라미터 갱신 중단으로 정지 직전 포즈 유지  
+  - 정상 상태에서는 NavMeshAgent.velocity를 agent.speed로 정규화하여 Speed(0~1) 업데이트  
+  - TimeController가 animator.speed를 제어, Speed는 포즈 유지용 파라미터로 분리
+
+### 메모
+- 대쉬/탐험/전투/타임스탑의 연출 톤이 스냅샷 기반으로 완전히 통일됨  
+- 씬 전환·세이브 로드시 이전 챕터 에너미가 남는 문제를 구조적으로 완전히 해결  
+- 타임스탑 시 애니메이션 정지 포즈가 자연스럽게 유지됨 (Run 포즈 고정 등)
+
+---
