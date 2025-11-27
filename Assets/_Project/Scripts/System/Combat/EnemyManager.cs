@@ -148,6 +148,26 @@ public class EnemyManager : MonoBehaviour
         return enemy;
     }
 
+    public void DespawnAllEnemiesInScene()
+    {
+        // 스폰포인트에 붙어 있는 애들 정리
+        var spawnPoints = FindObjectsByType<EnemySpawnPoint>(FindObjectsSortMode.None);
+        foreach (var sp in spawnPoints)
+            sp.DespawnAllEnemies();
+
+        // EnemyManager가 직접 관리하는 activeEnemies도 정리
+        var copy = new List<Enemy>(activeEnemies);
+        foreach (var enemy in copy)
+        {
+            if (enemy == null) continue;
+            ReleaseEnemy(enemy);
+        }
+
+        activeEnemies.Clear();
+        combatExitCheckTimer = 0f;
+        combatNoEnemyTimer = 0f;
+    }
+
     public void ReleaseEnemy(Enemy enemy)
     {
         if (!poolMap.TryGetValue(enemy.Type, out var pool))

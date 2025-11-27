@@ -73,12 +73,16 @@ public class LoadingState : GameBaseState
             var intro = GameObject.FindFirstObjectByType<StartCutscene>();
             if (intro != null)
                 intro.StartPlay();
+
+            EnemyManager.Instance?.DespawnAllEnemiesInScene();
         }
         else if (scene.name == FINALSCENE)
         {
             var intro = GameObject.FindFirstObjectByType<FinalChapterIntroCutscene>();
             if (intro != null)
                 intro.StartPlay();
+
+            EnemyManager.Instance?.DespawnAllEnemiesInScene();
         }
 
         // GameManager.Instance.EnterExploration(); // 탐색 상태 진입
