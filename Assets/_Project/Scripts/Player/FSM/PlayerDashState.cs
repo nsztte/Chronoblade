@@ -32,9 +32,14 @@ public class PlayerDashState : PlayerBaseState
         }
 
         // 대쉬 카메라 흔들림 추가
-        CameraController.Instance.PlayImpactShake(shakeIntensity, dashDuration); 
+        CameraController.Instance.PlayImpactShake(shakeIntensity, dashDuration);
 
-        // Debug.Log("DashState 시작");
+        // 대쉬 볼륨스냅샷 추가
+        var snapshot = VolumeSnapshotController.Current;
+        if (snapshot != null)
+        {
+            snapshot.PlayDashPulse(1f, dashDuration);
+        }
     }
 
     public override void Update()

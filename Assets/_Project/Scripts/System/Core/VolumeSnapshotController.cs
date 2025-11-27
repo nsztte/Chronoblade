@@ -5,6 +5,22 @@ using System.Collections;
 
 public class VolumeSnapshotController : MonoBehaviour
 {
+    private static VolumeSnapshotController current;
+    public static VolumeSnapshotController Current
+    {
+        get
+        {
+            // 이미 캐시되어 있으면 그대로 사용
+            if (current != null) return current;
+
+            // 씬에서 한 번만 찾아서 캐시
+            current = FindFirstObjectByType<VolumeSnapshotController>();
+            if (current == null)
+                Debug.LogWarning("[VolumeSnapshotController] 현재 씬에서 찾을 수 없음");
+            return current;
+        }
+    }
+
     [SerializeField] private Volume exploration;
     [SerializeField] private Volume combat;
     [SerializeField] private Volume timeStop;
@@ -18,12 +34,20 @@ public class VolumeSnapshotController : MonoBehaviour
 
     public enum Snapshot { Exploration, Combat, TimeStop }
 
-    private void Start()
+    private void Awake()
     {
+        current = this;
+
         SetSnapshot(Snapshot.Exploration);
 
         if (dashVolume != null)
             dashVolume.weight = 0f;
+    }
+
+    private void OnDestroy()
+    {
+        if (current == this)
+            current = null;
     }
 
     // 스냅샷 전환
