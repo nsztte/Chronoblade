@@ -27,7 +27,8 @@ public class ItemDetailPanel : MonoBehaviour
     {
         gameObject.SetActive(true);
         icon.sprite = item.Icon;
-        nameText.text = item.itemName;
+        var displayName = item.itemName.Replace("|", "\n");
+        nameText.text = displayName;
         typeTag.text = $"[{TypeTagText(item)}]";
         descriptionText.text = item.description;
         effectText.text = ItemEffectText(item);
@@ -149,9 +150,9 @@ public class ItemDetailPanel : MonoBehaviour
             case ItemType.Consumable:
                 effectText = item.consumableItemEffectType switch
                 {
-                    ConsumableItemEffectType.Heal => $"체력을 {item.value} 회복합니다.",
-                    ConsumableItemEffectType.ManaRestore => $"마나를 {item.value} 회복합니다.",
-                    ConsumableItemEffectType.AmmoSupply => $"탄약을 {item.value} 보충합니다.",
+                    ConsumableItemEffectType.Heal => $"체력을 {item.value}만큼 회복합니다.",
+                    ConsumableItemEffectType.ManaRestore => $"마나를 {item.value}만큼 회복합니다.",
+                    ConsumableItemEffectType.AmmoSupply => $"탄약을 {item.value}발 보충합니다.",
                     _ => ""
                 };
                 break;

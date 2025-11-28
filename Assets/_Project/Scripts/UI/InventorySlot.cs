@@ -26,7 +26,8 @@ public class InventorySlot : MonoBehaviour
     {
         item = itemData;
         iconImage.sprite = item.Icon;
-        nameText.text = item.itemName;
+        var displayName = itemData.itemName.Replace("|", "\n");
+        nameText.text = displayName;
         SetSelected(false);
 
         if(itemData.itemType == ItemType.Equipment)

@@ -84,7 +84,14 @@ public class ShopManager : MonoBehaviour
         }
 
         // 3단계: 구매 성공
-        UIManager.Instance.ShowToast($"아이템 구매 성공: {item.name} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(item)}");
+        if (item.itemType == ItemType.Consumable &&
+                item.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
+        {
+            var displayName = item.itemName.Replace("|", " ");
+            UIManager.Instance.ShowToast($"탄약 구매 성공: {displayName} ({item.value}발) / 총 보유 수량: {InventoryManager.Instance.GetAmmoCount(item.ammoType)}발");
+        }
+        else
+            UIManager.Instance.ShowToast($"아이템 구매 성공: {item.name} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(item)}");
         // Debug.Log($"[ShopManager] 아이템 구매 성공: {item.name} / 수량: {InventoryManager.Instance.GetItemCount(item)}");
     }
 

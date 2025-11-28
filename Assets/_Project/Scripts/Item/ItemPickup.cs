@@ -54,16 +54,22 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
     {
         int leftOver = InventoryManager.Instance.TryAddItem(itemData, amount, out string failReason);
 
-        if(leftOver <= 0)
+        if (leftOver <= 0)
         {
             if (itemData.itemType == ItemType.Equipment && itemData.weaponData != null)
             {
                 InventoryManager.Instance.RegisterWeapon(itemData);
                 UIManager.Instance.ShowToast($"무기 획득: {itemData.itemName}");
             }
+            else if (itemData.itemType == ItemType.Consumable &&
+                itemData.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
+            {
+                var displayName = itemData.itemName.Replace("|", " ");
+                UIManager.Instance.ShowToast($"탄약 획득: {displayName} ({amount * itemData.value}발) / 총 보유 수량: {InventoryManager.Instance.GetAmmoCount(itemData.ammoType)}발");
+            }
             else
             {
-                UIManager.Instance.ShowToast($"아이템 획득: {itemData.itemName} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(itemData)}");
+                UIManager.Instance.ShowToast($"아이템 획득: {itemData.itemName} {amount}개 / 총 보유 수량: {InventoryManager.Instance.GetItemCount(itemData)}");
             }
 
             onPickupSuccess.Invoke();
@@ -86,9 +92,10 @@ public class ItemPickup : MonoBehaviour, IInteractable, IInteractableSavable
 
                 if (picked > 0)
                 {
-                    int pickedBoxes = Mathf.FloorToInt((float)picked / originalValue);
+                    // int pickedBoxes = Mathf.FloorToInt((float)picked / originalValue);
+                    var displayName = itemData.itemName.Replace("|", " ");
                     UIManager.Instance.ShowToast(
-                        $"탄약 획득: {itemData.itemName} x {pickedBoxes} 상자 ({picked}발) / 총 보유 수량: {InventoryManager.Instance.GetAmmoCount(itemData.ammoType)}발"
+                        $"탄약 획득: {itemData.itemName} ({picked}발) / 총 보유 수량: {InventoryManager.Instance.GetAmmoCount(itemData.ammoType)}발"
                     );
                 }
 
