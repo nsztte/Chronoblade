@@ -4378,3 +4378,33 @@ Enemy FSM(상태머신) 시스템 구현
 - 신규 아이콘/프리팹 전부 UI 및 ItemData 연동까지 완료되어 전체 아이템 구조 정리됨 
 
 ---
+
+## 2025.12.01 (월) 작업 기록
+
+### 주요 작업
+- **어빌리티 해금 트리거 흡수 연출 구현**
+  - AbilityUnlockTrigger에서 능력 해금 및 토스트 출력 처리
+  - 플레이어 방향으로 이동·축소되는 파티클 흡수 코루틴 구현
+  - 자식 파티클의 simulationSpeed를 감속시키며 자연스럽게 정지되는 연출 적용
+  - 어빌리티 해금용 관련 에셋 추가
+
+- **AbilityUnlockTrigger 세이브/로드 대응 완성**
+  - IInteractableSavable 구현 및 SaveId/GenericInteractionSaveProxy 적용
+  - activated 상태 저장·복원으로 재등장 방지 구조 완성
+  - ApplyActivated(false)에서 스케일 및 파티클 초기 상태 완전 복원 처리
+  - 흡수 완료 시 StopEmittingAndClear 적용해 연출 일관성 확보
+  - SaveManager Restore 흐름과 정상적으로 연동됨
+
+- **어빌리티 언락 트리거 3종 저장 시스템 연동**
+  - SlowStop_AbilityUnlockTrigger에 파티클 흡수 연출 및 SaveProxy 세팅 적용
+  - RewindFastforward_AbilityUnlockTrigger 동일 구조로 구현
+  - Dash_AbilityUnlockTrigger에 세이브/로드 대응 및 파티클 초기화 로직 구성
+  - 각 트리거별 activated·스케일·파티클 상태 완전 복구 처리로 일관성 확보
+
+### 메모
+- AbilityUnlockTrigger 파티클 흡수 연출 + 세이브 구조는 안정적으로 정착됨
+- AbilityUnlock 관련해서 플레이어 또한 세이브/로드 연동 필요
+
+---
+
+
