@@ -2,7 +2,9 @@ using UnityEngine;
 using System.Collections;
 
 public enum AbilityKind { Dash, TimeSlow, TimeStop, TimeRewind, TimeFastForward }
-public class AbilityUnlockTrigger : MonoBehaviour
+
+[RequireComponent(typeof(SaveId)), RequireComponent(typeof(GenericInteractionSaveProxy))]
+public class AbilityUnlockTrigger : MonoBehaviour, IInteractableSavable
 {
     [Header("해금할 능력들")]
     [SerializeField] private AbilityKind[] abilities;
@@ -14,7 +16,10 @@ public class AbilityUnlockTrigger : MonoBehaviour
     private Collider col;
     private ParticleSystem[] systems;
     private float[] startSpeeds;
-    private bool isTriggered;
+    private Vector3 initialScale;
+
+    // 세이브용 상태
+    [SerializeField] private bool activated;
 
     private void Awake()
     {
@@ -26,14 +31,22 @@ public class AbilityUnlockTrigger : MonoBehaviour
 
         for (int i = 0; i < systems.Length; i++)
             startSpeeds[i] = systems[i].main.simulationSpeed;
+
+        if (activated)
+        {
+            if (col != null) col.enabled = false;
+            gameObject.SetActive(false);
+        }
+
+        initialScale = transform.localScale;
     }
 
     private void OnTriggerEnter(Collider other)
     {
-        if (isTriggered) return;
+        if (activated) return;
         if (!other.CompareTag("Player")) return;
 
-        isTriggered = true;
+        activated = true;
 
         foreach (var a in abilities)
         {
@@ -107,4 +120,58 @@ public class AbilityUnlockTrigger : MonoBehaviour
 
         gameObject.SetActive(false);
     }
+
+    #region IInteractableSavable 구현
+    public bool IsActivated()
+    {
+        return activated;
+    }
+
+    public bool IsHeld()
+    {
+        return false;
+    }
+
+    public bool TryGetWorldPose(out Vector3 pos, out Quaternion rot)
+    {
+        pos = transform.position;
+        rot = transform.rotation;
+        return true;
+    }
+
+    public void ApplyWorldPose(Vector3 pos, Quaternion rot)
+    {
+        transform.SetPositionAndRotation(pos, rot);
+    }
+
+    public void ApplyActivated(bool value)
+    {
+        activated = value;
+
+        if (activated)
+        {
+            if (col != null) col.enabled = false;
+            gameObject.SetActive(false);
+        }
+        else
+        {
+            if (col != null) col.enabled = true;
+            gameObject.SetActive(true);
+
+            // 스케일 복구
+            transform.localScale = initialScale;
+
+            // 파티클 복구
+            for (int i = 0; i < systems.Length; i++)
+            {
+                var main = systems[i].main;
+                main.simulationSpeed = startSpeeds[i];
+                systems[i].Clear();
+                systems[i].Play();
+            }
+        }
+    }
+
+    public void ApplyHeld(bool value){}
+    #endregion
 }
