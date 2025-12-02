@@ -65,6 +65,11 @@ public class StartCutscene : BaseCutscene
     private void OnComplete()
     {
         PlayerManager.Instance.ShowPlayerBody(true);
+
+        UIManager.Instance?.TutorialUI?.ShowTutorial(
+        "Start_MoveAndGun",
+        "[RMB] 조준\n[LMB] 발사\n[Shift] 달리기"
+        );
     }
     
     protected override void OnBeforePlay()

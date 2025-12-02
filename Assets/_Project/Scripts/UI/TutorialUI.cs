@@ -6,6 +6,7 @@ using TMPro;
 public class TutorialUI : MonoBehaviour
 {
     [Header("참조")]
+    [SerializeField] private Transform tutorialPanel;
     [SerializeField] CanvasGroup canvasGroup;
     [SerializeField] TextMeshProUGUI messageText;
 
@@ -28,6 +29,7 @@ public class TutorialUI : MonoBehaviour
 
     private void Awake()
     {
+        tutorialPanel.gameObject.SetActive(false);
         canvasGroup.alpha = 0f;
         canvasGroup.blocksRaycasts = false;
         canvasGroup.interactable = false;
@@ -70,6 +72,8 @@ public class TutorialUI : MonoBehaviour
 
             messageText.text = req.text;
 
+            tutorialPanel.gameObject.SetActive(true);
+
             // Fade in
             yield return Fade(0f, 1f);
 
@@ -83,6 +87,8 @@ public class TutorialUI : MonoBehaviour
 
             // Fade out
             yield return Fade(1f, 0f);
+
+            tutorialPanel.gameObject.SetActive(false);
         }
 
         currentRoutine = null;
