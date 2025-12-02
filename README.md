@@ -4407,4 +4407,39 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.12.02 (화) 작업 기록
+
+### 주요 작업
+
+- **플레이어 어빌리티 해금 상태 세이브/로드 연동**
+  - PlayerSaveProxy에 대쉬 및 시간 능력(슬로우/정지/되감기/빨리감기) 해금 저장 필드 추가  
+  - CaptureStateJson에서 PlayerManager, TimeManager 해금 상태 JSON 저장 처리  
+  - RestoreStateJson에서 해금 상태 초기화 후 저장된 값 재적용  
+  - TimeManager에 UnlockedSlow/Stop/Rewind/FastForward Getter & SetUnlockedStates 추가
+
+- **세이브 가드 보완 (퍼즐룸 세이브 차단)**
+  - BackgroundSaveRoutine에서 QuickSave도 SaveGuard.CanSave 검사 포함  
+  - 퍼즐 상태에서 PauseState로 전환 시 PreviousGameState가 PuzzleState라면 SaveGuard 유지되도록 처리  
+  - PuzzleState.Exit에서 ClearTag로 세이브가드가 정상 초기화되어 누적 문제 없이 복귀 가능
+
+- **GameState 기반 볼륨 스냅샷 복귀 보완**
+  - MP 소모로 시간 조작 스킬이 강제 해제될 때도 GameState 기반 스냅샷 복귀 처리 추가
+
+- **튜토리얼 팝업 UI 컨트롤러 구현**
+  - CanvasGroup 기반 Fade In/Out + 큐 시스템으로 튜토리얼 순차 표시  
+  - id, holdTime, showOnce 기반 중복 방지 및 표시 시간 제어  
+  - Time.unscaledDeltaTime 사용해 일시정지/타임스케일 변경과 무관하게 정상 표시  
+  - UIManager에 TutorialUI 참조 추가
+
+- **튜토리얼 패널 레이아웃 재구성**
+  - TutorialPanel을 FadeIn 시 활성화, FadeOut 완료 후 비활성화하도록 처리해  
+    BottomLeft_Panel의 VerticalLayoutGroup과 정상적으로 연동되도록 수정  
+  - 토스트와 튜토리얼 패널의 쌓임 구조 개선  
+  - StartCutscene 종료 후 튜토리얼 자동 재생 연동
+
+### 메모
+- 튜토리얼 패널을 LayoutGroup에 정확히 참여/제거시키기 위해 로직 오브젝트와 레이아웃 오브젝트(TutorialPanel)를 분리함  
+- 플레이어 어빌리티 해금 로직이 Save/Load와 완전히 정합됨  
+
+---
 
