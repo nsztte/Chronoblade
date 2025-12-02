@@ -12,16 +12,13 @@ public class PausedState : GameBaseState
 
         TimeManager.Instance.SetTimeScale(0f);
 
-        // SaveGuard.Instance?.Block(SaveBlockTag.Pause);
+        // 퍼즐 중이라면 Puzzle 블락 유지
+        if (GameManager.Instance.PreviousGameState is PuzzleState)
+            SaveGuard.Instance?.Block(SaveBlockTag.Puzzle);
     }
 
     public override void Exit()
     {
         TimeManager.Instance.SetTimeScale(1f);
-        // GameManager.Instance.ChangeState(GameManager.Instance.PreviousGameState);
-
-        // SaveGuard.Instance?.ClearTag(SaveBlockTag.Pause);
-
-        // GameManager.Instance.EnterPreviousState();
     }
 }

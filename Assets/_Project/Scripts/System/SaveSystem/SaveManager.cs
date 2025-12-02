@@ -169,8 +169,8 @@ public class SaveManager : MonoBehaviour
     private IEnumerator BackgroundSaveRoutine(int slot, SaveIntent intent)
     {
         if(isSaving) yield break;
-
-        if (intent == SaveIntent.Manual &&
+        
+        if ((intent == SaveIntent.Manual || intent == SaveIntent.Quick) &&
                 SaveGuard.Instance != null && !SaveGuard.Instance.CanSave)
         {
             var tag = SaveGuard.Instance.GetCurrentMainBlock();
