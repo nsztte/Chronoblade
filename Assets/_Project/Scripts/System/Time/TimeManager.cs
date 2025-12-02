@@ -34,6 +34,21 @@ public class TimeManager : MonoBehaviour
     [SerializeField] private bool unlockedRewind = false;
     [SerializeField] private bool unlockedFastForward = false;
 
+    // 저장용 Getter
+    public bool UnlockedSlow => unlockedSlow;
+    public bool UnlockedStop => unlockedStop;
+    public bool UnlockedRewind => unlockedRewind;
+    public bool UnlockedFastForward => unlockedFastForward;
+
+    // 로드용 Setter
+    public void SetUnlockedStates(bool slow, bool stop, bool rewind, bool fastForward)
+    {
+        unlockedSlow = slow;
+        unlockedStop = stop;
+        unlockedRewind = rewind;
+        unlockedFastForward = fastForward;
+    }
+    
     public float SlowFactor => slowFactor;
     public float FastForwardFactor => fastForwardFactor;
 

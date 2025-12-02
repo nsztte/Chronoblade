@@ -44851,6 +44851,14 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 5769285881828288737, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: test
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 7104480629767278618, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: testMP
+      value: 0
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -51231,7 +51239,7 @@ GameObject:
   - component: {fileID: 1366091010}
   - component: {fileID: 1366091009}
   m_Layer: 0
-  m_Name: TimeSlowStopTrigger
+  m_Name: SlowStop_AbilityUnlockTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -77926,7 +77934,7 @@ GameObject:
   - component: {fileID: 1815277778}
   - component: {fileID: 1815277777}
   m_Layer: 0
-  m_Name: TimeRewindFastforwardTrigger
+  m_Name: RewindFastforward_AbilityUnlockTrigger
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

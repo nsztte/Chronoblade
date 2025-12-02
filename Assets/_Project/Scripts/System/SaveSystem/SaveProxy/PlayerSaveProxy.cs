@@ -12,6 +12,13 @@ public class PlayerSaveProxy : SaveableBehaviour
         public float mp;
         public int gold;
         public string heldObject;
+
+        // 어빌리티 해금 상태
+        public bool canDash;
+        public bool unlockedSlow;
+        public bool unlockedStop;
+        public bool unlockedRewind;
+        public bool unlockedFastForward;
     }
 
     private PlayerManager Player => PlayerManager.Instance;
@@ -19,6 +26,8 @@ public class PlayerSaveProxy : SaveableBehaviour
 
     public override string CaptureStateJson()
     {
+        var time = TimeManager.Instance;
+
         var d = new Data
         {
             pos = new[] { Body.position.x, Body.position.y, Body.position.z },
@@ -26,7 +35,14 @@ public class PlayerSaveProxy : SaveableBehaviour
             hp  = Player.CurrentHP,
             mp  = Player.CurrentMP,
             gold = Player.Gold,
-            heldObject = Player.CurrentHeldObject ? Player.CurrentHeldObject.name : "None"
+            heldObject = Player.CurrentHeldObject ? Player.CurrentHeldObject.name : "None",
+
+            // 어빌리티 해금 상태
+            canDash = Player.CanDash,
+            unlockedSlow = time != null && time.UnlockedSlow,
+            unlockedStop = time != null && time.UnlockedStop,
+            unlockedRewind = time != null && time.UnlockedRewind,
+            unlockedFastForward = time != null && time.UnlockedFastForward
         };
         return JsonUtility.ToJson(d);
     }
@@ -53,6 +69,32 @@ public class PlayerSaveProxy : SaveableBehaviour
             var obj = GameObject.Find(d.heldObject);
             if (obj != null)
                 Player.SetHeldObject(obj);
+        }
+
+        // 4) 어빌리티 해금 상태 복원
+        var time = TimeManager.Instance;
+
+        // 기본 리셋
+        Player.LockDash();
+        if (time != null)
+        {
+            time.SetUnlockedStates(false, false, false, false);
+        }
+
+        // 세이브된 값 적용
+        if (d.canDash)
+            Player.UnlockDash();
+
+        if (time != null)
+        {
+            if (d.unlockedSlow)
+                time.UnlockTimeSkill(TimeState.Slow);
+            if (d.unlockedStop)
+                time.UnlockTimeSkill(TimeState.Stop);
+            if (d.unlockedRewind)
+                time.UnlockTimeSkill(TimeState.Rewind);
+            if (d.unlockedFastForward)
+                time.UnlockTimeSkill(TimeState.FastForward);
         }
     }
 }
