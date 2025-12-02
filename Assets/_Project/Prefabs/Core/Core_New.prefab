@@ -5002,6 +5002,8 @@ GameObject:
   - component: {fileID: 7729990170360607657}
   - component: {fileID: 8061041195348324442}
   - component: {fileID: 5769285881828288737}
+  - component: {fileID: 2990172389334397748}
+  - component: {fileID: 4195408476492456673}
   m_Layer: 0
   m_Name: GameManager
   m_TagString: Untagged
@@ -5058,6 +5060,31 @@ MonoBehaviour:
   cutsceneState: {fileID: 11400000, guid: 469a365f3abdeb64f806bfe6498fcf40, type: 2}
   pausedState: {fileID: 11400000, guid: a2f1e35c4c5ffa3458022f018d0bfbd4, type: 2}
   gameOverState: {fileID: 11400000, guid: fa219f17c98de2c49a3f2500e0ceee67, type: 2}
+--- !u!114 &2990172389334397748
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2850970732529895603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 218e1e44753e0e341952ffa826b6d718, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  guid: a6227d2795504bcdadabc350fa7ce30a
+--- !u!114 &4195408476492456673
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2850970732529895603}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9f522c988585c3843a626131bb8c4819, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &2861550517408597201
 GameObject:
   m_ObjectHideFlags: 0

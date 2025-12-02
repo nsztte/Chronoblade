@@ -23,6 +23,8 @@ public class GameManager : MonoBehaviour
 
     private const string TITLESCENE = "Title";
 
+    private string loadedState;
+
 
     #region 싱글톤 및 초기화
     public static GameManager Instance { get; private set; }
@@ -188,6 +190,7 @@ public class GameManager : MonoBehaviour
     private void HandleAfterLoad()
     {
         StartCoroutine(PostLoadRoutine());
+        DecideStateAfterLoad();
     }
 
     private System.Collections.IEnumerator PostLoadRoutine()
@@ -204,4 +207,36 @@ public class GameManager : MonoBehaviour
         // 3. 카메라 위치 초기화
         CameraController.Instance?.ResetToPlayer();
     }
+
+    #region 로드 연동
+    public void SetLoadedGameState(string state)
+    {
+        loadedState = state;
+    }
+
+    private void DecideStateAfterLoad()
+    {
+        // 세이브 데이터가 없으면 기본 탐험
+        if (string.IsNullOrEmpty(loadedState))
+        {
+            EnterExploration();
+            return;
+        }
+
+        switch (loadedState)
+        {
+            case "Puzzle":
+                EnterPuzzle();
+                break;
+
+            case "Combat":
+                EnterCombat();
+                break;
+
+            default:
+                EnterExploration();
+                break;
+        }
+    }
+    #endregion
 }

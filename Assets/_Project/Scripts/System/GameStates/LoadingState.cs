@@ -39,7 +39,7 @@ public class LoadingState : GameBaseState
             case LoadingMode.LoadSave:
                 if (NextSlotToLoad >= 0)
                 {
-                    SaveManager.Instance.OnAfterLoad += HandleAfterLoad;
+                    // SaveManager.Instance.OnAfterLoad += HandleAfterLoad;
                     SaveManager.Instance.DefaultLoad(NextSlotToLoad);
                 }
                 break;
@@ -56,11 +56,11 @@ public class LoadingState : GameBaseState
         }
     }
 
-    private void HandleAfterLoad()
-    {
-        SaveManager.Instance.OnAfterLoad -= HandleAfterLoad;
-        GameManager.Instance.EnterExploration();
-    }
+    // private void HandleAfterLoad()
+    // {
+    //     SaveManager.Instance.OnAfterLoad -= HandleAfterLoad;
+    //     GameManager.Instance.EnterExploration();
+    // }
 
     private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
     {
