@@ -48,7 +48,7 @@ public class TimeManager : MonoBehaviour
         unlockedRewind = rewind;
         unlockedFastForward = fastForward;
     }
-    
+
     public float SlowFactor => slowFactor;
     public float FastForwardFactor => fastForwardFactor;
 
@@ -125,6 +125,15 @@ public class TimeManager : MonoBehaviour
             {
                 // MP가 바닥나면 자동 해제
                 SetTimeState(TimeState.Normal);
+
+                var gm = GameManager.Instance;
+                if (gm != null)
+                {
+                    if (gm.CurrentGameState is CombatState)
+                        VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.Combat);
+                    else
+                        VolumeSnapshotController.Current?.SetSnapshot(VolumeSnapshotController.Snapshot.Exploration);
+                }
             }
         }
     }
