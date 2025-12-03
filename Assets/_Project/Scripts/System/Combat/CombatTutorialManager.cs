@@ -7,7 +7,8 @@ public class CombatTutorialManager : MonoBehaviour
     private enum Step
     {
         None,
-        Attack,
+        LightAttack,
+        HeavyAttack,
         Block,
         Parry,
         TimingCombo,
@@ -48,7 +49,7 @@ public class CombatTutorialManager : MonoBehaviour
         if (hasCompleted || IsRunning)
             return;
 
-        currentStep = Step.Attack;
+        currentStep = Step.LightAttack;
         ShowCurrentStep();
     }
 
@@ -59,10 +60,17 @@ public class CombatTutorialManager : MonoBehaviour
 
         switch (currentStep)
         {
-            case Step.Attack:
+            case Step.LightAttack:
                 UIManager.Instance.TutorialUI.ShowPersistentTutorial(
-                    "Combat_Attack",
-                    "[LMB] 공격\n적에게 공격을 적중시켜라"
+                    "Combat_LightAttack",
+                    "[LMB] 약공격\n짧게 눌러 적에게 공격을 적중시켜라"
+                );
+                break;
+            
+            case Step.HeavyAttack:
+                UIManager.Instance.TutorialUI.ShowPersistentTutorial(
+                    "Combat_HeavyAttack",
+                    "[LMB] 강공격\n길게 눌러 적에게 공격을 적중시켜라"
                 );
                 break;
 
@@ -103,9 +111,18 @@ public class CombatTutorialManager : MonoBehaviour
     /// 튜토리얼 대상 에너미에게 플레이어 공격이 적중했을 때 호출
     /// (Enemy/Watcher 쪽에서 조건 맞을 때 한 번 호출)
     /// </summary>
-    public void OnAttackHitEnemy()
+    public void OnLightAttackHitEnemy()
     {
-        if (!IsRunning || currentStep != Step.Attack)
+        if (!IsRunning || currentStep != Step.LightAttack)
+            return;
+
+        currentStep = Step.HeavyAttack;
+        ShowCurrentStep();
+    }
+
+    public void OnHeavyAttackHitEnemy()
+    {
+        if (!IsRunning || currentStep != Step.HeavyAttack)
             return;
 
         currentStep = Step.Block;
