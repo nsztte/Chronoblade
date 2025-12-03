@@ -4443,3 +4443,54 @@ Enemy FSM(상태머신) 시스템 구현
 
 ---
 
+## 2025.12.03 (수) 작업 기록
+
+### 주요 작업
+
+- **튜토리얼 UI 지속 표시(Persistent) 기능 추가**
+  - TutorialRequest에 `waitUntilNext` 플래그를 추가해 다음 튜토리얼 등장 전까지 유지되는 지속형 튜토리얼 지원
+  - `ShowPersistentTutorial()` 함수 신설로 조건형 튜토리얼 단계에 활용 가능하도록 구조 확장
+  - 큐 시스템 개선: `waitUntilNext` 모드에서는 큐에 새 요청이 들어올 때까지 유지 후 자연스럽게 FadeOut 처리
+  - tutorialPanel 활성/비활성 및 FadeIn/Out 로직이 전체 튜토리얼 흐름과 자연스럽게 연동되도록 정비
+
+- **전투 튜토리얼 단계 시스템 구축 (CombatTutorialManager)**
+  - LightAttack → HeavyAttack → Block → Parry → TimingCombo → Done 순으로 단계 정의
+  - StartCombatTutorial에서 검 획득 시 자동 진입
+  - 각 단계의 안내는 `ShowPersistentTutorial()`로 유지되며, 성공 시 다음 단계로 자동 전환
+  - Done 단계에서는 “전투 튜토리얼 완료” 토스트 출력 후 자동 종료
+  - `enableTutorial`, `hasCompleted`로 중복 실행 방지 및 상태 관리
+
+- **튜토리얼 전용 Watcher 구현**
+  - `Tutorial_Watcher` EnemyBehaviorData 신규 생성
+    - MaxHP **500**, Damage 1, MoveSpeed 2.8, AttackCooldown 2.5, AttackSpeed 0.7, TurnSpeed 300 등 연습용 스탯으로 구성
+  - `Watcher_Tutorial` 프리팹 제작 및 EnemyPool/EnemyManager에 등록
+  - 검 획득 방 전용 `EnemySpawnPoint`를 `Watcher_Tutorial` 타입으로 구성해 튜토리얼 적 스폰 전담
+
+- **검 획득 시 전투 튜토리얼 자동 시작**
+  - `CombatTutorialStarter` 구현
+    - 검을 획득하면 CombatTutorialManager.StartCombatTutorial 호출
+    - SpawnPoint.ActiveEnemies 대상으로 ResetDetection/DetectPlayer 실행 → 뒤돌아 있던 튜토리얼 와쳐가 즉시 플레이어를 인식하도록 처리
+
+- **근접 공격 튜토리얼 연동 (약공격/강공격/콤보)**
+  - `MeleeWeaponController`
+    - 약공격/강공격 타입을 AttackType enum으로 관리
+    - OnMeleeAttackHit에서 튜토리얼 Watcher에게 적중 시 Light/Heavy 튜토리얼 콜백 전송
+    - 콤보 최종타(isFinalHit)가 튜토리얼 Watcher에게 적중하면 TimingComboSuccess 호출
+    - 콤보 첫타가 약/강공격 튜토리얼에 인식되지 않던 문제 수정  
+      → comboAttackData.attackType 사용해 약/강공격 튜토리얼 조건 올바르게 처리
+
+- **방어/패링 튜토리얼 연동**
+  - `PlayerManager.TakeDamage`
+    - IsBlocking + blockSuccess(true) 조건일 때 OnBlockSuccess 호출
+  - `PlayerManager.TryParry`
+    - 패링 성공 시 OnParrySuccess 호출
+  - CombatTutorialManager.IsRunning 상태에서만 튜토리얼 콜백이 동작하여 일반 전투 시에는 영향 없음
+
+### 메모
+
+- 튜토리얼 Watcher를 일반 Watcher로 교체하지 않고 그대로 사용하는 방식으로 확정  
+  → 튜토리얼 적이 샌드백 역할을 하면서도 최종적으로 공격해 쓰러뜨리는 흐름이 자연스럽고 템포가 매끄러움  
+- 튜토리얼 단계 + 전투 시스템 + UI 시스템이 독립적으로 구성되어 유지보수성 높아짐  
+- 튜토리얼용 적 HP를 500으로 조정해 연습 과정은 안전하게, 마무리는 지루하지 않게 균형 조절
+
+---
