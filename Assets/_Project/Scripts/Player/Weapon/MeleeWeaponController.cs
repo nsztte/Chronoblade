@@ -90,6 +90,18 @@ public class MeleeWeaponController : WeaponController
                 target.TakeDamage(damage);
                 hitTargets.Add(target);
 
+                if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
+                {
+                    if (currentAttackType == AttackType.Light)
+                    {
+                        CombatTutorialManager.Instance?.OnLightAttackHitEnemy();
+                    }
+                    else if (currentAttackType == AttackType.Heavy)
+                    {
+                        CombatTutorialManager.Instance?.OnHeavyAttackHitEnemy();
+                    }
+                }
+
                 CameraController.Instance?.PlayImpactShake(shakeIntensity, shakeDuration);
                 
                 Debug.Log($"[타격 성공] 대상: {hit.name}, 데미지: {damage} (타입: {currentAttackType})");
@@ -123,17 +135,25 @@ public class MeleeWeaponController : WeaponController
         {
             if(hit.TryGetComponent(out IDamageable target))
             {
-               if(comboAttackData.isAOE)
-               {
+                if (comboAttackData.isAOE)
+                {
                     ApplyAOE(hit.transform.position, comboAttackData, damage, ref aoeCount);
-               }
-               else
-               {
+                }
+                else
+                {
                     ProcessComboAttack(hit.gameObject, comboAttackData, damage);
-               }
+                }
 
-               if (comboAttackData.isFinalHit)
+                if (comboAttackData.isFinalHit)
+                {
                     CameraController.Instance?.PlayImpactShake(comboShakeIntensity, comboShakeDuration);
+
+                    // 튜토리얼용 콜백
+                    if (hit.TryGetComponent(out Enemy enemy) && enemy.Type == EnemyType.Watcher_Tutorial)
+                    {
+                        CombatTutorialManager.Instance?.OnTimingComboSuccess();
+                    }
+                }
             }
         }
     }

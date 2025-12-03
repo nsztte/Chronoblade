@@ -213,6 +213,51 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0008610189, y: 0.96133566, z: -0.0028423816}
     m_Extent: {x: 0.22983031, y: 1.3219278, z: 0.23269254}
   m_DirtyAABB: 0
+--- !u!1 &19518841
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 19518842}
+  - component: {fileID: 19518843}
+  m_Layer: 0
+  m_Name: CombatTutorialStarter
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &19518842
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19518841}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1881250173}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &19518843
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 19518841}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6f07ac6064a6ce444936cfdebdfb5b52, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  spawnPoint: {fileID: 1250938768}
 --- !u!1001 &29273498
 PrefabInstance:
   m_ObjectHideFlags: 0
@@ -20690,7 +20735,7 @@ PrefabInstance:
     - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
       propertyPath: door
       value: 
-      objectReference: {fileID: 642682955909939834}
+      objectReference: {fileID: 3360172244607275610}
     - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
       propertyPath: spawnCount
       value: 3
@@ -32544,6 +32589,18 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
+      - m_Target: {fileID: 19518843}
+        m_TargetAssemblyTypeName: CombatTutorialStarter, Assembly-CSharp
+        m_MethodName: OnSwordPicked
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &673688304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -38563,6 +38620,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 833383386}
+  - component: {fileID: 833383387}
   m_Layer: 0
   m_Name: CombatTutorialManager
   m_TagString: Untagged
@@ -38585,6 +38643,20 @@ Transform:
   m_Children: []
   m_Father: {fileID: 1881250173}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &833383387
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 833383385}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: d863dbe76a0b058459dbdb363e467bda, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  enableTutorial: 1
+  finishTutorialHoldTime: 2
 --- !u!1 &852916132
 GameObject:
   m_ObjectHideFlags: 0
@@ -49909,6 +49981,10 @@ PrefabInstance:
       propertyPath: m_AnchorMax.y
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 121928893854779354, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
+      propertyPath: m_margin.z
+      value: 138.36566
+      objectReference: {fileID: 0}
     - target: {fileID: 134064508812282960, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
       propertyPath: m_SizeDelta.x
       value: 0
@@ -50606,6 +50682,17 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   guid: 7fa284718924494bac5a524d3d14a6a5
+--- !u!114 &1250938768 stripped
+MonoBehaviour:
+  m_CorrespondingSourceObject: {fileID: 2874462657612774624, guid: d1aceb533801d2c4a8fe894cdfa8411f, type: 3}
+  m_PrefabInstance: {fileID: 1250938763}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1250938765}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 327aa5212ed1ad042baff2d4e0f97489, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1252388378
 GameObject:
   m_ObjectHideFlags: 0
@@ -83074,6 +83161,7 @@ Transform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 19518842}
   - {fileID: 833383386}
   - {fileID: 1250938764}
   - {fileID: 673688301}
