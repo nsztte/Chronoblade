@@ -163,18 +163,26 @@ public class PlayerManager : MonoBehaviour, IDamageable
         if (IsInvincible()) return;
 
         // 방어 상태 체크
-        if(IsBlocking)
+        if (IsBlocking)
         {
-            if(UseStaminaIfAvailable(BlockHitCost))
+            bool blockSuccess = false;
+
+            if (UseStaminaIfAvailable(BlockHitCost))
             {
                 damage = Mathf.RoundToInt(damage * (1 - BlockDamageReduction));
                 Debug.Log($"방어 성공! 데미지 감소: {damage}");
+                blockSuccess = true;
             }
             
             currentHP -= damage;
             currentHP = Mathf.Clamp(currentHP, 0, maxHP);
             UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
             SetInvincible(true, hitInvincibilityDuration);
+
+            if (blockSuccess)
+            {
+                CombatTutorialManager.Instance?.OnBlockSuccess();
+            }
 
             if(currentHP <= 0)
             {
@@ -393,7 +401,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
         animator.SetFloat(param, value, dampTime, deltaTime);
     }
     #endregion
-
     public void ApplyKnockback(float force) {}
 
     public bool TryParry(float attackTime)
@@ -404,6 +411,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
             Debug.Log("패링 성공!");
 
             SetInvincible(true, 0.5f);
+
+            // 전투 튜토리얼 콜백
+            CombatTutorialManager.Instance?.OnParrySuccess();
 
             // TODO: 이펙트, 슬로우 연출, 패링 카운터 처리
             return true;

@@ -2933,7 +2933,7 @@ MonoBehaviour:
   blockHitCost: 15
   blockDamageReduction: 0.4
   parryWindow: 0.25
-  isInvincible: 1
+  isInvincible: 0
   invincibilityTimer: 0
   hitInvincibilityDuration: 0.5
   heldPosition: {fileID: 1104695888157392320}
@@ -8033,6 +8033,7 @@ MonoBehaviour:
   - {fileID: 79300067242237838}
   - {fileID: 8460472164552382589}
   - {fileID: 7079611263686495654}
+  - {fileID: 3994557428562179682}
   combatRecentSeenTime: 4
   combatMaxHorizontalDistance: 25
   combatExitCheckInterval: 0.25
