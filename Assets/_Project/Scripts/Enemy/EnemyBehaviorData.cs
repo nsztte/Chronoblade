@@ -5,7 +5,8 @@ public enum EnemyType
 {
     Watcher,
     ChronoMonk,
-    MirrorDuelist
+    MirrorDuelist,
+    Watcher_Tutorial
 }
 
 [CreateAssetMenu(fileName = "EnemyData", menuName = "Enemy/BehaviorData")]
