@@ -135,6 +135,18 @@ public class MeleeWeaponController : WeaponController
         {
             if(hit.TryGetComponent(out IDamageable target))
             {
+                if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
+                {
+                    if (comboAttackData.attackType == global::AttackType.Light)
+                    {
+                        CombatTutorialManager.Instance?.OnLightAttackHitEnemy();
+                    }
+                    else if (comboAttackData.attackType == global::AttackType.Heavy)
+                    {
+                        CombatTutorialManager.Instance?.OnHeavyAttackHitEnemy();
+                    }
+                }
+
                 if (comboAttackData.isAOE)
                 {
                     ApplyAOE(hit.transform.position, comboAttackData, damage, ref aoeCount);
@@ -149,7 +161,7 @@ public class MeleeWeaponController : WeaponController
                     CameraController.Instance?.PlayImpactShake(comboShakeIntensity, comboShakeDuration);
 
                     // 튜토리얼용 콜백
-                    if (hit.TryGetComponent(out Enemy enemy) && enemy.Type == EnemyType.Watcher_Tutorial)
+                    if (target is Enemy e && e.Type == EnemyType.Watcher_Tutorial)
                     {
                         CombatTutorialManager.Instance?.OnTimingComboSuccess();
                     }
