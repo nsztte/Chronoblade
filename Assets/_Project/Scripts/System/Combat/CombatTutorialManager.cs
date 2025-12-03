@@ -62,28 +62,28 @@ public class CombatTutorialManager : MonoBehaviour
             case Step.Attack:
                 UIManager.Instance.TutorialUI.ShowPersistentTutorial(
                     "Combat_Attack",
-                    "[LMB] 공격"
+                    "[LMB] 공격\n적에게 공격을 적중시켜라"
                 );
                 break;
 
             case Step.Block:
                 UIManager.Instance.TutorialUI.ShowPersistentTutorial(
                     "Combat_Block",
-                    "[RMB] 방어"
+                    "[RMB] 방어\n적의 공격을 막아라"
                 );
                 break;
 
             case Step.Parry:
                 UIManager.Instance.TutorialUI.ShowPersistentTutorial(
                     "Combat_Parry",
-                    "[RMB] 정확한 타이밍에 방어를 해제하면 패링"
+                    "[RMB] 패링\n적의 공격 순간 방어를 해제하라"
                 );
                 break;
 
             case Step.TimingCombo:
                 UIManager.Instance.TutorialUI.ShowPersistentTutorial(
                     "Combat_TimingCombo",
-                    "[LMB] 리듬에 맞춰 공격하면 타이밍 콤보 발동"
+                    "[LMB] 타이밍 콤보\n리듬에 맞춰 콤보를 성공시켜라"
                 );
                 break;
 
@@ -91,7 +91,7 @@ public class CombatTutorialManager : MonoBehaviour
                 // 마지막 단계: 짧은 안내만 띄우고 자동으로 종료
                 UIManager.Instance.TutorialUI.ShowTutorial(
                     "Combat_Finish",
-                    "전투 튜토리얼 완료!",
+                    "이제 실전을 맞이하라",
                     finishTutorialHoldTime,
                     false
                 );
