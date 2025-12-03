@@ -32544,18 +32544,6 @@ MonoBehaviour:
           m_StringArgument: 
           m_BoolArgument: 0
         m_CallState: 2
-      - m_Target: {fileID: 1174838082}
-        m_TargetAssemblyTypeName: DoorController, Assembly-CSharp
-        m_MethodName: 
-        m_Mode: 1
-        m_Arguments:
-          m_ObjectArgument: {fileID: 0}
-          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
-          m_IntArgument: 0
-          m_FloatArgument: 0
-          m_StringArgument: 
-          m_BoolArgument: 0
-        m_CallState: 2
 --- !u!114 &673688304
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -50148,11 +50136,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
---- !u!1 &1174838082 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 4719850307116080497, guid: 78efe9c271a76c14f8eb818151a8796f, type: 3}
-  m_PrefabInstance: {fileID: 1174838081}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &1182186434
 GameObject:
   m_ObjectHideFlags: 0
@@ -315626,7 +315609,7 @@ PrefabInstance:
     - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
       propertyPath: door
       value: 
-      objectReference: {fileID: 642682955909939834}
+      objectReference: {fileID: 3360172244607275610}
     - target: {fileID: 8050919496305405867, guid: a293b698de087a4499f94705db2302aa, type: 3}
       propertyPath: spawnCount
       value: 3
