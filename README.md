@@ -4494,3 +4494,43 @@ Enemy FSM(상태머신) 시스템 구현
 - 튜토리얼용 적 HP를 500으로 조정해 연습 과정은 안전하게, 마무리는 지루하지 않게 균형 조절
 
 ---
+
+## 2025.12.04 (목) 작업 기록
+
+### 주요 작업
+
+- **블락 애니메이션 및 무기 애니메이터 연동**
+  - PlayerBlockState에서 블락 Enter/Exit 시 WeaponManager.CurrentWeapon.SetBlocking 호출하도록 구조 정비
+  - WeaponController에 SetBlocking 가상 함수 추가
+  - MeleeWeaponController에서 SetBlocking(bool) override하여 무기 애니메이터 Blocking 파라미터 제어
+  - Idle ↔ Block 전환 애니메이션 흐름 안정화
+
+- **패링 시스템 강화 (애니메이션 + 카메라 연출)**
+  - 패링 애니메이션 클립 제작 및 SwordAnimator에 Parry 스테이트 추가
+  - PlayerManager.TryParry → ExecuteParrying 구조로 정리
+  - WeaponController.ExecuteParrying 가상 함수 추가 및 MeleeWeaponController override
+  - CameraController에 PlayParryEffect(fovOffset, shakeIntensity, shakeDuration) 추가
+  - 패링 성공 시 FOV 펄스 + 카메라 쉐이크 연동하여 타격감 강화
+  - Watcher 히트/스턴 애니메이션 타이밍 조정하여 패링 후 연출 자연화
+
+- **어빌리티 언락 튜토리얼 연동**
+  - AbilityUnlockTrigger에서 능력 획득 시 TutorialUI.ShowTutorial 호출하도록 반영
+  - 대쉬 / 시간슬로우 / 시간정지 / 시간되감기 / 시간빨리감기 튜토리얼 메시지 추가
+  - 큐 기반 UI 처리 흐름과 자연스럽게 연동되도록 정비
+
+- **플레이어 이동 규칙 보완**
+  - 웅크리기 중 Shift 입력 시 달리기 불가 처리
+  - ToggleCrouch에서 웅크릴 때 isRunning 자동 해제 적용
+  - Move() 속도계산/스태미너 흐름과 자연스럽게 이어지도록 조정
+
+- **에너미 리워드 및 토스트 UI 연동**
+  - EnemyBehaviorData에 enemyType / rewardMoney 필드 추가하여 몹 타입별 리워드 값 설정
+  - Enemy.Die에서 rewardMoney 지급 → PlayerManager.AddGold 호출 구조 도입
+  - 리워드 지급 시 UIManager.ShowToast로 `+ {reward} G (보유: {Gold} G)` 메시지 표시
+
+### 메모
+- 튜토리얼 Watcher 처치 시 1000 크레딧 지급 구조로 결정 (스타팅 머니 역할)
+- 일반 Watcher 30 / Chrono Monk 60 / Mirror Duelist 90 리워드 배정 완료
+- 패링·블락 시스템은 추후 VFX/SFX 추가로 최종 연출 강화 예정
+
+---
