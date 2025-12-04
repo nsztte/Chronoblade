@@ -13,19 +13,21 @@ public class PlayerBlockState : PlayerBaseState
 
     public override void Enter()
     {
-        // PlayerManager.Instance.SetAnimatorBool("IsBlocking", true);
         PlayerManager.Instance.IsBlocking = true;
         InputManager.Instance.OnBlockCanceled += OnBlockCanceled;
+
+        WeaponManager.Instance?.CurrentWeapon?.SetBlocking(true);
 
         Debug.Log("BlockState 시작");
     }
 
     public override void Exit()
     {
-        // PlayerManager.Instance.SetAnimatorBool("IsBlocking", false);
         PlayerManager.Instance.IsBlocking = false;
         InputManager.Instance.OnBlockCanceled -= OnBlockCanceled;
         PlayerManager.Instance.LastBlockEndTime = Time.time;
+
+        WeaponManager.Instance?.CurrentWeapon?.SetBlocking(false);
 
         Debug.Log("BlockState 종료");
     }

@@ -406,7 +406,7 @@ public class PlayerManager : MonoBehaviour, IDamageable
     public bool TryParry(float attackTime)
     {
         float deltaTime = Mathf.Abs(Time.time - LastBlockEndTime);
-        if(deltaTime <= ParryWindow)
+        if (deltaTime <= ParryWindow)
         {
             Debug.Log("패링 성공!");
 

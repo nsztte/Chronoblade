@@ -29,6 +29,7 @@ public class MeleeWeaponController : WeaponController
 
     private static readonly int Light = Animator.StringToHash("Light");
     private static readonly int Heavy = Animator.StringToHash("Heavy");
+    private static readonly int Blocking  = Animator.StringToHash("Blocking");
 
     private void Awake()
     {
@@ -63,6 +64,12 @@ public class MeleeWeaponController : WeaponController
         ClearHitTargets();
         // 공격 실행 후에 isAttacking 설정
         isAttacking = true;
+    }
+
+    public override void SetBlocking(bool isBlocking)
+    {
+        if (!animator) return;
+        animator.SetBool(Blocking, isBlocking);
     }
 
     // 콤보 공격 데이터 셋팅

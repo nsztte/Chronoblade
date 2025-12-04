@@ -67,6 +67,7 @@ public abstract class WeaponController : MonoBehaviour
     // 근접무기에서만 사용
     public virtual void ExecuteLightAttack() { }
     public virtual void ExecuteHeavyAttack() { }
+    public virtual void SetBlocking(bool isBlocking) { }
 
     // 애니메이션 이벤트 메서드들 (기본 구현은 빈 메서드)
     public virtual void OnMeleeAttackHit() { }
