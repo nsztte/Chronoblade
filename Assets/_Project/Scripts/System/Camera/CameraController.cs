@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -36,7 +37,7 @@ public class CameraController : MonoBehaviour
 
     [Header("공격/콤보용 임팩트 쉐이크")]
     [SerializeField] private float shakeDuration = 0.1f;
-    [SerializeField] private float shakeIntensity = 0.05f;
+    [SerializeField] private float shakeIntensity = 0.5f;
     private float shakeTimer = 0f;
     private Vector3 shakeOffset = Vector3.zero;
 
@@ -285,6 +286,15 @@ public class CameraController : MonoBehaviour
         Cursor.visible = false;
     }
 
+    public void PlayParryEffect(float fovOffset = 5f, float shakeIntensity = 0.8f, float shakeDuration = 0.12f)
+    {
+        // 1) 기존 임팩트 쉐이크보다 약간 센 값으로 호출
+        PlayImpactShake(shakeIntensity, shakeDuration);
+
+        // 2) FOV 펄스 코루틴 시작
+        StartCoroutine(FOVPulse(fovOffset, shakeDuration));
+    }
+
     public void PlayImpactShake(float intensity = -1f, float duration = -1f)
     {
         if (intensity > 0f) shakeIntensity = intensity;
@@ -292,5 +302,36 @@ public class CameraController : MonoBehaviour
         shakeTimer = shakeDuration;
 
         Debug.Log($"PlayImpactShake: {shakeIntensity}, {shakeDuration}, {shakeDuration}");
+    }
+
+    private IEnumerator FOVPulse(float fovOffset, float totalDuration)
+    {
+        // 현재 타겟 FOV 기준으로 살짝 넓혔다가 되돌리기
+        float baseFOV = normalFOV; // 줌 안 한 상태 기준
+        float peakFOV = baseFOV + fovOffset;
+
+        float half = totalDuration * 0.5f;
+        float t = 0f;
+
+        // 올라가는 구간
+        while (t < half)
+        {
+            t += Time.deltaTime;
+            float lerp = t / half;
+            targetFOV = Mathf.Lerp(baseFOV, peakFOV, lerp);
+            yield return null;
+        }
+
+        // 내려오는 구간
+        t = 0f;
+        while (t < half)
+        {
+            t += Time.deltaTime;
+            float lerp = t / half;
+            targetFOV = Mathf.Lerp(peakFOV, baseFOV, lerp);
+            yield return null;
+        }
+
+        targetFOV = baseFOV;
     }
 }

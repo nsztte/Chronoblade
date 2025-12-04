@@ -416,9 +416,14 @@ public class PlayerManager : MonoBehaviour, IDamageable
             // 전투 튜토리얼 콜백
             CombatTutorialManager.Instance?.OnParrySuccess();
 
-            // TODO: 이펙트, 슬로우 연출, 패링 카운터 처리
+            // 카메라 패링 이펙트
+            CameraController.Instance?.PlayParryEffect();
+
+            // 무기 패링 애니메이션
             WeaponManager.Instance?.CurrentWeapon?.ExecuteParrying();
-            
+
+            // TODO: vfx, sfx
+
             return true;
         }
         return false;
