@@ -22,6 +22,7 @@ public class EnemyBehaviorData : ScriptableObject
     public float attackCooldown;
     public float attackSpeed;
     public float turnSpeedDegPerSecond = 360f;     // 회전 속도 (도/초)
+    public int rewardMoney;
 
     [Header("Detection Settings")]
     public float detectionRange;

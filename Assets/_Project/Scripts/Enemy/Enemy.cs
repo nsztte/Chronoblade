@@ -351,9 +351,15 @@ public abstract class Enemy : MonoBehaviour, IDamageable
         {
             deathEventSent = true;
             OnDied?.Invoke(this);
+
+            int reward = behaviorData.rewardMoney;
+            if (reward > 0)
+            {
+                PlayerManager.Instance?.AddGold(reward);
+                UIManager.Instance.ShowToast($"+ {reward} G (보유: {PlayerManager.Instance?.Gold} G)");
+            }
         }
 
-        // EnemyManager.Instance.UnregisterEnemy(this);
         
         if(col != null) col.enabled = false;
         if (fsm != null) fsm.enabled = false;
