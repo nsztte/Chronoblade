@@ -54,23 +54,41 @@ public class AbilityUnlockTrigger : MonoBehaviour, IInteractableSavable
             {
                 case AbilityKind.Dash:
                     PlayerManager.Instance.UnlockDash();
+                    UIManager.Instance?.TutorialUI?.ShowTutorial(
+                        "Ability_Dash",
+                        "<대쉬 해금>\n[Left Alt] 대쉬\n빠르게 돌진한다"
+                    );
                     break;
 
                 case AbilityKind.TimeSlow:
                     TimeManager.Instance.UnlockTimeSkill(TimeState.Slow);
+                    UIManager.Instance?.TutorialUI?.ShowTutorial(
+                        "Time_Slow",
+                        "<시간 슬로우 해금>\n[Q 누르기] 시간 슬로우\n시간을 느리게 만든다"
+                    );
                     break;
                 case AbilityKind.TimeStop:
                     TimeManager.Instance.UnlockTimeSkill(TimeState.Stop);
+                    UIManager.Instance?.TutorialUI?.ShowTutorial(
+                        "Time_Stop",
+                        "<시간 정지 해금>\n[E 누르기] 시간 정지\n시간을 멈춘다"
+                    );
                     break;
                 case AbilityKind.TimeRewind:
                     TimeManager.Instance.UnlockTimeSkill(TimeState.Rewind);
+                    UIManager.Instance?.TutorialUI?.ShowTutorial(
+                        "Time_Rewind",
+                        "<시간 되감기 해금>\n[Q 길게 누르기] 시간 되감기\n시간을 과거로 돌린다"
+                    );
                     break;
                 case AbilityKind.TimeFastForward:
                     TimeManager.Instance.UnlockTimeSkill(TimeState.FastForward);
+                    UIManager.Instance?.TutorialUI?.ShowTutorial(
+                        "Time_FastForward",
+                        "<시간 빨리감기 해금>\n[E 길게 누르기] 시간 빨리감기\n시간이 빠르게 흐른다"
+                    );
                     break;
             }
-
-            UIManager.Instance.ShowToast($"{a} 스킬 해금");
         }
 
         // TODO: 플레이어에게 능력이 흡수되는 연출, 기술 설명 UI
