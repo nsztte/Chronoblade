@@ -410,12 +410,15 @@ public class PlayerManager : MonoBehaviour, IDamageable
         {
             Debug.Log("패링 성공!");
 
+
             SetInvincible(true, 0.5f);
 
             // 전투 튜토리얼 콜백
             CombatTutorialManager.Instance?.OnParrySuccess();
 
             // TODO: 이펙트, 슬로우 연출, 패링 카운터 처리
+            WeaponManager.Instance?.CurrentWeapon?.ExecuteParrying();
+            
             return true;
         }
         return false;
