@@ -153,7 +153,7 @@ public class CameraController : MonoBehaviour
             shakeTimer -= Time.deltaTime;
             float t = Mathf.Clamp01(shakeTimer / shakeDuration); // 페이드아웃
             impactOffset = Random.insideUnitSphere * (shakeIntensity * t);
-            // 조준 중 과도한 멀미 방지 (선택)
+            // 조준 중 과도한 멀미 방지
             if (isZoomed) impactOffset *= 0.5f;
         }
 

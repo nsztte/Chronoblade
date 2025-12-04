@@ -161,6 +161,8 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
         isCrouching = !isCrouching;
         if (isCrouching)
         {
+            isRunning = false;
+            
             controller.height = crouchControllerHeight;
             controller.center = crouchControllerCenter;
             float targetY = CameraController.Instance.GetDefaultCameraLocalY() + crouchCameraYOffset;
@@ -345,7 +347,11 @@ public class PlayerController : MonoBehaviour, IStatusEffectable
     #endregion
 
     #region 이동, 달리기, 웅크리기 이벤트 등록 및 해제 함수
-    private void OnRunStarted() => SetRunning(true);
+    private void OnRunStarted()
+    {
+        if (isCrouching) return;
+        SetRunning(true);
+    }
     private void OnRunCanceled() => SetRunning(false);
     private void OnCrouch() => ToggleCrouch();
 
