@@ -68,6 +68,8 @@ public class GameManager : MonoBehaviour
     {
         Enemy.OnCombatStarted += OnCombatDetected;
 
+        SceneManager.sceneLoaded += OnSceneLoaded;
+
         if(InputManager.Instance != null)
             InputManager.Instance.OnPause += OnPausePressed;
 
@@ -78,6 +80,8 @@ public class GameManager : MonoBehaviour
     private void OnDisable()
     {
         Enemy.OnCombatStarted -= OnCombatDetected;
+
+        SceneManager.sceneLoaded -= OnSceneLoaded;
 
         if(InputManager.Instance != null)
             InputManager.Instance.OnPause -= OnPausePressed;
@@ -136,6 +140,21 @@ public class GameManager : MonoBehaviour
         ChangeState(gameOverState);
     }
 
+    public void ReturnToTitle()
+    {
+        LoadingState.NextLoadingMode = LoadingMode.SceneTransition;
+        LoadingState.NextSceneName = TITLESCENE;
+        EnterLoading();
+    }
+
+    private void OnSceneLoaded(Scene scene, LoadSceneMode mode)
+    {
+        if (scene.name == TITLESCENE && CurrentGameState is not MainMenuState)
+        {
+            EnterMainMenu();
+        }
+    }
+    
     public void EnterFinalChapter()
     {
         LoadingState.NextLoadingMode = LoadingMode.SceneTransition;
