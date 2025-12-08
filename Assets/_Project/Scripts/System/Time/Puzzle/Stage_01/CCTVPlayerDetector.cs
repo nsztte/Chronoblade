@@ -1,5 +1,5 @@
-using System.Collections;
 using UnityEngine;
+using UnityEngine.Rendering;
 
 public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
 {
@@ -16,6 +16,11 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
     [SerializeField] private EnemySpawnPoint spawnPoint; // 와쳐 소환용
     [SerializeField] private int spawnCount = 5;
     [SerializeField] private float detectedTimer = 0f;
+
+    [Header("볼륨 설정")]
+    [SerializeField] private Volume cctvWarningVolume;
+    [SerializeField] private float warningFadeSpeed = 3f;
+    private float warningWeight = 0f;
 
     // 리와인드 설정
     private bool isRewinding = false;
@@ -60,6 +65,9 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
             animator.speed = 0f;
             RotateToPlayer();
 
+            float ratio = Mathf.Clamp01(detectedTimer / detectionThreshold);
+            warningWeight = Mathf.Lerp(warningWeight, ratio, Time.deltaTime * warningFadeSpeed);
+
             if(detectedTimer >= detectionThreshold)
             {
                 TriggerAlarm();
@@ -70,7 +78,11 @@ public class CCTVPlayerDetector : MonoBehaviour, ITimeControllable, IRewindable
             detectedTimer = 0f;
             animator.SetFloat("Speed", 1);
             animator.speed = timeScale;
+            warningWeight = Mathf.Lerp(warningWeight, 0f, Time.deltaTime * warningFadeSpeed);
         }
+
+        if (cctvWarningVolume != null)
+            cctvWarningVolume.weight = warningWeight;
     }
 
     private void StartAnimation()
