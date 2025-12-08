@@ -62,7 +62,6 @@ public class InventoryUI : MonoBehaviour
         if (item.itemType == ItemType.Consumable &&
             item.consumableItemEffectType == ConsumableItemEffectType.AmmoSupply)
         {
-            // TODO: 추후 인벤토리에 탄약용 패널 추가 예정
             return;
         }
 

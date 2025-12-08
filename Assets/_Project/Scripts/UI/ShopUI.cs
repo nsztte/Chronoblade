@@ -67,9 +67,11 @@ public class ShopUI : MonoBehaviour
     private void OnBuyClicked()
     {
         if (selectedItem == null) return;
-        ShopManager.Instance.BuyItem(selectedItem);
-        inventoryPanel.UpdateOrAddSlot(selectedItem, detailPanel);
-        UpdateActionButtons();
+        if (ShopManager.Instance.BuyItem(selectedItem))
+        {
+            inventoryPanel.UpdateOrAddSlot(selectedItem, detailPanel);
+            UpdateActionButtons();
+        }
     }
 
     private void OnSellClicked()

@@ -59,7 +59,7 @@ public class ShopManager : MonoBehaviour
         // Debug.Log($"[ShopManager] 아이템 판매 성공: {item.name} / 판매 가격: {sellPrice}G");
     }
 
-    public void BuyItem(ItemData item)
+    public bool BuyItem(ItemData item)
     {
         int price = item.price;
 
@@ -68,7 +68,7 @@ public class ShopManager : MonoBehaviour
         {
             UIManager.Instance.ShowToast($"골드가 부족합니다. 아이템 구매 실패: {item.name}");
             // Debug.LogError($"[ShopManager] 골드가 부족합니다. 아이템 구매 실패: {item.name}");
-            return;
+            return false;
         }
 
         // 2단계: 아이템 추가 시도
@@ -80,7 +80,7 @@ public class ShopManager : MonoBehaviour
             UIManager.Instance.ShowToast($"아이템 구매 실패: {failReason}");
             // Debug.LogError($"[ShopManager] 아이템 구매 실패: {failReason} - 골드 환불됨: {price}G");
 
-            return;
+            return false;
         }
 
         // 3단계: 구매 성공
@@ -93,6 +93,8 @@ public class ShopManager : MonoBehaviour
         else
             UIManager.Instance.ShowToast($"아이템 구매 성공: {item.name} / 총 보유 수량: {InventoryManager.Instance.GetItemCount(item)}");
         // Debug.Log($"[ShopManager] 아이템 구매 성공: {item.name} / 수량: {InventoryManager.Instance.GetItemCount(item)}");
+
+        return true;
     }
 
     public void CloseShop()
