@@ -89,7 +89,10 @@ public class InputManager : MonoBehaviour
         }
 
         if (Input.GetKeyDown(KeyCode.I))
+        {
             OnInventoryChanged?.Invoke();
+            return;
+        }
 
         // 커서 잠금 해제면 게임플레이 입력 차단
         if (Cursor.lockState != CursorLockMode.Locked)
