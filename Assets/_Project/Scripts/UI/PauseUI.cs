@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.EventSystems;
 
 public class PauseUI : MonoBehaviour
 {
@@ -18,18 +17,18 @@ public class PauseUI : MonoBehaviour
     {
         resumeButton.onClick.AddListener(() => InputManager.Instance.TriggerPause());
         optionsButton.onClick.AddListener(() => OpenOption());
-        // quitButton.onClick.AddListener(() => UIManager.Instance.QuitToTitle());
+        quitButton.onClick.AddListener(() => GameManager.Instance.ReturnToTitle());
     }
 
-    // private void OnEnable()
-    // {
-    //     InputManager.Instance.OnPause += Hide;
-    // }
+    private void OnEnable()
+    {
+        InputManager.Instance.OnPause += Hide;
+    }
 
-    // private void OnDisable()
-    // {
-    //     InputManager.Instance.OnPause -= Hide;
-    // }
+    private void OnDisable()
+    {
+        InputManager.Instance.OnPause -= Hide;
+    }
 
     public void Show()
     {
