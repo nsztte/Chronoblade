@@ -4534,3 +4534,41 @@ Enemy FSM(상태머신) 시스템 구현
 - 패링·블락 시스템은 추후 VFX/SFX 추가로 최종 연출 강화 예정
 
 ---
+
+## 2025.12.08 (월) 작업 기록
+
+### 주요 작업
+
+- **탄약 박스 수량 조정 및 필드 배치 업데이트**
+  - 피스톨 4개, 샷건 2개, 라이플 3개로 조정하여 무기별 탄약 수급 흐름 정비
+  - 무기 획득 이후 동선에 맞춰 자연스럽게 회수 가능하도록 배치 최적화
+
+- **CCTV 경고 연출 시스템 구축**
+  - CCTV 전용 Volume 프로파일 생성(weight 0, priority 10)
+  - ColorAdjustments, Vignette, ChromaticAberration, Bloom을 활용한 경고용 화면 이펙트 구성
+  - CCTVPlayerDetector와 Volume 연동하여 감지 비율에 따라 화면 붉기 페이드 인/아웃 구현
+  - 감지 해제 시 자연스럽게 0으로 감소하도록 처리
+  - 기존 Exploration/Combat/TimeStop 볼륨과 충돌하지 않는 독립 연출 구조 확립
+
+- **PauseUI 기능 확장 및 타이틀 복귀 기능 추가**
+  - PauseUI에서 Quit 버튼 클릭 시 GameManager.ReturnToTitle 호출하도록 연결
+  - PauseUI 활성/비활성 시 OnPause 이벤트 등록/해제하여 ESC로 닫기 안정화
+  - OverlayBackground 표시/해제 로직 유지하며 Pause 흐름 개선
+  - GameManager에 ReturnToTitle 및 SceneLoaded 처리 추가하여 Title 씬 진입 시 MainMenuState 자동 전환
+
+- **입력 및 UI 토글 오류 수정**
+  - 인벤토리 UI 토글 시 I 키 입력이 중복 처리되어 다시 열리는 문제 수정
+  - I 키 입력 이후 return 처리하여 동일 프레임 중복 실행 방지
+  - I 키로 인벤토리 정상적으로 열리고 닫히는 UX 확보
+
+- **상점 구매 오류 수정**
+  - ShopManager.BuyItem을 bool 반환 구조로 변경해 성공/실패 명확 처리
+  - ShopUI.OnBuyClicked에서 성공 시에만 슬롯 추가하도록 수정
+  - 골드 부족, 인벤토리 공간 부족 시 슬롯이 생성되지 않는 정상적인 구매 흐름으로 정비
+
+### 메모
+- CCTV 경고 연출은 weight 기반 페이드 방식이라 플레이어 긴장도·가시성 모두 자연스러움  
+- UI/인풋 토글 정리는 ESC 우선순위 체계와 충돌 없이 작동함  
+- 상점/인벤토리 오류 수정으로 경제 시스템 안정성 확보
+
+---
