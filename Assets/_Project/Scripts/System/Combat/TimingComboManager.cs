@@ -59,6 +59,8 @@ public class TimingComboManager : MonoBehaviour
     private Action onGoodHandler;
     private Action onMissedHandler;
 
+    private int lastUsedBeatIndex = int.MinValue;
+
     private void Start()
     {
         onPerfectHandler = () => UIManager.Instance.ComboResultUIController.ShowResult("PERFECT", Color.yellow);
@@ -75,6 +77,11 @@ public class TimingComboManager : MonoBehaviour
         OnPerfect -= onPerfectHandler;
         OnGood    -= onGoodHandler;
         OnMissed  -= onMissedHandler;
+    }
+
+    public void ResetBeatUsage()
+    {
+        lastUsedBeatIndex = int.MinValue;
     }
 
     // 외부에서 Miss 피드백만 명시적으로 요청해야 하는 경우 사용
@@ -136,10 +143,22 @@ public class TimingComboManager : MonoBehaviour
             return (TimingResult.Unavailable, 1.0f, 0f);
         }
 
-        float beatsPassed = Mathf.Round((inputTime - StartTime) / BeatInterval);
-        float nearestBeatTime = StartTime + beatsPassed * BeatInterval;
+        // float beatsPassed = Mathf.Round((inputTime - StartTime) / BeatInterval);
+        // float nearestBeatTime = StartTime + beatsPassed * BeatInterval;
+        float rawBeat = (inputTime - StartTime) / BeatInterval;
+        int beatIndex = Mathf.RoundToInt(rawBeat);
+        float nearestBeatTime = StartTime + beatIndex * BeatInterval;
         float offset = inputTime - nearestBeatTime;
         float absOffset = Mathf.Abs(offset);
+
+        // 이미 이 비트에서 한 번 성공 판정이 났다면 더 이상 허용하지 않기
+        if (beatIndex == lastUsedBeatIndex)
+        {
+            // Miss로 처리
+            IsPerfect = false; IsGood = false; IsMissed = true;
+            if (emitEvents) OnMissed?.Invoke();
+            return (TimingResult.Miss, missPenaltyMultiplier, absOffset);
+        }
 
         TimingResult result;
         float damageMultiplier;
@@ -164,6 +183,9 @@ public class TimingComboManager : MonoBehaviour
             IsPerfect = false; IsGood = false; IsMissed = true;
             if (emitEvents) OnMissed?.Invoke();
         }
+
+        lastUsedBeatIndex = beatIndex;
+
         return (result, damageMultiplier, absOffset);
     }
 }

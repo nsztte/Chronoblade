@@ -33,6 +33,7 @@ public class PlayerComboState : PlayerBaseState
     public override void Enter()
     {
         Debug.Log($"[PlayerComboState] 진입: 후보군 {candidateCombos.Count}개");
+        TimingComboManager.Instance.ResetBeatUsage();
         comboStartTime = Time.time;
         isWaitingForInput = false;
         // 첫타 자동 실행
