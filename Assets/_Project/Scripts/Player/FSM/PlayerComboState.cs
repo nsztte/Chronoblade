@@ -35,6 +35,7 @@ public class PlayerComboState : PlayerBaseState
         Debug.Log($"[PlayerComboState] 진입: 후보군 {candidateCombos.Count}개");
         TimingComboManager.Instance.ResetBeatUsage();
         comboStartTime = Time.time;
+        isLastAttackPlaying = false;
         isWaitingForInput = false;
         // 첫타 자동 실행
         ExecuteCurrentAttack();
@@ -212,7 +213,7 @@ public class PlayerComboState : PlayerBaseState
         melee.PlayClip(attackData.animationClip, 0.05f);
         
         comboStartTime = Time.time;
-        Debug.Log($"[콤보] {comboToUse.comboName} - {currentAttackIndex + 1}타: {attackData.attackType}, 판정: {result}, 데미지: {finalDamage:F1} (배율: {damageMultiplier:F1}, absOffset: {absOffset:F3})");
+        Debug.Log($"[콤보] {comboToUse.comboName} - {currentAttackIndex + 1}타: final={attackData.isFinalHit}, {attackData.attackType}, 판정: {result}, 데미지: {finalDamage:F1} (배율: {damageMultiplier:F1}, absOffset: {absOffset:F3})");
 
         if(isLastAttack)
         {

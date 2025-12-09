@@ -139,7 +139,6 @@ public class MeleeWeaponController : WeaponController
 
     public override void OnComboAttackHit(float damage, ComboAttackData comboAttackData)
     {
-        Debug.Log("OnComboAttackHit");
         Vector3 startPos = startPoint.position;
         Vector3 endPos = endPoint.position;
         float radius = weaponData.range;
