@@ -1,6 +1,5 @@
 using UnityEngine;
 using System.Collections.Generic;
-using System.Collections;
 
 public class PlayerComboState : PlayerBaseState
 {
@@ -13,7 +12,11 @@ public class PlayerComboState : PlayerBaseState
     private float beatInterval;
     // private int upperBodyLayerIndex = 1; // Animator에서 상체 레이어 인덱스
     private bool isWaitingForInput = false;
+    private float lastAttackStartTime;
     private bool isLastAttackPlaying = false; // 마지막 공격 애니메이션 재생 중인지 확인
+
+    // 막타 최소 재생 시간
+    private const float MinLastAttackDuration = 0.15f;
 
     protected override float MovementFactor => 0.4f;
 
@@ -116,16 +119,8 @@ public class PlayerComboState : PlayerBaseState
 
     private void CheckLastAttackAnimationComplete()
     {
-        // // 현재 재생 중인 애니메이션 상태 정보 가져오기
-        // AnimatorStateInfo stateInfo = stateMachine.Animator.GetCurrentAnimatorStateInfo(upperBodyLayerIndex);
-        
-        // // 애니메이션이 완료되었는지 확인 (normalizedTime >= 1.0f)
-        // if (stateInfo.normalizedTime >= 1.0f)
-        // {
-        //     Debug.Log("[PlayerComboState] 마지막 공격 애니메이션 완료, 상태 전환");
-        //     isLastAttackPlaying = false;
-        //     stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
-        // }
+        if (Time.time - lastAttackStartTime < MinLastAttackDuration)
+            return;
 
         var melee = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
 
@@ -219,6 +214,7 @@ public class PlayerComboState : PlayerBaseState
         {
             Debug.Log($"[PlayerComboState] 막타 애니메이션 시작 - 애니메이션 완료까지 대기");
             isLastAttackPlaying = true; // 마지막 공격 애니메이션 재생 시작
+            lastAttackStartTime = Time.time;
             isWaitingForInput = false; // 입력 대기 상태 해제
         }
         else
