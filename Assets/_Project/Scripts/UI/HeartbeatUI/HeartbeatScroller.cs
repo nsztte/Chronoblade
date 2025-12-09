@@ -13,6 +13,7 @@ public class HeartbeatScroller : MonoBehaviour
     private List<HeartbeatLineImage> activeLines = new List<HeartbeatLineImage>();
     private float scrollSpeed; // px/sec
     private float panelWidth;
+    private float halfWidth;        // 패널 반폭 (좌/우 끝)
     private float panelCenterX;
     private float imageWidth;
     private bool isScrolling = false;
@@ -20,7 +21,8 @@ public class HeartbeatScroller : MonoBehaviour
     private void OnEnable()
     {
         panelWidth = panel.rect.width;
-        panelCenterX = panelWidth * 0.5f;
+        halfWidth   = panelWidth * 0.5f;
+        panelCenterX = 0f;
 
         float beatInterval = TimingComboManager.Instance.BeatInterval;
 
@@ -33,12 +35,14 @@ public class HeartbeatScroller : MonoBehaviour
             if (i == 0)
             {
                 imageWidth = line.RectTransform.rect.width;
-                float distance = panelCenterX + imageWidth * 0.5f;
-                scrollSpeed = distance / beatInterval;
+                // float distance = panelCenterX + imageWidth * 0.5f;
+                // scrollSpeed = distance / beatInterval;
+                scrollSpeed = imageWidth / beatInterval;
             }
 
             // 이미지 자체 중심 기준으로 간격 배치
-            float startX = i * imageWidth;
+            // float startX = i * imageWidth;
+            float startX = (i - (lineCount - 1) * 0.5f) * imageWidth;
             line.RectTransform.anchoredPosition = new Vector2(startX, 0f);
 
             activeLines.Add(line);
@@ -71,7 +75,7 @@ public class HeartbeatScroller : MonoBehaviour
             rt.anchoredPosition += new Vector2(scrollSpeed * Time.deltaTime, 0f);
 
             // 이미지 중심이 패널 오른쪽을 넘으면 왼쪽으로 되돌림
-            if (rt.anchoredPosition.x > panelCenterX + panelWidth * 0.5f)
+            if (rt.anchoredPosition.x > halfWidth + imageWidth * 0.5f)
             {
                 float leftMostX = GetLeftMostImageX();
                 rt.anchoredPosition = new Vector2(leftMostX - imageWidth, 0f);

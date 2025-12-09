@@ -15,7 +15,10 @@ public class HeartbeatLineImage : MonoBehaviour
     public void Flash(float peakAlpha = 1f, float fadeTo = 0.3f, float duration = 0.2f)
     {
         if (fadeCoroutine != null)
+        {
             StopCoroutine(fadeCoroutine);
+            fadeCoroutine = null;
+        }
         fadeCoroutine = StartCoroutine(FadeOut(peakAlpha, fadeTo, duration));
     }
 
@@ -30,5 +33,6 @@ public class HeartbeatLineImage : MonoBehaviour
             yield return null;
         }
         canvasGroup.alpha = to;
+        fadeCoroutine = null;
     }
 }
