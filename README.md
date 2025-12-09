@@ -4572,3 +4572,48 @@ Enemy FSM(상태머신) 시스템 구현
 - 상점/인벤토리 오류 수정으로 경제 시스템 안정성 확보
 
 ---
+
+## 2025.12.09 (화) 작업 기록
+
+### 주요 작업
+
+- **타이밍 콤보 판정 안정화 (TimingComboManager 개선)**
+  - 동일 비트 중복 입력 시 Miss 처리 로직 추가 (lastUsedBeatIndex 도입)
+  - rawBeat → RoundToInt 방식으로 beatIndex 계산 정확도 향상
+  - nearestBeatTime 오차 축소
+  - 콤보 시작 시 Beat 상태 초기화를 위한 ResetBeatUsage() 추가
+
+- **콤보 공격 히트 시 VFX 스폰 추가**
+  - MeleeWeaponController.OnComboAttackHit에 VFXManager.Spawn("Swing") 적용
+  - vfxSpawnPoint 기준 스폰으로 기존 근접 타격 VFX 흐름과 자연스럽게 연결
+
+- **콤보 상태 초기화 안정화**
+  - PlayerComboState.Enter에서 isLastAttackPlaying = false 초기화
+  - 이전 콤보 막타의 재생 상태가 다음 콤보 흐름에 영향을 주는 문제 제거
+
+- **하트비트 UI 스크롤 안정화**
+  - panelCenterX를 anchoredPosition 기준 중앙(0)으로 재정의
+  - halfWidth 계산 및 좌/우 경계 보정
+  - scrollSpeed = imageWidth / beatInterval 방식으로 통일하여 비트 싱크 정확도 강화
+  - 라인 초기 배치를 중앙 기준 균등 간격으로 재배치
+  - 래핑 조건을 halfWidth + imageWidth*0.5f로 수정하여 자연스러운 순환 구현
+  - OnBeat에서 중앙에 가장 가까운 라인을 선택하도록 보정하여 Flash 안정화
+
+- **막타 애니메이션 최소 재생 시간 보장**
+  - lastAttackStartTime 및 MinLastAttackDuration 추가
+  - 막타 진입 시 시작 시간 기록
+  - 최소 재생 시간 경과 전에는 종료 판정 불가하도록 변경
+  - 막타 애니메이션이 즉시 종료되는 문제 해결
+
+- **하트비트 라인 이미지 교체 및 정렬 개선**
+  - 패딩/정렬을 수정한 HeartbeatLine 이미지로 교체
+  - 기존 우측 치우침 문제 해결
+  - Flash 및 스크롤 타이밍의 시각적 일관성 강화
+  - 전체 UI 시인성 향상
+
+### 메모
+- 콤보 판정, 콤보 애니메이션, 하트비트 UI 세 시스템 간의 간섭이 모두 정리되면서 전체 전투 피드백 품질이 크게 향상됨
+- 타이밍 콤보의 안정성 + 막타 연출 + UI 동기화가 자연스럽게 이어지는 구조로 진입
+- 다음 작업은 VFX/SFX 수집 및 적용 2차 진행 예정
+
+---
