@@ -20,6 +20,7 @@ public class MeleeWeaponController : WeaponController
 
     [Header("Vfx 설정")]
     [SerializeField] private Transform vfxSpawnPoint;
+    public Transform VfxSpawnPoint => vfxSpawnPoint;
 
     private float pendingComboDamage;
     private ComboAttackData pendingComboData;

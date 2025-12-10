@@ -423,6 +423,9 @@ public class PlayerManager : MonoBehaviour, IDamageable
             WeaponManager.Instance?.CurrentWeapon?.ExecuteParrying();
 
             // TODO: vfx, sfx
+            var weapon = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
+            if (weapon && weapon.VfxSpawnPoint)
+                VFXManager.Instance?.Spawn("Parrying", weapon.VfxSpawnPoint.position, weapon.VfxSpawnPoint.rotation);
 
             return true;
         }

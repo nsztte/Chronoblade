@@ -30,6 +30,7 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 7519316638021844677}
+  - {fileID: 6397019845862403553}
   m_Father: {fileID: 2179937250900402260}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &113882820301860905
@@ -4823,8 +4824,8 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 146515025ea4d4842ab87bebd9b37432, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  beatInterval: 0.7
-  perfectWindow: 0.4
+  beatInterval: 0.5
+  perfectWindow: 0.1
   goodWindow: 0.7
   perfectBonusMultiplier: 1.3
   goodBonusMultiplier: 1.1
@@ -7573,6 +7574,9 @@ MonoBehaviour:
   entries:
   - key: Swing
     pool: {fileID: 7322162145282120352}
+    autoRelease: 1
+  - key: Parrying
+    pool: {fileID: 2045489568732076814}
     autoRelease: 1
 --- !u!1 &4044643187198052156
 GameObject:
@@ -12372,6 +12376,55 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.00000020861626, y: 0.038425524, z: -0.4727625}
     m_Extent: {x: 0.9372746, y: 0.15979804, z: 0.19656798}
   m_DirtyAABB: 0
+--- !u!1 &7280775813621875898
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 6397019845862403553}
+  - component: {fileID: 2045489568732076814}
+  m_Layer: 0
+  m_Name: ParryingPool
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &6397019845862403553
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7280775813621875898}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5923437093265761025}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2045489568732076814
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7280775813621875898}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 775eb8e773ad8464a85b343aaa772652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 952961124639765284, guid: 56eca787a446b3042bfc32dcba340fc9, type: 3}
+  initialSize: 12
+  maxSize: 32
+  expandIfEmpty: 1
+  poolParent: {fileID: 6397019845862403553}
 --- !u!1 &7314553265206069410
 GameObject:
   m_ObjectHideFlags: 0
