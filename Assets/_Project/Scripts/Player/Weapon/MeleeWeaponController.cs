@@ -20,6 +20,7 @@ public class MeleeWeaponController : WeaponController
 
     [Header("Vfx 설정")]
     [SerializeField] private Transform vfxSpawnPoint;
+    [SerializeField] private Vector3 hitVfxRotationOffsetEuler;
     public Transform VfxSpawnPoint => vfxSpawnPoint;
 
     private float pendingComboDamage;
@@ -105,6 +106,14 @@ public class MeleeWeaponController : WeaponController
                 target.TakeDamage(damage);
                 hitTargets.Add(target);
 
+                if (vfxSpawnPoint)
+                {
+                    var baseRot = vfxSpawnPoint.rotation;
+                    var offsetRot = Quaternion.Euler(hitVfxRotationOffsetEuler);
+                    var finalRot = baseRot * offsetRot;
+                    VFXManager.Instance?.Spawn("HitSpark", vfxSpawnPoint.position, finalRot);
+                }
+
                 if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
                 {
                     if (currentAttackType == AttackType.Light)
@@ -150,6 +159,14 @@ public class MeleeWeaponController : WeaponController
         {
             if(hit.TryGetComponent(out IDamageable target))
             {
+                if (vfxSpawnPoint)
+                {
+                    var baseRot = vfxSpawnPoint.rotation;
+                    var offsetRot = Quaternion.Euler(hitVfxRotationOffsetEuler);
+                    var finalRot = baseRot * offsetRot;
+                    VFXManager.Instance?.Spawn("HitSpark", vfxSpawnPoint.position, finalRot);
+                }
+
                 if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
                 {
                     if (comboAttackData.attackType == global::AttackType.Light)
