@@ -17,6 +17,7 @@ public class GunWeaponController : WeaponController
     [SerializeField] private Vector3 adsPosition = new Vector3(0f, 0f, 0.2f);
     [SerializeField] private float aimMoveSpeed = 10f;
     private Vector3 currentTargetPosition;
+    [SerializeField] private ParticleSystem muzzleFlash;
 
     private Animator animator;
 
@@ -115,6 +116,10 @@ public class GunWeaponController : WeaponController
         {
             FireSingle();
         }
+
+        // 머즐 플래시
+        if (muzzleFlash != null)
+            muzzleFlash.Play();
 
         // 크로스헤어
         UIManager.Instance?.TriggerCrosshairFireEffect();
