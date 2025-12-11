@@ -179,6 +179,13 @@ public class PlayerManager : MonoBehaviour, IDamageable
             UIManager.Instance?.UpdateHP(Mathf.RoundToInt(currentHP), maxHP);
             SetInvincible(true, hitInvincibilityDuration);
 
+            if (damage > 0)
+            {
+                float intensity = blockSuccess ? 0.3f : 0.7f;
+                PlayHitVignette(intensity);
+                CameraController.Instance?.PlayImpactShake(0.3f);
+            }
+
             if (blockSuccess)
             {
                 CombatTutorialManager.Instance?.OnBlockSuccess();
@@ -206,6 +213,12 @@ public class PlayerManager : MonoBehaviour, IDamageable
         {
             // 일반 피격 시 일정 시간 무적
             SetInvincible(true, hitInvincibilityDuration);
+
+            if (damage > 0)
+            {
+                PlayHitVignette(1.0f);
+                CameraController.Instance?.PlayImpactShake();
+            }
             
             // 피격 상태로 전환
             playerStateMachine?.ChangeState(new PlayerHitState(playerStateMachine));
@@ -432,6 +445,16 @@ public class PlayerManager : MonoBehaviour, IDamageable
         return false;
     }
 
+    private void PlayHitVignette(float weightMultiplier)
+    {
+        var controller = VolumeSnapshotController.Current;
+        if (controller == null) return;
+
+        const float baseWeight = 1.0f;
+        const float duration = 0.18f;
+
+        controller.PlayHitVignette(baseWeight * weightMultiplier, duration);
+    }
     #region 무적 상태 관리
     public bool IsInvincible()
     {
