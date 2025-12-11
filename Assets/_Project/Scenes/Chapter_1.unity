@@ -45271,6 +45271,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 8539937550317197233, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: defaultPistolData
+      value: 
+      objectReference: {fileID: 11400000, guid: 75511cf7f5fb34e49a79169f69e0e0ac, type: 2}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -344896,7 +344900,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 8595943485501267928, guid: 83516156e5286b54b869401255175482, type: 3}
       propertyPath: weight
-      value: 1
+      value: 0
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []

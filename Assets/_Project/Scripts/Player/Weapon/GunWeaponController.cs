@@ -143,13 +143,16 @@ public class GunWeaponController : WeaponController
     private void FireSingle()
     {
         Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        if(Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
+        if (Physics.Raycast(ray, out RaycastHit hit, weaponData.range, hitLayer))
         {
             if(hit.collider.TryGetComponent(out IDamageable target))
             {
                 target.TakeDamage(weaponData.damage);
                 Debug.Log($"[총기 타격] 대상: {hit.collider.name}, 데미지: {weaponData.damage}");
             }
+
+            var rot = Quaternion.LookRotation(hit.normal);
+            VFXManager.Instance?.Spawn("BulletImpact", hit.point, rot);
         }
 
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * weaponData.range, Color.yellow, 0.5f);
@@ -177,6 +180,9 @@ public class GunWeaponController : WeaponController
                     target.TakeDamage(weaponData.damage);
                     Debug.Log($"[샷건 타격] 대상: {hit.collider.name}, 데미지: {weaponData.damage}");
                 }
+
+                var rot = Quaternion.LookRotation(hit.normal);
+                VFXManager.Instance?.Spawn("BulletImpact", hit.point, rot);
             }
             Debug.DrawRay(firePoint.position, spreadDirection * weaponData.range, Color.red, 0.5f);
         }
