@@ -25,12 +25,14 @@ public class VolumeSnapshotController : MonoBehaviour
     [SerializeField] private Volume combat;
     [SerializeField] private Volume timeStop;
     [SerializeField] private Volume dashVolume;
+    [SerializeField] private Volume hitVignette;
 
     [Range(0.05f, 2f)]
     public float blendTime = 0.35f;
 
     private Coroutine blend;
     private Coroutine dashPulse;
+    private Coroutine hitPulse;
 
     public enum Snapshot { Exploration, Combat, TimeStop }
 
@@ -42,6 +44,9 @@ public class VolumeSnapshotController : MonoBehaviour
 
         if (dashVolume != null)
             dashVolume.weight = 0f;
+
+        if (hitVignette != null)
+            hitVignette.weight = 0f;
     }
 
     private void OnDestroy()
@@ -115,5 +120,44 @@ public class VolumeSnapshotController : MonoBehaviour
 
         dashVolume.weight = 0f;
         dashPulse = null;
+    }
+
+    public void PlayHitVignette(float maxWeight = 1f, float duration = 0.2f)
+    {
+        if (hitVignette == null)
+            return;
+
+        if (hitPulse != null)
+            StopCoroutine(hitPulse);
+
+        hitPulse = StartCoroutine(HitPulseRoutine(maxWeight, duration));
+    }
+
+    private IEnumerator HitPulseRoutine(float maxWeight, float duration)
+    {
+        hitVignette.weight = 0f;
+
+        float half = duration * 0.3f;
+        float t = 0f;
+
+        // 올라가는 구간
+        while (t < half)
+        {
+            t += Time.unscaledDeltaTime;
+            hitVignette.weight = Mathf.Lerp(0f, maxWeight, t / half);
+            yield return null;
+        }
+
+        // 내려가는 구간
+        t = 0f;
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            hitVignette.weight = Mathf.Lerp(maxWeight, 0f, t / duration);
+            yield return null;
+        }
+
+        hitVignette.weight = 0f;
+        hitPulse = null;
     }
 }
