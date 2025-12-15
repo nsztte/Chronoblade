@@ -83,6 +83,16 @@ public class BossController : MonoBehaviour, IDamageable
         currentHP = maxHP;
     }
 
+    private void OnEnable()
+    {
+        EnemyManager.Instance?.RegisterBossCombat();
+    }
+
+    private void OnDisable()
+    {
+        EnemyManager.Instance?.UnregisterBossCombat();
+    }
+
     private void Start()
     {
         player = PlayerManager.Instance.PlayerTransform;

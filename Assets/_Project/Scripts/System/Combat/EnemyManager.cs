@@ -21,6 +21,7 @@ public class EnemyManager : MonoBehaviour
     [SerializeField] private List<EnemyPool> enemyPools;
     private Dictionary<EnemyType, EnemyPool> poolMap = new();
     private List<Enemy> activeEnemies = new List<Enemy>();
+    private bool bossCombatActive; // 보스전 중이면 전투 종료 판정을 잠금
 
     [Header("전투 종료 판정 설정")]
     [SerializeField] private float combatRecentSeenTime = 4f;          // 최근에 플레이어를 본 시간 기준
@@ -81,7 +82,7 @@ public class EnemyManager : MonoBehaviour
 
             combatExitCheckTimer = 0f;
 
-            bool hasRelevant = HasRelevantCombatEnemy(player.transform.position);
+            bool hasRelevant = bossCombatActive || HasRelevantCombatEnemy(player.transform.position);
 
             if (hasRelevant)
             {
@@ -92,7 +93,7 @@ public class EnemyManager : MonoBehaviour
             {
                 // "전투 적 없음" 상태가 누적되면 탐험으로 복귀
                 combatNoEnemyTimer += combatExitCheckInterval;  // 이미 combatExitCheckInterval 만큼 시간이 흘렀기 때문에 해당 수치를 누적
-                if (combatNoEnemyTimer >= combatNoEnemyDuration)
+                if (!bossCombatActive && combatNoEnemyTimer >= combatNoEnemyDuration)
                 {
                     gm.EnterExploration();
                 }
@@ -121,10 +122,22 @@ public class EnemyManager : MonoBehaviour
             activeEnemies.Remove(enemy);
         }
 
-        if(activeEnemies.Count == 0 && GameManager.Instance.CurrentGameState is CombatState)
+        if(activeEnemies.Count == 0 && !bossCombatActive && GameManager.Instance.CurrentGameState is CombatState)
         {
             GameManager.Instance.EnterExploration();
         }
+    }
+
+    public void RegisterBossCombat()
+    {
+        bossCombatActive = true;
+        combatExitCheckTimer = 0f;
+        combatNoEnemyTimer = 0f;
+    }
+
+    public void UnregisterBossCombat()
+    {
+        bossCombatActive = false;
     }
 
     public Enemy SpawnEnemy(EnemyType type, Vector3 position, Quaternion rotation)
