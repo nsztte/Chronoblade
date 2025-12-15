@@ -44565,55 +44565,17 @@ SkinnedMeshRenderer:
     m_Center: {x: 0.0008610189, y: 0.96133566, z: -0.0028423816}
     m_Extent: {x: 0.22983031, y: 1.3219278, z: 0.23269254}
   m_DirtyAABB: 0
---- !u!1 &955035455
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 955035456}
-  - component: {fileID: 955035457}
-  m_Layer: 0
-  m_Name: Volume_TimeAbility
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!4 &955035456
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955035455}
-  serializedVersion: 2
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 5159836126161187668}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &955035457
+--- !u!114 &955035457 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 4375258721496887041, guid: 83516156e5286b54b869401255175482, type: 3}
+  m_PrefabInstance: {fileID: 5159836126161187667}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 955035455}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 172515602e62fb746b5d573b38a5fe58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  m_IsGlobal: 1
-  priority: 8
-  blendDistance: 0
-  weight: 0
-  sharedProfile: {fileID: 11400000, guid: 918d8b9874a4f0847a6a101b10d71911, type: 2}
 --- !u!1 &958677240
 GameObject:
   m_ObjectHideFlags: 0
@@ -344895,10 +344857,18 @@ PrefabInstance:
     serializedVersion: 3
     m_TransformParent: {fileID: 0}
     m_Modifications:
+    - target: {fileID: 4375258721496887041, guid: 83516156e5286b54b869401255175482, type: 3}
+      propertyPath: weight
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 5181775066719731402, guid: 83516156e5286b54b869401255175482, type: 3}
       propertyPath: exploration
       value: 
       objectReference: {fileID: 506507367}
+    - target: {fileID: 5181775066719731402, guid: 83516156e5286b54b869401255175482, type: 3}
+      propertyPath: timeAbilityVolume
+      value: 
+      objectReference: {fileID: 955035457}
     - target: {fileID: 5514659698711771438, guid: 83516156e5286b54b869401255175482, type: 3}
       propertyPath: m_LocalPosition.x
       value: 38.61106
@@ -344951,6 +344921,10 @@ PrefabInstance:
       propertyPath: weight
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 6656313939596154336, guid: 83516156e5286b54b869401255175482, type: 3}
+      propertyPath: priority
+      value: 0
+      objectReference: {fileID: 0}
     - target: {fileID: 6900460808731211703, guid: 83516156e5286b54b869401255175482, type: 3}
       propertyPath: weight
       value: 0
@@ -344961,17 +344935,9 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects:
-    - targetCorrespondingSourceObject: {fileID: 5514659698711771438, guid: 83516156e5286b54b869401255175482, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 955035456}
+    m_AddedGameObjects: []
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 83516156e5286b54b869401255175482, type: 3}
---- !u!4 &5159836126161187668 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 5514659698711771438, guid: 83516156e5286b54b869401255175482, type: 3}
-  m_PrefabInstance: {fileID: 5159836126161187667}
-  m_PrefabAsset: {fileID: 0}
 --- !u!1 &5162010854132238994
 GameObject:
   m_ObjectHideFlags: 0
@@ -400666,7 +400632,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   isOpen: 0
-  isUnlocked: 0
+  isUnlocked: 1
   nextDoor:
   - {fileID: 3360172244607275610}
 --- !u!65 &6191469385401706923

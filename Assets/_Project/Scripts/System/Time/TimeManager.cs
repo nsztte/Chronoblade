@@ -230,6 +230,7 @@ public class TimeManager : MonoBehaviour
             currentTimeState = TimeState.Normal;
             ApplyTimeScale(1f);
             UpdateTimeUI();
+            UpdateTimeAbilityVolume();
         }
     }
 
@@ -282,6 +283,7 @@ public class TimeManager : MonoBehaviour
         }
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     public TimeState CurrentTimeState => currentTimeState;
@@ -306,6 +308,7 @@ public class TimeManager : MonoBehaviour
         }
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     private void OnTimeStop()
@@ -344,6 +347,7 @@ public class TimeManager : MonoBehaviour
         }
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     private void OnTimeRewindStart()
@@ -360,6 +364,7 @@ public class TimeManager : MonoBehaviour
         }
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     private void OnTimeRewindEnd()
@@ -375,6 +380,7 @@ public class TimeManager : MonoBehaviour
         }
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     private void OnTimeFastForwardStart()
@@ -387,6 +393,7 @@ public class TimeManager : MonoBehaviour
         Debug.Log($"[TimeManager] 시간 빨리감기 실행");
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     private void OnTimeFastForwardEnd()
@@ -398,6 +405,7 @@ public class TimeManager : MonoBehaviour
         Debug.Log($"[TimeManager] 시간 빨리감기 해제");
 
         UpdateTimeUI();
+        UpdateTimeAbilityVolume();
     }
 
     private void ApplyTimeScale(float timeScale)
@@ -433,4 +441,20 @@ public class TimeManager : MonoBehaviour
         }
     }
     #endregion
+
+    private void UpdateTimeAbilityVolume()
+    {
+        var v = VolumeSnapshotController.Current;
+        if (v == null) return;
+
+        float w = currentTimeState switch
+        {
+            TimeState.Slow        => 0.5f,
+            TimeState.FastForward => 0.8f,
+            TimeState.Rewind      => 1f,
+            _ => 0f // Normal, Stop 포함
+        };
+
+        v.SetTimeAbilityWeight(w);
+    }
 }
