@@ -4617,3 +4617,59 @@ Enemy FSM(상태머신) 시스템 구현
 - 다음 작업은 VFX/SFX 수집 및 적용 2차 진행 예정
 
 ---
+
+## 2025.12.11 (목) 작업 기록
+
+### 주요 작업
+
+- **패링 전용 스파크 VFX 구현**
+  - 패링 전용 VFX 프리팹 생성 및 VFXPool 등록
+  - VFXManager에 "Parrying" 키 매핑 및 자동 반환 설정
+  - PlayerManager.TryParry에서 무기 vfxSpawnPoint 기준 패링 VFX 스폰 연동
+
+- **근접 공격 히트 스파크 VFX 적용**
+  - HitSpark 전용 VFX 프리팹 생성 및 VFXPool 등록
+  - VFXManager에 "HitSpark" 키 매핑 추가
+  - MeleeWeaponController에 hitVfxRotationOffsetEuler 필드 추가
+  - OnMeleeAttackHit / OnComboAttackHit에서 데미지 적용 시 HitSpark 스폰
+  - vfxSpawnPoint 회전에 오프셋을 적용해 타격 방향 제어
+
+- **플레이어 피격 히트 비네트(PostProcess) 구현**
+  - Volume_Hit 프로필 생성 (Vignette + ColorAdjustments 구성)
+    - Vignette Color: #00A3B8
+    - Intensity / Smoothness 조정
+    - Post Exposure / Contrast / Saturation 값 튜닝
+  - VolumeSnapshotController에 hitVignette 참조 추가
+  - Awake에서 hitVignette.weight = 0 초기화
+  - PlayHitVignette(maxWeight, duration) 함수 구현
+  - HitPulseRoutine에서 unscaledDeltaTime 기반 2단계 펄스 연출 적용
+  - 코루틴 종료 시 hitPulse = null 처리로 상태 안정화
+
+- **피격 비네트 + 카메라 쉐이크 연동**
+  - PlayerManager.TakeDamage에 피격 연출 통합
+    - 가드 성공 시 약한 비네트 / 약한 카메라 쉐이크
+    - 가드 실패 또는 생으로 피격 시 강한 비네트 / 강한 쉐이크
+  - weightMultiplier 기반으로 피격 강도 차등 처리
+  - 피격 피드백 흐름(데미지, 무적, 연출) 일관성 개선
+
+- **총기 머즐 플래시 VFX 적용**
+  - Rifle 전용 머즐 플래시 프리팹 생성 및 적용
+  - Pistol / Shotgun 전용 머즐 플래시 프리팹 추가
+  - GunWeaponController에서 ExecuteWeaponAttack 시 muzzleFlash.Play() 호출
+  - 무기별 머즐 플래시 구조 통합 및 개별 튜닝 가능하도록 구성
+
+- **총기 탄환 충돌 스파크(BulletImpact) 구현**
+  - BulletImpact VFX 프리팹 생성 및 VFXPool 등록
+  - VFXManager에 "BulletImpact" 키 매핑 추가
+  - GunWeaponController에서 탄환 충돌 지점(hit.point)에 VFX 스폰
+    - 단발(FireSingle), 샷건 산탄(FireShotgun) 모두 적용
+    - 표면 법선 기준 회전 적용으로 자연스러운 충돌 연출
+  - hitLayer에 포함된 적/환경 대상 모두 탄환 충돌 이펙트 재생
+
+### 메모
+
+- 전투 전반(패링, 근접 타격, 피격, 총기)의 시각적 피드백 레이어가 거의 완성 단계에 도달
+- VFXManager + Pool 구조를 유지한 상태에서 무기/상황별 연출 분리가 잘 이루어짐
+- 대쉬 트레일은 보류하고, 사운드 중심으로 마무리하는 판단이 합리적
+
+---
