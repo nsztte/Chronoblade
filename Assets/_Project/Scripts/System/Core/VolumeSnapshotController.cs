@@ -26,6 +26,8 @@ public class VolumeSnapshotController : MonoBehaviour
     [SerializeField] private Volume timeStop;
     [SerializeField] private Volume dashVolume;
     [SerializeField] private Volume hitVignette;
+    [SerializeField] private Volume timeAbilityVolume;
+
 
     [Range(0.05f, 2f)]
     public float blendTime = 0.35f;
@@ -47,6 +49,9 @@ public class VolumeSnapshotController : MonoBehaviour
 
         if (hitVignette != null)
             hitVignette.weight = 0f;
+
+        if (timeAbilityVolume != null)
+            timeAbilityVolume.weight = 0f;
     }
 
     private void OnDestroy()
@@ -159,5 +164,11 @@ public class VolumeSnapshotController : MonoBehaviour
 
         hitVignette.weight = 0f;
         hitPulse = null;
+    }
+
+    public void SetTimeAbilityWeight(float weight)
+    {
+        if (timeAbilityVolume == null) return;
+        timeAbilityVolume.weight = Mathf.Clamp01(weight);
     }
 }
