@@ -47,6 +47,13 @@ namespace Tiny
 		[SerializeField, Tooltip("The array of Vector3 points to connect.")]
 		private Vector3[] points = new Vector3[] { new Vector3(0f, 0f, -1f), new Vector3(0f, 0f, 1f) };
 
+		// 기본 재생 여부 (보스는 false)
+		[SerializeField] private bool playOnStart = false;
+
+		// 원본은 DontDestroyOnLoad를 걸고 있었는데, 보스용은 false
+		[SerializeField] private bool dontDestroyOnLoad = false;
+
+
 		[NonSerialized] GameObject trailGo = null;
 		[NonSerialized] Mesh mesh = null;
 
@@ -60,6 +67,8 @@ namespace Tiny
 
 		Coroutine update = null;
 
+		private bool isPlaying = false;
+
 		/// <summary>
 		/// The array of Vector3 points to connect.
 		/// </summary>
@@ -72,6 +81,55 @@ namespace Tiny
 		/// Enable this to connect the first and last positions of the line, and form a closed loop.
 		/// </summary>
 		public bool Loop {	get { return loop && points.Length >= 3; }	}
+
+		/// <summary>
+		/// 외부에서 호출: 트레일 재생 시작
+		/// </summary>
+		public void PlayTrail(bool clear = true)
+		{
+			EnsureInitialized();
+
+			if (trailGo == null || mesh == null || pointCount <= 1)
+				return;
+
+			if (clear)
+				ClearVertices();
+
+			trailGo.SetActive(true);
+
+			if (update != null)
+				StopCoroutine(update);
+
+			update = StartCoroutine(PhysicsUpdate());
+			isPlaying = true;
+
+			// 켜는 순간 튐 방지
+			cacheTM.hasChanged = false;
+		}
+
+		/// <summary>
+		/// 외부에서 호출: 트레일 재생 종료
+		/// </summary>
+		public void StopTrail(bool clear = false)
+		{
+			if (trailGo == null)
+				return;
+
+			isPlaying = false;
+
+			if (update != null)
+				StopCoroutine(update);
+			update = null;
+
+			if (clear && pointCount > 1 && vertices != null && mesh != null)
+			{
+				ClearVertices();
+				mesh.vertices = vertices;
+				mesh.RecalculateBounds();
+			}
+
+			trailGo.SetActive(false);
+		}
 
 		/// <summary>
 		/// Removes all points from the TrailRenderer. Useful for restarting a trail from a new position.
@@ -138,6 +196,15 @@ namespace Tiny
 			update = null;
 		}
 
+		private void EnsureInitialized()
+		{
+			if (cacheTM == null)
+				cacheTM = transform;
+
+			if (trailGo != null && mesh != null)
+				return;
+		}
+
 		private void SetVerticesAndCorner()
 		{
 			int nextSegmentPoint = pointCount + (pointCount * corner);
@@ -187,6 +254,9 @@ namespace Tiny
 
 		private void LateUpdate()
 		{
+			if (!isPlaying || trailGo == null || !trailGo.activeSelf || mesh == null || vertices == null)
+				return;
+				
             if (cacheTM.hasChanged)
 				TransformVertices();
 

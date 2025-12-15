@@ -1,6 +1,7 @@
 using UnityEngine;
 using System.Collections;
 using System;
+using Tiny;
 
 [RequireComponent(typeof(Animator), typeof(BossPhaseManager))]
 public class BossController : MonoBehaviour, IDamageable
@@ -28,6 +29,9 @@ public class BossController : MonoBehaviour, IDamageable
 
     [Header("히트박스 세팅")]
     [SerializeField] private LayerMask hitboxLayer;
+
+    [Header("VFX")]
+    [SerializeField] private Trail swordTrail;
 
     [Header("매니저")]
     [SerializeField] private PuzzleClockManager puzzleClockManager;
@@ -298,6 +302,9 @@ public class BossController : MonoBehaviour, IDamageable
     #endregion
 
     #region 공격 애니메이션 이벤트 등록 함수
+    public void OnBossSlashTrailOn()  => swordTrail.PlayTrail(clear: true);
+    public void OnBossSlashTrailOff() => swordTrail.StopTrail(clear: false);
+
     // 패이즈1
     public void TriggerHorizontalSlash()
     {
