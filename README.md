@@ -4673,3 +4673,57 @@ Enemy FSM(상태머신) 시스템 구현
 - 대쉬 트레일은 보류하고, 사운드 중심으로 마무리하는 판단이 합리적
 
 ---
+
+## 2025.12.15 (월) 작업 기록
+
+### 주요 작업
+
+- **시간 능력 공용 글로벌 볼륨 도입**
+  - TimeAbility 전용 Global Volume 생성
+  - ColorAdjustments 기반 미세 화면 톤 변화 적용
+    - Contrast +8, Saturation -25로 시간 상태 표시
+  - VolumeSnapshotController에 timeAbilityVolume 참조 필드 추가
+  - Awake 시 weight = 0으로 초기화
+  - SetTimeAbilityWeight(weight) 함수 추가
+  - Exploration / Combat / TimeStop 스냅샷과 분리된 레이어 방식으로 구성
+
+- **TimeManager에 시간 능력 볼륨 연동**
+  - 시간 상태(Slow / FastForward / Rewind / Normal)에 따라
+    공용 TimeAbility 볼륨 weight 제어 로직 추가
+  - UpdateTimeAbilityVolume() 헬퍼 함수 구현
+  - SetTimeState 및 모든 시간 입력 이벤트에서
+    상태 변경 시 볼륨 weight 동기화
+  - TimeStop 진입 시 공용 볼륨 weight = 0 처리
+  - MP 소모로 인한 강제 해제 시에도 볼륨 상태 정상 복구
+
+- **보스 공격 슬래시 트레일 VFX 에셋 도입**
+  - 외부 Trail VFX 스크립트 프로젝트에 추가
+  - Trail 전용 에디터 스크립트 및 머티리얼 리소스 포함
+  - 보스 공격 슬래시 연출에 사용할 트레일 기반 VFX 준비
+  - 애니메이션 이벤트 기반 On/Off 제어를 고려한 구조 정리
+
+- **보스 공격 슬래시 트레일 On/Off 제어 구현**
+  - Trail 스크립트에 PlayTrail / StopTrail API 추가
+    - 오브젝트 이동 시 항상 재생되던 기존 동작 제거
+    - 공격 구간에서만 트레일이 재생되도록 isPlaying 게이트 도입
+  - BossController에 OnBossSlashTrailOn / OnBossSlashTrailOff 함수 추가
+  - 모든 보스 슬래시 공격 애니메이션 클립에
+    트레일 On/Off 애니메이션 이벤트 등록
+  - 보스 검 휘두르는 타이밍에만 트레일이 재생되도록 개선
+
+- **보스전 중 전투 상태 해제 버그 수정**
+  - EnemyManager에 bossCombatActive 플래그 추가
+    - 보스전 진행 중에는 전투 종료 판정 잠금
+  - RegisterBossCombat / UnregisterBossCombat 함수 추가
+  - BossController OnEnable / OnDisable에서
+    보스 전투 상태 등록/해제 연동
+  - 보스전 도중 적이 없다고 판단되어
+    CombatState가 해제되던 문제 수정
+
+### 메모
+
+- 시간 능력 연출은 공용 글로벌 볼륨 + weight 차별 구조로 마무리
+- 아이템 획득 파티클은 토스트 + 습득 SFX로 대체하기로 결정
+- 남은 필수 VFX는 보스 피격 피드백 1종(최소 구현)
+
+---
