@@ -4727,3 +4727,63 @@ Enemy FSM(상태머신) 시스템 구현
 - 남은 필수 VFX는 보스 피격 피드백 1종(최소 구현)
 
 ---
+
+## 2025.12.16 (화) 작업 기록
+
+### 주요 작업
+
+- **보스 피격 히트 피드백(미세 진동) 추가**
+  - BossController에 피격 시 미세 진동 로직 구현
+  - hitShakeRoot 기준 localPosition을 활용해 비주얼 루트만 흔들리도록 구성
+  - 애니메이션/회전 로직과 충돌하지 않도록 구조 분리
+  - HitShakeRoutine 코루틴으로 짧은 랜덤 오프셋 진동 처리
+  - 연타 시 과도한 흔들림 방지를 위한 쿨타임 적용
+  - 데미지 값에 따라 진동 강도가 아주 미세하게 가중되도록 보정
+  - 피격 종료 후 항상 원래 위치로 복귀하도록 초기 위치 캐싱 및 복원 처리
+
+- **게임오버 UI 레이아웃 구성 및 GameOverUI 구현**
+  - GameOverGroup(허브)와 LoadPanel(불러오기) 분리 구조로 UI 레이아웃 구성
+  - 재시작 / 불러오기 / 메인메뉴 버튼 배치 및 포커스 흐름 정리
+  - LoadPanel 닫기 버튼을 통해 게임오버 허브로 복귀 가능하도록 구성
+  - GameOverUI 스크립트 구현
+    - GameOverState 진입/종료 시 UI 표시/숨김 처리
+    - 재시작 시 저장 타입 구분 없이 가장 최근 저장된 세이브 슬롯 로드
+    - 저장 파일이 없는 경우 재시작 버튼 비활성화
+    - 불러오기 버튼 클릭 시 SaveTabController를 LoadOnly 모드로 연동
+    - 메인메뉴 버튼 클릭 시 타이틀 화면으로 복귀 처리
+
+- **GameOverUI CanvasGroup 기반 표시 제어로 개선**
+  - GameObject 활성/비활성 방식 대신 CanvasGroup(alpha / blocksRaycasts / interactable) 기반 제어로 변경
+  - Show() / Hide()에서 입력 허용 및 차단 처리
+  - 커서 Lock/Unlock을 GameOverUI 표시 흐름에 맞춰 연동
+  - GameOverState에서 페이드 아웃 완료 후 GameOverUI.Show() 호출하도록 연결
+  - 상태 종료 시 GameOverUI.Hide() 및 FadeUI 정리 처리
+
+- **전투 상태 대쉬 볼륨 밝기 튐 보정**
+  - VolumeSnapshotController에서 현재 스냅샷(Exploration / Combat / TimeStop)에 따라 대쉬 볼륨 가중치 스케일링 적용
+  - Combat 상태에서 dashScaleInCombat 값을 적용해 과도한 밝기 상승 완화
+  - 챕터1 및 파이널 챕터 Dash Volume Profile에서
+    - Bloom 비활성화
+    - Color Adjustments 비활성화
+    - White Balance 비활성화
+  - 전투 색감을 유지한 상태에서 왜곡·속도감 중심의 대쉬 연출로 정리
+
+- **히트 피격 볼륨 챕터별 분리**
+  - 공용 HitVignette 볼륨을 챕터1 / 파이널 챕터 전용 볼륨으로 분리
+  - 챕터별 조명·톤 차이로 인해 발생하던 피격 연출 이질감 해소
+  - 챕터 분위기에 맞춰 히트 피드백 색감 및 강도 개별 조정 가능하도록 구조 개선
+
+- **타임 어빌리티 볼륨 가중치 블렌드 전환 적용**
+  - TimeAbility 볼륨 가중치 적용 방식을 즉시 변경에서 서서히 블렌드되는 구조로 개선
+  - SetTimeAbilityWeight에 duration 파라미터 추가
+  - TimeAbilityBlendRoutine 코루틴으로 SmoothStep 기반 보간 처리
+  - TimeScale = 0 상태에서도 자연스럽게 전환되도록 unscaledDeltaTime 사용
+  - 스냅샷 전환 / 대쉬 / 히트 볼륨과 동일한 연출 패턴으로 구조 통일
+
+### 메모
+
+- 보스 피격 시 행동 중단 없이도 타격감을 전달할 수 있는 최소 히트 피드백 구조 완성
+- 게임오버 UI는 연출 확장 없이도 UX 흐름이 명확하도록 단순·안정적인 구조로 마무리
+- 포스트프로세싱 관련 연출은 공용화보다 맥락(챕터/상태)별 분리가 더 적합하다는 점 재확인
+
+---
