@@ -29,14 +29,20 @@ public class VolumeSnapshotController : MonoBehaviour
     [SerializeField] private Volume timeAbilityVolume;
 
 
-    [Range(0.05f, 2f)]
-    public float blendTime = 0.35f;
+    [SerializeField,Range(0.05f, 2f)]
+    private float blendTime = 0.35f;
+
+    [Header("대쉬 웨이트")]
+    [Range(0f, 1f)] public float dashScaleInExploration = 1f;
+    [Range(0f, 1f)] public float dashScaleInCombat = 0.5f;
+    [Range(0f, 1f)] public float dashScaleInTimeStop = 0.7f;
 
     private Coroutine blend;
     private Coroutine dashPulse;
     private Coroutine hitPulse;
 
     public enum Snapshot { Exploration, Combat, TimeStop }
+    private Snapshot currentSnapshot = Snapshot.Exploration;
 
     private void Awake()
     {
@@ -63,6 +69,8 @@ public class VolumeSnapshotController : MonoBehaviour
     // 스냅샷 전환
     public void SetSnapshot(Snapshot target)
     {
+        currentSnapshot = target;
+
         if(blend != null)
             StopCoroutine(blend);
 
@@ -100,7 +108,14 @@ public class VolumeSnapshotController : MonoBehaviour
         if (dashVolume == null)
             return;
 
-        maxWeight = Mathf.Clamp01(maxWeight);
+        float scale = currentSnapshot switch
+        {
+            Snapshot.Combat   => dashScaleInCombat,
+            Snapshot.TimeStop => dashScaleInTimeStop,
+            _                 => dashScaleInExploration
+        };
+
+        maxWeight = Mathf.Clamp01(maxWeight) * scale;
         duration  = Mathf.Max(0.01f, duration);
 
         if (dashPulse != null)
