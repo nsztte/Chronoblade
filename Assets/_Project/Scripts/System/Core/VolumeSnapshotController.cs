@@ -40,6 +40,7 @@ public class VolumeSnapshotController : MonoBehaviour
     private Coroutine blend;
     private Coroutine dashPulse;
     private Coroutine hitPulse;
+    private Coroutine timeAbilityBlend;
 
     public enum Snapshot { Exploration, Combat, TimeStop }
     private Snapshot currentSnapshot = Snapshot.Exploration;
@@ -181,9 +182,34 @@ public class VolumeSnapshotController : MonoBehaviour
         hitPulse = null;
     }
 
-    public void SetTimeAbilityWeight(float weight)
+    public void SetTimeAbilityWeight(float targetWeight, float duration = 0.25f)
     {
-        if (timeAbilityVolume == null) return;
-        timeAbilityVolume.weight = Mathf.Clamp01(weight);
+        if (timeAbilityVolume == null)
+        return;
+
+        targetWeight = Mathf.Clamp01(targetWeight);
+        duration = Mathf.Max(0.01f, duration);
+
+        if (timeAbilityBlend != null)
+            StopCoroutine(timeAbilityBlend);
+
+        timeAbilityBlend = StartCoroutine(TimeAbilityBlendRoutine(targetWeight, duration));
+    }
+
+    private IEnumerator TimeAbilityBlendRoutine(float targetWeight, float duration)
+    {
+        float start = timeAbilityVolume.weight;
+        float t = 0f;
+
+        while (t < duration)
+        {
+            t += Time.unscaledDeltaTime;
+            float k = Mathf.SmoothStep(0f, 1f, t / duration);
+            timeAbilityVolume.weight = Mathf.Lerp(start, targetWeight, k);
+            yield return null;
+        }
+
+        timeAbilityVolume.weight = targetWeight;
+        timeAbilityBlend = null;
     }
 }
