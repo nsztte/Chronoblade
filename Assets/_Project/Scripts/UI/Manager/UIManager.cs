@@ -236,9 +236,4 @@ public class UIManager : MonoBehaviour
         subtitleUI.Play();
     }
     #endregion
-
-    #region 게임스테이트 디버그용 (추후 UI로 대체)
-    public void ShowGameOverScreen() => Debug.Log("[UI] Show GameOver Screen");
-    public void HideGameOverScreen() => Debug.Log("[UI] Hide GameOver Screen");
-    #endregion
 }

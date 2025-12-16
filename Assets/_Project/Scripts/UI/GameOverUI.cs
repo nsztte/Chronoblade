@@ -19,6 +19,7 @@ public class GameOverUI : MonoBehaviour
     [Header("컨트롤러")]
     [SerializeField] private SaveTabController saveTabController;
 
+    private CanvasGroup canvasGroup;
     private bool isShown;
 
     private void Awake()
@@ -32,7 +33,11 @@ public class GameOverUI : MonoBehaviour
         // 초기 상태
         if (gameOverGroup != null) gameOverGroup.SetActive(false);
         if (loadPanel != null) loadPanel.SetActive(false);
-        gameObject.SetActive(false);
+
+        canvasGroup = GetComponent<CanvasGroup>();
+        canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
     }
 
     /// <summary>
@@ -41,10 +46,14 @@ public class GameOverUI : MonoBehaviour
     public void Show()
     {
         isShown = true;
-        gameObject.SetActive(true);
+        canvasGroup.alpha = 1f;
+        canvasGroup.blocksRaycasts = true;
+        canvasGroup.interactable = true;
         RefreshRestartButtonState();
 
         ShowGameOverGroup();
+
+        UIManager.Instance?.SetCursorLockState(CursorLockMode.None);
 
         // 첫 버튼 포커스
         if (restartButton != null) restartButton.Select();
@@ -60,7 +69,12 @@ public class GameOverUI : MonoBehaviour
         if (loadPanel != null) loadPanel.SetActive(false);
         if (gameOverGroup != null) gameOverGroup.SetActive(false);
 
-        gameObject.SetActive(false);
+        canvasGroup.alpha = 0f;
+        canvasGroup.blocksRaycasts = false;
+        canvasGroup.interactable = false;
+
+        UIManager.Instance?.SetCursorLockState(CursorLockMode.Locked);
+
     }
 
     private void RefreshRestartButtonState()
