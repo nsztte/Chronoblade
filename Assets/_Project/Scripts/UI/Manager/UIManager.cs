@@ -38,6 +38,7 @@ public class UIManager : MonoBehaviour
     [SerializeField] private ComboResultUIController comboResultUIController;
     [SerializeField] private SubtitleUI subtitleUI;
     [SerializeField] private TutorialUI tutorialUI;
+    [SerializeField] private GameOverUI gameOverUI;
 
     [Header("오버레이")]
     [SerializeField] private GameObject overlayBackground;
@@ -59,6 +60,7 @@ public class UIManager : MonoBehaviour
     public ComboResultUIController ComboResultUIController => comboResultUIController;
     public SubtitleUI SubtitleUI => subtitleUI;
     public TutorialUI TutorialUI => tutorialUI;
+    public GameOverUI GameOverUI => gameOverUI;
 
     public bool IsConfirmModalOpen => ConfirmModalUI != null && confirmModal.gameObject.activeSelf;
     public bool IsPauseOpen => pauseUI != null && pauseUI.gameObject.activeSelf;
