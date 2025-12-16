@@ -48,6 +48,16 @@ public class BossController : MonoBehaviour, IDamageable
     [SerializeField] private BossPhaseTransitionCutscene phaseTransitionCutscene;
     [SerializeField] private BossEndingCutscene bossEndingCutscene;
 
+    [Header("히트 피드백")]
+    [SerializeField] private Transform hitShakeRoot;
+    [SerializeField] private float hitShakeDuration = 0.08f;
+    [SerializeField] private float hitShakeAmplitude = 0.02f;
+    [SerializeField] private float hitShakeCooldown = 0.03f; // 연타시 과도한 흔들림 방지
+
+    private Coroutine hitShakeCo;
+    private Vector3 hitShakeRootDefaultLocalPos;
+    private float lastHitShakeTime = -999f;
+
     // 참조
     private Animator animator;
     private Transform player;
@@ -81,6 +91,9 @@ public class BossController : MonoBehaviour, IDamageable
         col = GetComponent<Collider>();
 
         currentHP = maxHP;
+
+        if (hitShakeRoot != null)
+            hitShakeRootDefaultLocalPos = hitShakeRoot.localPosition;
     }
 
     private void OnEnable()
@@ -101,20 +114,8 @@ public class BossController : MonoBehaviour, IDamageable
     }
 
     private void Update()
-    {
-        if(Input.GetKeyDown(KeyCode.P)) // @@@@@@퍼즐 테스트용@@@@@ 나중에 반드시 지워야함
-        {
-            SetHPWithPercent(50);
-        }
-
-        if(Input.GetKeyDown(KeyCode.O)) // @@@@@@퍼즐 테스트용@@@@@ 나중에 반드시 지워야함
-        {
-            SetHPWithPercent(0);
-        }
-        
+    {      
         stateMachine.Update();
-
-        // phaseManager.UpdatePhase(currentHP, maxHP);
     }
 
     public void StartIntroState()
@@ -138,6 +139,8 @@ public class BossController : MonoBehaviour, IDamageable
 
         phaseManager.UpdatePhase(currentHP, maxHP);
         Debug.Log($"Boss HP: {currentHP}, Phase: {phaseManager.CurrentPhase}");
+
+        PlayHitShake(damage);
     }
 
     public void LookAtPlayer(float rotationSpeed)
@@ -172,6 +175,51 @@ public class BossController : MonoBehaviour, IDamageable
         UpdateBossHUD();
         phaseManager.UpdatePhase(currentHP, maxHP);
     }
+
+    #region 타격 피드백
+    private void PlayHitShake(int damage)
+    {
+        if (hitShakeRoot == null) return;
+
+        Debug.Log("PlayHitShake");
+
+        // 연타 입력 시 과도한 위치 튐 방지
+        if (Time.time - lastHitShakeTime < hitShakeCooldown) return;
+        lastHitShakeTime = Time.time;
+
+        // 데미지 크기에 따라 아주 살짝만 가중
+        float amp = hitShakeAmplitude * Mathf.Clamp01(damage / 50f); // 50 기준
+        amp = Mathf.Max(amp, hitShakeAmplitude * 0.4f);             // 너무 약해지지 않게
+
+        if (hitShakeCo != null) StopCoroutine(hitShakeCo);
+        hitShakeCo = StartCoroutine(HitShakeRoutine(amp, hitShakeDuration));
+    }
+
+    private IEnumerator HitShakeRoutine(float amp, float duration)
+    {
+        float t = 0f;
+        // 시작 전에 원위치로 한번 고정(누적 오차 방지)
+        hitShakeRoot.localPosition = hitShakeRootDefaultLocalPos;
+
+        while (t < duration)
+        {
+            t += Time.deltaTime;
+
+            // 프레임마다 랜덤 오프셋(미세 진동)
+            Vector3 offset = new Vector3(
+                UnityEngine.Random.Range(-amp, amp),
+                UnityEngine.Random.Range(-amp * 0.2f, amp * 0.2f), // Y는 약하게
+                UnityEngine.Random.Range(-amp, amp)
+            );
+
+            hitShakeRoot.localPosition = hitShakeRootDefaultLocalPos + offset;
+            yield return null;
+        }
+
+        hitShakeRoot.localPosition = hitShakeRootDefaultLocalPos;
+        hitShakeCo = null;
+    }
+    #endregion
 
     #region 애니메이션 관련 함수
     public void PlayAnimation(string triggerName)
