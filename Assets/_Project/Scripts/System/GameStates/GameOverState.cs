@@ -4,6 +4,8 @@ using System.Collections;
 [CreateAssetMenu(menuName="GameState/GameOver")]
 public class GameOverState : GameBaseState
 {
+    private Coroutine deathSequenceCoroutine;
+
     public override void Enter()
     {
         Debug.Log("[GameState] GameOverState Enter");
@@ -13,11 +15,21 @@ public class GameOverState : GameBaseState
         SaveGuard.Instance?.Block(SaveBlockTag.GameOver);
 
         // 페이드아웃과 사망 연출 시작
-        gameManager.StartCoroutine(DeathSequence());
+        if (GameManager.Instance != null)
+        {
+            deathSequenceCoroutine = GameManager.Instance.StartCoroutine(DeathSequence());
+        }
     }
 
     public override void Exit()
     {
+        // 실행 중인 코루틴 중단
+        if (deathSequenceCoroutine != null && GameManager.Instance != null)
+        {
+            GameManager.Instance.StopCoroutine(deathSequenceCoroutine);
+            deathSequenceCoroutine = null;
+        }
+
         UIManager.Instance.HideGameOverScreen();
 
         SaveGuard.Instance?.ClearTag(SaveBlockTag.GameOver);
@@ -26,7 +38,14 @@ public class GameOverState : GameBaseState
     private IEnumerator DeathSequence()
     {
         // 1. 화면 페이드아웃 (1초)
-        yield return gameManager.StartCoroutine(FadeOutScreen());
+        if (GameManager.Instance != null)
+        {
+            yield return GameManager.Instance.StartCoroutine(FadeOutScreen());
+        }
+        else
+        {
+            yield break;
+        }
         
         // 2. "You are dead" 메시지 표시 (2초)
         // TODO: UIManager.Instance.ShowDeathMessage("You are dead");
@@ -34,7 +53,10 @@ public class GameOverState : GameBaseState
         yield return new WaitForSecondsRealtime(2f);
         
         // 3. 즉시 리스폰 (Loading 상태로 전환)
-        GameManager.Instance.EnterLoading();
+        if (GameManager.Instance != null)
+        {
+            GameManager.Instance.EnterLoading();
+        }
     }
 
     private IEnumerator FadeOutScreen()

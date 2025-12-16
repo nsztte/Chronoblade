@@ -236,26 +236,7 @@ public class UIManager : MonoBehaviour
     #endregion
 
     #region 게임스테이트 디버그용 (추후 UI로 대체)
-
-    public void ShowLoadingScreen() => Debug.Log("[UI] Show Loading Screen");
-    public void HideLoadingScreen() => Debug.Log("[UI] Hide Loading Screen");
-
-    public void ShowHUD() => Debug.Log("[UI] Show HUD");
-    public void HideHUD() => Debug.Log("[UI] Hide HUD");
-
-    public void ShowCombatHUD() => Debug.Log("[UI] Show Combat HUD");
-    public void HideCombatHUD() => Debug.Log("[UI] Hide Combat HUD");
-
-    public void ShowPauseMenu() => Debug.Log("[UI] Show Pause Menu");
-    public void HidePauseMenu() => Debug.Log("[UI] Hide Pause Menu");
-
     public void ShowGameOverScreen() => Debug.Log("[UI] Show GameOver Screen");
     public void HideGameOverScreen() => Debug.Log("[UI] Hide GameOver Screen");
-
-    public void ShowPuzzleUI() => Debug.Log("[UI] Show Puzzle UI");
-    public void HidePuzzleUI() => Debug.Log("[UI] Hide Puzzle UI");
-
-    public void ShowCutsceneOverlay() => Debug.Log("[UI] Show Cutscene Overlay");
-    public void HideCutsceneOverlay() => Debug.Log("[UI] Hide Cutscene Overlay");
     #endregion
 }

@@ -47,12 +47,6 @@ namespace Tiny
 		[SerializeField, Tooltip("The array of Vector3 points to connect.")]
 		private Vector3[] points = new Vector3[] { new Vector3(0f, 0f, -1f), new Vector3(0f, 0f, 1f) };
 
-		// 기본 재생 여부 (보스는 false)
-		[SerializeField] private bool playOnStart = false;
-
-		// 원본은 DontDestroyOnLoad를 걸고 있었는데, 보스용은 false
-		[SerializeField] private bool dontDestroyOnLoad = false;
-
 
 		[NonSerialized] GameObject trailGo = null;
 		[NonSerialized] Mesh mesh = null;

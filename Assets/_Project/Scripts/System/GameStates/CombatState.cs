@@ -6,7 +6,6 @@ public class CombatState : GameBaseState
     public override void Enter()
     {
         Debug.Log("[GameState] CombatState Enter");
-        UIManager.Instance.ShowCombatHUD();
         TimeManager.Instance.InitializeTimeState();
         TimingComboManager.Instance.StartBeatRoutine();
 
@@ -18,7 +17,6 @@ public class CombatState : GameBaseState
 
     public override void Exit()
     {
-        UIManager.Instance.HideCombatHUD();
         TimingComboManager.Instance.StopBeatRoutine();
 
         SaveGuard.Instance?.ClearTag(SaveBlockTag.Combat);
