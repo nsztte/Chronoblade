@@ -77,7 +77,7 @@ public class PlayerJumpState : PlayerBaseState
         AudioManager.Instance.Play3dSfxFromCache(
             "Player_Land",
             playerController.transform.position,
-            0.9f,
+            1.3f,
             1f
         );
     }

@@ -105,6 +105,7 @@ public class MeleeWeaponController : WeaponController
                 target.TakeDamage(damage);
                 hitTargets.Add(target);
 
+                // hit vfx 출력
                 if (vfxSpawnPoint)
                 {
                     var baseRot = vfxSpawnPoint.rotation;
@@ -112,6 +113,9 @@ public class MeleeWeaponController : WeaponController
                     var finalRot = baseRot * offsetRot;
                     VFXManager.Instance?.Spawn("HitSpark", vfxSpawnPoint.position, finalRot);
                 }
+
+                // hit sfx 출력
+                PlaySwordHitSfx(currentAttackType);
 
                 if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
                 {
@@ -160,6 +164,7 @@ public class MeleeWeaponController : WeaponController
         {
             if(hit.TryGetComponent(out IDamageable target))
             {
+                // hit vfx 출력
                 if (vfxSpawnPoint)
                 {
                     var baseRot = vfxSpawnPoint.rotation;
@@ -167,6 +172,9 @@ public class MeleeWeaponController : WeaponController
                     var finalRot = baseRot * offsetRot;
                     VFXManager.Instance?.Spawn("HitSpark", vfxSpawnPoint.position, finalRot);
                 }
+
+                // hit sfx 출력
+                PlaySwordHitSfx(comboAttackData.attackType);
 
                 if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
                 {
@@ -265,19 +273,29 @@ public class MeleeWeaponController : WeaponController
         hitTargets.Clear();
     }
 
+    #region SFX
     private void PlaySwordSwingSfx(AttackType attackType)
     {
+        float volume = attackType == AttackType.Heavy ? 0.50f : 0.40f;
+
         float pitch = attackType == AttackType.Heavy
             ? Random.Range(0.82f, 0.86f)
             : Random.Range(0.90f, 0.94f);
 
-        AudioManager.Instance.Play3dSfxFromCache(
-            "Sword_Swing",
-            transform.position,
-            0.9f,
-            pitch
-        );
+        AudioManager.Instance.Play3dSfxFromCache("Sword_Swing", transform.position, volume, pitch);
     }
+
+    private void PlaySwordHitSfx(AttackType attackType)
+    {
+        float volume = attackType == AttackType.Heavy ? 0.30f : 0.20f;
+
+        float pitch = attackType == AttackType.Heavy
+            ? Random.Range(0.92f, 0.95f)
+            : Random.Range(0.98f, 1.02f);
+
+        AudioManager.Instance.Play3dSfxFromCache("Sword_Hit", transform.position, volume, pitch);
+    }
+    #endregion
 
     #region 애니메이션 관련
     public void SetSpeed(float speed)

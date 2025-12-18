@@ -38,7 +38,7 @@ public class PlayerDashState : PlayerBaseState
         AudioManager.Instance.Play3dSfxFromCache(
             "Player_Dash",
             playerController.transform.position,
-            0.85f,
+            1.2f,
             Random.Range(1f, 1.05f)
         );
 
