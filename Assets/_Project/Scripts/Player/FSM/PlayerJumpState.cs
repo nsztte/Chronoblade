@@ -74,8 +74,6 @@ public class PlayerJumpState : PlayerBaseState
         if (landSfxPlayed) return;
         landSfxPlayed = true;
 
-        Debug.Log("PlayLandSfx");
-
         AudioManager.Instance.Play3dSfxFromCache(
             "Player_Land",
             playerController.transform.position,

@@ -34,6 +34,14 @@ public class PlayerDashState : PlayerBaseState
         // 대쉬 카메라 흔들림 추가
         CameraController.Instance.PlayImpactShake(shakeIntensity, dashDuration);
 
+        // 대쉬 사운드
+        AudioManager.Instance.Play3dSfxFromCache(
+            "Player_Dash",
+            playerController.transform.position,
+            0.85f,
+            Random.Range(1f, 1.05f)
+        );
+
         // 대쉬 볼륨스냅샷 추가
         var snapshot = VolumeSnapshotController.Current;
         if (snapshot != null)

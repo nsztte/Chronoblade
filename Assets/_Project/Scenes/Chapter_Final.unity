@@ -52532,7 +52532,7 @@ GameObject:
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 0
+  m_IsActive: 1
 --- !u!95 &552372323
 Animator:
   serializedVersion: 7
@@ -77573,14 +77573,6 @@ PrefabInstance:
     - target: {fileID: 4788467398907169153, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 5236652101601021664, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
-      propertyPath: preloadGroups.Array.size
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 5236652101601021664, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
-      propertyPath: 'preloadGroups.Array.data[0]'
-      value: SFX_Player
       objectReference: {fileID: 0}
     - target: {fileID: 6125324836093535223, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
       propertyPath: m_LocalPosition.x
