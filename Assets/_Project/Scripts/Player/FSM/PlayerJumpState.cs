@@ -4,6 +4,7 @@ public class PlayerJumpState : PlayerBaseState
 {
     private PlayerController playerController;
     private float jumpStartTime;
+    private bool landSfxPlayed = false;
     private const float MAX_JUMP_DURATION = 2f; // 최대 점프 지속 시간
 
     protected override float MovementFactor => 0.8f;
@@ -15,6 +16,8 @@ public class PlayerJumpState : PlayerBaseState
 
     public override void Enter()
     {
+        landSfxPlayed = false;
+
         // 점프 시작
         jumpStartTime = Time.time;
         
@@ -45,7 +48,7 @@ public class PlayerJumpState : PlayerBaseState
         // 착지 체크
         if (playerController.IsGrounded())
         {
-            // 착지 시 LocomotionState로 전환
+            PlayLandSfx();
             stateMachine.ChangeState(new PlayerLocomotionState(stateMachine));
             return;
         }
@@ -64,5 +67,20 @@ public class PlayerJumpState : PlayerBaseState
         // 공중에서 추가 점프 (더블 점프 등) 구현 가능
         // 현재는 기본 점프만 구현
         Debug.Log("점프 중 추가 점프 입력 감지");
+    }
+
+    private void PlayLandSfx()
+    {
+        if (landSfxPlayed) return;
+        landSfxPlayed = true;
+
+        Debug.Log("PlayLandSfx");
+
+        AudioManager.Instance.Play3dSfxFromCache(
+            "Player_Land",
+            playerController.transform.position,
+            0.9f,
+            1f
+        );
     }
 }
