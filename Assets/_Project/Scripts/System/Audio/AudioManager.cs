@@ -20,6 +20,13 @@ public class AudioManager : MonoBehaviour
         Instance = this;
 
         sfxPool.InitPool(); // 나중에 위치 옮길 수도 있음
+
+        // 프리로드 그룹들
+        foreach (var group in preloadGroups)
+        {
+            if (!string.IsNullOrEmpty(group))
+                PreloadGroup(group);
+        }
     }
     #endregion
 
@@ -36,6 +43,9 @@ public class AudioManager : MonoBehaviour
     [SerializeField] private string masterParam = "MasterVol";
     [SerializeField] private string bgmParam = "BGMVol";
     [SerializeField] private string sfxParam = "SFXVol";
+
+    [Header("프리로드할 SFX 그룹")]
+    [SerializeField] private string[] preloadGroups;
 
     // PlayerPrefs 키
     private const string PREF_MASTER = "opt_master";
@@ -247,6 +257,9 @@ public class AudioManager : MonoBehaviour
     #endregion
 
     #region 3D SFX 플레이 (SfxPool)
+    // ByAddress는 컷씬/일회성 연출용
+    // 전투/이동 SFX는 FromCache만 사용
+
     /// <summary>
     /// Addressable 주소로부터 AudioClip을 로드하여 SfxPool로 재생
     /// 로드 핸들은 clipHandles[address]에 보관 (자주 사용하면 캐시로 유지)
