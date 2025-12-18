@@ -4,7 +4,6 @@ using System.Collections;
 
 public class MeleeWeaponController : WeaponController
 {
-    private enum AttackType { None, Light, Heavy }
     private AttackType currentAttackType = AttackType.None;
 
     [Header("근접 공격 설정")]
@@ -134,6 +133,8 @@ public class MeleeWeaponController : WeaponController
 
         if (vfxSpawnPoint)
             VFXManager.Instance?.Spawn("Swing", vfxSpawnPoint.position, vfxSpawnPoint.rotation);
+
+        PlaySwordSwingSfx(currentAttackType);
     }
 
     public override void OnMeleeAttackEnd()
@@ -169,11 +170,11 @@ public class MeleeWeaponController : WeaponController
 
                 if (target is Enemy enemy && enemy.Type == EnemyType.Watcher_Tutorial)
                 {
-                    if (comboAttackData.attackType == global::AttackType.Light)
+                    if (comboAttackData.attackType == AttackType.Light)
                     {
                         CombatTutorialManager.Instance?.OnLightAttackHitEnemy();
                     }
-                    else if (comboAttackData.attackType == global::AttackType.Heavy)
+                    else if (comboAttackData.attackType == AttackType.Heavy)
                     {
                         CombatTutorialManager.Instance?.OnHeavyAttackHitEnemy();
                     }
@@ -203,6 +204,8 @@ public class MeleeWeaponController : WeaponController
 
         if (vfxSpawnPoint)
             VFXManager.Instance?.Spawn("Swing", vfxSpawnPoint.position, vfxSpawnPoint.rotation);
+
+        PlaySwordSwingSfx(comboAttackData.attackType);
     }
 
     private void ProcessComboAttack(GameObject hitObject, ComboAttackData data, float damage)
@@ -260,6 +263,20 @@ public class MeleeWeaponController : WeaponController
     public void ClearHitTargets()
     {
         hitTargets.Clear();
+    }
+
+    private void PlaySwordSwingSfx(AttackType attackType)
+    {
+        float pitch = attackType == AttackType.Heavy
+            ? Random.Range(0.82f, 0.86f)
+            : Random.Range(0.90f, 0.94f);
+
+        AudioManager.Instance.Play3dSfxFromCache(
+            "Sword_Swing",
+            transform.position,
+            0.9f,
+            pitch
+        );
     }
 
     #region 애니메이션 관련

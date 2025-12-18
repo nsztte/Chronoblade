@@ -1,6 +1,6 @@
 using UnityEngine;
 
-public enum AttackType { Light, Heavy }
+public enum AttackType { Light, Heavy, None }
 public enum StatusEffectType { None, Freeze, Slow , Paralysis }
 
 [CreateAssetMenu(fileName = "ComboAttackData", menuName = "Combat/ComboAttack")]
