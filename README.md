@@ -4787,3 +4787,44 @@ Enemy FSM(상태머신) 시스템 구현
 - 포스트프로세싱 관련 연출은 공용화보다 맥락(챕터/상태)별 분리가 더 적합하다는 점 재확인
 
 ---
+
+## 2025.12.18 (목) 작업 기록
+
+### 주요 작업
+
+- **SFX 그룹 프리로드 구조 구축**
+  - AudioManager Initialize 단계에서 SFX 그룹 자동 프리로드 처리
+  - preloadGroups 배열을 통해 Addressables 라벨 기반 프리로드 대상 관리
+  - SfxPool 초기화 이후 PreloadGroup 호출 흐름 고정
+  - Play3dSfxFromCache 사용을 전제로 한 SFX 로딩 구조 확립
+
+- **플레이어 이동 SFX 추가 (Land / Dash)**
+  - Player_Land 착지 SFX 파일 추가 및 Addressables 설정
+  - PlayerJumpState에서 착지 시 Player_Land SFX 재생 처리
+    - 착지 중복 재생 방지를 위한 landSfxPlayed 플래그 적용
+  - Player_Dash 대쉬 SFX 파일 추가
+  - PlayerDashState.Enter에서 대쉬 시작 시 SFX 재생 연동
+  - 이동 관련 SFX를 3D 사운드 기반으로 통합 적용
+
+- **검 스윙 SFX 구조 정비**
+  - Sword_Swing SFX 파일 추가
+  - AttackType(약/강 공격)에 따라 서로 다른 피치 범위를 적용하도록 스윙 사운드 로직 분리
+  - 일반 공격과 콤보 공격에서 동일한 스윙 사운드 규칙 사용
+  - MeleeWeaponController와 ComboAttackData에 중복 정의되어 있던 AttackType enum을 통합
+
+- **검 히트 SFX/VFX 추가 및 밸런스 조정**
+  - Sword_Hit SFX 파일 추가 및 히트 시 재생 로직 구현
+  - PlaySwordHitSfx 함수 신규 추가
+    - 약공격 / 강공격에 따라 볼륨·피치 분기 처리
+  - Sword_Swing / Sword_Hit SFX 볼륨 수치 재조정
+  - HitSpark VFX 파일 추가 및 타격 시 출력 처리
+  - VFX/SFX Pool 프리팹의 AudioSource 설정 수정
+    - Spatial Blend, Min/Max Distance, Rolloff 조정으로 Dash/Land 사운드가 작게 들리던 문제 해결
+
+### 메모
+
+- 이동 SFX(Dash/Land)를 기준으로 전투 SFX(Swing/Hit)를 보조 레벨로 재정렬하여 전체 사운드 밸런스 안정화
+- SFX 프리로드 구조를 고정함으로써 Addressables 기반 사운드 재생 지연 문제 제거
+- 전투 사운드의 역할 분리(Swing = 행동 선언 / Hit = 임팩트)를 명확히 유지
+
+---
