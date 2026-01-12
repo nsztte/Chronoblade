@@ -44,9 +44,8 @@ public class WeaponData : ScriptableObject
     [Header("UI")]
     public Sprite iconSprite; // 아이콘
 
-    [Header("이펙트 및 사운드")]
-    public GameObject muzzleFlash;
-    public AudioClip fireSound;
+    [Header("SFX")]
+    public string fireSfxKey;
 
     [Header("검 콤보 (Sword 전용)")]
     public List<ComboSequence> swordCombos = new();

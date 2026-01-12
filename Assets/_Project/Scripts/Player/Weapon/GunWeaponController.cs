@@ -117,6 +117,9 @@ public class GunWeaponController : WeaponController
             FireSingle();
         }
 
+        // 사운드 재생
+        AudioManager.Instance.Play3dSfxFromCache(weaponData.fireSfxKey, transform.position, 0.5f, 1.0f);
+
         // 머즐 플래시
         if (muzzleFlash != null)
             muzzleFlash.Play();
