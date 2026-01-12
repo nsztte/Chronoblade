@@ -4828,3 +4828,51 @@ Enemy FSM(상태머신) 시스템 구현
 - 전투 사운드의 역할 분리(Swing = 행동 선언 / Hit = 임팩트)를 명확히 유지
 
 ---
+
+## 2026.01.12 (월) 작업 기록
+
+### 주요 작업
+
+- **UI 클릭 사운드 공용 처리 구조 정리**
+  - UIManager 및 TitleUIManager에 OnUIButtonClick 함수 추가
+  - 모든 UI Button의 OnClick 이벤트에 공용 UI 클릭 사운드 연결
+  - PlayUIFromCache 기반 UI_Click SFX 호출 구조로 통일
+  - UI 버튼 사운드 처리 로직을 UIManager 중심으로 정리
+
+- **총기 발사 SFX 키 기반 구조 개선**
+  - WeaponData에 fireSfxKey 필드 추가
+  - GunWeaponController에서 fireSfxKey를 사용해 발사 시점에 SFX 재생
+  - 피스톨 / 샷건 / 라이플 발사 SFX 3종 수집 및 무기별 매칭 적용
+
+- **총알 히트 SFX 추가 및 출력 위치 정리**
+  - Raycast 적중 시 Bullet_Hit SFX를 hit.point 기준으로 재생
+  - 샷건 펠릿 적중 시에도 동일한 히트 사운드 처리
+  - BulletImpact VFX와 동일한 위치 기준으로 SFX/VFX 출력 흐름 통합
+
+- **보스 근접 공격 스윙 SFX 추가**
+  - Boss_Swing SFX 추가
+  - BossController의 공격 애니메이션 이벤트 함수에서 스윙 사운드 재생
+  - HorizontalSlash / VerticalSmash / DoubleSlash / LeapSmash 패턴 공통 적용
+  - 보스 공격 모션과 SFX 타이밍 동기화
+
+- **보스 캐스트 공격 SFX 호출 방식 분리**
+  - 공격 유형별 SFX 호출 기준 분리
+  - 애니메이션 타이밍과 어긋나는 캐스트 계열 공격은 애니메이션 이벤트에서 호출
+  - 시점이 명확한 캐스트 및 스윙 공격은 Trigger 함수 내부에서 직접 호출
+  - BossController 중심으로 보스 공격 연출(SFX/VFX/히트박스) 타이밍 정리
+
+- **보스 페이즈 전환 컷씬 버그 수정**
+  - 컷씬 시작 시 플레이어 바디 비활성화 처리
+  - 컷씬 종료 콜백에서 플레이어 바디 재활성화
+  - 페이즈 전환 컷씬 중 플레이어 모델 노출 문제 해결
+
+- **카메라 커서 처리 수정**
+  - CameraController에서 커서를 잠그지 않도록 동작 수정
+
+### 메모
+
+- UI / 전투 / 보스 사운드 전반의 호출 구조를 중앙화하면서 유지보수성 개선
+- 공격 타입별 SFX 호출 기준을 명확히 나눠 연출 타이밍 혼선 제거
+- 사운드 작업이 마무리 단계에 진입했으며, 남은 작업은 TimeShift / BGM 위주로 정리 예정
+
+---
