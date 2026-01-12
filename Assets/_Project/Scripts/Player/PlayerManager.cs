@@ -423,7 +423,6 @@ public class PlayerManager : MonoBehaviour, IDamageable
         {
             Debug.Log("패링 성공!");
 
-
             SetInvincible(true, 0.5f);
 
             // 전투 튜토리얼 콜백
@@ -435,10 +434,12 @@ public class PlayerManager : MonoBehaviour, IDamageable
             // 무기 패링 애니메이션
             WeaponManager.Instance?.CurrentWeapon?.ExecuteParrying();
 
-            // TODO: vfx, sfx
+            // vfx, sfx
             var weapon = WeaponManager.Instance.CurrentWeapon as MeleeWeaponController;
             if (weapon && weapon.VfxSpawnPoint)
                 VFXManager.Instance?.Spawn("Parrying", weapon.VfxSpawnPoint.position, weapon.VfxSpawnPoint.rotation);
+
+            AudioManager.Instance.Play3dSfxFromCache("Parry_Success", transform.position, 0.5f, 1.0f);
 
             return true;
         }
