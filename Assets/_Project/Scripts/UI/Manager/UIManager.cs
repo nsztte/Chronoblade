@@ -105,6 +105,10 @@ public class UIManager : MonoBehaviour
         }
     }
 
+    public void OnUIButtonClick()
+    {
+        AudioManager.Instance.PlayUIFromCache("UI_Click");
+    }
 
     #region 마우스 커서 업데이트
     public void SetCursorLockState(CursorLockMode mode)

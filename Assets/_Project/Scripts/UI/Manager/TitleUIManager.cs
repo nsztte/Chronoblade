@@ -14,4 +14,9 @@ public class TitleUIManager : MonoBehaviour
     public void ShowTitle() => titleUI.SetActive(true);
     // public void HideTitle() => titleUI.SetActive(false);
     // public void HideMainMenu() => mainMenuUI.SetActive(false);
+
+    public void OnUIButtonClick()
+    {
+        AudioManager.Instance.PlayUIFromCache("UI_Click");
+    }
 }
