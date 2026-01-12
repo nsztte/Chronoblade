@@ -366,6 +366,8 @@ public class BossController : MonoBehaviour, IDamageable
     // 패이즈1
     public void TriggerHorizontalSlash()
     {
+        PlayBossSwingSfx();
+
         if(stateMachine.CurrentState is HorizontalSlashState horizontalSlashState)
         {
             horizontalSlashState.isWindingUp = false;
@@ -374,6 +376,8 @@ public class BossController : MonoBehaviour, IDamageable
     }
     public void TriggerVerticalSlash()
     {
+        PlayBossSwingSfx();
+        
         if(stateMachine.CurrentState is VerticalSmashState verticalSmashState)
         {
             verticalSmashState.isWindingUp = false;
@@ -390,7 +394,7 @@ public class BossController : MonoBehaviour, IDamageable
     }
 
     public void TriggerTimeStopAttack()
-    {
+    {        
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
             timeStopState.isWindingUp = false;
@@ -400,6 +404,8 @@ public class BossController : MonoBehaviour, IDamageable
     // TriggerTimeStopAttack, LeapSmash, TriggerDoubleSlashCombo 에서 공통으로 사용
     public void TriggerAttackHitbox()
     {
+        PlayBossSwingSfx();
+        
         if(stateMachine.CurrentState is TimeStopAttackState timeStopState)
         {
             TriggerParryHitbox(0.1f, timeStopState.damage);
@@ -425,6 +431,8 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void TriggerDoubleSlashCombo()
     {
+        PlayBossSwingSfx();
+        
         if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
         {
             doubleSlashComboState.isWindingUp = false;
@@ -442,10 +450,17 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void TriggerLeapSmash()
     {
+        PlayBossSwingSfx();
+
         if(stateMachine.CurrentState is LeapSmashState leapSmashState)
         {
             leapSmashState.isWindingUp = false;
         }
+    }
+
+    private void PlayBossSwingSfx()
+    {
+        AudioManager.Instance.Play3dSfxFromCache("Boss_Swing", transform.position, 0.5f, 1.0f);
     }
     #endregion
 
