@@ -116,6 +116,11 @@ public class BossController : MonoBehaviour, IDamageable
     private void Update()
     {      
         stateMachine.Update();
+
+        if (Input.GetKeyDown(KeyCode.T))
+        {
+            SetHPWithPercent(50);
+        }
     }
 
     public void StartIntroState()
@@ -386,7 +391,7 @@ public class BossController : MonoBehaviour, IDamageable
     }
 
     public void TriggerSpawnSlowZone()
-    {
+    {        
         if(stateMachine.CurrentState is SpawnSlowZoneState slowZoneState)
         {
             slowZoneState.SpawnSlowZone();
@@ -423,6 +428,8 @@ public class BossController : MonoBehaviour, IDamageable
     // 패이즈2
     public void TriggerDelayedMine()
     {
+        PlayBossCastSfx();
+
         if(stateMachine.CurrentState is DelayedMineState delayedMineState)
         {
             delayedMineState.SpawnMine();
@@ -442,6 +449,8 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void TriggerRapidEnergyShot()
     {
+        PlayBossCastSfx();
+        
         if(stateMachine.CurrentState is RapidEnergyShotState rapidEnergyShotState)
         {
             rapidEnergyShotState.isWindingUp = false;
@@ -458,9 +467,14 @@ public class BossController : MonoBehaviour, IDamageable
         }
     }
 
-    private void PlayBossSwingSfx()
+    public void PlayBossSwingSfx()
     {
         AudioManager.Instance.Play3dSfxFromCache("Boss_Swing", transform.position, 0.5f, 1.0f);
+    }
+
+    public void PlayBossCastSfx()
+    {
+        AudioManager.Instance.Play3dSfxFromCache("Boss_Cast", transform.position, 0.3f, 1.0f);
     }
     #endregion
 
