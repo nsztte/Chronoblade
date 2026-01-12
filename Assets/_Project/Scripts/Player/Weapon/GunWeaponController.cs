@@ -156,6 +156,7 @@ public class GunWeaponController : WeaponController
 
             var rot = Quaternion.LookRotation(hit.normal);
             VFXManager.Instance?.Spawn("BulletImpact", hit.point, rot);
+            AudioManager.Instance.Play3dSfxFromCache("Bullet_Hit", hit.point, 0.5f, 1.0f);
         }
 
         Debug.DrawRay(Camera.main.transform.position, Camera.main.transform.forward * weaponData.range, Color.yellow, 0.5f);
@@ -186,6 +187,8 @@ public class GunWeaponController : WeaponController
 
                 var rot = Quaternion.LookRotation(hit.normal);
                 VFXManager.Instance?.Spawn("BulletImpact", hit.point, rot);
+                AudioManager.Instance.Play3dSfxFromCache("Bullet_Hit", hit.point, 0.5f, 1.0f);
+
             }
             Debug.DrawRay(firePoint.position, spreadDirection * weaponData.range, Color.red, 0.5f);
         }
