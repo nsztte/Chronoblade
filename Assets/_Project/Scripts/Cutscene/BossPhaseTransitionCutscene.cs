@@ -12,12 +12,6 @@ public class BossPhaseTransitionCutscene : BaseCutscene
     [Header("VFX")]
     [SerializeField] private ParticleSystem[] vfxOnStart;
 
-    private Animator bossAnimator;
-    
-    private void Start()
-    {
-        if(bossController != null) bossAnimator = bossController.Animator;
-    }
 
     public void StartPlay()
     {
@@ -35,13 +29,14 @@ public class BossPhaseTransitionCutscene : BaseCutscene
 
         yield return new WaitForSecondsRealtime(bossController.GetCurrentAnimationLength() + 1f);
 
-        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam);
+        CutsceneCameraManager.Instance.EndCutscene(cinemachineCam, OnComplete);
     }
 
     protected override void OnBeforePlay()
     {
         ForceUnscaledAnimators(bossController.Animator);
 
+        PlayerManager.Instance.ShowPlayerBody(false);
         CutsceneCameraManager.Instance.StartCutscene(cinemachineCam);
     }
 
@@ -51,5 +46,10 @@ public class BossPhaseTransitionCutscene : BaseCutscene
 
         if (vfxOnStart != null)
             foreach (var v in vfxOnStart) if (v != null) v.Stop();
+    }
+
+    private void OnComplete()
+    {
+        PlayerManager.Instance.ShowPlayerBody(true);
     }
 }

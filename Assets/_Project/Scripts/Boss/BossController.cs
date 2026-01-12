@@ -437,9 +437,7 @@ public class BossController : MonoBehaviour, IDamageable
     }
 
     public void TriggerDoubleSlashCombo()
-    {
-        PlayBossSwingSfx();
-        
+    {        
         if(stateMachine.CurrentState is DoubleSlashComboState doubleSlashComboState)
         {
             doubleSlashComboState.isWindingUp = false;
@@ -459,8 +457,6 @@ public class BossController : MonoBehaviour, IDamageable
 
     public void TriggerLeapSmash()
     {
-        PlayBossSwingSfx();
-
         if(stateMachine.CurrentState is LeapSmashState leapSmashState)
         {
             leapSmashState.isWindingUp = false;
