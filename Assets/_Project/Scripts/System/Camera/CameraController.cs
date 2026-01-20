@@ -123,6 +123,7 @@ public class CameraController : MonoBehaviour
         // 이동시 카메라 좌우 이동
         var player = PlayerManager.Instance?.PlayerController;
         if (player == null) return;
+        if (player.IsFrozen) return;
 
         Vector3 hv = new Vector3(player.GetComponent<CharacterController>().velocity.x, 0, player.GetComponent<CharacterController>().velocity.z);
         float speed = hv.magnitude;
