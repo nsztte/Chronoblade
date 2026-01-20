@@ -181,6 +181,73 @@ public class BossController : MonoBehaviour, IDamageable
         phaseManager.UpdatePhase(currentHP, maxHP);
     }
 
+    public void ResetToPreIntroState(bool invincible = true, bool hideHud = true)
+    {
+        // 0) 필수 참조 보정
+        if (animator == null) animator = GetComponent<Animator>();
+        if (phaseManager == null) phaseManager = GetComponent<BossPhaseManager>();
+        if (col == null) col = GetComponent<Collider>();
+
+        if (player == null)
+            player = PlayerManager.Instance?.PlayerTransform;
+
+        // 1) 진행 중 코루틴/연출 정리
+        if (slashCoroutine != null)
+        {
+            StopCoroutine(slashCoroutine);
+            slashCoroutine = null;
+        }
+
+        if (hitShakeCo != null)
+        {
+            StopCoroutine(hitShakeCo);
+            hitShakeCo = null;
+
+            if (hitShakeRoot != null)
+                hitShakeRoot.localPosition = hitShakeRootDefaultLocalPos;
+        }
+
+        // 칼 트레일 꺼두기 (혹시 켜져있던 상태 대비)
+        if (swordTrail != null)
+            swordTrail.StopTrail(clear: true);
+
+        // 2) 전투/퍼즐/약점 관련 오브젝트를 '인트로 전' 기준으로 정렬
+        if (weakPointObject != null)
+            weakPointObject.SetActive(false);
+
+        if (animator != null)
+            animator.SetBool("IsWeakExposed", false);
+
+        // 퍼즐 매니저는 꺼진 상태가 안전(인트로 전)
+        if (puzzleClockManager != null)
+            puzzleClockManager.gameObject.SetActive(false);
+
+        // 컷씬 카메라(퍼즐 카메라 등)도 기본은 꺼두는 게 안전
+        if (clockPuzzleCamera != null)
+            clockPuzzleCamera.SetActive(false);
+
+        // 3) 타임스탑/프로즌 잔여 상태 정리 (혹시 남아있을 수 있으니 안전망)
+        // StartTimeStopEffect()를 보스가 걸 수 있으니, 복원 시점에 남아있으면 풀어줌
+        EndTimeStopEffect();
+
+        // 4) 콜라이더/무적 상태 정렬
+        SetInvincibility(invincible);
+
+        // 5) FSM 리셋 (전투 시작/인트로 시작은 외부 트리거가 하도록)
+        // BossStateMachine.Update()가 null state를 안전하게 처리한다는 전제(대부분 이렇게 구현됨)
+        stateMachine = new BossStateMachine();
+
+        // 6) 애니메이션을 "앉아있는 대기"로 고정
+        AnimatorUtils.ResetAnimatorParameters(animator);
+        animator.Play("StartIdle", 0);
+
+        // 7) HUD 정리
+        if (hideHud)
+            HideBossHUD();
+        else
+            ShowBossHUD();
+    }
+
     #region 타격 피드백
     private void PlayHitShake(int damage)
     {
