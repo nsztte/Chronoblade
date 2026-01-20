@@ -18,6 +18,7 @@ public class FakeClone : MonoBehaviour, IDamageable
     [SerializeField] private Color emissionColor = new Color(0.2f, 3.0f, 2.5f);
     [SerializeField] private float blink = 10f;
     [SerializeField] private float emissionIntensity = 1.5f;
+    [SerializeField] private Transform smokePosition;
 
     private MirrorDuelist enemy;
     private float spawnTime;
@@ -189,6 +190,7 @@ public class FakeClone : MonoBehaviour, IDamageable
 
         // TODO: 폭발 애니메이션/이펙트/사운드
         StopEmissionBlink();
+        VFXManager.Instance?.Spawn("Clone_Smoke", smokePosition.position, Quaternion.identity);
         ReleaseClone();
     }
 
@@ -250,6 +252,9 @@ public class FakeClone : MonoBehaviour, IDamageable
     private void SetEmission(float intensity)
     {
         if (coreRenderer == null) return;
+
+        // mpb가 null인 경우 새로 생성
+        mpb ??= new MaterialPropertyBlock();
 
         coreRenderer.GetPropertyBlock(mpb);
 

@@ -33,6 +33,7 @@ Transform:
   - {fileID: 6397019845862403553}
   - {fileID: 8496454074220294394}
   - {fileID: 4901549940197574992}
+  - {fileID: 4016233177537172666}
   m_Father: {fileID: 2179937250900402260}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &113882820301860905
@@ -6257,6 +6258,55 @@ Transform:
   - {fileID: 572311576050925588}
   m_Father: {fileID: 66570486016248291}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &3489293981970986015
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 4016233177537172666}
+  - component: {fileID: 1815369499037113029}
+  m_Layer: 0
+  m_Name: Clone_Smoke
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &4016233177537172666
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3489293981970986015}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 5923437093265761025}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1815369499037113029
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3489293981970986015}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 775eb8e773ad8464a85b343aaa772652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 8306696499216124411, guid: 03fdd17df34d47948b7aadceb412306d, type: 3}
+  initialSize: 12
+  maxSize: 32
+  expandIfEmpty: 1
+  poolParent: {fileID: 4016233177537172666}
 --- !u!1 &3515188660167190074
 GameObject:
   m_ObjectHideFlags: 0
@@ -7595,6 +7645,9 @@ MonoBehaviour:
     autoRelease: 1
   - key: BulletImpact
     pool: {fileID: 3605807158664586029}
+    autoRelease: 1
+  - key: Clone_Smoke
+    pool: {fileID: 1815369499037113029}
     autoRelease: 1
 --- !u!1 &4044643187198052156
 GameObject:

@@ -715,6 +715,11 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   shopData: {fileID: 11400000, guid: 44da398e064ed0949bd43c50d1b44ca2, type: 2}
+--- !u!4 &972029378 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 5923437093265761025, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+  m_PrefabInstance: {fileID: 8590179395040169635}
+  m_PrefabAsset: {fileID: 0}
 --- !u!114 &1055445719 stripped
 MonoBehaviour:
   m_CorrespondingSourceObject: {fileID: 6199011483902851529, guid: b8f7deabcedcb0845a8d77c1cd0e61e6, type: 3}
@@ -726,6 +731,55 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 8149f240301b493419563d63bda68683, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &1066338473
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1066338474}
+  - component: {fileID: 1066338475}
+  m_Layer: 0
+  m_Name: Clone_Smoke
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1066338474
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066338473}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 972029378}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1066338475
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1066338473}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 775eb8e773ad8464a85b343aaa772652, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab: {fileID: 8306696499216124411, guid: 03fdd17df34d47948b7aadceb412306d, type: 3}
+  initialSize: 12
+  maxSize: 32
+  expandIfEmpty: 1
+  poolParent: {fileID: 1066338474}
 --- !u!1 &1109526488
 GameObject:
   m_ObjectHideFlags: 0
@@ -9298,9 +9352,28 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.y
       value: -1.9
       objectReference: {fileID: 0}
+    - target: {fileID: 9174657566894666434, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: entries.Array.size
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: 9174657566894666434, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: entries.Array.data[4].key
+      value: Clone_Smoke
+      objectReference: {fileID: 0}
+    - target: {fileID: 9174657566894666434, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: entries.Array.data[4].pool
+      value: 
+      objectReference: {fileID: 1066338475}
+    - target: {fileID: 9174657566894666434, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      propertyPath: entries.Array.data[4].autoRelease
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
-    m_AddedGameObjects: []
+    m_AddedGameObjects:
+    - targetCorrespondingSourceObject: {fileID: 5923437093265761025, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 1066338474}
     m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 776f5754903bc00439e5988ec3ae432c, type: 3}
 --- !u!23 &8696441239720568801
