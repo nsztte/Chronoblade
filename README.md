@@ -4876,3 +4876,41 @@ Enemy FSM(상태머신) 시스템 구현
 - 사운드 작업이 마무리 단계에 진입했으며, 남은 작업은 TimeShift / BGM 위주로 정리 예정
 
 ---
+
+## 2026.01.20 (화) 작업 기록
+
+### 주요 작업
+
+- **FakeClone 예열 단계 코어 에미션 VFX 추가**
+  - FakeClone 가슴 코어 Renderer 기반 Emission VFX 필드 추가
+  - StartWindUp 진입 시 코어 에미션 점멸로 예열 상태 시각화
+  - MaterialPropertyBlock 사용으로 인스턴스별 발광 제어
+  - EmissionBlinkRoutine을 통한 주기적 점멸 처리
+  - Explode / ReleaseClone / Initialize 시 에미션 상태 초기화하여 풀링 대응
+
+- **FakeClone 폭발 시 Clone_Smoke VFX 재생 구조 개선**
+  - VFXManager에 Clone_Smoke VFX 풀 엔트리 구성
+  - FakeClone에 smokePosition 트랜스폼 참조 필드 추가
+  - Explode 시 VFXManager.Spawn 기반으로 폭발 스모크 재생
+  - 클론 풀링 Release와 분리된 VFX 재생 구조로 폭발 연출 안정화
+
+- **보스 소환 슬로우존 VFX 적용**
+  - 보스 패턴으로 생성되는 슬로우존에 전용 VFX 연출 추가
+  - 바닥 영역 기반 이펙트로 슬로우 범위 시각화
+  - 지속형 존 패턴의 인지성과 위협도 강화
+
+- **AnimatorUtils 추가 및 보스 인트로 전 상태 초기화 로직 구현**
+  - AnimatorUtils.ResetAnimatorParameters 유틸 클래스 추가
+  - Animator의 모든 파라미터 및 트리거 초기화 처리
+  - BossController에 ResetToPreIntroState 함수 구현
+  - 보스 인트로 전 상태(앉아있는 대기)를 기준으로 애니메이션/FSM/연출 정렬
+  - 실제 적용 지점은 추후 설계 정리 후 반영 예정
+
+### 메모
+
+- ResetToPreIntroState는 체크포인트 초기화용으로 구현만 완료하고,
+  실제 호출 위치 및 분기 로직은 이후 보스/퍼즐 흐름 정리 후 적용 예정
+- FakeClone 예열/폭발 VFX는 풀링 구조와 충돌 없이 안정적으로 동작하는 것 확인
+- 보스 패턴 VFX는 현재 단계에서 가독성 확보 수준으로 충분하다고 판단
+
+---
