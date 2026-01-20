@@ -18,6 +18,7 @@ public class BossIntroTrigger : SaveableBehaviour
         {
             isActivated = !gameObject.activeSelf
         };
+        
         return JsonUtility.ToJson(data);
     }
 
@@ -29,9 +30,9 @@ public class BossIntroTrigger : SaveableBehaviour
         if (data == null) return;
 
         // 트리거가 이미 활성화되었다면 비활성화 상태로 복원
-        if (data.isActivated)
+        if (!data.isActivated)
         {
-            gameObject.SetActive(false);
+            gameObject.SetActive(true);
         }
     }
 

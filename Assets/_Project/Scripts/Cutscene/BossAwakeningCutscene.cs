@@ -3,6 +3,8 @@ using UnityEngine;
 
 public class BossAwakeningCutscene : BaseCutscene
 {
+    [SerializeField] private BossController boss;
+
     [Header("Cameras")]
     [SerializeField] GameObject cinemachineCam;
 
@@ -26,8 +28,11 @@ public class BossAwakeningCutscene : BaseCutscene
         yield return WaitAnimDone(heartAnimator, MoveToBossHash);
 
         // yield return new WaitForSecondsRealtime(1.5f);
-
-        bossAnimator.SetTrigger("Idle");
+        if (boss != null)
+            boss.SetAwakened(true);
+            
+        if (bossAnimator != null) 
+            bossAnimator.SetTrigger("Idle");
 
         yield return new WaitForSecondsRealtime(0.5f);
 

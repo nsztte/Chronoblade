@@ -54,6 +54,10 @@ public class BossController : MonoBehaviour, IDamageable
     [SerializeField] private float hitShakeAmplitude = 0.02f;
     [SerializeField] private float hitShakeCooldown = 0.03f; // 연타시 과도한 흔들림 방지
 
+    [Header("인트로 실행 상태")]
+    [SerializeField] private bool hasAwakened; // 디버그용으로 SerializeField 추천
+    public bool HasAwakened => hasAwakened;
+
     private Coroutine hitShakeCo;
     private Vector3 hitShakeRootDefaultLocalPos;
     private float lastHitShakeTime = -999f;
@@ -111,6 +115,7 @@ public class BossController : MonoBehaviour, IDamageable
         player = PlayerManager.Instance.PlayerTransform;
 
         animator.Play("StartIdle", 0);
+        // ResetToPreIntroState();
     }
 
     private void Update()
@@ -181,15 +186,23 @@ public class BossController : MonoBehaviour, IDamageable
         phaseManager.UpdatePhase(currentHP, maxHP);
     }
 
+    public void SetAwakened(bool awakened)
+    {
+        hasAwakened = awakened;
+    }
+
     public void ResetToPreIntroState(bool invincible = true, bool hideHud = true)
     {
-        // 0) 필수 참조 보정
+        // 0) 필수 참조 보정 맟 초기화화
         if (animator == null) animator = GetComponent<Animator>();
         if (phaseManager == null) phaseManager = GetComponent<BossPhaseManager>();
         if (col == null) col = GetComponent<Collider>();
 
         if (player == null)
             player = PlayerManager.Instance?.PlayerTransform;
+
+        CancelInvoke();
+        StopAllCoroutines();
 
         // 1) 진행 중 코루틴/연출 정리
         if (slashCoroutine != null)
@@ -215,9 +228,6 @@ public class BossController : MonoBehaviour, IDamageable
         if (weakPointObject != null)
             weakPointObject.SetActive(false);
 
-        if (animator != null)
-            animator.SetBool("IsWeakExposed", false);
-
         // 퍼즐 매니저는 꺼진 상태가 안전(인트로 전)
         if (puzzleClockManager != null)
             puzzleClockManager.gameObject.SetActive(false);
@@ -239,7 +249,7 @@ public class BossController : MonoBehaviour, IDamageable
 
         // 6) 애니메이션을 "앉아있는 대기"로 고정
         AnimatorUtils.ResetAnimatorParameters(animator);
-        animator.Play("StartIdle", 0);
+        animator.Play(hasAwakened ? "Idle" : "StartIdle", 0);
 
         // 7) HUD 정리
         if (hideHud)

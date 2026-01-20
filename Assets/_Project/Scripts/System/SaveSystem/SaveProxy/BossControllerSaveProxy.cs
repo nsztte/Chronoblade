@@ -9,6 +9,7 @@ public class BossControllerSaveProxy : SaveableBehaviour
     {
         public int phase;       // BossPhase enum을 int로 저장
         public int hpPercent;   // 0~100
+        public bool hasAwakened;
     }
 
     private BossController boss;
@@ -25,7 +26,8 @@ public class BossControllerSaveProxy : SaveableBehaviour
         var d = new Data
         {
             phase = (int)boss.PhaseManager.CurrentPhase,
-            hpPercent = Mathf.Clamp(boss.CurrentHpPercentInt, 0, 100)
+            hpPercent = Mathf.Clamp(boss.CurrentHpPercentInt, 0, 100),
+            hasAwakened = boss.HasAwakened
         };
 
         return JsonUtility.ToJson(d);
@@ -39,5 +41,8 @@ public class BossControllerSaveProxy : SaveableBehaviour
 
         boss.SetHPWithPercent(Mathf.Clamp(d.hpPercent, 0, 100));
         boss.PhaseManager.SetPhaseFromSave((BossPhase)Mathf.Clamp(d.phase, 0, (int)BossPhase.Ending));
+
+        boss.SetAwakened(d.hasAwakened);
+        boss.ResetToPreIntroState();
     }
 }
