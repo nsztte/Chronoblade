@@ -562,7 +562,7 @@ MonoBehaviour:
   maxHP: 1000
   currentHP: 0
   attackRange: 1.5
-  slowZonePrefab: {fileID: 7138001370497578143, guid: bf449a924dddf664b886555da1fd1848, type: 3}
+  slowZonePrefab: {fileID: 4932088507883938021, guid: 0f8410b5fad856f418f59bc52a873903, type: 3}
   minePrefab: {fileID: 31822690167408424, guid: 7ee84b9fd5ce47e4ab61b66e978af4d6, type: 3}
   energyBoltPrefab: {fileID: 1057693082282180747, guid: 5941c2650f2ec1e419bf06696d71387b, type: 3}
   slashHitboxMarker: {fileID: 8756808218394072120}
@@ -16475,8 +16475,6 @@ MonoBehaviour:
   - {x: 0.049488146, y: -0.29109824, z: -0.1363552}
   - {x: 0.05245937, y: -0.1972105, z: -0.17987232}
   - {x: 0.036602877, y: -0.082849644, z: -0.17714855}
-  playOnStart: 0
-  dontDestroyOnLoad: 0
 --- !u!1 &7131630967041786409
 GameObject:
   m_ObjectHideFlags: 0
