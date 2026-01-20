@@ -282,8 +282,8 @@ public class CameraController : MonoBehaviour
         isZoomed = false;
 
         // 커서 락 상태 복구
-        // Cursor.lockState = CursorLockMode.Locked;
-        // Cursor.visible = false;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void PlayParryEffect(float fovOffset = 5f, float shakeIntensity = 0.8f, float shakeDuration = 0.12f)

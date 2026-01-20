@@ -1755,6 +1755,10 @@ MonoBehaviour:
   playerMask:
     serializedVersion: 2
     m_Bits: 64
+  coreRenderer: {fileID: 9165985868215954865}
+  emissionColor: {r: 0.2, g: 3, b: 2.5, a: 1}
+  blink: 10
+  emissionIntensity: 1.5
 --- !u!114 &1754995025166366851
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -52,6 +52,8 @@ public class GameManager : MonoBehaviour
     {
         if(test)
         {
+            Cursor.lockState = CursorLockMode.Locked;
+            Cursor.visible = false;
             EnterExploration();
             return;
         }

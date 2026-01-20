@@ -13,6 +13,12 @@ public class FakeClone : MonoBehaviour, IDamageable
     [SerializeField] private int explodeDamage = 20;
     [SerializeField] private LayerMask playerMask;
 
+    [Header("VFX")]
+    [SerializeField] private Renderer coreRenderer;  // 코어 메쉬 Renderer
+    [SerializeField] private Color emissionColor = new Color(0.2f, 3.0f, 2.5f);
+    [SerializeField] private float blink = 10f;
+    [SerializeField] private float emissionIntensity = 1.5f;
+
     private MirrorDuelist enemy;
     private float spawnTime;
     private bool isHit = false;
@@ -24,6 +30,10 @@ public class FakeClone : MonoBehaviour, IDamageable
     private NavMeshAgent agent;
     private Animator animator;
     private EnemyTimeController timeController;
+
+    private MaterialPropertyBlock mpb;
+    private Coroutine blinkCo;
+    private static readonly int EmissionColorId = Shader.PropertyToID("_EmissionColor");
     
     public void Initialize(MirrorDuelist enemy)
     {
@@ -64,6 +74,7 @@ public class FakeClone : MonoBehaviour, IDamageable
         }
 
         timeController.SetSpeed(moveSpeed);
+        StopEmissionBlink();
     }
 
     private void Update()
@@ -140,6 +151,8 @@ public class FakeClone : MonoBehaviour, IDamageable
 
         animator.SetBool("IsRunning", false);
 
+        StartEmissionBlink();
+
         // TODO: 예열 애니메이션/이펙트/사운드
         Debug.Log("FakeClone 예열 시작");
     }
@@ -175,6 +188,7 @@ public class FakeClone : MonoBehaviour, IDamageable
         }
 
         // TODO: 폭발 애니메이션/이펙트/사운드
+        StopEmissionBlink();
         ReleaseClone();
     }
 
@@ -193,6 +207,59 @@ public class FakeClone : MonoBehaviour, IDamageable
         enemy.UnregisterClone(this);
         FakeClonePool.Instance?.Release(this);
     }
+    
+    #region VFX
+    private void StartEmissionBlink()
+    {
+        if (coreRenderer == null) return;
+
+        mpb ??= new MaterialPropertyBlock();
+
+        StopEmissionBlink();
+        blinkCo = StartCoroutine(EmissionBlinkRoutine());
+    }
+
+    private void StopEmissionBlink()
+    {
+        if (blinkCo != null)
+        {
+            StopCoroutine(blinkCo);
+            blinkCo = null;
+        }
+
+        // 꺼진 상태로 리셋(풀링 때문에 중요)
+        SetEmission(0f);
+    }
+
+    private System.Collections.IEnumerator EmissionBlinkRoutine()
+    {
+        while (true)
+        {
+            // 너는 EnemyTimeController로 dt를 조절하고 있으니까 그거 따라가는 게 자연스러움
+            float dt = timeController != null ? timeController.GetAdjustedDeltaTime() : Time.deltaTime;
+
+            float t = Time.time * blink;
+            float on = (t - Mathf.Floor(t)) < 0.5f ? 1f : 0f;
+
+            SetEmission(on * emissionIntensity);
+
+            yield return null;
+        }
+    }
+
+    private void SetEmission(float intensity)
+    {
+        if (coreRenderer == null) return;
+
+        coreRenderer.GetPropertyBlock(mpb);
+
+        // HDR 컬러 * intensity
+        Color c = emissionColor * intensity;
+        mpb.SetColor(EmissionColorId, c);
+
+        coreRenderer.SetPropertyBlock(mpb);
+    }
+    #endregion
 
     public void ApplyKnockback(float force) {}
 }
