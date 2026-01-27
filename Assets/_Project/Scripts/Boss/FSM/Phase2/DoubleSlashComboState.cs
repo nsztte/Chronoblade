@@ -9,7 +9,7 @@ public class DoubleSlashComboState : BaseBossAttackState
 
     public override void Enter()
     {
-        if(!boss.IsPlayerInAttackRange())
+        if(!boss.IsPlayerInAttackRange(boss.Phase2AttackRange))
         {
             stateMachine.ChangeState(new BossDashState(boss, stateMachine, this));
             return;

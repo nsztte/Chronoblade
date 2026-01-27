@@ -9,9 +9,9 @@ public class HorizontalSlashState : BaseBossAttackState
 
     public override void Enter()
     {
-        if (!boss.IsPlayerInAttackRange())
+        if (!boss.IsPlayerInAttackRange(boss.Phase1AttackRange))
         {
-            stateMachine.ChangeState(new BossDashState(boss, stateMachine, this, dashSpeed: 13f, stoppingDistance: 4f));
+            stateMachine.ChangeState(new BossDashState(boss, stateMachine, this, dashSpeed: boss.Phase1DashSpeed, stoppingDistance: boss.Phase1DashStopDistance));
             return;
         }
 

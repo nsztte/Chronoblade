@@ -15,8 +15,18 @@ public class BossController : MonoBehaviour, IDamageable
     [Header("스탯")]
     [SerializeField] private float maxHP = 1000f;
     [SerializeField] private float currentHP;
-    [SerializeField] private float attackRange = 1.5f;
-    // [SerializeField] private int damage = 20;
+
+    [Header("Phase 튜닝")]
+    [SerializeField] private float phase1AttackRange = 2.3f;
+    [SerializeField] private float phase2AttackRange = 1.5f;
+
+    [SerializeField] private float phase1DashSpeed = 13f;
+    [SerializeField] private float phase1DashStopDistance = 4f;
+
+    public float Phase1AttackRange => phase1AttackRange;
+    public float Phase2AttackRange => phase2AttackRange;
+    public float Phase1DashSpeed => phase1DashSpeed;
+    public float Phase1DashStopDistance => phase1DashStopDistance;
 
     [Header("공격 프리팹")]
     public GameObject slowZonePrefab;
@@ -167,7 +177,7 @@ public class BossController : MonoBehaviour, IDamageable
         }
     }
 
-    public bool IsPlayerInAttackRange()
+    public bool IsPlayerInAttackRange(float attackRange)
     {
         return Vector3.Distance(player.position, transform.position) <= attackRange;
     }
