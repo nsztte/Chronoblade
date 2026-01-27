@@ -68,6 +68,10 @@ public class BossController : MonoBehaviour, IDamageable
     [SerializeField] private bool hasAwakened; // 디버그용으로 SerializeField 추천
     public bool HasAwakened => hasAwakened;
 
+    private const string SFX_BOSS_ROAR = "Boss_Roar";
+    private const string SFX_BOSS_SWING = "Boss_Swing";
+    private const string SFX_BOSS_CAST = "Boss_Cast";
+
     private Coroutine hitShakeCo;
     private Vector3 hitShakeRootDefaultLocalPos;
     private float lastHitShakeTime = -999f;
@@ -549,16 +553,6 @@ public class BossController : MonoBehaviour, IDamageable
             leapSmashState.isWindingUp = false;
         }
     }
-
-    public void PlayBossSwingSfx()
-    {
-        AudioManager.Instance.Play3dSfxFromCache("Boss_Swing", transform.position, 0.5f, 1.0f);
-    }
-
-    public void PlayBossCastSfx()
-    {
-        AudioManager.Instance.Play3dSfxFromCache("Boss_Cast", transform.position, 0.3f, 1.0f);
-    }
     #endregion
 
     #region 히트박스 트리거
@@ -649,6 +643,26 @@ public class BossController : MonoBehaviour, IDamageable
         Gizmos.color = Color.red;
         Gizmos.matrix = Matrix4x4.TRS(center, rotation, Vector3.one);
         Gizmos.DrawWireCube(Vector3.zero, halfSize * 2f);
+    }
+    #endregion
+
+    #region SFX
+    public void PlayIntroSFX()
+    {
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.Play3dSfxFromCache(SFX_BOSS_ROAR, transform.position, 0.5f, 1.0f);
+    }
+
+    public void PlayBossSwingSfx()
+    {
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.Play3dSfxFromCache(SFX_BOSS_SWING, transform.position, 0.5f, 1.0f);
+    }
+
+    public void PlayBossCastSfx()
+    {
+        if (AudioManager.Instance == null) return;
+        AudioManager.Instance.Play3dSfxFromCache(SFX_BOSS_CAST, transform.position, 0.3f, 1.0f);
     }
     #endregion
 
