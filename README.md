@@ -4920,3 +4920,36 @@ Enemy FSM(상태머신) 시스템 구현
 - 보스 인트로 트리거는 실행 상태가 아닌 **트리거 소비 여부만 저장**하는 구조로 유지
 
 ---
+
+## 2026.01.27 (화) 작업 기록
+
+### 주요 작업
+
+- **BossDashState 파라미터화 및 재사용 구조 개선**
+  - BossDashState에 dashSpeed, stoppingDistance, lookAtSpeed를 생성자 파라미터로 받도록 구조 변경
+  - 기본 생성자 유지로 기존 호출부와의 호환성 보장
+  - Phase1/Phase2에서 서로 다른 대쉬 성격을 가질 수 있도록 설계
+
+- **Phase1 근접 패턴에 거리 기반 대쉬 접근 로직 적용**
+  - HorizontalSlashState, VerticalSmashState, TimeStopAttackState에서
+    공격 사거리 밖일 경우 BossDashState로 진입 후 동일 패턴으로 복귀
+  - SpawnSlowZone 패턴은 원거리 패턴으로 유지하여 접근 압박 역할 분리
+
+- **Phase1 / Phase2 전투 튜닝값 중앙화**
+  - BossController에 Phase1/Phase2 공격 사거리 값과 Phase1 대쉬 파라미터를 SerializeField로 추가
+  - Phase1 근접 패턴들이 하드코딩된 수치 대신 BossController의 튜닝 값을 참조하도록 수정
+  - 인스펙터 기반으로 Phase별 난이도 및 전투 감각 조정 가능하도록 구조 정리
+
+- **보스 인트로 SFX 처리 및 안정성 보강**
+  - BossController에 PlayIntroSFX 함수 구현 후 인트로 애니메이션 이벤트에 연동
+  - AudioManager null 가드 추가로 애니메이션 이벤트 호출 시 크래시 방지
+  - 보스 인트로/공격 SFX 키를 상수로 정리하여 유지보수성 개선
+
+### 메모
+
+- Phase1은 접근 보조 역할의 대쉬만 사용하고, Phase2는 기존 공격 압박 중심 흐름을 유지
+- DashState를 분리하지 않고 파라미터화로 해결해 FSM 복잡도 증가를 방지함
+- 전투 튜닝 수치가 BossController로 모이면서 이후 밸런스 조정 작업이 훨씬 수월해질 예정
+- 보스 인트로 SFX는 애니메이션 이벤트 기반으로 처리하여 연출 타이밍 제어가 용이해짐
+
+---
